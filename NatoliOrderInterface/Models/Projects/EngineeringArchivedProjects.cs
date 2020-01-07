@@ -9,8 +9,9 @@ namespace NatoliOrderInterface.Models.Projects
         public string ProjectNumber { get; set; }
         public string RevNumber { get; set; }
         public DateTime? TimeArchived { get; set; }
-        public bool? ArchivedFromCheck { get; set; }
-        public bool? ArchivedFromCancel { get; set; }
+        public bool ArchivedFromCheck { get; set; }
+        public bool ArchivedFromCancel { get; set; }
+        public bool ArchivedFromRevision { get; set; }
         public string ArchivedBy {get; set;}
         public string QuoteNumber { get; set; }
         public string QuoteRevNumber { get; set; }

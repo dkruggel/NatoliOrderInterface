@@ -20,8 +20,13 @@
                         <ColumnDefinition Width="266"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Center" Margin="0,6" HorizontalAlignment="Stretch"/>
-                    <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" BorderBrush="Black" BorderThickness="2,0,2,2" CornerRadius="0,0,4,4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                    <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="2,0,2,2">
                         <DockPanel Height="24" VerticalAlignment="Stretch" LastChildFill="True" HorizontalAlignment="Stretch" Margin="2,6">
                             <TextBlock x:Name="Quote_WO_Label"  Text="Quote#:" Width="43" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
@@ -29,36 +34,41 @@
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteRevNumber"  Text="" Width="20" VerticalAlignment="Center"/>
                             <Button Style="{StaticResource Button}" x:Name="LinkQuoteButton" Content="Link To Quote" Grid.Column="0" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
                         </DockPanel>
-                    </Border>
-                    <Border Grid.Column="2" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Center" Margin="0,6" HorizontalAlignment="Stretch"/>
-                    <DockPanel Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0">
-                        <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Top" FontWeight="Bold" Style="{StaticResource BoldTextBlock}"/>
-                        <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Top" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
-                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Top" Margin="20,0,0,0" Style="{StaticResource BoldTextBlock}"/>
-                        <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Top" Margin="4,-5,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1"/>
+                    </Border>                    
+                    <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Center" FontWeight="Bold" Style="{StaticResource BoldTextBlock}"/>
+                        <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Center" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Center" Margin="20,0,0,0" Style="{StaticResource BoldTextBlock}"/>
+                        <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Center" Margin="4,0,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1"/>
                     </DockPanel>
-                    <DockPanel Grid.Column="3" HorizontalAlignment="Center">
-                        <TextBlock Text="Unit Of Measure:" FontSize="12" VerticalAlignment="Top" Style="{StaticResource BoldTextBlock}"/>
-                        <ComboBox x:Name="UnitOfMeasure" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" Width="60" VerticalAlignment="Top" Margin="4,-5,0,0" BorderThickness="0" Background="Transparent" Padding="6,1,5,1">
+                    <DockPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,12">
+                        <TextBlock Text="Revised By:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
+                        <TextBlock x:Name="RevisedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock Text="DateTime:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
+                        <TextBlock x:Name="RevisionDate" Text="" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                    </DockPanel>
+                    <DockPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0">
+                        <TextBlock Text="Unit Of Measure:" FontSize="12" VerticalAlignment="Center" Style="{StaticResource BoldTextBlock}"/>
+                        <ComboBox x:Name="UnitOfMeasure" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" Width="60" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="0" Background="Transparent" Padding="6,1,5,1">
                             <ComboBoxItem Content="IN" IsSelected="True"/>
                             <ComboBoxItem Content="MM"/>
                             <ComboBoxItem Content="DUAL" />
                         </ComboBox>
+                        <TextBlock Text="Ref. Quote#:" VerticalAlignment="Center" Margin="20,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteRevNumber" Text="" Width="20" VerticalAlignment="Center" Margin="0,0,0,0"/>
                     </DockPanel>
-                    <DockPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,120,-4">
+                    <DockPanel Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,4,0">
                         <TextBlock Text="Ref. Project#:" VerticalAlignment="Top" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
                         <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceProjectNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
                         <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                         <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceProjectRevNumber" Text="" Width="20" VerticalAlignment="Center"/>
-                        <TextBlock Text="Ref. Order#:" VerticalAlignment="Top" FontSize="12" Margin="8,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBlock Text="Ref. Order#:" VerticalAlignment="Top" FontSize="12" Margin="20,0,0,0" Style="{StaticResource NormalTextBlock}"/>
                         <TextBox Style="{StaticResource TextBox}" x:Name="RefOrderNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right" MaxLength="6"/>
                     </DockPanel>
-                    <DockPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120,0,0,-4">
-                        <TextBlock Text="Ref. Quote#:" VerticalAlignment="Top" Margin="0,0,0,0" Style="{StaticResource NormalTextBlock}"/>
-                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
-                        <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
-                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteRevNumber" Text="" Width="20" VerticalAlignment="Center" Margin="0,0,16,0"/>
-                    </DockPanel>
+                    <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" VerticalAlignment="Center" BorderThickness="0.5"/>
+                    <Border Grid.Row="1" Grid.Column="3" BorderBrush="Black" VerticalAlignment="Center" BorderThickness="0.5"/>
                 </Grid>
                 <!-- Top Half -->
                 <Grid DockPanel.Dock="Top">
@@ -67,7 +77,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="115"/>
                     </Grid.ColumnDefinitions>
-                    <Border x:Name="ProjectNavigation" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0">
+                    <Border x:Name="ProjectNavigation" Visibility="Visible" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0">
                         <StackPanel x:Name="RoutingStackPanel">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0">
                                 <Border x:Name="SwitchProjectType" BorderBrush="Black" BorderThickness="2" Cursor="Hand" MouseUp="SwitchProjectRoutingType_MouseUp">
@@ -87,7 +97,7 @@
                         </StackPanel>
                     </Border>
                     <!-- One will be hidden ^ or v -->
-                    <Border x:Name="CreationBorder" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0">
+                    <Border x:Name="CreationBorder" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0">
                         <StackPanel>
                             <Button Style="{StaticResource Button}" x:Name="CreateButton" Content="Create" Click="CreateButton_Click"/>
                             <Button Style="{StaticResource Button}" x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
@@ -189,7 +199,7 @@
                                     <TextBox Style="{StaticResource TextBox}" x:Name="Attention" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="CustomerNumber_TextChanged"/>
                                 </Grid>
                                 <Border BorderBrush="Black" BorderThickness="0,2,0,2" Margin="-4,0,-4,0">
-                                    <Grid Height="158" Margin="0,0,0,0" ShowGridLines="False">
+                                    <Grid Height="176" Margin="0,0,0,0" ShowGridLines="False">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
@@ -281,7 +291,7 @@
                             </Border>
                         </Grid>
                     </StackPanel>
-                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Right">
+                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Right">
                         <DockPanel Width="{Binding ActualWidth, ElementName=RoutingStackPanel}">
                             <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
                             <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>

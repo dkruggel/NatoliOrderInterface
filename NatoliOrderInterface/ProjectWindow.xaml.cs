@@ -63,6 +63,7 @@ namespace NatoliOrderInterface
         private readonly string projectsDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
         public static string Units = "in";
         Quote quote = null;
+        
 
         public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, bool isCreating)
         {
@@ -806,7 +807,15 @@ namespace NatoliOrderInterface
                     EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
                     RefreshRoutingButtons();
-                    ArchivedOrInactive.Visibility = Visibility.Collapsed;
+                    if (!engineeringProject.ActiveProject)
+                    {
+                        ArchivedOrInactive.Text = "Inactive";
+                        ArchivedOrInactive.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        ArchivedOrInactive.Visibility = Visibility.Collapsed;
+                    }
 
                     projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
                     if (projectLinkedToQuote)
@@ -845,6 +854,15 @@ namespace NatoliOrderInterface
                     ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
                     ReturnToCSR.IsEnabled = false;
 
+                    RevisedBy.Text = engineeringProject.RevisedBy;
+                    RevisedBy.IsEnabled = false;
+                    if(_projectsContext.EngineeringArchivedProjects.Any(eap=> eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber)-1).ToString()))
+                    {
+                        DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
+                        date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
+                        RevisionDate.Text = date.ToString("d");
+                    }
+                    RevisionDate.IsEnabled = false;
 
                     QuoteNumber.Text = engineeringProject.QuoteNumber;
                     QuoteNumber.IsEnabled = false;
@@ -1225,6 +1243,8 @@ namespace NatoliOrderInterface
                     EngineeringArchivedProjects engineeringProject = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
                     RefreshRoutingButtons();
+
+                    ArchivedOrInactive.Text = "Archived";
                     ArchivedOrInactive.Visibility = Visibility.Visible;
 
                     projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
@@ -1264,6 +1284,15 @@ namespace NatoliOrderInterface
                     ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
                     ReturnToCSR.IsEnabled = false;
 
+                    RevisedBy.Text = engineeringProject.RevisedBy;
+                    RevisedBy.IsEnabled = false;
+                    if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
+                    {
+                        DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
+                        date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
+                        RevisionDate.Text = date.ToString("d");
+                    }
+                    RevisionDate.IsEnabled = false;
 
                     QuoteNumber.Text = engineeringProject.QuoteNumber;
                     QuoteNumber.IsEnabled = false;
@@ -3680,12 +3709,12 @@ namespace NatoliOrderInterface
                     }
                     #endregion
                 }
-            }
+        }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            _nat01Context.Dispose();
+    _nat01Context.Dispose();
             _necContext.Dispose();
         }
         /// <summary>
@@ -3697,6 +3726,7 @@ namespace NatoliOrderInterface
         {
             using var _projectsContext = new ProjectsContext();
             EngineeringProjects oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+            decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
             EngineeringProjects engineeringProject = new EngineeringProjects
             {
                 ProjectNumber = projectNumber,
@@ -3725,28 +3755,28 @@ namespace NatoliOrderInterface
                 MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
                 DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
                 DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
-                Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width : null,
-                Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length : null,
+                Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
+                Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
                 UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?) upperCupType : null,
                 UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper()=="NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length<6 ? new string('0',6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
                 UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
-                UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth : null,
-                UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand : null,
+                UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
+                UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
                 LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
                 LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
                 LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
-                LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth : null,
-                LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand : null,
+                LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
+                LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
                 ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
                 ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
                 ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
-                ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth : null,
-                ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand : null,
+                ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
+                ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
                 LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
                 LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
                 LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
-                LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth : null,
-                LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand : null,
+                LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
+                LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
                 UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
                 LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
                 ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
@@ -3949,113 +3979,126 @@ namespace NatoliOrderInterface
             using var _projectsContext = new ProjectsContext();
             try
             {
-                EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                if (engineeringProject.OnHold == true)
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    if (engineeringProject.OnHold == true)
+                    {
+                        StartButton.IsEnabled = false;
+                        FinishButton.IsEnabled = false;
+                        SubmitButton.IsEnabled = false;
+                        CheckButton.IsEnabled = false;
+                    }
+                    else
+                    {
+
+                        if (CurrentProjectType.Text == "TABLETS")
+                        {
+                            if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            {
+                                if (engineeringProject.TabletChecked)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                                else if (engineeringProject.TabletSubmitted)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = true;
+                                }
+                                else if (engineeringProject.TabletDrawn)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = true;
+                                    CheckButton.IsEnabled = true;
+                                }
+                                else if (engineeringProject.TabletStarted)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = true;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                                else
+                                {
+                                    StartButton.IsEnabled = true;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                            }
+                            else
+                            {
+                                StartButton.IsEnabled = false;
+                                FinishButton.IsEnabled = false;
+                                SubmitButton.IsEnabled = false;
+                                CheckButton.IsEnabled = false;
+                            }
+                        }
+                        else
+                        {
+                            if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            {
+                                if (engineeringProject.ToolChecked)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                                else if (engineeringProject.ToolSubmitted)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = true;
+                                }
+                                else if (engineeringProject.ToolDrawn)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = true;
+                                    CheckButton.IsEnabled = true;
+                                }
+                                else if (engineeringProject.ToolStarted)
+                                {
+                                    StartButton.IsEnabled = false;
+                                    FinishButton.IsEnabled = true;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                                else
+                                {
+                                    StartButton.IsEnabled = true;
+                                    FinishButton.IsEnabled = false;
+                                    SubmitButton.IsEnabled = false;
+                                    CheckButton.IsEnabled = false;
+                                }
+                            }
+                            else
+                            {
+                                StartButton.IsEnabled = false;
+                                FinishButton.IsEnabled = false;
+                                SubmitButton.IsEnabled = false;
+                                CheckButton.IsEnabled = false;
+                            }
+                        }
+                    }
+                }
+                else
                 {
                     StartButton.IsEnabled = false;
                     FinishButton.IsEnabled = false;
                     SubmitButton.IsEnabled = false;
                     CheckButton.IsEnabled = false;
-                }
-                else
-                {
-
-                    if (CurrentProjectType.Text == "TABLETS")
-                    {
-                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                        {
-                            if (engineeringProject.TabletChecked)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                            else if (engineeringProject.TabletSubmitted)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = true;
-                            }
-                            else if (engineeringProject.TabletDrawn)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = true;
-                                CheckButton.IsEnabled = true;
-                            }
-                            else if (engineeringProject.TabletStarted)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = true;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                            else
-                            {
-                                StartButton.IsEnabled = true;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                        }
-                        else
-                        {
-                            StartButton.IsEnabled = false;
-                            FinishButton.IsEnabled = false;
-                            SubmitButton.IsEnabled = false;
-                            CheckButton.IsEnabled = false;
-                        }
-                    }
-                    else
-                    {
-                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                        {
-                            if (engineeringProject.ToolChecked)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                            else if (engineeringProject.ToolSubmitted)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = true;
-                            }
-                            else if (engineeringProject.ToolDrawn)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = true;
-                                CheckButton.IsEnabled = true;
-                            }
-                            else if (engineeringProject.ToolStarted)
-                            {
-                                StartButton.IsEnabled = false;
-                                FinishButton.IsEnabled = true;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                            else
-                            {
-                                StartButton.IsEnabled = true;
-                                FinishButton.IsEnabled = false;
-                                SubmitButton.IsEnabled = false;
-                                CheckButton.IsEnabled = false;
-                            }
-                        }
-                        else
-                        {
-                            StartButton.IsEnabled = false;
-                            FinishButton.IsEnabled = false;
-                            SubmitButton.IsEnabled = false;
-                            CheckButton.IsEnabled = false;
-                        }
-                    }
+                    PutOnHoldButton.IsEnabled = false;
+                    CancelButton.IsEnabled = false;
+                    ReviseButton.IsEnabled = false;
                 }
             }
             catch (Exception ex)
@@ -4237,10 +4280,20 @@ namespace NatoliOrderInterface
         }
 
         #region Events
+        /// <summary>
+        /// Disposes the window after close
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProjectWindowXAML_Closed(object sender, EventArgs e)
         {
             Dispose();
         }
+        /// <summary>
+        /// Changes the units on the project from mm to in or vice-versa
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Units_MouseUp(object sender, MouseButtonEventArgs e)
         {
             bool isInch = (string)Resources["UnitsText"] == "mm";
@@ -4265,8 +4318,8 @@ namespace NatoliOrderInterface
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => textBox.Text = Math.Round(number * scalar, 6).ToString()));
                 }
             }
-
         }
+
         //private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         //{
         //    string url = e.Uri.ToString();
@@ -4295,6 +4348,7 @@ namespace NatoliOrderInterface
         //        }
         //    }
         //}
+
         /// <summary>
         /// Links or Unlinks the project from a quote.
         /// Calls to fill from quote if linking.
@@ -5632,6 +5686,13 @@ namespace NatoliOrderInterface
         #endregion
 
         #region Project Creation and Revision
+        /// <summary>
+        /// Creates new project in EngineeringProjects 
+        /// or commits the revision process by
+        /// updating the current Engineering Project, deleting it, adding the revised project to EngineeringProjects, then updating the EngineeringArchivedProject that was placed there by the trigger.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             if (FormCheck())
@@ -5745,6 +5806,15 @@ namespace NatoliOrderInterface
                     _projectsContext.Remove(oldEngineeringProject);
                     _projectsContext.SaveChanges();
 
+                    if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    {
+                        EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+                        engineeringArchivedProject.ArchivedFromRevision = true;
+                        _projectsContext.Update(engineeringArchivedProject);
+                        _projectsContext.SaveChanges();
+                    }
+
                     MainWindow.SendEmail(to, null, new List<string> { "Tyler" }, subject, body, null, System.Net.Mail.MailPriority.High);
                     _projectsContext.Dispose();
                     if (MessageBox.Show("Project Revised!\nWould you like to close now?", "Revise Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
@@ -5757,6 +5827,8 @@ namespace NatoliOrderInterface
                         CreationBorder.Visibility = Visibility.Hidden;
                         ProjectNavigation.Visibility = Visibility.Visible;
                         CreateButton.Content = "Create";
+                        RevisionDate.Text = DateTime.Now.ToString("d");
+                        RevisedBy.Text = user.GetDWPrincipalId();
                         AllControlsEnabledOrDisabled(false);
 
 
