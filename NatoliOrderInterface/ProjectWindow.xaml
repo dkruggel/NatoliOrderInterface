@@ -1,0 +1,1272 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Name="ProjectWindowXAML" x:Class="NatoliOrderInterface.ProjectWindow"
+        mc:Ignorable="d"
+        Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed">
+    <Window.Resources>
+        <System:String x:Key="UnitsText">in</System:String>
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="False">
+        <Grid>
+            <DockPanel>
+                <!-- Link Quote Header  -->
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="266"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Center" Margin="0,6" HorizontalAlignment="Stretch"/>
+                    <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" BorderBrush="Black" BorderThickness="2,0,2,2" CornerRadius="0,0,4,4">
+                        <DockPanel Height="24" VerticalAlignment="Stretch" LastChildFill="True" HorizontalAlignment="Stretch" Margin="2,6">
+                            <TextBlock x:Name="Quote_WO_Label"  Text="Quote#:" Width="43" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                            <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="Dash" Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                            <TextBox Style="{StaticResource TextBox}" x:Name="QuoteRevNumber"  Text="" Width="20" VerticalAlignment="Center"/>
+                            <Button Style="{StaticResource Button}" x:Name="LinkQuoteButton" Content="Link To Quote" Grid.Column="0" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
+                        </DockPanel>
+                    </Border>
+                    <Border Grid.Column="2" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Center" Margin="0,6" HorizontalAlignment="Stretch"/>
+                    <DockPanel Grid.Column="0" HorizontalAlignment="Left" Margin="10,0,0,0">
+                        <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Top" FontWeight="Bold" Style="{StaticResource BoldTextBlock}"/>
+                        <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Top" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Top" Margin="20,0,0,0" Style="{StaticResource BoldTextBlock}"/>
+                        <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Top" Margin="4,-5,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="3" HorizontalAlignment="Center">
+                        <TextBlock Text="Unit Of Measure:" FontSize="12" VerticalAlignment="Top" Style="{StaticResource BoldTextBlock}"/>
+                        <ComboBox x:Name="UnitOfMeasure" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" Width="60" VerticalAlignment="Top" Margin="4,-5,0,0" BorderThickness="0" Background="Transparent" Padding="6,1,5,1">
+                            <ComboBoxItem Content="IN" IsSelected="True"/>
+                            <ComboBoxItem Content="MM"/>
+                            <ComboBoxItem Content="DUAL" />
+                        </ComboBox>
+                    </DockPanel>
+                    <DockPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,120,-4">
+                        <TextBlock Text="Ref. Project#:" VerticalAlignment="Top" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceProjectNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceProjectRevNumber" Text="" Width="20" VerticalAlignment="Center"/>
+                        <TextBlock Text="Ref. Order#:" VerticalAlignment="Top" FontSize="12" Margin="8,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="RefOrderNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right" MaxLength="6"/>
+                    </DockPanel>
+                    <DockPanel Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120,0,0,-4">
+                        <TextBlock Text="Ref. Quote#:" VerticalAlignment="Top" Margin="0,0,0,0" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteRevNumber" Text="" Width="20" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    </DockPanel>
+                </Grid>
+                <!-- Top Half -->
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="115"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="115"/>
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="ProjectNavigation" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0">
+                        <StackPanel x:Name="RoutingStackPanel">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0">
+                                <Border x:Name="SwitchProjectType" BorderBrush="Black" BorderThickness="2" Cursor="Hand" MouseUp="SwitchProjectRoutingType_MouseUp">
+                                    <DockPanel Margin="4,0" LastChildFill="False">
+                                        <Image Height="20" Source="/Switch_Logo.PNG" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="CurrentProjectType" Text="TABLETS" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16" Style="{StaticResource BoldTextBlock}" Padding="0,0,0,2"/>
+                                    </DockPanel>
+                                </Border>
+                            </Grid>
+                            <Button Style="{StaticResource Button}" x:Name="StartButton" Content="Start" Click="StartButton_Click" IsEnabled="True"/>
+                            <Button Style="{StaticResource Button}" x:Name="FinishButton" Content="Finish" Click="FinishButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="SubmitButton" Content="Submit" Click="SubmitButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="CheckButton" Content="Check" Click="CheckButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="PutOnHoldButton" Content="Put On Hold" Click="PutOnHoldButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="ReviseButton" Content="Revise" Click="ReviseButton_Click"/>
+                        </StackPanel>
+                    </Border>
+                    <!-- One will be hidden ^ or v -->
+                    <Border x:Name="CreationBorder" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0">
+                        <StackPanel>
+                            <Button Style="{StaticResource Button}" x:Name="CreateButton" Content="Create" Click="CreateButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
+                            <Button Style="{StaticResource Button}" x:Name="CancelCreateButton" Content="Cancel" Click="CancelCreateButton_Click"/>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                        <Grid Margin="0,10" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="4,0" Grid.Column="0" VerticalAlignment="Top">
+                                <TextBlock Text="CUSTOMER" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,1" Margin="0,-4,0,0">
+                                    <Grid Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="54"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="24"/>
+                                            <RowDefinition Height="24"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="CustomerNumber" Text="" Width="60" VerticalAlignment="Center" HorizontalAlignment="Left"  Grid.Row="0" Grid.Column="1" TextChanged="CustomerNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                        <TextBlock Text="Name:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="CustomerName" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Margin="4,0" Grid.Column="1" VerticalAlignment="Top" >
+                                <TextBlock Text="SHIP TO" FontWeight="Bold" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,1" Margin="0,-4,0,0">
+                                    <Grid Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="54"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="24"/>
+                                            <RowDefinition Height="24"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel HorizontalAlignment="Left"  Grid.Row="0" Grid.Column="1">
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="ShipToNumber" Text="" Width="60" VerticalAlignment="Center"  TextChanged="CustomerNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                            <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="ShipToLocNumber" Text="" Width="20" VerticalAlignment="Center"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Name:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="ShipToName" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Margin="4,0" Grid.Column="2" VerticalAlignment="Top">
+                                <TextBlock Text="END USER" FontWeight="Bold" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,1" Margin="0,-4,0,0">
+                                    <Grid Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="54"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="24"/>
+                                            <RowDefinition Height="24"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel HorizontalAlignment="Left"  Grid.Row="0" Grid.Column="1">
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="EndUserNumber" Text="" Width="60" VerticalAlignment="Center"  TextChanged="CustomerNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                            <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="EndUserLocNumber" Text="" Width="20" VerticalAlignment="Center"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Name:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="EndUserName" Text="" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Margin="0,0" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="10*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="4,0" Grid.Column="0" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="54"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="32"/>
+                                        <RowDefinition Height="32"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Product:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                    <TextBox Style="{StaticResource TextBox}" x:Name="Product" Text="" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="0" Grid.Column="1" TextChanged="CustomerNumber_TextChanged"/>
+                                    <TextBlock Text="Attention:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"  Style="{StaticResource NormalTextBlock}"/>
+                                    <TextBox Style="{StaticResource TextBox}" x:Name="Attention" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="CustomerNumber_TextChanged"/>
+                                </Grid>
+                                <Border BorderBrush="Black" BorderThickness="0,2,0,2" Margin="-4,0,-4,0">
+                                    <Grid Height="158" Margin="0,0,0,0" ShowGridLines="False">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.ColumnSpan="3" Visibility="Collapsed">
+                                            <Viewbox HorizontalAlignment="Center">
+                                                <TextBlock x:Name="ArchivedOrInactive" TextWrapping="Wrap" Text="ARCHIVED" Opacity=".2" Foreground="Red"/>
+                                            </Viewbox>
+                                        </Grid>
+                                        <Border Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="0,0,0,2">
+                                            <StackPanel VerticalAlignment="Center" >
+                                                <TextBlock Text="DUE DATE" Style="{StaticResource NormalTextBlock}" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center"/>
+                                                <ComboBox x:Name="DueDate" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" HorizontalContentAlignment="Center" Margin="30,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border BorderBrush="Black" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,2,0" Margin="0,0,0,0">
+                                            <CheckBox x:Name="Priority"  VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="False" VerticalContentAlignment="Center">
+                                                <TextBlock Text="PRIORITY" Style="{StaticResource PriorityTextBlock}" TextAlignment="Left"/>
+                                            </CheckBox>
+                                        </Border>
+                                        <Border BorderBrush="Black" Grid.Column="1" Grid.Row="1" BorderThickness="0,0,2,0" Margin="0,0,0,0">
+                                            <CheckBox x:Name="TabletsRequired" VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="False" Margin="6,0,0,0" VerticalContentAlignment="Center" Click="TabletsRequired_Click">
+                                                <TextBlock Text="TABLETS" Style="{StaticResource TabletsTextBlock}" TextAlignment="Left"/>
+                                            </CheckBox>
+                                        </Border>
+                                        <Grid VerticalAlignment="Center" Grid.Column="2" Grid.Row="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition Height="8"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox DockPanel.Dock="Top" Grid.Row="0" Grid.Column="1" x:Name="ToolsRequired" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="False" VerticalContentAlignment="Center" Click="ToolsRequired_Click">
+                                                <TextBlock Text="TOOLS" Style="{StaticResource ToolsTextBlock}" TextAlignment="Left" />
+                                            </CheckBox>
+                                            <CheckBox DockPanel.Dock="Top" Grid.Row="2" Grid.Column="1" x:Name="MultiTipSketch" VerticalAlignment="Center" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Click="MultiTipSketch_Click">
+                                                <TextBlock Text="M-TIP SKETCH" Style="{StaticResource MultiTipSketchTextBlock}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2,2,0,2" CornerRadius="3,0,0,0">
+                                <DockPanel Margin="4,0">
+                                    <Grid DockPanel.Dock="Top" Height="74">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="85"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Machine No:" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="MachineNumber" Text="" TextWrapping="WrapWithOverflow" VerticalAlignment="Bottom" Grid.Column="1" Margin="0,0,10,0" TextChanged="MachineNumber_TextChanged"/>
+                                        <TextBlock Text="Die Size:" VerticalAlignment="Center" Grid.Column="2" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBlock x:Name="DieODPlaceholder" Text="O.D. in." VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.Column="3" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="DieOD" Text="" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Column="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="X" Grid.Column="4" VerticalAlignment="Bottom" HorizontalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBlock x:Name="DieOLPlaceholder" Text="O.L. in." VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.Column="5" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="DieOL" Text="" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Grid.Column="5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Machine Desc:" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="MachineDescription" Text="" TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.ColumnSpan="5" Grid.Row="1" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid DockPanel.Dock="Top">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="20"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Margin="-4,0" Grid.Row="0" CornerRadius="0" BorderThickness="0,2,0,0" BorderBrush="Black" Height="20">
+                                            <TextBlock Text="NOTES" HorizontalAlignment="Center" Style="{StaticResource BoldTextBlock}"/>
+                                        </Border>
+                                        <TextBox x:Name="Notes" Grid.Row="1" Style="{StaticResource TextBox}" Foreground="{StaticResource ForeGround.StandardBrush}" VerticalContentAlignment="Top" VerticalAlignment="Top" Height="138" BorderThickness=".5" Margin="-2,0,-2,0" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                                    </Grid>
+                                </DockPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-20,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Right">
+                        <DockPanel Width="{Binding ActualWidth, ElementName=RoutingStackPanel}">
+                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
+                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>
+                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="SpecificationsButton" Content="Specifications" Click="SpecificationsButton_Click"/>
+                            <Border DockPanel.Dock="Bottom" BorderThickness="0,2,0,0" BorderBrush="Black" x:Name="AttachFilesBorder" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop">
+                                <DockPanel VerticalAlignment="Center">
+                                    <Image DockPanel.Dock="Bottom" Margin="4,0,4,0" Source="attach_file.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                    <TextBlock DockPanel.Dock="Bottom" Text="ATTACH FILES" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,0,0,30" Style="{StaticResource BoldTextBlock}"/>
+                                    <!--<TextBlock Margin="0,20,0,0" FontSize="10" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource NormalTextBlock}" Visibility="Collapsed"><Run Text="Icon made by "/><Hyperlink NavigateUri="https://www.freepik.com/home" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Freepik"/></Hyperlink><Run Text=" from "/><Hyperlink NavigateUri="http://www.flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="www.flaticon.com"/></Hyperlink></TextBlock>-->
+                                </DockPanel>
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+                <!-- Hob & Die Description -->
+                <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="Black" Grid.Column="0" BorderThickness="0,0,1,0">
+                            <StackPanel Margin="4,0" Grid.Column="0" VerticalAlignment="Top">
+                                <TextBlock Text="DIE" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
+                                    <Grid Margin="0,4,0,6" Height="{Binding ActualHeight, ElementName=UpperHobGrid}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Die Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="DieNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="0" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                        <TextBlock x:Name="DieShapePlaceHolder" Text="Choose Tablet Shape" Margin="4,0,0,0" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Center" Foreground="LightGray" IsEnabled="False"/>
+                                        <ComboBox x:Name="DieShape"  Style="{StaticResource ComboBoxAlignsLeft}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Width:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="2" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" Margin="0,0,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="TabletWidth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Length:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="3" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" Margin="0,0,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="TabletLength" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Tolerance:" VerticalAlignment="Bottom" Margin="0,0,0,5" Grid.Row="4" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="DieTolerances" Style="{StaticResource ComboBoxAlignsLeft}" VerticalAlignment="Bottom" Margin="0,0,0,0.5" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.Column="1">
+                                            <System:String>NATOLI</System:String>
+                                            <System:String>H7</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="Black" Grid.Column="1" BorderThickness="0,0,1,0">
+                            <StackPanel Margin="4,0" Grid.Column="1" VerticalAlignment="Top">
+                                <TextBlock Text="UPPER" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
+                                    <Grid x:Name="UpperHobGrid" Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Cup Type:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="UpperCupType" Style="{StaticResource ComboBoxAlignsLeft}" IsEditable="False" Grid.Row="0" Grid.Column="1" Margin="0,4,0,0"/>
+                                        <TextBlock Text="Hob Number:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="UpperHobNumber" Grid.Row="1" Grid.Column="1" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right" DockPanel.Dock="Right"/>
+                                        <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="2" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="UpperCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="3" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="UpperLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock x:Name="UpperHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="UpperHobDescription" Text="" Margin="0,4,0,0" Height="60" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="1,1,1,1" TextWrapping="Wrap" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="UpperTolerances" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="5" Grid.Column="1" Margin="0,4,0,0" SelectionChanged="PunchTolerance_SelectionChanged">
+                                            <System:String>NATOLI</System:String>
+                                            <System:String>f7</System:String>
+                                            <System:String>g6</System:String>
+                                            <System:String>e6</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="Black" Grid.Column="2" BorderThickness="0,0,1,0">
+                            <StackPanel Margin="4,0" Grid.Column="2" VerticalAlignment="Top">
+                                <TextBlock Text="LOWER" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
+                                    <Grid x:Name="LowerHobGrid" Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Cup Type:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="LowerCupType" Style="{StaticResource ComboBoxAlignsLeft}" IsEditable="False" Grid.Row="0" Grid.Column="1" Margin="0,4,0,0"/>
+                                        <TextBlock Text="Hob Number:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="LowerHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                        <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="2" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="LowerCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="3" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="LowerLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock x:Name="LowerHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="LowerHobDescription" Text="" Margin="0,4,0,0" Height="60" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="1,1,1,1" TextWrapping="Wrap" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="LowerTolerances" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="5" Grid.Column="1" Margin="0,4,0,0" SelectionChanged="PunchTolerance_SelectionChanged">
+                                            <System:String>NATOLI</System:String>
+                                            <System:String>f7</System:String>
+                                            <System:String>g6</System:String>
+                                            <System:String>e6</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="Black" Grid.Column="3" BorderThickness="0,0,1,0">
+                            <StackPanel Margin="4,0" Grid.Column="3" VerticalAlignment="Top">
+                                <TextBlock Text="SHORT REJECT" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
+                                    <Grid x:Name="ShortRejectHobGrid" Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Cup Type:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="ShortRejectCupType" Style="{StaticResource ComboBoxAlignsLeft}" IsEditable="False" Grid.Row="0" Grid.Column="1" Margin="0,4,0,0"/>
+                                        <TextBlock Text="Hob Number:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                        <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="2" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="3" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock x:Name="ShortRejectHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectHobDescription" Text="" Margin="0,4,0,0" Height="60" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="1,1,1,1" TextWrapping="Wrap" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="ShortRejectTolerances" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="5" Grid.Column="1" Margin="0,4,0,0" SelectionChanged="PunchTolerance_SelectionChanged">
+                                            <System:String>NATOLI</System:String>
+                                            <System:String>f7</System:String>
+                                            <System:String>g6</System:String>
+                                            <System:String>e6</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="Black" Grid.Column="4" BorderThickness="0,0,0,0">
+                            <StackPanel Margin="4,0" Grid.Column="4" VerticalAlignment="Top">
+                                <TextBlock Text="LONG REJECT" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
+                                    <Grid x:Name="LongRejectHobGrid" Margin="0,4,0,6">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Cup Type:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="LongRejectCupType" Style="{StaticResource ComboBoxAlignsLeft}" IsEditable="False" Grid.Row="0" Grid.Column="1" Margin="0,4,0,0"/>
+                                        <TextBlock Text="Hob Number:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
+                                        <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="2" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <DockPanel Grid.Row="3" Grid.Column="1" >
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+                                        </DockPanel>
+                                        <TextBlock x:Name="LongRejectHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectHobDescription" Text="" Margin="0,4,0,0" Height="60" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="1,1,1,1" TextWrapping="Wrap" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <TextBlock Text="Tolerance:" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                        <ComboBox x:Name="LongRejectTolerances" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="5" Grid.Column="1" Margin="0,4,0,0" SelectionChanged="PunchTolerance_SelectionChanged">
+                                            <System:String>NATOLI</System:String>
+                                            <System:String>f7</System:String>
+                                            <System:String>g6</System:String>
+                                            <System:String>e6</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+                <!-- Tabs -->
+                <TabControl x:Name="TabletAndToolsTabControl" DockPanel.Dock="Top" Background="{StaticResource BackgroundBrush}">
+                    <TabItem Style="{StaticResource TabItem}" x:Name="TabletsTabItem" Header="TABLETS" Padding="8,4,8,4" Background="Gray" IsEnabled="{Binding IsChecked, ElementName=TabletsRequired}">
+                        <Grid Visibility="{Binding Visibility, ElementName=TabletsTabItem}" IsEnabled="{Binding IsEnabled, ElementName=TabletsTabItem}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="20*"/>
+                                <ColumnDefinition Width="20*"/>
+                            </Grid.ColumnDefinitions>
+                            <DockPanel>
+                                <Border DockPanel.Dock="Top" BorderBrush="Black" Margin="-2,-2,0,-2" BorderThickness="0,0,2,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6" Grid.Column="0">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="22"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                            <TextBlock  Text="DRAWINGS REQUIRED" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                        </Border>
+                                        <CheckBox x:Name="UpperTabletDrawing" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="Upper" Style="{StaticResource NormalTextBlock}"/>
+                                        </CheckBox >
+                                        <CheckBox x:Name="LowerTabletDrawing" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="Lower" Style="{StaticResource NormalTextBlock}"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ShortRejectTabletDrawing" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="Short Reject" Style="{StaticResource NormalTextBlock}"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="LongRejectTabletDrawing" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="Long Reject" Style="{StaticResource NormalTextBlock}"/>
+                                        </CheckBox>
+                                    </Grid>
+                                </Border>
+                            </DockPanel>
+                            <DockPanel Grid.Column="1">
+                                <Border DockPanel.Dock="Top" BorderBrush="Black" Margin="0,-2,0,-2" BorderThickness="0,0,2,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="78"/>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="60"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="22"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black" Grid.ColumnSpan="3">
+                                            <TextBlock  Text="TABLET SIZE" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                        </Border>
+                                        <TextBlock Text="Density:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="Density" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right"/>
+                                        <ComboBox x:Name="DensityUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="1" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
+                                            <System:String>sys:String.Empty</System:String>
+                                            <System:String>mg/mm³</System:String>
+                                            <System:String>mg/in³</System:String>
+                                        </ComboBox>
+                                        <TextBlock Text="Mass:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="Mass" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="2" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
+                                        <ComboBox x:Name="MassUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="2" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
+                                            <System:String>sys:String.Empty</System:String>
+                                            <System:String>mg</System:String>
+                                            <System:String>g</System:String>
+                                        </ComboBox>
+                                        <TextBlock Text="Volume:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="Volume" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="3" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
+                                        <ComboBox x:Name="VolumeUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="3" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
+                                            <System:String>sys:String.Empty</System:String>
+                                            <System:String>mm³</System:String>
+                                            <System:String>in³</System:String>
+                                        </ComboBox>
+                                        <TextBlock Text="Thickness:" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
+                                        <TextBox Style="{StaticResource TextBox}" x:Name="TargetThickness" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
+                                        <ComboBox x:Name="TargetThicknessUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="4" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
+                                            <System:String>sys:String.Empty</System:String>
+                                            <System:String>mm</System:String>
+                                            <System:String>in</System:String>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+                            </DockPanel>
+                            <DockPanel Grid.Column="2">
+                                <Border DockPanel.Dock="Top" BorderBrush="Black" Margin="-2,-2,0,-2" BorderThickness="0,0,0,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6" Grid.Column="0">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="22"/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                            <TextBlock Text="MISC" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                        </Border>
+                                        <CheckBox x:Name="FilmCoat" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="Film Coated" Style="{StaticResource NormalTextBlock}"/>
+                                        </CheckBox >
+                                        <CheckBox x:Name="PrePick" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="65"/>
+                                                    <ColumnDefinition Width="40*"/>
+                                                    <ColumnDefinition Width="50*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Pre-Pick" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                                <TextBox Style="{StaticResource TextBox}" x:Name="PrePickAmount" Grid.Column="1" HorizontalContentAlignment="Right" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
+                                                <ComboBox x:Name="PrePickUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Left">
+                                                    <System:String>sys:String.Empty</System:String>
+                                                    <System:String>%</System:String>
+                                                    <System:String>mm</System:String>
+                                                    <System:String>in</System:String>
+                                                </ComboBox>
+                                            </Grid>
+                                        </CheckBox>
+                                        <CheckBox x:Name="Taper" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="65"/>
+                                                    <ColumnDefinition Width="40*"/>
+                                                    <ColumnDefinition Width="50*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Taper:" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
+                                                <TextBox Style="{StaticResource TextBox}" x:Name="TaperAmount" Grid.Column="1" HorizontalContentAlignment="Right" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
+                                                <ComboBox x:Name="TaperUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False">
+                                                    <System:String>sys:String.Empty</System:String>
+                                                    <System:String>%</System:String>
+                                                    <System:String>mm</System:String>
+                                                    <System:String>in</System:String>
+                                                </ComboBox>
+                                            </Grid>
+                                        </CheckBox>
+                                    </Grid>
+                                </Border>
+                            </DockPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Style="{StaticResource TabItem}" x:Name="ToolsTabItem" Header="TOOLS" Padding="8,4,8,4" Background="Gray" IsEnabled="{Binding IsChecked, ElementName=ToolsRequired}">
+                        <DockPanel Visibility="{Binding Visibility, ElementName=ToolsTabItem}" IsEnabled="{Binding IsEnabled, ElementName=ToolsTabItem}" LastChildFill="True">
+                            <Grid DockPanel.Dock="Top" Margin="0,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="24"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.ColumnSpan="5" Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                    <TextBlock  Text="DRAWINGS REQUIRED" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                </Border>
+                                <DockPanel Grid.Row="1" Grid.Column="0">
+                                    <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,2,0" VerticalAlignment="Stretch" Padding="6" Margin="0,0,0,-2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox x:Name="UpperPunch" Grid.Row="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="U Punch" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperPunchSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="UpperAssembly" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <TextBlock Text="U Assembly" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="UpperCap" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="U Cap" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperCapSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="UpperHolder" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="U Holder" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperHolderSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="UpperHead" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="U Head" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperHeadSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="UpperTip" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="U Tip" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperTipSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="Alignment" Grid.Row="6" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Alignment" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="AlignmentSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="1" Grid.Column="1">
+                                    <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,2,0" VerticalAlignment="Stretch" Padding="6" Margin="0,0,0,-2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox x:Name="LowerPunch" Grid.Row="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="L Punch" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerPunchSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LowerAssembly" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <TextBlock Text="L Assembly" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LowerCap" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="L Cap" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerCapSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LowerHolder" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="L Holder" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerHolderSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LowerHead" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="L Head" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerHeadSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LowerTip" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="L Tip" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerTipSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="Key" Grid.Row="6" Grid.Column="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Key" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="KeySteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="1" Grid.Column="2">
+                                    <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,2,0" VerticalAlignment="Stretch" Padding="6" Margin="0,0,0,-2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox x:Name="ShortRejectPunch" Grid.Row="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="SR Punch" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="ShortRejectPunchSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectAssembly" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <TextBlock Text="SR Assembly" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectCap" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="SR Cap" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="ShortRejectCapSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectHolder" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="SR Holder" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="ShortRejectHolderSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectHead" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="SR Head" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="ShortRejectHeadSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectTip" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="SR Tip" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="ShortRejectTipSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="Misc" Grid.Row="6" Grid.Column="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Misc" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="MiscSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="1" Grid.Column="3">
+                                    <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,2,0" VerticalAlignment="Stretch" Padding="6" Margin="0,0,0,-2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox x:Name="LongRejectPunch" Grid.Row="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="LR Punch" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LongRejectPunchSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectAssembly" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Left" Text="LR Assembly" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                    </DockPanel>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectCap" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="LR Cap" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LongRejectCapSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectHolder" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="LR Holder" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LongRejectHolderSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectHead" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="LR Head" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LongRejectHeadSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectTip" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="LR Tip" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LongRejectTipSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <Button Grid.Row="6" Margin="4" Style="{StaticResource Button}" x:Name="CoreRodButton"  DockPanel.Dock="Left" HorizontalAlignment="Stretch" Content="Core Rod" MinWidth="80" Click="CoreRodButton_Click"/>
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
+                                <DockPanel Grid.Row="1" Grid.Column="4">
+                                    <Border DockPanel.Dock="Top" BorderBrush="Transparent" BorderThickness="0,0,2,0" VerticalAlignment="Stretch" Padding="6" Margin="0,0,0,-2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <CheckBox x:Name="Die" Grid.Row="0" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Die" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DieSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DieAssembly" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <TextBlock Text="D Assembly" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DieComponent" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="D Component" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DieComponentSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DieHolder" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="D Holder" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DieHolderSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DieInsert" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="D Insert" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DieInsertSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DiePlate" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="D Plate" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DiePlateSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                            <CheckBox x:Name="DieSegment" Grid.Row="6" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="D Segment" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="DieSegmentSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+                                                </Grid>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Border>
+                                </DockPanel>
+                            </Grid>
+                            <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,2,0,0" Margin="-2,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20*"/>
+                                        <ColumnDefinition Width="30*"/>
+                                        <ColumnDefinition Width="20*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border BorderBrush="Black" Margin="-2,-2,0,-2" BorderThickness="0,0,2,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6" Grid.Column="0">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="22"/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                                <TextBlock  Text="KEYS" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                            </Border>
+                                            <DockPanel Grid.Row="1">
+                                                <TextBlock Text="Key Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                <ComboBox x:Name="KeyType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center">
+                                                    <System:String>sys:String.Empty</System:String>
+                                                    <System:String>Fixed Parallel Key 1 Slot</System:String>
+                                                    <System:String>Fixed Parallel Key 2 Slots</System:String>
+                                                    <System:String>Woodruff Key 1 Slot</System:String>
+                                                    <System:String>Woodruff Key 2 Slots</System:String>
+                                                    <System:String>Woodruff Key W/ Screw 1 Slot</System:String>
+                                                    <System:String>Woodruff Key W/ Screw 2 Slots</System:String>
+                                                    <System:String>Key Fixed W/ 2 screws</System:String>
+                                                    <System:String>Extra Long FPK</System:String>
+                                                    <System:String>Key In Head</System:String>
+                                                </ComboBox>
+                                            </DockPanel>
+                                            <DockPanel Grid.Row="2">
+                                                <TextBlock Text="Key Angle:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                <ComboBox x:Name="KeyOrientation" Style="{StaticResource ComboBoxAlignsLeft}" DockPanel.Dock="Right" Margin="0" IsEditable="False" Width="40" VerticalAlignment="Center">
+                                                    <System:String>sys:String.Empty</System:String>
+                                                    <System:String>CW</System:String>
+                                                    <System:String>CCW</System:String>
+                                                </ComboBox>
+                                                <TextBlock Text="°" Style="{StaticResource NormalTextBlock}"  Margin="0,0,4,0"  DockPanel.Dock="Right" VerticalAlignment="Center"/>
+                                                <TextBox x:Name="KeyAngle" Style="{StaticResource TextBox}" Text="" VerticalAlignment="Center" Margin="4,0,0,0" Height="{Binding ActualHeight, ElementName=KeyOrientation}"  HorizontalContentAlignment="Right"/>
+                                            </DockPanel>
+                                            <CheckBox x:Name="UpperKeyed" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Upper" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox >
+                                            <CheckBox x:Name="LowerKeyed" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Lower" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectKeyed" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Short Reject" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectKeyed" Grid.Row="6" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Long Reject" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Border>
+                                    <Border BorderBrush="Black" Margin="-2,-2,0,-2" BorderThickness="0,0,2,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6" Grid.Column="1">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="22"/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                                <TextBlock  Text="GROOVES" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                            </Border>
+                                            <Grid Grid.Row="1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <DockPanel Margin="0,0,3,0">
+                                                    <TextBlock Text="Upper Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="UpperGrooveType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center">
+                                                        <System:String>Dust Cup Groove</System:String>
+                                                        <System:String>Bellows Groove</System:String>
+                                                        <System:String>Combo Groove</System:String>
+                                                        <System:String>"O" Ring Groove</System:String>
+                                                        <System:String>Special Dust Cup Groove Courtoy</System:String>
+                                                        <System:String>Special Dust Cup Groove</System:String>
+                                                        <System:String>Special Bellows Groove Kilian</System:String>
+                                                        <System:String>Special Bellows Groove</System:String>
+                                                    </ComboBox>
+                                                </DockPanel>
+                                                <DockPanel Margin="3,0,0,0" Grid.Column="1">
+                                                    <TextBlock Text="Lower Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                    <ComboBox x:Name="LowerGrooveType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center">
+                                                        <System:String>Dust Cup Groove</System:String>
+                                                        <System:String>Bellows Groove</System:String>
+                                                        <System:String>Combo Groove</System:String>
+                                                        <System:String>"O" Ring Groove</System:String>
+                                                        <System:String>Special Dust Cup Groove Courtoy</System:String>
+                                                        <System:String>Special Dust Cup Groove</System:String>
+                                                        <System:String>Special Bellows Groove Kilian</System:String>
+                                                        <System:String>Special Bellows Groove</System:String>
+                                                    </ComboBox>
+                                                </DockPanel>
+                                            </Grid>
+
+                                            <CheckBox x:Name="UpperGroove" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Upper" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox >
+                                            <CheckBox x:Name="LowerGroove" Grid.Row="3" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Lower" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="ShortRejectGroove" Grid.Row="4" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Short Reject" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                            <CheckBox x:Name="LongRejectGroove" Grid.Row="5" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Long Reject" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox>
+                                        </Grid>
+                                    </Border>
+                                    <Border BorderBrush="Transparent" Margin="-2,-2,0,-2" BorderThickness="0,0,2,0" CornerRadius="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Padding="6" Grid.Column="2">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="22"/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
+                                                <TextBlock  Text="MISC" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
+                                            </Border>
+                                            <DockPanel Grid.Row="1">
+                                                <TextBlock Text="Head Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                                                <ComboBox x:Name="HeadType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center">
+                                                    <System:String>Standard Head</System:String>
+                                                    <System:String>TSM Domed Head</System:String>
+                                                    <System:String>Manesty Head</System:String>
+                                                    <System:String>European Head</System:String>
+                                                    <System:String>Fette European Head</System:String>
+                                                    <System:String>Korsch European Head</System:String>
+                                                    <System:String>Fette EU1-441 Head</System:String>
+                                                    <System:String>Special Head Configuration</System:String>
+                                                    <System:String>Kilian European Head</System:String>
+                                                    <System:String>Cam-Slot Head</System:String>
+                                                    <System:String>Fette EU28-441 Head</System:String>
+                                                    <System:String>Domed Head-Old Style</System:String>
+                                                    <System:String>Fette EU1-441/28 Head</System:String>
+                                                    <System:String>Fette EU1-441/28N Head</System:String>
+                                                    <System:String>Domed Head-Special</System:String>
+                                                    <System:String>Fette FS19 Head</System:String>
+                                                    <System:String>Fette Fs12 Head</System:String>
+                                                    <System:String>Natoli MDT-25 Head</System:String>
+                                                    <System:String>Natoli MDT-19 Head</System:String>
+                                                    <System:String>ISO European Head</System:String>
+                                                </ComboBox>
+                                            </DockPanel>
+                                            <CheckBox x:Name="CarbideTips" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" VerticalAlignment="Center">
+                                                <TextBlock Text="Carbide Tipped" Style="{StaticResource NormalTextBlock}"/>
+                                            </CheckBox >
+                                            <Border Grid.Row="3" Margin="-4,0,-8,0" BorderBrush="Black" BorderThickness="0,2,0,0">
+                                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="MACHINE NOTES" Style="{StaticResource BoldTextBlock}"/>
+                                            </Border>
+                                            <Grid Grid.Row="4" Grid.RowSpan="2">
+                                                <TextBox x:Name="MachineNotes" Style="{StaticResource TextBox}" Height="71" Margin="0,0,-4,0" Foreground="{StaticResource ForeGround.StandardBrush}" VerticalContentAlignment="Top" VerticalAlignment="Bottom" BorderThickness=".5" VerticalScrollBarVisibility="Auto" Text="" HorizontalAlignment="Stretch"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DockPanel>
+                    </TabItem>
+                    <TabItem Style="{StaticResource TabItem}" x:Name="MultiTipSketchTabItem" Header="MULTI-TIP" Padding="8,4,8,4" Background="Gray" IsEnabled="True">
+                        <DockPanel Visibility="{Binding Visibility, ElementName=MultiTipSketch}" IsEnabled="{Binding IsEnabled, ElementName=MultiTipSketchTabItem}" LastChildFill="False">
+                            <Grid DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="65"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource NormalTextBlock}" Text="Sketch ID:"/>
+                                <TextBox Style="{StaticResource TextBox}" x:Name="SketchID" Grid.Column="1"  HorizontalContentAlignment="Center" Margin="0,0,10,0" TextChanged="SketchID_TextChanged"/>
+                                <TextBlock x:Name="NumberOfTipsPlaceHolder" Text="# Tips" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray" IsEnabled="False" Margin="0,0,10,0"/>
+                                <TextBox Style="{StaticResource TextBox}" x:Name="NumberOfTips" Grid.Column="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
+                                <ComboBox x:Name="MultiTipStyle" Grid.Column="3" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}">
+                                    <System:String>sys:String.Empty</System:String>
+                                    <System:String>SOLID</System:String>
+                                    <System:String>ASSEMBLED</System:String>
+                                </ComboBox>
+                            </Grid>
+                            <Border x:Name="MultiTipSketchViewerBorder" Visibility="Collapsed" Height="1000" BorderBrush="{StaticResource Button.Background}" BorderThickness="4" Margin="4">
+                                <WebBrowser x:Name="MultiTipSketchViewer"/>
+                            </Border>
+                            
+
+                        </DockPanel>
+                    </TabItem>
+                </TabControl>
+            </DockPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

@@ -1,0 +1,69 @@
+﻿<Window x:Class="NatoliOrderInterface.CoreRodWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="Core Rod Specifications" Height="200" Width="750" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+    <Window.Resources>
+        <Style x:Key="CheckBoxColumn" TargetType="ColumnDefinition">
+            <Setter Property="Width" Value="150"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="46"/>
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource BoldTextBlock}" Text="LOWER CORE ROD SPECIFICATIONS" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+        <CheckBox x:Name="LowerCoreRod" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,10,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Style="{StaticResource CheckBoxColumn}"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Lower Core Rod" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="LowerCoreRodSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+            </Grid>
+        </CheckBox>
+        <CheckBox x:Name="LowerCoreRodKey" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,10,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Style="{StaticResource CheckBoxColumn}"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Lower Core Rod Key" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="LowerCoreRodKeySteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+            </Grid>
+        </CheckBox>
+        <CheckBox x:Name="LowerCoreRodKeyCollar" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Style="{StaticResource CheckBoxColumn}"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Lower Core Rod Key Collar" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="LowerCoreRodKeyCollarSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+            </Grid>
+        </CheckBox>
+        <CheckBox x:Name="LowerCoreRodPunch" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" Margin="0,4,0,4" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Style="{StaticResource CheckBoxColumn}"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Lower Core Rod Punch" Grid.Column="0" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                <ComboBox x:Name="LowerCoreRodPunchSteelID" Grid.Column="1" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="True" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}"/>
+            </Grid>
+        </CheckBox>
+        <Button Style="{StaticResource Button}" Width="100" Grid.Column="0" Grid.Row="3" x:Name="DoneButton" Content="Done" IsDefault="True" Click="DoneButton_Click"/>
+        <Button Style="{StaticResource Button}" Width="100" Grid.Column="1" Grid.Row="3" x:Name="CancelButton" Content="Cancel" IsDefault="False" Click="CancelButton_Click"/>
+    </Grid>
+</Window>

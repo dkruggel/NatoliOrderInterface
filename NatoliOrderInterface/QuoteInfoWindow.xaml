@@ -1,0 +1,669 @@
+﻿<Window x:Class="NatoliOrderInterface.QuoteInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        xmlns:con="http://schemas.kent.boogaart.com/converters"
+        mc:Ignorable="d"
+        x:Name="Quote_Info_Window"
+        Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855">
+    <Window.Background>
+        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
+    </Window.Background>
+    <Grid x:Name="MasterGrid" SizeChanged="MasterGrid_SizeChanged" HorizontalAlignment="Center">
+        <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
+            <TabItem x:Name="QuoteTabItem" Header="Quote" Height="22">
+                <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" Background="WhiteSmoke" Margin="-10,0,0,0">
+                    <Border x:Name="ButtonBorder1" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                        <Grid Margin="0,2,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="QuoteFolderButton1" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                            <Button x:Name="ChecklistButton1" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                            <Button x:Name="OrderEntryChecklistButton1" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                            <Button x:Name="OrderFolderButton1" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                            <Button x:Name="SubmitButton1" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                            <Button x:Name="RecallButton1" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                        </Grid>
+                    </Border>
+                    <Expander x:Name="QuoteTopHeaderExpander" IsExpanded="True" Collapsed="QuoteTopHeaderExpander_Collapsed" Expanded="QuoteTopHeaderExpander_Expanded" Width="835" HorizontalAlignment="Left" Background="White">
+                        <Expander.Header>
+                            <TextBlock x:Name="QuoteTopHeaderExpanderHeader" Text="178060 Rev. 0" FontWeight="Bold" FontFamily="Arial" FontSize="14"/>
+                        </Expander.Header>
+                        <Grid x:Name="QuoteTopHeaderGrid" Height="450">
+                            <Image x:Name="NatoliLogo" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Source="Natoli_Logo.gif" Height="72" Width="102"/>
+                            <TextBlock Text="NATOLI ENGINEERING COMPANY, INC." HorizontalAlignment="Center" Margin="0,8,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="24" FontFamily="Arial"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="727,10,0,0" TextWrapping="Wrap" Text="Date:" VerticalAlignment="Top"/>
+                            <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="754,10,0,0" TextWrapping="Wrap" Text="08/28/19" VerticalAlignment="Top"/>
+                            <TextBlock HorizontalAlignment="Center" Margin="0,40,0,0" TextWrapping="Wrap" Text="28 RESEARCH PARK CIRCLE     ST. CHARLES, MISSOURI 63304" VerticalAlignment="Top" FontWeight="Bold" FontSize="14" FontFamily="Arial"/>
+                            <TextBlock HorizontalAlignment="Center" Margin="0,62,0,0" TextWrapping="Wrap" Text="PHONE: 636-926-8900    FAX: 636-926-8910" VerticalAlignment="Top" FontWeight="Bold" FontSize="14" FontFamily="Arial"/>
+                            <TextBlock x:Name="QuoteNo" Text="QUOTE#: 178060" HorizontalAlignment="Left" Margin="683,66,0,0" VerticalAlignment="Top" Width="144" FontWeight="Bold" FontSize="16" FontFamily="Arial"/>
+                            <TextBlock x:Name="RevisionNo" Text="REV#: 0" HorizontalAlignment="Right" Margin="0,90,0,0" VerticalAlignment="Top" Width="114" FontWeight="Bold" FontSize="16" FontFamily="Arial"/>
+                            <TextBlock x:Name="Attention" HorizontalAlignment="Left" Margin="10,90,0,0" TextWrapping="Wrap" Text="ATTN:   JEFF CURRINGTON" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock x:Name="CustEmail" HorizontalAlignment="Left" Margin="311,90,0,0" TextWrapping="Wrap" Text="EMail: jc@uniwelllabs.com" VerticalAlignment="Top" FontWeight="Bold" FontSize="16" FontFamily="Arial"/>
+                            <!-- <TextBlock x:Name="BillToNo" HorizontalAlignment="Left" Margin="10,130,0,0" TextWrapping="Wrap" Text="Bill To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
+                            <Button x:Name="BillToButton" HorizontalAlignment="Left" Margin="10,130,0,0" Content="Bill To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="BillToButton_Click"/>
+                            <StackPanel x:Name="BillToAddress" HorizontalAlignment="Left" Margin="55,152,0,0" VerticalAlignment="Top" Width="350"></StackPanel>
+                            <!-- <TextBlock x:Name="ShipToNo" HorizontalAlignment="Left" Margin="410,130,0,0" TextWrapping="Wrap" Text="Ship To: 1908273 - 01" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
+                            <Button x:Name="ShipToButton" HorizontalAlignment="Left" Margin="410,130,0,0" Content="Ship To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="ShipToButton_Click"/>
+                            <StackPanel x:Name="ShipToAddress" HorizontalAlignment="Left" Margin="470,152,0,0" Width="350" VerticalAlignment="Top"></StackPanel>
+                            <TextBlock HorizontalAlignment="Left" Margin="10,270,0,0" Text="User:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="10,290,0,0" Text="Product:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="10,310,0,0" Text="Reference:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="10,330,0,0" Text="Payment Terms:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="10,350,0,0" Text="Mfg. Time:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="472,290,0,0" Text="Expected Ship Method:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="555,310,0,0" Text="Incoterms:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <TextBlock HorizontalAlignment="Left" Margin="501,330,0,0" Text="Duties/Taxes/Fees:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
+                            <!-- <TextBlock x:Name="UserName" HorizontalAlignment="Left" Margin="49,270,0,0" TextWrapping="Wrap" Text="UNIWELL LABORATORIES LLC" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
+                            <Button x:Name="UserButton" HorizontalAlignment="Left" Margin="49,270,0,0" Content="UNIWELL LABORATORIES LLC" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="UserButton_Click"/>
+                            <TextBlock x:Name="ProductName" HorizontalAlignment="Left" Margin="70,290,0,0" Text="Product Name" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="Reference" HorizontalAlignment="Left" Margin="84,310,0,0" Text="13MM (0.5118) DIAMETER STD CUP" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="PaymentTerms" HorizontalAlignment="Left" Margin="120,330,0,0" Text="NET 30 DAYS" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="MfgTime" HorizontalAlignment="Left" Margin="83,350,0,0" Text="APPROX 4 WKS MFG TIME - AFTER RECEIPT OF P.O. AND APPROVED DRAWINGS (IF REQUIRED)." VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="DutiesTaxesFees" HorizontalAlignment="Left" Margin="630,330,0,0" Text="N/A" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="Incoterms" HorizontalAlignment="Left" Margin="630,310,0,0" Text="F.O.B." VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <TextBlock x:Name="ShipMethod" HorizontalAlignment="Left" Margin="630,290,0,0" Text="UPS GROUND" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
+                            <Border BorderBrush="Black" BorderThickness="0,2" Height="80" Margin="5,370,5,-77" VerticalAlignment="Top">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InactiveCaptionColorKey}}"/>
+                                </Border.Background>
+                                <TextBlock TextWrapping="Wrap" Text="If quotation does not meet your requirements, please contact us immediately for any changes, dates &amp; prices. Prices contained in this quote are firm for 30 days from date shown. As all equipment is offered subject to prior sale, deliveries shown must be reconfirmed at the time a purchase order is received at the home office." FontFamily="Times New Roman" Margin="20,10" FontWeight="Bold" FontSize="16"/>
+                            </Border>
+                        </Grid>
+                    </Expander>
+                    <ScrollViewer x:Name="LineItemScroller" IsEnabled="True" Margin="0" Width="{Binding ActualWidth, ElementName=QuoteTopHeaderExpander}" HorizontalAlignment="Left" Background="White">
+                        <StackPanel x:Name="QuoteScrollableStack" Margin="0,20,0,0" CanVerticallyScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" CanHorizontallyScroll="False" ScrollViewer.CanContentScroll="True">
+                            <Border BorderThickness="1,0" BorderBrush="Black">
+                                <Grid>
+                                    <Border BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Top">
+                                        <Grid x:Name="LineItemHeaderGrid" Height="40" Margin="0">
+                                            <Border x:Name="QtyBorder" BorderBrush="Black" BorderThickness="0,0,1,0" HorizontalAlignment="Left" Width="46">
+                                                <TextBlock HorizontalAlignment="Center" Margin="0" TextWrapping="Wrap" Text="Qty." VerticalAlignment="Center" FontFamily="Arial" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border Margin="50,0,193,0" Height="39">
+                                                <TextBlock  HorizontalAlignment="Center" TextWrapping="Wrap" Text="DESCRIPTION OF GOODS" VerticalAlignment="Center" FontFamily="Arial" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border x:Name="UnitValueBorder" BorderThickness="1,0" BorderBrush="Black" HorizontalAlignment="Left" Margin="634,0,0,0" Width="76">
+                                                <Grid>
+                                                    <TextBlock  HorizontalAlignment="Center" TextWrapping="Wrap" Text="Unit" FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Top" Margin="0,2,0,0"/>
+                                                    <TextBlock  HorizontalAlignment="Center" TextWrapping="Wrap" Text="Value" FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                                </Grid>
+                                            </Border>
+                                            <Grid x:Name="ExtendedValueGrid" Margin="710,0,0,0">
+                                                <TextBlock  HorizontalAlignment="Center" TextWrapping="Wrap" Text="Extended" FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Top" Margin="0,2,0,0"/>
+                                                <TextBlock  HorizontalAlignment="Center" TextWrapping="Wrap" Text="Value" FontFamily="Arial" FontSize="14" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                    <Grid x:Name="MachineDescriptionGrid" Margin="45,41,-11,0" HorizontalAlignment="Left" Width="766" VerticalAlignment="Top">
+                                        <Border Height="60" BorderThickness="1,0" BorderBrush="Black" Margin="0,0,0,0" Width="590" HorizontalAlignment="Left">
+                                            <TextBlock x:Name="MachineDescription" Text="KILIAN SYNTHESIS 500- 30 ST(D) ( 536)" FontFamily="Arial" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="Bold" Margin="0,10,0,0"/>
+                                        </Border>
+                                        <Border Height="60" BorderThickness="0,0,1,0" BorderBrush="Black" Margin="590,0,0,0" Width="75" HorizontalAlignment="Left"/>
+                                    </Grid>
+                                    <Grid VerticalAlignment="Top" Margin="0,100,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="{Binding Width, ElementName=QtyBorder}"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="{Binding ActualWidth, ElementName=UnitValueBorder}"/>
+                                            <ColumnDefinition Width="{Binding ActualWidth, ElementName=ExtendedValueGrid}"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel x:Name="QtyStackPanel" Grid.Column="0" Grid.ColumnSpan="1" >
+                                            <TextBlock Text="35" HorizontalAlignment="Center" Height="16"/>
+                                            <TextBlock Text=""/>
+                                            <TextBlock Text=""/>
+                                            <TextBlock Text=""/>
+                                            <TextBlock Text=""/>
+                                            <TextBlock Text=""/>
+                                            <TextBlock Text=""/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Margin="-1,0,0,0">
+                                            <Border BorderBrush="Black" BorderThickness="1,0,0,0">
+                                                <StackPanel x:Name="ItemDescriptionStackPanel" Margin="5,0,0,0">
+                                                    <TextBlock Text="UPPER PUNCH FROM HOB # 091462" Height="16"/>
+                                                    <TextBlock Text="CUP DEPTH 0.0430, LAND 0.0000" Height="16"/>
+                                                    <TextBlock Text="STANDARD CUP" Height="16"/>
+                                                    <TextBlock Text="ESR S7 STEEL" Height="16"/>
+                                                    <TextBlock Text="TSM DOMED HEAD" Margin="20,0,0,0" Height="16"/>
+                                                    <TextBlock Text="CHAMFER BARREL" Margin="20,0,0,0" Height="16"/>
+                                                    <TextBlock Text="KEY LOCATION (LINEAR-HEAD TO CTR OF KEY) 58.000 MM ( 2.2835)" Margin="20,0,0,0" Height="16" Width="500"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Grid.ColumnSpan="1" Margin="0,0,-1,0">
+                                            <Border  BorderBrush="Black" BorderThickness="0,0,1,0">
+                                                <StackPanel x:Name="ItemDescription2StackPanel" Margin="5,0,5,0">
+                                                    <TextBlock Text="0.5118 DIAMETER" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="3" Grid.ColumnSpan="1">
+                                            <Border BorderBrush="Black" BorderThickness="1,0">
+                                                <StackPanel x:Name="UnitValueStackPanel" Margin="0,0,0,0">
+                                                    <TextBlock Text="$24.20" HorizontalAlignment="Center" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                    <TextBlock Text="" Height="16"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="4" Grid.ColumnSpan="1">
+                                            <StackPanel x:Name="ExtendedValueStackPanel" Margin="0,0,0,0">
+                                                <TextBlock Text="$3629.25" HorizontalAlignment="Center" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                                <TextBlock Text="" Height="16"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                            <Border BorderBrush="Black" BorderThickness="1,1,1,1" Margin="0,0,0,0">
+                                <Grid Height="240">
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Engineering:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="68,0,0,0"/>
+                                    <Grid Margin="156,0,0,0" Height="35" VerticalAlignment="Top">
+                                        <TextBlock x:Name="EngineeringNote1" HorizontalAlignment="Left" Text="ENGINEERING NOTE" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" TextWrapping="Wrap" Width="558"/>
+                                        <TextBlock x:Name="EngineeringNote2" HorizontalAlignment="Left" Text="ENGINEERING NOTE2" VerticalAlignment="Bottom" FontFamily="Arial" FontSize="12" TextWrapping="Wrap" Width="660"/>
+                                        <TextBlock x:Name="TM2DATA" Text="* TM-II DATA *" HorizontalAlignment="Right" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
+                                    </Grid>
+
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Misc:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="118,40,0,0"/>
+                                    <TextBlock x:Name="MiscNote" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="MISC NOTE" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="156,40,0,0"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Etching:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="98,80,0,0"/>
+                                    <TextBlock x:Name="EtchingNote" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="ETCHING NOTE" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="156,80,0,0" Height="80" Width="648"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Inspection:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="79,60,0,0"/>
+                                    <TextBlock x:Name="InspectionNote" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="INSPECTION NOTE" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="156,60,0,0"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Shipping:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="12" Padding="0" Margin="89,160,0,0"/>
+                                    <TextBlock x:Name="ShippingNote" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="SHIPPING NOTE" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="156,160,0,0"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Drawing Set #:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="56.1,220,0,0"/>
+                                    <TextBlock x:Name="DrawingSetNo" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="DRAWING NUMBER" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="156,220,0,0"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Project #:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="424,220,0,0"/>
+                                    <TextBlock x:Name="ProjectNo" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="491,220,0,0"/>
+                                    <TextBlock  HorizontalAlignment="Left"  Text="Ref. W.O. #:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14" Padding="0" Margin="591,220,0,0"/>
+                                    <TextBlock x:Name="RefWONo" HorizontalAlignment="Left"  TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Arial" FontSize="12" Margin="672,220,0,0"/>
+                                </Grid>
+                            </Border>
+                            <Grid Margin="5,0" Height="68">
+                                <TextBlock Text="IN PROCESSING TOOLING OCCASIONALLY AN OVERRUN RESULTS. WE NORMALLY SHIP OVERRUNS UP TO 10% UNLESS ADVISED OVERRUNS ARE UNACCEPTABLE." FontFamily="TimesNewRoman" FontWeight="Bold" TextWrapping="Wrap" Width="483" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top">
+                                    <TextBlock.Background>
+                                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InactiveCaptionColorKey}}"/>
+                                    </TextBlock.Background>
+                                </TextBlock>
+                                <Grid Margin="639,0,0,0" Width="71" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20">
+                                    <TextBlock Text="SUBTOTAL:" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Arial"/>
+                                </Grid>
+                                <Grid Margin="{Binding Margin, ElementName=ExtendedValueGrid}" VerticalAlignment="Top" Height="50">
+                                    <TextBlock x:Name="Subtotal" Text="$3,709.90" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="Arial" Margin="0,4,0,0"/>
+                                    <TextBlock x:Name="Markdown" Text="$709.90" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="Arial" Margin="0,20,0,0"/>
+                                    <TextBlock x:Name="Freight" Text="$1,709.90" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontFamily="Arial"/>
+                                </Grid>
+                                <TextBlock Text="ALL DIMENSIONS ARE IN INCHES" FontFamily="TimesNewRoman" FontWeight="Bold" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,54,0,0" VerticalAlignment="Top">
+                                    <TextBlock.Background>
+                                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.InactiveCaptionColorKey}}"/>
+                                    </TextBlock.Background>
+                                </TextBlock>
+                                <TextBlock x:Name="MarkdownCallout" Text="DISCOUNT:" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" Margin="645,-15,0,0"/>
+                                <TextBlock x:Name="AddedToInvoice" Text="Freight prepaid and added to invoice" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" Margin="500,18,0,0"/>
+                                <TextBlock Text="TOTAL U.S. DOLLAR AMOUNT:" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontFamily="Arial" Margin="533,0,0,0"/>
+                                <Border Margin="715,0,5,0" BorderBrush="Black" BorderThickness="0,0,0,1" VerticalAlignment="Bottom" Padding="0">
+                                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                                        <TextBlock x:Name="Total" Text="$3,709.90" HorizontalAlignment="Center" FontFamily="Arial" VerticalAlignment="Bottom"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <Border BorderBrush="Black" BorderThickness="1" Margin="40,10,40,0">
+                                <TextBlock x:Name="ReferToQuote" Text="* * * PLEASE REFER TO THIS QUOTE #: 178113, REV. 2 ON YOUR PURCHASE ORDER * * *" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Arial" FontSize="14" Margin="0,5"/>
+                            </Border>
+                            <TextBlock Text="THE FOREGOING QUOTATION IS NOT AN OFFER BUT A REQUEST FOR AN OFFER FROM BUYER ON THE TERMS STATED HEREON, AND WILL BECOME A CONTRACT ONLY AFTER SELLER HAS RECEIVED BUYER'S WRITTEN ORDER AT IT'S OFFICES IN ST. CHARLES, MISSOURI, AND HAS ACCEPTED SUCH ORDERS IN WRITING, IN ALL EVENTS, SHIPMENT BY SELLER AND ACCEPTANCE BY BUYER OF ALL OR ANY PART OF THE GOODS COVERED BY THIS QUOTATION SHALL CONSTITUTE A CONTRACT BY SELLER AND BUYER ON THE TERMS CONTAINED IN THIS QUOTATION. PRICES ARE FIRM FOR A PERIOD OF THIRTY (30) DAYS FROM THE DATE OF THIS QUOTATION. NEVERTHELESS, PRIOR TO SELLERS'S ACCEPTANCE OF BUYER'S ORDER, SELLER MAY WITHDRAW OR MODIFY THIS QUOTATION." TextWrapping="Wrap" Margin="10,5,10,0" LineHeight="18"/>
+                            <Grid>
+                                <Border HorizontalAlignment="Right" BorderBrush="Black" BorderThickness="0,0,0,1" Margin="0,0,40,0">
+                                    <Image x:Name="Signature" Height="34" Width="334" Stretch="Fill" ImageFailed="Signature_ImageFailed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"/>
+                                </Border>
+                                <TextBlock Text="Signature:" FontWeight="Bold" FontFamily="Arial" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="365,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,5,0,0">
+                                <TextBlock Text="By:" FontWeight="Bold" FontFamily="Arial" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="405,0,0,0"/>
+                                <TextBlock x:Name="SignaturePlainText" Text="HEATHER LANE / NATOLI ENGINEERING" FontWeight="Bold" FontFamily="Arial" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="440,0,0,0"/>
+                            </Grid>
+                            <Grid Background="#FF400040" Margin="5,10,5,0">
+                                <TextBlock Text="ETCHING INSTRUCTIONS" Foreground="White" HorizontalAlignment="Center"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180"/>
+                                    <ColumnDefinition Width="230"/>
+                                    <ColumnDefinition Width="230"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Margin="0,40,0,0">
+                                    <TextBlock Text="UPPERS:" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="LOWERS:" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="DIES:" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="REJECT:" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="ALIGNMENT:" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Grid.ColumnSpan="1" Margin="0,0,10,0">
+                                    <Border BorderBrush="Black" BorderThickness="0,0,0,1" Margin="0,10,0,0">
+                                        <TextBlock Text="FRONT" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Margin="0,10,0,0">
+                                        <TextBlock x:Name="UEtching1" Text="NATOLI" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching2" Text="MM-YY" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching3" Text="0.1870 x 0.3543" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching4" Text="# 178968" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching5" Text="# CONSEC" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching6" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching7" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="LEtching1" Text="NATOLI" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching2" Text="MM-YY" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching3" Text="0.1870 x 0.3543" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching4" Text="# 178968" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching5" Text="# CONSEC" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching6" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching7" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="DEtching1" Text="NATOLI" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching2" Text="MM-YY" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching3" Text="# 102871" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching4" Text="0.1870 x 0.3543" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching5" Text="OVAL SHAPE" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching6" Text="# CONSEC" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching7" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="REtching1" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching2" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching3" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching4" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching5" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching6" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching7" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="AEtching1" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching2" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching3" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching4" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching5" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching6" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching7" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching8" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching9" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching10" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Grid.ColumnSpan="1" Margin="10,0,0,0">
+                                    <Border BorderBrush="Black" BorderThickness="0,0,0,1" Margin="0,10,0,0">
+                                        <TextBlock Text="BACK" FontWeight="Bold" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Margin="0,10,0,0">
+                                        <TextBlock x:Name="UEtching1B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching2B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching3B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching4B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching5B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching6B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="UEtching7B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="LEtching1B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching2B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching3B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching4B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching5B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching6B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="LEtching7B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="DEtching1B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching2B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching3B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching4B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching5B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching6B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="DEtching7B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="REtching1B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching2B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching3B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching4B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching5B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching6B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="REtching7B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock x:Name="AEtching1B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching2B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching3B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching4B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching5B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching6B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="AEtching7B" Text="" FontFamily="Arial" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem x:Name="SMITabItem" Header="Price/SMI Check" Height="22">
+                <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" Background="WhiteSmoke" Margin="-10,0,0,0">
+                    <Border x:Name="ButtonBorder2" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                        <Grid Margin="0,2,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="QuoteFolderButton2" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                            <Button x:Name="ChecklistButton2" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                            <Button x:Name="OrderEntryChecklistButton2" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                            <Button x:Name="OrderFolderButton2" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                            <Button x:Name="SubmitButton2" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                            <Button x:Name="RecallButton2" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                        </Grid>
+                    </Border>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,2,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Expander x:Name="SMIListExpander" IsExpanded="True" Header="SMIs" Grid.Row="0" Grid.RowSpan="1" VerticalAlignment="Stretch" Expanded="SMIListExpander_Expanded" Collapsed="SMIListExpander_Collapsed">
+                            <ScrollViewer IsEnabled="True" CanContentScroll="True">
+                                <StackPanel x:Name="SMIStackPanel" CanVerticallyScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" CanHorizontallyScroll="False" Margin="0,0,0,0" >
+                                    <Grid>
+                                        <TextBlock Text="Header" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Y" Margin="3,0,0,0"/>
+                                        <TextBlock Text="N" Margin="23,0,0,0"/>
+                                    </Grid>
+                                    <Grid>
+                                        <RadioButton GroupName="1" />
+                                        <RadioButton GroupName="1" Margin="20,0,0,0" />
+                                        <TextBlock Text="some SMI" Margin="40,0,0,0"/>
+                                    </Grid>
+                                    <Grid>
+                                        <CheckBox />
+                                        <CheckBox Margin="20,0,0,0" />
+                                        <TextBlock Text="some SMI" Margin="40,0,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Expander>
+                        <StackPanel VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1">
+                            <TabControl x:Name="ScratchPadTabs">
+                            </TabControl>
+                            <Grid x:Name="QuoteSubtotalGrid" Margin="2,0,0,0" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
+                                <TextBox x:Name="QuoteSubTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
+                                <TextBlock Text=" QUOTE SUBTOTAL" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                            </Grid>
+                            <Grid x:Name="QuoteFlatMarkGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="385"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
+                                <TextBox x:Name="FlatMark" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
+                                <TextBlock Text=" FLAT MARK" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock>
+                                    Positive to increase the price
+                                    <LineBreak/>
+                                    Negative to decrease the price
+                                        </TextBlock>
+                                    </TextBlock.ToolTip>
+                        </TextBlock>
+                            </Grid>
+                            <Grid x:Name="QuoteFreightTotalGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="385"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
+                                <TextBox x:Name="FreightTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
+                                <TextBlock Text=" FREIGHT" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                            </Grid>
+                            <Grid x:Name="QuoteTotalGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="45"/>
+                                    <ColumnDefinition Width="385"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
+                                <TextBox x:Name="QuoteTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
+                                <TextBlock Text=" QUOTE TOTAL" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                            </Grid>
+                            <Button IsEnabled="True" x:Name="SaveAllLineItemsButton" Content="Save All Line Items" Width="120" Grid.Column="3" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-100,100,0" Click="SaveAllLineItemsButton_Click"/>
+                        </StackPanel>
+
+                    </Grid>
+                </StackPanel>
+
+            </TabItem>
+
+            <TabItem x:Name="FilesTabItem" Header="Files" Height="22">
+                <StackPanel Name="FilesStackPanel" Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" Background="WhiteSmoke" Margin="-10,0,0,0">
+                    <Border x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                        <Grid Margin="0,2,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="QuoteFolderButton3" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                            <Button x:Name="ChecklistButton3" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                            <Button x:Name="OrderEntryChecklistButton3" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                            <Button x:Name="OrderFolderButton3" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                            <Button x:Name="SubmitButton3" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                            <Button x:Name="RecallButton3" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                        </Grid>
+                    </Border>
+                    <Grid Height="{Binding Height, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 80}}" Margin="0,0,10,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Project:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                        <TextBox x:Name="ProjectNumberTextBox" Grid.Row="0" Grid.ColumnSpan="3" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Height="22" Width="120"/>
+                        <Button x:Name="LinkProjectButton" Grid.Column="0" Grid.ColumnSpan="3" Margin="240,0,0,0"  Content="Link Project" HorizontalAlignment="Left" Width="100" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
+                        <Button x:Name="EuropeanTolerancesButton" Content="European Tolerances" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="120" Height="22" Click="EuropeanTolerancesButton_Click"/>
+                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
+                        <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Order:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,236,0"/>
+                        <TextBox x:Name="OrderNumberTextBox" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Margin="0,0,110,0"/>
+                        <Button Grid.Column="0" Grid.ColumnSpan="3" x:Name="LinkOrderButton" Content="Link Order" HorizontalAlignment="Right" Width="100" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
+                        <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="White" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                            <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                        </Grid>
+                        <Grid x:Name="QuoteSentGrid" Margin="0,20,0,20" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                            <Label Content="Quote Sent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                        </Grid>
+                        <Grid x:Name="POGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="3" Grid.Column="2"  Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                            <Label Content="PO" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                        </Grid>
+                        <Grid x:Name="ScratchSheetGrid" Margin="0,20,0,40" Grid.Row="5" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                            <Label Content="SMI Sheet" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                        </Grid>
+                        <Grid x:Name="MiscGrid" Margin="0,20,0,40" Grid.Row="4" Grid.RowSpan="3" Grid.Column="2" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                            <Label Content="Misc" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem x:Name="OrderEntryTabItem" Header="Order Entry Instructions" Height="22">
+                <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" Background="WhiteSmoke" Margin="-10,0,0,0">
+                    <Border x:Name="ButtonBorder4" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                        <Grid Margin="0,2,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="QuoteFolderButton4" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                            <Button x:Name="ChecklistButton4" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                            <Button x:Name="OrderEntryChecklistButton4" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                            <Button x:Name="OrderFolderButton4" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                            <Button x:Name="SubmitButton4" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                            <Button x:Name="RecallButton4" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel Margin="0,0,10,0">
+                        <Grid Height="30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="INSTRUCTION" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Text="ENTERED BY" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Text="TIME ENTERED" Grid.Column="2" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Text="TIME CHECKED" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.ColumnSpan="5"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="InstructionEnteringTextBox" Height="40" HorizontalAlignment="Stretch" Margin="2,0,0,0" TextWrapping="Wrap" MaxLength="1000"/>
+                            <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                <TextBlock x:Name="InstructionEnteringUserTextBlock" Text="jwillis" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                <TextBlock x:Name="InstructionEnteringEnteredTimeBlock" Text="" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                <TextBlock x:Name="InstructionEnteringCheckedTimeBlock" Text="" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Image x:Name="AddOrderEntryImage" Grid.Column="4" Source="/greenplusadditionicon.png" Width="20" Height="20" Cursor="Hand" MouseUp="AddOrderEntryInstructionImage_MouseUp"/>
+                            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.ColumnSpan="5"/>
+                        </Grid>
+                        <StackPanel x:Name="InstructionsStackPanel">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="18*"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Margin="4,4,0,4" Grid.Column="0">
+                                    <TextBlock Text="Some InstructionDSFGFDSGSDGFSDGSFDGSF DGDSFGDSSDFGD SFGFDSGSFGFSDGSFDGDFGDFGSFDGDSFGFDSGSDFGFDSDFG" Margin="2,0,0,0" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                    <TextBlock Text="jwillis" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                    <TextBlock Text="11/07/2019 7:52am" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1,0,0,0">
+                                    <TextBlock Text="11/07/2019 7:52am" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <Image Grid.Column="4" Source="/redxdeleteicon.png" Width="20" Height="20" Cursor="Hand"/>
+                                <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.ColumnSpan="5"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Window>

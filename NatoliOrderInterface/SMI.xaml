@@ -1,0 +1,90 @@
+﻿<Window x:Class="NatoliOrderInterface.SMI"
+        x:Name="SMI_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="Customer Instructions" Height="450" Width="800">
+    <Grid>
+
+        <TextBlock x:Name="SMIUserSpecificHeader" Text="SMI Header" HorizontalAlignment="Center" VerticalAlignment="Top"  FontWeight="Bold" FontSize="30"/>
+        <ScrollViewer  VerticalScrollBarVisibility="Visible" IsEnabled="True" Margin="0,50,0,0">
+            <Grid x:Name="SMIUserSpecificGrid" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" VerticalAlignment="Top" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="85"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                <Border BorderBrush="Black" BorderThickness="1,1,1,1" Grid.Column="0">
+                    <Grid>
+                        <TextBlock Text="Inactive" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0,1,1,1" Grid.Column="1">
+                    <Grid>
+                        <TextBlock Text="Seq." FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0,1,1,1" Grid.Column="2">
+                    <Grid>
+                        <TextBlock Text="SMI Description" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0,1,1,1" Grid.Column="3">
+                    <Grid>
+                        <TextBlock Text="Category" FontWeight="Bold" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0,1,1,1" Grid.Column="4">
+                    <Grid>
+                        <TextBlock Text="User Stamp" FontWeight="Bold" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="0,1,1,1" Grid.Column="5">
+                    <Grid>
+                        <TextBlock Text="Date Stamp" FontWeight="Bold" Margin="4,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" BorderBrush="Gray" BorderThickness="1,0,1,1">
+                    <Grid>
+                        <CheckBox IsEnabled="False" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1"  Grid.Column="1" BorderBrush="Gray" BorderThickness="0,0,1,1">
+                    <Grid>
+                        <TextBlock Text="1" HorizontalAlignment="Right" Margin="0,0,2,0"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="2" BorderBrush="Gray" BorderThickness="0,0,1,1">
+                    <Grid>
+                        <TextBlock Text="TABLET AND TOOL PRINT FOR FILES= MSWT" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="3" BorderBrush="Gray" BorderThickness="0,0,1,1">
+                    <Grid>
+                        <TextBlock Text="ENGINEERING" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="4" BorderBrush="Gray" BorderThickness="0,0,1,1">
+                    <Grid>
+                        <TextBlock Text="TSIMONPIETRI" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="5" BorderBrush="Gray" BorderThickness="0,0,1,1">
+                    <Grid>
+                        <TextBlock Text="12/22/2019" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

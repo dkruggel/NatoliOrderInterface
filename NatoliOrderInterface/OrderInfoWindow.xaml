@@ -1,0 +1,221 @@
+﻿<Window x:Class="NatoliOrderInterface.OrderInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        x:Name="Order_Info_Window"
+        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing" MouseWheel="Order_Info_Window_MouseWheel">
+    <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel x:Name="ButtonPanel" DockPanel.Dock="Left" Width="170" Margin="10,0,10,0" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+            <Button x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="SendToOfficeButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="FinishOrderButton" Style="{StaticResource Button}" Content="Finish Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="FinishOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="NotFinishedButton" Style="{StaticResource Button}" Content="Not Finished" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="NotFinishedButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="PrintOrderButton" Style="{StaticResource Button}" Content="Print Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="PrintOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="DoNotProcessOrderButton" Style="{StaticResource Button}" Content="Do Not Process" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="DoNotProcessOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" IsEnabled="True" Height="35" Margin="0,0,0,20" Click="CancelButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <DataGrid x:Name="LineItemsDataGrid" SelectionChanged="LineItemsDataGrid_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,20" CanUserResizeRows="False" SelectionUnit="FullRow" ClipToBounds="True" MouseWheel="Order_Info_Window_MouseWheel" MouseDoubleClick="LineItemsDataGrid_MouseDoubleClick" MouseUp="LineItemsDataGrid_MouseUp" SelectionMode="Single" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+                <DataGrid.VerticalGridLinesBrush>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+                </DataGrid.VerticalGridLinesBrush>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding LineNumber}" Header="#" Width="20" CanUserSort="False" CanUserReorder="False" CanUserResize="False"/>
+                    <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="150" CanUserResize="False" CanUserReorder="False" CanUserSort="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="35" Click="OpenWOFolderButton_Click" Margin="0,0,0,20" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <Button x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
+            <!--<Button x:Name="OpenWorkOrdersFolder" Content="L:\WorkOrders Folder" Height="35" Margin="0,0,0,20" Click="OpenWorkOrdersFolder_Click"/>-->
+        </StackPanel>
+        <StackPanel x:Name="OrderPanel" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+            <Grid x:Name="OrderHeaderGrid" Height="330" VerticalAlignment="Top" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label x:Name="OrderTitle" Content="UPPER PUNCH" Grid.Column="0" Grid.ColumnSpan="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="3" Margin="0,0,0,25"/>
+                <Button x:Name="OrderNumberButton" Content="271958 00" VerticalContentAlignment="Center" Grid.Column="20" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="2,2,1,2" FontWeight="Bold" FontSize="14" Click="OpenWorkOrdersFolder_Click"/>
+                <Button x:Name="ReferenceOrderButton" Content="REF WO #:" Grid.Row="9" VerticalContentAlignment="Center" Margin="2,0" Grid.Column="17" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Click="ReferenceOrderButton_Click" MaxWidth="115"/>
+                <TextBlock x:Name="EngineeringNotesContext" Text="Engineering Notes: " Grid.Row="10" Margin="0,25,0,0" Grid.ColumnSpan="26" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" TextWrapping="Wrap" FontWeight="Bold" Focusable="False"/>
+                <TextBlock x:Name="CSRTextBlock" Text="ANNA KING" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.ColumnSpan="5" MouseUp="CSRTextBlock_MouseUp" Cursor="Hand"/>
+                <Label x:Name="CustomerNumberLabel" Content="Customer Number: " Grid.Row="2" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="11"/>
+                <Button x:Name="SoldToCustomerNameButton" Content="ACCESS BUSINESS GROUP LLC" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,0,0,1" FontWeight="Bold" Padding="5,0,5,2" Click="SoldToSMIs_Click" ToolTip="Opens SMI's"/>
+                <Button x:Name="ShipToCustomerNameButton" Content="ACCESS BUSINESS GROUP LLC" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,0,0.667,0" Click="ShipToSMIs_Click" ToolTip="Opens SMI's"/>
+                <Button x:Name="EndUserNameButton" Content="ACCESS BUSINESS GROUP LLC" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Row="5"  Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Padding="5,0,5,2" Click="EndUserSMIs_Click" ToolTip="Opens SMI's"/>
+                <Label x:Name="SoldToCustomerNameLabel" Content="Sold To: " Grid.Row="3" Grid.ColumnSpan="2" Margin="0" HorizontalContentAlignment="Right" Padding="5,0,10,5" FontWeight="Bold" FontSize="10"/>
+                <Label x:Name="ShipToCustomerNameLabel" Content="Ship To: " Grid.Row="3" Grid.Column="12" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10" Margin="0"/>
+                <Label x:Name="EndUserNameLabel" Content="End User: " Grid.Row="5" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10"/>
+                <Label x:Name="WorkOrderLabel" Content="WORK ORDER" Grid.Column="20" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
+                <Label x:Name="AccountNoLabel" Content="ACCOUNT NO." Grid.Column="23" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="4" MinWidth="90">
+                    <Label x:Name="OrderDateLabel" Content="ORDER DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="OrderDateContext" Content="Order Date: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="4" Grid.ColumnSpan="5">
+                    <Label x:Name="CustPOLabel" Content="CUST P.O. #" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="PONumberContext" Content="PO Number: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="9" Grid.ColumnSpan="4" MinWidth="70">
+                    <Label x:Name="SoldByLabel" Content="SOLD BY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="SoldByContext" Content="96-1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="13" Grid.ColumnSpan="4" MinWidth="85">
+                    <Label x:Name="TermsLabel" Content="TERMS" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="TermsContext" Content="NET 30 DAYS" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="17" Grid.ColumnSpan="4" MinWidth="85">
+                    <Label x:Name="ShippedViaLabel" Content="SHIPPED VIA" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="ShippedViaContext" Content="UPS GROUND" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Black"/>
+                </StackPanel>
+                <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="21" Grid.ColumnSpan="5" MinWidth="150">
+                    <Label x:Name="ApproxInvoiceDateLabel" Content="APPROX. INVOICE DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                    <Label x:Name="ShipDateContext" Content="09/16/2019" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" Padding="0"/>
+                </StackPanel>
+                <DockPanel Grid.Row="10" Grid.ColumnSpan="26" Grid.RowSpan="1" FlowDirection="LeftToRight">
+                    <Label x:Name="QTYBoldLabel" Content="QTY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="35"/>
+                    <Label x:Name="StockNumber" Content="STOCK NUMBER" Foreground="White" FontWeight="Bold" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="150" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Label x:Name="DescriptionLabel" Content="DESCRIPTION" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                </DockPanel>
+                <!--<Label x:Name="QuoteLabel" Content="Quote #: 178342" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="152" Grid.ColumnSpan="4"/>-->
+                <!--<Label x:Name="EndUserNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="5" VerticalContentAlignment="Stretch" Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Padding="5,0,5,2"/>-->
+                <!--<Label x:Name="SoldToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,0,0,1" FontWeight="Bold" Padding="5,0,5,2"/>-->
+                <!--<Label x:Name="ShipToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,0,0.667,0"/>-->
+                <Label x:Name="AccountNumberContext" Content="1021900" VerticalContentAlignment="Center" Grid.Column="23" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1,2,2,2" Padding="0" FontWeight="Bold" FontSize="14"/>
+                <Button x:Name="Project" Content="Project: 93457***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="21" Grid.ColumnSpan="3" Margin="2,0" MaxWidth="115" Click="Project_Click"/>
+                <Label x:Name="HobStatusLabel" Content="Hob?" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="24" Margin="0" Grid.ColumnSpan="2" Width="69"/>
+                <Label x:Name="OrderHobStatus" Content="Y***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="25" HorizontalContentAlignment="Right" Margin="0"/>
+                <Label x:Name="Reference" Content="0.3120 x 0.5000 OVAL SHAPE****" Grid.Row="9" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
+                <Label x:Name="EndUserNumber" Content="End User Number: ***" Grid.Row="4" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" Margin="0" FontWeight="Bold" FontSize="11"/>
+                <Label x:Name="ProductName" Content="PRODUCT****" Grid.Row="8" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
+                
+                <Button x:Name="QuoteButton" Content="Quote#: 178342" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Grid.ColumnSpan="4" Margin="-10,0,0,0" Click="QuoteButton_Click"/>
+                <Label x:Name="RushLabel" Content="+RUSH+" Grid.Column="19" Grid.ColumnSpan="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="2" Margin="0" Grid.Row="4"/>
+            </Grid>
+            <Grid x:Name="OrderDetailsGrid" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="29*"/>
+                    <ColumnDefinition Width="21*"/>
+                    <ColumnDefinition Width="22*"/>
+                    <ColumnDefinition Width="66*"/>
+                    <ColumnDefinition Width="66*"/>
+                    <ColumnDefinition Width="34*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="QTYLabel" Content="55***" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                <Label x:Name="LineItemType" Content="U*" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,0,0,0" FontWeight="Bold"/>
+                <Label x:Name="HobOrDieNo" Content="132389" Padding="0" VerticalContentAlignment="Center" Grid.Column="3" FontWeight="Bold"/>
+                <Label x:Name="MachineNo" Content="2- 2355" Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                <Label x:Name="Material" Content="ESR S7 STEEL" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="1" Grid.ColumnSpan="4"/>
+                <Label x:Name="StockSize" Content="1 x 5-3/4" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="4"/>
+                <Label x:Name="HobDescription1" Content="UPPER PUNCH FROM HOB # 132389***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="9" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <Label x:Name="HobDescription2" Content="CUP DEPTH 0.0520, LAND 0.0050 BLD. LD.,***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
+                <Label x:Name="HobDescription3" Content="SHALLOW CONCAVE  (12MM CUP RAD.) PLAIN***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
+                <Label x:Name="ShapeDescription" Content="0.3120 x 0.5000 OVAL SHAPE***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Margin="0"/>
+                <Label x:Name="MachineDescription" Content="KIKUSUI GEMINI 855-55 STA. (B)***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Grid.Row="3" Margin="0"/>
+                <Label x:Name="DetailHobStatus" Content="Y***" Padding="0" VerticalContentAlignment="Center" Grid.Column="25" FontWeight="Bold" Margin="0" HorizontalContentAlignment="Center"/>
+                <Label x:Name="BoreCircle" Content="BORE CIRCLE: 0.4700" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="0" Grid.Row="3" Grid.ColumnSpan="4" FontStyle="Italic"/>
+            </Grid>
+            <Grid x:Name="OrderDetailOptionsGrid" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="29*"/>
+                    <ColumnDefinition Width="21*"/>
+                    <ColumnDefinition Width="28*"/>
+                    <ColumnDefinition Width="66*"/>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="34*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="39*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="37*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                    <ColumnDefinition Width="38*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="OptionsStackOne" Grid.Column="2" Grid.ColumnSpan="24" Margin="0,20,0,0">
+                </StackPanel>
+                <StackPanel x:Name="OptionsStackTwo" Grid.Column="14" Grid.ColumnSpan="12" Margin="0,20,0,0">
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </DockPanel>
+</Window>

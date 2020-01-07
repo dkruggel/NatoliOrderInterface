@@ -1,0 +1,96 @@
+﻿<Window x:Class="NatoliOrderInterface.ProjectSpecificationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="Project Specifications" Height="200" Width="750" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+    <Window.Resources>
+    </Window.Resources>
+    <DockPanel Margin="10">
+        <DockPanel DockPanel.Dock="Bottom">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Style="{StaticResource Button}" Width="100" Grid.Column="0" x:Name="DoneButton" Content="Done" IsDefault="True" Click="DoneButton_Click"/>
+                <Button Style="{StaticResource Button}" Width="100" Grid.Column="1"  x:Name="CancelButton" Content="Cancel" IsDefault="False" Click="CancelButton_Click"/>
+            </Grid>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource BoldTextBlock}" Text="Project Specifications" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" x:Name="NewDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="New Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" x:Name="UpdateExistingDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Update Existing Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="2" x:Name="UpdateTextOnDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Update Text On Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" x:Name="PerSampleTablet" VerticalContentAlignment="Center">
+                        <TextBlock Text="Per Sample Tablet" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" x:Name="RefTabletDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Ref Tablet Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                </Grid>
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" x:Name="PerSampleTool" VerticalContentAlignment="Center">
+                        <TextBlock Text="Per Sample Tool" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" DockPanel.Dock="Top" x:Name="RefToolDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Ref Tool Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <DockPanel Grid.Row="2">
+                        <TextBlock Text="Bin Location:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                        <TextBox Style="{StaticResource TextBox}" x:Name="BinLocation" Margin="0,0,10,0" HorizontalContentAlignment="Center" Text=""/>
+                    </DockPanel>
+                    
+                </Grid>
+                <Grid Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <CheckBox Grid.Row="0" x:Name="PerSuppliedPicture" VerticalContentAlignment="Center">
+                        <TextBlock Text="Per Supplied Picture" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" x:Name="RefNatoliDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Ref Natoli Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                    <CheckBox Grid.Row="2" x:Name="RefNonNatoliDrawing" VerticalContentAlignment="Center">
+                        <TextBlock Text="Ref Non-Natoli Drawing" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                    </CheckBox>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
+</Window>
