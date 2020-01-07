@@ -106,10 +106,10 @@
                                                         </Grid>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsChecked" Value="True">
+                                                        <!--<Trigger Property="IsChecked" Value="True">
                                                             <Setter Property="IsChecked" TargetName="checkbox" Value="True"/>
                                                         </Trigger>
-                                                        <!--
+                                                        
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="Stroke" TargetName="circle" Value="#FF5593FF"/>
                                                     <Setter Property="Fill" TargetName="circle" Value="#FFF3F9FF"/>
