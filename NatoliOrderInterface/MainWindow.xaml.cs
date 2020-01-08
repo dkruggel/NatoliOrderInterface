@@ -1564,7 +1564,7 @@ namespace NatoliOrderInterface
                         string usrName = User.GetUserName().Split(" ")[0];
                         int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && p.ToolDrawnBy != usrName &&
                                                                             p.ToolCheckedBy.Length == 0 && p.HoldStatus != "CANCELED" && p.ProjectsId > 60000).Count();
-                        if (count >= 5)
+                        if (false)//(count >= 5)
                         {
                             MessageBox.Show(
                                 "Maximum simultaneous projects limit reached.\n" +
