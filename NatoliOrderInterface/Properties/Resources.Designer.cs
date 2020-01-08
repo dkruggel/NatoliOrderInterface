@@ -59,5 +59,14 @@ namespace NatoliOrderInterface.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string
+        /// </summary>
+        internal static string NatoliOrderInterface {
+            get {
+                return ResourceManager.GetString("NatoliOrderInterface", resourceCulture);
+            }
+        }
     }
 }

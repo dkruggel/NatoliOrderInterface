@@ -23,7 +23,7 @@ namespace NatoliOrderInterface.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=NSQL05;Database=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0);");
+                optionsBuilder.UseSqlServer("Server=" + App.Server + ";Database=NATBC;Persist Security Info=" + App.PersistSecurityInfo + ";User ID=" + App.UserID + ";Password=" + App.Password + ";");
             }
         }
 

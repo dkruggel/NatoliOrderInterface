@@ -80,7 +80,7 @@ namespace NatoliOrderInterface.Models.NAT01
             {
                 if (!optionsBuilder.IsConfigured)
                 {
-                    optionsBuilder.UseSqlServer("Server=NSQL05;Database=NAT01;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0);");
+                    optionsBuilder.UseSqlServer("Server="+App.Server+";Database=NAT01;Persist Security Info="+App.PersistSecurityInfo+";User ID="+App.UserID+";Password="+App.Password+";");
                 }
             }
         }
