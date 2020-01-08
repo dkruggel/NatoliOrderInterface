@@ -1562,9 +1562,10 @@ namespace NatoliOrderInterface
                         // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
                         string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
                         string usrName = User.GetUserName().Split(" ")[0];
-                        int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && p.ToolDrawnBy != usrName &&
-                                                                            p.ToolCheckedBy.Length == 0 && p.HoldStatus != "CANCELED" && p.ProjectsId > 60000).Count();
-                        if (false)//(count >= 5)
+                        int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
+                                                                            string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
+                                                                            p.ProjectsId > 80000).Count();
+                        if (false) //(count > 5)
                         {
                             MessageBox.Show(
                                 "Maximum simultaneous projects limit reached.\n" +
