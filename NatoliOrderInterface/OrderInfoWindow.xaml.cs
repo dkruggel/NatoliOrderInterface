@@ -830,6 +830,7 @@ namespace NatoliOrderInterface
         #region Events
         private void Window_Closed(object sender, EventArgs e)
         {
+            parent.selectedOrders.Remove(orderNumber.ToString());
             parent.Show();
         }
         private void Order_Info_Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

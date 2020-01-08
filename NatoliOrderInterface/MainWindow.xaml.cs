@@ -1,27 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NatoliOrderInterface.Models;
+using NatoliOrderInterface.Models.DriveWorks;
 using NatoliOrderInterface.Models.NAT01;
+using NatoliOrderInterface.Models.NEC;
+using NatoliOrderInterface.Models.Projects;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using Colors = System.Windows.Media.Colors;
 using System.Data.SqlClient;
-using System.Timers;
-using NatoliOrderInterface.Models.DriveWorks;
-using NatoliOrderInterface.Models.Projects;
+using System.Linq;
 using System.Net.Mail;
-using NatoliOrderInterface.Models.NEC;
-using System.Windows.Media.Imaging;
-using WpfAnimatedGif;
-using System.Windows.Controls.Primitives;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using WpfAnimatedGif;
+using Colors = System.Windows.Media.Colors;
 
 namespace NatoliOrderInterface
 {
@@ -68,7 +68,7 @@ namespace NatoliOrderInterface
             { "DriveWorksQueue", "Driveworks Models In Queue" },
             { "NatoliOrderList", "Natoli Order List" }
         };
-        
+
         public User User
         {
             get; set;
@@ -88,13 +88,19 @@ namespace NatoliOrderInterface
         private int quotesCompletedCount = 0;
         private double _orderNumber = 0;
         private bool _filterProjects = false;
-        private List<string> selectedOrders = new List<string>();
+        public List<string> selectedOrders = new List<string>();
         private List<string> selectedLineItems = new List<string>();
         private List<Tuple<string, string>> selectedProjects = new List<Tuple<string, string>>();
         private List<Tuple<string, string>> selectedQuotes = new List<Tuple<string, string>>();
 
         NAT01Context _nat01context = new NAT01Context();
         public string ChildWindow { get; set; }
+        public event EventHandler RemovedFromSelectedOrders;
+        protected virtual void OnRemovedFromSelectedOrders(EventArgs e)
+        {
+            EventHandler handler = RemovedFromSelectedOrders;
+            handler?.Invoke(this, e);
+        }
         public delegate void SomeBoolChangedEvent();
         public event SomeBoolChangedEvent UpdatedFromChild;
         private Boolean _boolValue;
@@ -194,7 +200,7 @@ namespace NatoliOrderInterface
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="priority"></param>
-        public static void SendEmail(List<string> to, List<string> cc = null, List<string>bcc = null, string subject = "", string body = "", List<string> attachments = null, MailPriority priority = MailPriority.Normal)
+        public static void SendEmail(List<string> to, List<string> cc = null, List<string> bcc = null, string subject = "", string body = "", List<string> attachments = null, MailPriority priority = MailPriority.Normal)
         {
             SmtpClient smtpServer = new SmtpClient();
             MailMessage mail = new MailMessage();
@@ -418,13 +424,14 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
                 MessageBox.Show(ex.Message);
                 // WriteToErrorLog("SendEmailToCSR", ex.Message);
             }
             smtpServer.Dispose();
             mail.Dispose();
         }
+        public delegate void RemovedFromSelectedOrdersEventHandler(object sender, EventArgs e);
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -459,7 +466,7 @@ namespace NatoliOrderInterface
             }
         }
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {   
+        {
         }
         private void GridWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -904,7 +911,7 @@ namespace NatoliOrderInterface
                 legendMenu.Items.Add(quoteRushMenu);
                 legendMenu.Items.Add(followupQuoteCheckMenu);
             }
-            
+
             #endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
@@ -1151,9 +1158,9 @@ namespace NatoliOrderInterface
                 tabletProjectStarted.ProjectNumber = _projectNumber;
                 tabletProjectStarted.RevisionNumber = _revNumber;
                 tabletProjectStarted.TimeSubmitted = DateTime.Now;
-                tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" : 
-                                                             User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : 
-                                                             User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?",this).ReturnString : User.GetUserName().Split(' ')[0];
+                tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                             User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                             User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
                 _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
 
                 // Drive specification transition name to "Started - Tablets"
@@ -1245,7 +1252,7 @@ namespace NatoliOrderInterface
 
                 // Drive specification transition name to "Submitted - Tablets"
                 // Auto archive project specification
-                
+
                 string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
                 if (_driveworksContext.Specifications.Any(s => s.Name == _name))
                 {
@@ -1257,10 +1264,10 @@ namespace NatoliOrderInterface
                 {
                     MessageBox.Show(
                         "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
-                        "Perhaps it is in a save state.", 
+                        "Perhaps it is in a save state.",
                         "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                
+
                 _projectsContext.SaveChanges();
                 _driveworksContext.SaveChanges();
                 _projectsContext.Dispose();
@@ -1408,7 +1415,7 @@ namespace NatoliOrderInterface
                 spec.IsArchived = (bool)!_tools;
                 _driveworksContext.Specifications.Update(spec);
 
-                
+
 
                 //Send Email To CSR
                 if (!(bool)_tools)
@@ -1436,11 +1443,11 @@ namespace NatoliOrderInterface
                 // MessageBox.Show(ex.Message);
                 WriteToErrorLog("CheckTabletProject_Click", ex.Message);
             }
-}
+        }
 
         private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + _projectNumber + "_" + _revNumber + "?","Cancel Project",MessageBoxButton.YesNo,MessageBoxImage.Question);
+            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + _projectNumber + "_" + _revNumber + "?", "Cancel Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.Yes)
             {
                 try
@@ -1546,7 +1553,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 MainRefresh();
             }
-            
+
         }
 
         private void FinishToolProject_Click(object sender, RoutedEventArgs e)
@@ -2260,7 +2267,7 @@ namespace NatoliOrderInterface
 
         private void Subscriptions_MenuItem_Checked(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void Subscriptions_MenuItem_UnChecked(object sender, RoutedEventArgs e)
@@ -2471,7 +2478,7 @@ namespace NatoliOrderInterface
                 try
                 {
                     string orderNumber = OrderSearchTextBlock.Text;
-                    if (!nat01context.OrderHeader.Any(o => (int)o.OrderNo == 100*Convert.ToInt32(orderNumber)))
+                    if (!nat01context.OrderHeader.Any(o => (int)o.OrderNo == 100 * Convert.ToInt32(orderNumber)))
                     {
                         MessageBox.Show("This order does not exist in the Order Header Table." + "\n" + "Please check your input.", "Open Work Order Window", MessageBoxButton.OK, MessageBoxImage.Information);
                         context.Dispose();
@@ -2928,10 +2935,24 @@ namespace NatoliOrderInterface
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
+            // Check all checkbox
+            CheckBox checkBox = new CheckBox()
+            {
+                IsChecked = false,
+                Style = App.Current.Resources["CheckBox"] as Style,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(20, 0, 0, 0),
+                LayoutTransform = new ScaleTransform(1.1, 1.1)
+            };
+            checkBox.Checked += CheckBox_Checked;
+            checkBox.Unchecked += CheckBox_Checked;
+
             switch (panel)
             {
                 case "BeingEntered":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(30)), CreateLabel("Rev", 0, 3, FontWeights.Normal));
@@ -2947,7 +2968,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "InTheOffice":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
@@ -2964,7 +2987,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "QuotesNotConverted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -2979,7 +3004,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "EnteredUnscanned":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
@@ -2993,7 +3020,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "InEngineering":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
@@ -3009,7 +3038,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "QuotesToConvert":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3025,7 +3056,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "ReadyToPrint":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
@@ -3041,7 +3074,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "PrintedInEngineering":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
@@ -3057,7 +3092,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "AllTabletProjects":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3074,7 +3111,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "TabletProjectsNotStarted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3090,7 +3129,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "TabletProjectsStarted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3107,7 +3148,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "TabletProjectsDrawn":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3124,7 +3167,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "TabletProjectsSubmitted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3141,7 +3186,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "TabletProjectsOnHold":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3158,7 +3205,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "AllToolProjects":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3175,7 +3224,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "ToolProjectsNotStarted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3191,7 +3242,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "ToolProjectsStarted":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3208,7 +3261,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "ToolProjectsDrawn":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3225,7 +3280,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "ToolProjectsOnHold":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
@@ -3242,7 +3299,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "DriveWorksQueue":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Model Name", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(170)), CreateLabel("Released By", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Tag", 0, 3, FontWeights.Normal));
@@ -3257,7 +3316,9 @@ namespace NatoliOrderInterface
 
                     break;
                 case "NatoliOrderList":
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36))); // Blank space to account for expander arrow
+                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+                    Grid.SetColumn(checkBox, 0);
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order #", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Ship Date", 0, 3, FontWeights.Normal));
@@ -3275,6 +3336,17 @@ namespace NatoliOrderInterface
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            var expanders = ((((checkBox.Parent as Grid).Parent as Border).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.OfType<Expander>();
+            foreach (Expander expander in expanders)
+            {
+                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = checkBox.IsChecked;
             }
         }
 
@@ -3504,7 +3576,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindBeingEntered()
@@ -3558,7 +3630,7 @@ namespace NatoliOrderInterface
                 {
                     eoiOrdersInOfficeView = _nat02context.EoiOrdersInOfficeView.OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
                 }
-                
+
                 ordersInTheOfficeDict = new Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)>();
 
                 foreach (EoiOrdersInOfficeView order in eoiOrdersInOfficeView)
@@ -3576,7 +3648,7 @@ namespace NatoliOrderInterface
                         fore = new SolidColorBrush(Colors.Black);
                         weight = FontWeights.Normal;
                     }
-                    
+
                     if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
                     {
                         back = new SolidColorBrush(Colors.Pink);
@@ -3602,7 +3674,7 @@ namespace NatoliOrderInterface
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
             Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
             StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-            
+
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
@@ -3686,7 +3758,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindEnteredUnscanned()
@@ -3780,7 +3852,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindInEngineering()
@@ -3915,7 +3987,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindReadyToPrint()
@@ -4050,7 +4122,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindPrintedInEngineering()
@@ -4142,7 +4214,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindQuotesNotConverted()
@@ -4246,7 +4318,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindQuotesToConvert()
@@ -4377,7 +4449,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindAllTabletProjects()
@@ -4484,7 +4556,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindTabletProjectsNotStarted()
@@ -4586,7 +4658,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindTabletProjectsStarted()
@@ -4688,7 +4760,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindTabletProjectsDrawn()
@@ -4790,7 +4862,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindTabletProjectsSubmitted()
@@ -4894,7 +4966,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindTabletProjectsOnHold()
@@ -5034,7 +5106,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindAllToolProjects()
@@ -5129,7 +5201,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindToolProjectsNotStarted()
@@ -5224,7 +5296,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindToolProjectsStarted()
@@ -5319,7 +5391,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindToolProjectsDrawn()
@@ -5416,7 +5488,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindToolProjectsOnHold()
@@ -5549,7 +5621,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                
+
             }
         }
         private void BindNatoliOrderList()
@@ -5631,7 +5703,7 @@ namespace NatoliOrderInterface
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
             Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
             StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-            
+
             IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
 
             IEnumerable<double> newOrders = dict.Keys.Except(orders);
@@ -6192,7 +6264,7 @@ namespace NatoliOrderInterface
                                                                                                           , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
             IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-            
+
             foreach ((int, int?) project in newProjects)
             {
                 int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
@@ -6249,7 +6321,7 @@ namespace NatoliOrderInterface
                                                                                                           , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
             IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-            
+
             foreach ((int, int?) project in newProjects)
             {
                 int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
@@ -6306,7 +6378,7 @@ namespace NatoliOrderInterface
                                                                                                           , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
             IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-            
+
             foreach ((int, int?) project in newProjects)
             {
                 int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
@@ -8163,7 +8235,7 @@ namespace NatoliOrderInterface
             }
             catch
             {
-                
+
             }
         }
 
@@ -8198,7 +8270,7 @@ namespace NatoliOrderInterface
             }
             catch
             {
-                
+
             }
         }
 
@@ -8243,7 +8315,7 @@ namespace NatoliOrderInterface
                 }
             }
             catch
-            { 
+            {
             }
         }
 
@@ -8267,7 +8339,7 @@ namespace NatoliOrderInterface
                 }
             }
             catch
-            { 
+            {
             }
         }
 
@@ -8309,7 +8381,7 @@ namespace NatoliOrderInterface
                 }
             }
             catch
-            { 
+            {
             }
         }
 
@@ -8335,7 +8407,7 @@ namespace NatoliOrderInterface
                 using var _nat01context = new NAT01Context();
                 e.Row.ToolTip = string.IsNullOrEmpty(_nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim()) ? "No Comment" : _nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim();
             }
-            catch 
+            catch
             {
             }
         }
@@ -8423,7 +8495,7 @@ namespace NatoliOrderInterface
             }
             catch
             {
-                
+
             }
         }
 
@@ -9206,6 +9278,7 @@ namespace NatoliOrderInterface
             try
             {
                 string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
+
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                 {
                     Left = Left,
@@ -9326,8 +9399,8 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         AlreadyOpen:
-                nat01context.Dispose();
-                Cursor = Cursors.Arrow;
+            nat01context.Dispose();
+            Cursor = Cursors.Arrow;
         }
 
         private void QuoteDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -9383,7 +9456,7 @@ namespace NatoliOrderInterface
         {
             if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || sender.GetType().Name == "Expander")
             {
-                
+
             }
             else
             {
@@ -9829,7 +9902,7 @@ namespace NatoliOrderInterface
                     RightClickMenu.Items.Add(startTabletProject);
                     RightClickMenu.Items.Add(onHoldTabletProject);
                     RightClickMenu.Items.Add(cancelTabletProject);
-                    
+
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
