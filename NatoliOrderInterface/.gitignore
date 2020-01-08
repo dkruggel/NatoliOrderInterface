@@ -6,6 +6,10 @@
 # Config file
 NatoliOrderInterface.config
 
+# Publish Package
+NatoliOrderInterface_Package/
+NatoliOrderInterface.Package/
+
 # User-specific files
 *.rsuser
 *.suo
