@@ -7737,7 +7737,23 @@ namespace NatoliOrderInterface
         #region Module Search Box Text Changed Events
         private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
+            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
+            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
+            string searchString = textBox.Text.ToLower();
+
+            if (textBox.Text.Length > 0)
+            {
+                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
+                textBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                textBlock.Visibility = Visibility.Visible;
+            }
+
             // Filter databased on text entry
             var _filtered =
                 ordersBeingEnteredDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
@@ -7751,7 +7767,23 @@ namespace NatoliOrderInterface
         }
         private void OrdersInTheOfficeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
+            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
+            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
+            string searchString = textBox.Text.ToLower();
+
+            if (textBox.Text.Length > 0)
+            {
+                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
+                textBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                textBlock.Visibility = Visibility.Visible;
+            }
+
             // Filter databased on text entry
             var _filtered =
                 ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
