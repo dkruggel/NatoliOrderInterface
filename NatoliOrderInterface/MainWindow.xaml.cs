@@ -37,6 +37,7 @@ namespace NatoliOrderInterface
         public static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
         public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
+        public string connectionString;
         private bool _panelLoading;
         private string _panelMainMessage = "Main Loading Message";
         private string _panelSubMessage = "Sub Loading Message";
@@ -141,6 +142,7 @@ namespace NatoliOrderInterface
         public MainWindow()
         {
             InitializeComponent();
+            App.GetConnectionString();
             UpdatedFromChild = MainRefresh;
             try
             {

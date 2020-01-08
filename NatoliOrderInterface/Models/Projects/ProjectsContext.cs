@@ -65,7 +65,7 @@ namespace NatoliOrderInterface.Models.Projects
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=NSQL05;Database=Projects;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)");
+                optionsBuilder.UseSqlServer("Server=" + App.Server + ";Database=Projects;Persist Security Info=" + App.PersistSecurityInfo + ";User ID=" + App.UserID + ";Password=" + App.Password + ";");
             }
         }
 

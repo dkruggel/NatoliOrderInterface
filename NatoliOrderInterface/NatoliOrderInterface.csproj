@@ -35,6 +35,8 @@
     <None Remove="attach_file.png" />
     <None Remove="greenplusadditionicon.png" />
     <None Remove="magnifying_glass.png" />
+    <None Remove="NatoliOrderInterface.config" />
+    <None Remove="NatoliOrderInterface.config.example" />
     <None Remove="NATOLI_ANIMATION.gif" />
     <None Remove="Natoli_Logo.gif" />
     <None Remove="redxdeleteicon.png" />
@@ -104,6 +106,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="NatoliOrderInterface.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="PdfPrinter">
       <HintPath>..\PdfPrinter\bin\Debug\PdfPrinter.dll</HintPath>
       <Private>true</Private>
@@ -117,6 +125,9 @@
     <Resource Include="attach_file.png" />
     <Resource Include="greenplusadditionicon.png" />
     <Resource Include="magnifying_glass.png" />
+    <Content Include="NatoliOrderInterface.config.example">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Resource Include="NATOLI_ANIMATION.gif" />
     <Resource Include="Natoli_Logo.gif" />
     <Resource Include="redxdeleteicon.png" />
