@@ -7756,7 +7756,8 @@ namespace NatoliOrderInterface
             var _filtered =
                 ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
                                                  o.Value.customerName.ToString().Contains(searchString) ||
-                                                 o.Value.employeeName.ToLower().Contains(searchString))
+                                                 o.Value.employeeName.ToLower().Contains(searchString) ||
+                                                 o.Value.csr.ToLower().Contains(searchString))
                                      .OrderBy(kvp => kvp.Value.daysToShip)
                                      .ThenBy(kvp => kvp.Value.daysInOffice)
                                      .ThenBy(kvp => kvp.Key)
