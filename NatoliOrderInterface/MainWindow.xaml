@@ -108,25 +108,7 @@
                                                     <ControlTemplate.Triggers>
                                                         <!--<Trigger Property="IsChecked" Value="True">
                                                             <Setter Property="IsChecked" TargetName="checkbox" Value="True"/>
-                                                        </Trigger>
-                                                        
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Stroke" TargetName="circle" Value="#FF5593FF"/>
-                                                    <Setter Property="Fill" TargetName="circle" Value="#FFF3F9FF"/>
-                                                    <Setter Property="Stroke" TargetName="arrow" Value="Black"/>
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter Property="Stroke" TargetName="circle" Value="#FF3C77DD"/>
-                                                    <Setter Property="StrokeThickness" TargetName="circle" Value="1.5"/>
-                                                    <Setter Property="Fill" TargetName="circle" Value="#FFD9ECFF"/>
-                                                    <Setter Property="Stroke" TargetName="arrow" Value="Black"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Stroke" TargetName="circle" Value="#FFBCBCBC"/>
-                                                    <Setter Property="Fill" TargetName="circle" Value="#FFE6E6E6"/>
-                                                    <Setter Property="Stroke" TargetName="arrow" Value="#FF707070"/>
-                                                </Trigger>
-                                                -->
+                                                        </Trigger>-->
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Setter.Value>

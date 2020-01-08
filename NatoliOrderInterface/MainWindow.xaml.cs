@@ -87,10 +87,10 @@ namespace NatoliOrderInterface
         private int quotesCompletedCount = 0;
         private double _orderNumber = 0;
         private bool _filterProjects = false;
-        public List<string> selectedOrders = new List<string>();
+        private List<(string, CheckBox)> selectedOrders = new List<(string, CheckBox)>();
         private List<string> selectedLineItems = new List<string>();
-        private List<Tuple<string, string>> selectedProjects = new List<Tuple<string, string>>();
-        private List<Tuple<string, string>> selectedQuotes = new List<Tuple<string, string>>();
+        private List<(string, string, CheckBox)> selectedProjects = new List<(string, string, CheckBox)>();
+        private List<(string, string, CheckBox)> selectedQuotes = new List<(string, string, CheckBox)>();
 
         NAT01Context _nat01context = new NAT01Context();
         public string ChildWindow { get; set; }
@@ -1142,143 +1142,170 @@ namespace NatoliOrderInterface
         #region Clicks
         private void StartTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
+                foreach ((string, string, CheckBox) project in selectedProjects)
+                {
+                    try
+                    {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
 
-                // Get project revision number
-                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr;
+                        using var _projectsContext = new ProjectsContext();
+                        using var _driveworksContext = new DriveWorksContext();
 
-                // Insert into StartedBy
-                ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
-                tabletProjectStarted.ProjectNumber = _projectNumber;
-                tabletProjectStarted.RevisionNumber = _revNumber;
-                tabletProjectStarted.TimeSubmitted = DateTime.Now;
-                tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                             User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                             User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
+                        // Get project revision number
+                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
-                // Drive specification transition name to "Started - Tablets"
-                // Auto archive project specification
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                spec.StateName = "Started - Tablets";
-                _driveworksContext.Specifications.Update(spec);
+                        // Insert into StartedBy
+                        ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
+                        tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
+                        tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
+                        tabletProjectStarted.TimeSubmitted = DateTime.Now;
+                        tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                                     User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                                     User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+                        _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
 
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
+                        // Drive specification transition name to "Started - Tablets"
+                        // Auto archive project specification
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                        spec.StateName = "Started - Tablets";
+                        _driveworksContext.Specifications.Update(spec);
 
-                // Email CSR
-                // SendEmailToCSR(_csr, _projectNumber.ToString());
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("StartTabletProject_CLick", ex.Message);
+                        _projectsContext.SaveChanges();
+                        _driveworksContext.SaveChanges();
+                        _projectsContext.Dispose();
+                        _driveworksContext.Dispose();
+
+                        // Email CSR
+                        // SendEmailToCSR(_csr, _projectNumber.ToString());
+                        MainRefresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        WriteToErrorLog("StartTabletProject_CLick", ex.Message);
+                    }
+                }
             }
         }
 
         private void FinishTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
+                foreach ((string, string, CheckBox) project in selectedProjects)
+                {
+                    try
+                    {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
 
-                // Get project revision number
-                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr;
+                        using var _projectsContext = new ProjectsContext();
+                        using var _driveworksContext = new DriveWorksContext();
 
-                // Insert into CheckedBy
-                TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
-                tabletDrawnBy.ProjectNumber = _projectNumber;
-                tabletDrawnBy.RevisionNumber = _revNumber;
-                tabletDrawnBy.TimeSubmitted = DateTime.Now;
-                tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                               User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                               User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
+                        // Get project revision number
+                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
-                // Drive specification transition name to "Drawn - Tablets"
-                // Auto archive project specification
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                spec.StateName = "Drawn - Tablets";
-                _driveworksContext.Specifications.Update(spec);
+                        // Insert into CheckedBy
+                        TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
+                        tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
+                        tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
+                        tabletDrawnBy.TimeSubmitted = DateTime.Now;
+                        tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                       User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                       User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+                        _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
 
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
+                        // Drive specification transition name to "Drawn - Tablets"
+                        // Auto archive project specification
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                        spec.StateName = "Drawn - Tablets";
+                        _driveworksContext.Specifications.Update(spec);
 
-                // Email CSR
-                // SendEmailToCSR(_csr, _projectNumber.ToString());
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("FinishTabletProject_Click", ex.Message);
+                        _projectsContext.SaveChanges();
+                        _driveworksContext.SaveChanges();
+                        _projectsContext.Dispose();
+                        _driveworksContext.Dispose();
+
+                        // Email CSR
+                        // SendEmailToCSR(_csr, _projectNumber.ToString());
+                        MainRefresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        WriteToErrorLog("FinishTabletProject_Click", ex.Message);
+                    }
+                }
             }
         }
 
         private void SubmitTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-
-                // Get project revision number
-                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr;
-
-                // Insert into CheckedBy
-                TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
-                tabletSubmittedBy.ProjectNumber = _projectNumber;
-                tabletSubmittedBy.RevisionNumber = _revNumber;
-                tabletSubmittedBy.TimeSubmitted = DateTime.Now;
-                tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                       User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
-                _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
-
-                // Drive specification transition name to "Submitted - Tablets"
-                // Auto archive project specification
-
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-                    spec.StateName = "Submitted - Tablets";
-                    _driveworksContext.Specifications.Update(spec);
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
-                        "Perhaps it is in a save state.",
-                        "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                    try
+                    {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
 
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
+                        using var _projectsContext = new ProjectsContext();
+                        using var _driveworksContext = new DriveWorksContext();
 
-                // Email CSR
-                // SendEmailToCSR(_csr, _projectNumber.ToString());
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
+                        // Get project revision number
+                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+                        // Insert into CheckedBy
+                        TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
+                        tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
+                        tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
+                        tabletSubmittedBy.TimeSubmitted = DateTime.Now;
+                        tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                               User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
+                        _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
+
+                        // Drive specification transition name to "Submitted - Tablets"
+                        // Auto archive project specification
+
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                        {
+                            Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
+                            spec.StateName = "Submitted - Tablets";
+                            _driveworksContext.Specifications.Update(spec);
+                        }
+                        else
+                        {
+                            MessageBox.Show(
+                                "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
+                                "Perhaps it is in a save state.",
+                                "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+
+                        _projectsContext.SaveChanges();
+                        _driveworksContext.SaveChanges();
+                        _projectsContext.Dispose();
+                        _driveworksContext.Dispose();
+
+                        // Email CSR
+                        // SendEmailToCSR(_csr, _projectNumber.ToString());
+                        MainRefresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        //MessageBox.Show(ex.Message);
+                        WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
+                    }
+                }
             }
         }
 
@@ -1286,6 +1313,9 @@ namespace NatoliOrderInterface
         {
             try
             {
+                // Uncheck project expander
+                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
                 OnHoldCommentWindow orderInfoWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
                 {
                     Left = Left,
@@ -1302,6 +1332,9 @@ namespace NatoliOrderInterface
         {
             try
             {
+                // Uncheck project expander
+                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
                 using var _projectsContext = new ProjectsContext();
                 using var _driveworksContext = new DriveWorksContext();
 
@@ -1344,151 +1377,167 @@ namespace NatoliOrderInterface
 
         private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                using var _nat02Context = new NAT02Context();
-
-                if (selectedProjects.Any())
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    foreach (Tuple<string, string> project in selectedProjects)
+                    try
                     {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
+
+                        using var _nat02Context = new NAT02Context();
+
                         EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+
+                        _nat02Context.SaveChanges();
+                        _nat02Context.Dispose();
+                        selectedProjects.Clear();
+                        MainRefresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
                     }
                 }
-                else
-                {
-                    EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First();
-                    _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-                }
-
-                _nat02Context.SaveChanges();
-                _nat02Context.Dispose();
-                selectedProjects.Clear();
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
             }
         }
 
         private void CheckTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-                using var _nat02Context = new NAT02Context();
-
-                // Get project revision number
-                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-                // Insert into CheckedBy
-                TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
-                tabletCheckedBy.ProjectNumber = _projectNumber;
-                tabletCheckedBy.RevisionNumber = _revNumber;
-                tabletCheckedBy.TimeSubmitted = DateTime.Now;
-                tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
-                _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
-
-                // Insert into ProjectsFinished  (Now a Trigger)
-                //if (!(bool)_tools)
-                //{
-                //    EoiProjectsFinished finished = new EoiProjectsFinished();
-                //    finished.ProjectNumber = _projectNumber;
-                //    finished.RevisionNumber = _revNumber;
-                //    finished.Csr = _csr;
-                //    _nat02Context.EoiProjectsFinished.Add(finished);
-                //    _nat02Context.SaveChanges();
-                //}
-
-                // Drive specification transition name to "Completed"
-                // Auto archive project specification
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Tools;
-                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-                spec.IsArchived = (bool)!_tools;
-                _driveworksContext.Specifications.Update(spec);
-
-
-
-                //Send Email To CSR
-                if (!(bool)_tools)
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    List<string> _CSRs = new List<string>();
-                    _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr);
-                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr))
+                    try
                     {
-                        _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First().Csr);
-                    }
-                    SendProjectCompletedEmailToCSR(_CSRs, _projectNumber.ToString(), _revNumber.ToString());
-                }
-                // Save pending changes
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
 
-                // Dispose of contexts
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
-                _nat02Context.Dispose();
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("CheckTabletProject_Click", ex.Message);
+                        using var _projectsContext = new ProjectsContext();
+                        using var _driveworksContext = new DriveWorksContext();
+                        using var _nat02Context = new NAT02Context();
+
+                        // Get project revision number
+                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+
+                        // Insert into CheckedBy
+                        TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
+                        tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
+                        tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
+                        tabletCheckedBy.TimeSubmitted = DateTime.Now;
+                        tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
+                        _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
+
+                        // Insert into ProjectsFinished  (Now a Trigger)
+                        //if (!(bool)_tools)
+                        //{
+                        //    EoiProjectsFinished finished = new EoiProjectsFinished();
+                        //    finished.ProjectNumber = _projectNumber;
+                        //    finished.RevisionNumber = _revNumber;
+                        //    finished.Csr = _csr;
+                        //    _nat02Context.EoiProjectsFinished.Add(finished);
+                        //    _nat02Context.SaveChanges();
+                        //}
+
+                        // Drive specification transition name to "Completed"
+                        // Auto archive project specification
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
+                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                        spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
+                        spec.IsArchived = (bool)!_tools;
+                        _driveworksContext.Specifications.Update(spec);
+
+
+
+                        //Send Email To CSR
+                        if (!(bool)_tools)
+                        {
+                            List<string> _CSRs = new List<string>();
+                            _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
+                            {
+                                _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+                            }
+                            SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
+                        }
+                        // Save pending changes
+                        _projectsContext.SaveChanges();
+                        _driveworksContext.SaveChanges();
+
+                        // Dispose of contexts
+                        _projectsContext.Dispose();
+                        _driveworksContext.Dispose();
+                        _nat02Context.Dispose();
+                        MainRefresh();
+                    }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        WriteToErrorLog("CheckTabletProject_Click", ex.Message);
+                    }
+                }
             }
         }
 
         private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + _projectNumber + "_" + _revNumber + "?", "Cancel Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.Yes)
+            if (selectedProjects.Count > 0)
             {
-                try
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    using var _projectsContext = new ProjectsContext();
-                    using var _driveworksContext = new DriveWorksContext();
-
-                    if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+                    MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?");
+                    if (res == MessageBoxResult.Yes)
                     {
-                        // Update data in HoldStatus
-                        HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-                        holdStatus.HoldStatus1 = "CANCELLED";
-                        holdStatus.TimeSubmitted = DateTime.Now;
-                        holdStatus.OnHoldComment = "";
-                        _projectsContext.HoldStatus.Update(holdStatus);
-                    }
-                    else
-                    {
-                        // Insert into HoldStatus
-                        HoldStatus holdStatus = new HoldStatus();
-                        holdStatus.ProjectNumber = _projectNumber.ToString();
-                        holdStatus.RevisionNumber = _revNumber.ToString();
-                        holdStatus.TimeSubmitted = DateTime.Now;
-                        holdStatus.HoldStatus1 = "CANCELLED";
-                        holdStatus.OnHoldComment = "";
-                        _projectsContext.HoldStatus.Add(holdStatus);
-                    }
+                        try
+                        {
+                            // Uncheck project expander
+                            project.Item3.IsChecked = false;
 
-                    // Drive specification transition name to "On Hold - " projectType
-                    string _name = _projectNumber.ToString() + (Convert.ToInt32(_revNumber.ToString()) > 0 ? "_" + _revNumber.ToString() : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "Cancelled - Tablets";
-                    spec.IsArchived = true;
-                    _driveworksContext.Specifications.Update(spec);
+                            using var _projectsContext = new ProjectsContext();
+                            using var _driveworksContext = new DriveWorksContext();
 
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                    MainRefresh();
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("SetOnHold", ex.Message);
+                            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+                            {
+                                // Update data in HoldStatus
+                                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
+                                holdStatus.HoldStatus1 = "CANCELLED";
+                                holdStatus.TimeSubmitted = DateTime.Now;
+                                holdStatus.OnHoldComment = "";
+                                _projectsContext.HoldStatus.Update(holdStatus);
+                            }
+                            else
+                            {
+                                // Insert into HoldStatus
+                                HoldStatus holdStatus = new HoldStatus();
+                                holdStatus.ProjectNumber = project.Item1;
+                                holdStatus.RevisionNumber = project.Item2;
+                                holdStatus.TimeSubmitted = DateTime.Now;
+                                holdStatus.HoldStatus1 = "CANCELLED";
+                                holdStatus.OnHoldComment = "";
+                                _projectsContext.HoldStatus.Add(holdStatus);
+                            }
+
+                            // Drive specification transition name to "On Hold - " projectType
+                            string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
+                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                            spec.StateName = "Cancelled - Tablets";
+                            spec.IsArchived = true;
+                            _driveworksContext.Specifications.Update(spec);
+
+                            _projectsContext.SaveChanges();
+                            _driveworksContext.SaveChanges();
+                            MainRefresh();
+                        }
+                        catch (Exception ex)
+                        {
+                            // MessageBox.Show(ex.Message);
+                            WriteToErrorLog("SetOnHold", ex.Message);
+                        }
+                    }
                 }
             }
         }
@@ -1497,10 +1546,13 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach (Tuple<string, string> project in selectedProjects)
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
                     try
                     {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
+
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
@@ -1558,10 +1610,13 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach (Tuple<string, string> project in selectedProjects)
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
                     try
                     {
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
+
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
@@ -1606,7 +1661,7 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach (Tuple<string, string> project in selectedProjects)
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
                     using var _nat02Context = new NAT02Context();
                     bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
@@ -1616,6 +1671,9 @@ namespace NatoliOrderInterface
                     {
                         try
                         {
+                            // Uncheck project expander
+                            project.Item3.IsChecked = false;
+
                             using var _projectsContext = new ProjectsContext();
                             using var _driveworksContext = new DriveWorksContext();
 
@@ -1689,6 +1747,9 @@ namespace NatoliOrderInterface
         {
             try
             {
+                // Uncheck project expander
+                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
                 using var _projectsContext = new ProjectsContext();
                 using var _driveworksContext = new DriveWorksContext();
 
@@ -1732,11 +1793,14 @@ namespace NatoliOrderInterface
         {
             try
             {
+                // Uncheck project expander
+                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
                 using var _nat02Context = new NAT02Context();
 
                 if (selectedProjects.Any())
                 {
-                    foreach (Tuple<string, string> project in selectedProjects)
+                    foreach ((string, string, CheckBox) project in selectedProjects)
                     {
                         EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
@@ -1764,13 +1828,16 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach (Tuple<string, string> project in selectedProjects)
+                foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + _revNumber + "?");
+                    MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?");
                     if (res == MessageBoxResult.Yes)
                     {
                         try
                         {
+                            // Uncheck project expander
+                            project.Item3.IsChecked = false;
+
                             using var _projectsContext = new ProjectsContext();
                             using var _driveworksContext = new DriveWorksContext();
 
@@ -1856,10 +1923,10 @@ namespace NatoliOrderInterface
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach (string order in selectedOrders)
+                foreach ((string, CheckBox) order in selectedOrders)
                 {
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -1971,10 +2038,10 @@ namespace NatoliOrderInterface
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach (string order in selectedOrders)
+                foreach ((string, CheckBox) order in selectedOrders)
                 {
                     using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersEnteredAndUnscannedView.Any(o => o.OrderNo.ToString() == order))
+                    if (!nat02context.EoiOrdersEnteredAndUnscannedView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
                         nat02context.Dispose();
                         continue;
@@ -1984,7 +2051,7 @@ namespace NatoliOrderInterface
                         nat02context.Dispose();
                     }
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -2043,10 +2110,10 @@ namespace NatoliOrderInterface
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach (string order in selectedOrders)
+                foreach ((string, CheckBox) order in selectedOrders)
                 {
                     using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order))
+                    if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
                         nat02context.Dispose();
                         continue;
@@ -2056,7 +2123,7 @@ namespace NatoliOrderInterface
                         nat02context.Dispose();
                     }
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -2150,8 +2217,10 @@ namespace NatoliOrderInterface
             using var _nat02context = new NAT02Context();
             if (selectedQuotes.Any())
             {
-                foreach (Tuple<string, string> quote in selectedQuotes)
+                foreach ((string, string, CheckBox) quote in selectedQuotes)
                 {
+                    quote.Item3.IsChecked = false;
+
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
                     {
                         QuoteNo = double.Parse(quote.Item1),
@@ -2184,8 +2253,10 @@ namespace NatoliOrderInterface
             using var necContext = new NECContext();
             if (selectedQuotes.Any())
             {
-                foreach (Tuple<string, string> selectedQuote in selectedQuotes)
+                foreach ((string, string, CheckBox) selectedQuote in selectedQuotes)
                 {
+                    selectedQuote.Item3.IsChecked = false;
+
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
                     QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
                     string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
@@ -8076,7 +8147,7 @@ namespace NatoliOrderInterface
                 // lineItemGrid.Width = expander.Width - 30 - 22;
                 lineItemGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-                bool isChecked = selectedOrders.Contains((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString()) ||
+                bool isChecked = selectedOrders.Any(o => o.Item1.Contains((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString())) ||
                                  selectedLineItems.Any(o => o.Contains(orderNumber) && o.Substring(1, 2) == lineItem.OrderLineNumber.ToString("00"));
 
                 AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(36)));
@@ -9671,6 +9742,11 @@ namespace NatoliOrderInterface
                 cancelTabletProject.Click += CancelTabletProject_Click;
                 Expander expander = sender as Expander;
                 Grid grid = expander.Header as Grid;
+
+                // Check the checkbox for the right-clicked expander
+                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                 _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                 _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
                 using var _nat02context = new NAT02Context();
@@ -9797,6 +9873,11 @@ namespace NatoliOrderInterface
                 cancelToolProject.Click += CancelToolProject_Click;
                 Expander expander = sender as Expander;
                 Grid grid = expander.Header as Grid;
+
+                // Check the checkbox for the right-clicked expander
+                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                 _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                 _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
                 using var _nat02context = new NAT02Context();
@@ -9903,6 +9984,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -9951,6 +10037,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -9998,6 +10089,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10046,6 +10142,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10087,6 +10188,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10135,6 +10241,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10184,6 +10295,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10232,6 +10348,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10274,6 +10395,11 @@ namespace NatoliOrderInterface
 
                     Expander expander = sender as Expander;
                     Grid grid = expander.Header as Grid;
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10361,15 +10487,15 @@ namespace NatoliOrderInterface
             string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
             if (quote)
             {
-                selectedQuotes.Add(new Tuple<string, string>(col0val, col1val));
+                selectedQuotes.Add((col0val, col1val, checkBox));
             }
             else if (project)
             {
-                selectedProjects.Add(new Tuple<string, string>(col0val, col1val));
+                selectedProjects.Add((col0val, col1val, checkBox));
             }
             else if (order)
             {
-                selectedOrders.Add(col0val);
+                selectedOrders.Add((col0val, checkBox));
                 if (expander.IsExpanded)
                 {
                     foreach (Grid grid in (expander.Content as StackPanel).Children)
@@ -10397,15 +10523,15 @@ namespace NatoliOrderInterface
                 string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
                 if (quote)
                 {
-                    selectedQuotes.Remove(new Tuple<string, string>(col0val, col1val));
+                    selectedQuotes.Remove((col0val, col1val, checkBox));
                 }
                 else if (project)
                 {
-                    selectedProjects.Remove(new Tuple<string, string>(col0val, col1val));
+                    selectedProjects.Remove((col0val, col1val, checkBox));
                 }
                 else if (order)
                 {
-                    selectedOrders.Remove(col0val);
+                    selectedOrders.Remove((col0val, checkBox));
                     if (expander.IsExpanded)
                     {
                         foreach (Grid grid in (expander.Content as StackPanel).Children)
