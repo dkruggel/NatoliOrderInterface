@@ -35,17 +35,19 @@
                             <Button Style="{StaticResource Button}" x:Name="LinkQuoteButton" Content="Link To Quote" Grid.Column="0" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
                         </DockPanel>
                     </Border>                    
-                    <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0">
+                    <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
                         <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Center" FontWeight="Bold" Style="{StaticResource BoldTextBlock}"/>
                         <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Center" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
-                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Center" Margin="20,0,0,0" Style="{StaticResource BoldTextBlock}"/>
+                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource BoldTextBlock}"/>
                         <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Center" Margin="4,0,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1"/>
+                        <TextBlock Text="Created:" Style="{StaticResource BoldTextBlock}" Margin="10,0,0,0"/>
+                        <TextBlock x:Name="EnteredDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
                     </DockPanel>
-                    <DockPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,12">
-                        <TextBlock Text="Revised By:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
+                    <DockPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6,0,0,12">
+                        <TextBlock Text="Rev'd:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
+                        <TextBlock x:Name="RevisionDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock Text="By:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
                         <TextBlock x:Name="RevisedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
-                        <TextBlock Text="DateTime:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
-                        <TextBlock x:Name="RevisionDate" Text="" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0">
                         <TextBlock Text="Unit Of Measure:" FontSize="12" VerticalAlignment="Center" Style="{StaticResource BoldTextBlock}"/>
@@ -80,7 +82,7 @@
                     <Border x:Name="ProjectNavigation" Visibility="Visible" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0">
                         <StackPanel x:Name="RoutingStackPanel">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0">
-                                <Border x:Name="SwitchProjectType" BorderBrush="Black" BorderThickness="2" Cursor="Hand" MouseUp="SwitchProjectRoutingType_MouseUp">
+                                <Border x:Name="SwitchProjectType" BorderBrush="Black" BorderThickness="2" Cursor="Hand" Background="{StaticResource BackgroundBrush}" MouseUp="SwitchProjectRoutingType_MouseUp">
                                     <DockPanel Margin="4,0" LastChildFill="False">
                                         <Image Height="20" Source="/Switch_Logo.PNG" HorizontalAlignment="Center"/>
                                         <TextBlock x:Name="CurrentProjectType" Text="TABLETS" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16" Style="{StaticResource BoldTextBlock}" Padding="0,0,0,2"/>
@@ -209,10 +211,8 @@
                                             <RowDefinition/>
                                             <RowDefinition/>
                                         </Grid.RowDefinitions>
-                                        <Grid Grid.ColumnSpan="3" Visibility="Collapsed">
-                                            <Viewbox HorizontalAlignment="Center">
-                                                <TextBlock x:Name="ArchivedOrInactive" TextWrapping="Wrap" Text="ARCHIVED" Opacity=".2" Foreground="Red"/>
-                                            </Viewbox>
+                                        <Grid Grid.ColumnSpan="3">
+                                            <TextBlock x:Name="ArchivedOrInactive" TextWrapping="Wrap" Margin="4,0,0,0" Text="" FontSize="20" FontWeight="Bold" Opacity="1" Foreground="Red"/>
                                         </Grid>
                                         <Border Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="0,0,0,2">
                                             <StackPanel VerticalAlignment="Center" >
@@ -335,15 +335,15 @@
                                         <TextBlock Text="Die Number:" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <TextBox Style="{StaticResource TextBox}" x:Name="DieNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="0" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
                                         <TextBlock x:Name="DieShapePlaceHolder" Text="Choose Tablet Shape" Margin="4,0,0,0" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Center" Foreground="LightGray" IsEnabled="False"/>
-                                        <ComboBox x:Name="DieShape"  Style="{StaticResource ComboBoxAlignsLeft}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                        <ComboBox x:Name="DieShape"  Style="{StaticResource ComboBoxAlignsLeft}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                         <TextBlock Text="Width:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" Margin="0,0,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="TabletWidth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Length:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" Margin="0,0,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="TabletLength" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Tolerance:" VerticalAlignment="Bottom" Margin="0,0,0,5" Grid.Row="4" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>

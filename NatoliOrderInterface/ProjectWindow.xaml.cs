@@ -22,7 +22,7 @@ namespace NatoliOrderInterface
     public partial class ProjectWindow : Window, IDisposable
     {
         private readonly string projectNumber;
-        private readonly string projectRevNumber;
+        private string projectRevNumber;
         private readonly MainWindow mainWindow = null;
         private readonly User user = null;
         private readonly Timer EditedTimer = new Timer(300);
@@ -436,7 +436,7 @@ namespace NatoliOrderInterface
             }
             if (!string.IsNullOrWhiteSpace(TabletWidth.Text) && !DieShape.Text.Trim().ToUpper().Contains("DIAMETER") && !DieShape.Text.Trim().ToUpper().Contains("ROUND") && string.IsNullOrWhiteSpace(TabletLength.Text))
             {
-                MessageBox.Show("Please enter a tablet length.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please enter a tablet length or indicate Die Shape as Diameter.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;;
             }
             if (isTabletProject)
@@ -768,6 +768,7 @@ namespace NatoliOrderInterface
         {
             ProjectNavigation.Visibility = Visibility.Hidden;
             CreationBorder.Visibility = Visibility.Visible;
+            ArchivedOrInactive.Visibility = Visibility.Collapsed;
             using var _projectsContext = new ProjectsContext();
             using var _nat01Context = new NAT01Context();
             EngineeringProjects engineeringProject = GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
@@ -854,13 +855,16 @@ namespace NatoliOrderInterface
                     ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
                     ReturnToCSR.IsEnabled = false;
 
+                    EnteredDate.Text = TimeZoneInfo.ConvertTimeFromUtc(engineeringProject.TimeSubmitted, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt");
+                    EnteredDate.IsEnabled = false;
+
                     RevisedBy.Text = engineeringProject.RevisedBy;
                     RevisedBy.IsEnabled = false;
                     if(_projectsContext.EngineeringArchivedProjects.Any(eap=> eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber)-1).ToString()))
                     {
                         DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
                         date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
-                        RevisionDate.Text = date.ToString("d");
+                        RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
                     }
                     RevisionDate.IsEnabled = false;
 
@@ -1244,8 +1248,8 @@ namespace NatoliOrderInterface
 
                     RefreshRoutingButtons();
 
-                    ArchivedOrInactive.Text = "Archived";
-                    ArchivedOrInactive.Visibility = Visibility.Visible;
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Text = "Archived"));
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Visibility = Visibility.Visible));
 
                     projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
                     if (projectLinkedToQuote)
@@ -1290,7 +1294,7 @@ namespace NatoliOrderInterface
                     {
                         DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
                         date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
-                        RevisionDate.Text = date.ToString("d");
+                        RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
                     }
                     RevisionDate.IsEnabled = false;
 
@@ -3724,116 +3728,124 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         private EngineeringProjects GetEngineeringProjectFromCurrentForm(bool projectWillBeActive)
         {
-            using var _projectsContext = new ProjectsContext();
-            EngineeringProjects oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-            decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
-            EngineeringProjects engineeringProject = new EngineeringProjects
+            if (FormCheck())
             {
-                ProjectNumber = projectNumber,
-                RevNumber = projectRevNumber,
-                ActiveProject = projectWillBeActive,
-                QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
-                QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
-                RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
-                RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
-                RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
-                RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
-                RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
-                CSR = CSR.Text,
-                ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
-                CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
-                CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
-                ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
-                ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
-                ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
-                EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
-                EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
-                EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
-                UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
-                Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
-                Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
-                MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
-                DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
-                DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
-                Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
-                Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
-                UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?) upperCupType : null,
-                UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper()=="NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length<6 ? new string('0',6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
-                UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
-                UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
-                UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
-                LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
-                LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
-                LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
-                LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
-                LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
-                ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
-                ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
-                ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
-                ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
-                ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
-                LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
-                LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
-                LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
-                LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
-                LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
-                UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
-                LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
-                ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
-                LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
-                DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
-                Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
-                TimeSubmitted = DateTime.UtcNow,
-                DueDate = DateTime.TryParse(DueDate.Text.Remove(0,DueDate.Text.IndexOf('|')+2),out DateTime dateTime) ? dateTime : DateTime.MaxValue,
-                Priority = Priority.IsChecked ?? false,
-                TabletStarted = oldEngineeringProject.TabletStarted,
-                TabletStartedDateTime = oldEngineeringProject.TabletStartedDateTime,
-                TabletStartedBy = oldEngineeringProject.TabletStartedBy,
-                TabletDrawn = oldEngineeringProject.TabletDrawn,
-                TabletDrawnDateTime = oldEngineeringProject.TabletDrawnDateTime,
-                TabletDrawnBy = oldEngineeringProject.TabletDrawnBy,
-                TabletSubmitted = oldEngineeringProject.TabletSubmitted,
-                TabletSubmittedDateTime = oldEngineeringProject.TabletSubmittedDateTime,
-                TabletSubmittedBy = oldEngineeringProject.TabletSubmittedBy,
-                TabletChecked = oldEngineeringProject.TabletChecked,
-                TabletCheckedDateTime = oldEngineeringProject.TabletCheckedDateTime,
-                TabletCheckedBy = oldEngineeringProject.TabletCheckedBy,
-                ToolStarted = oldEngineeringProject.ToolStarted,
-                ToolStartedDateTime = oldEngineeringProject.ToolStartedDateTime,
-                ToolStartedBy = oldEngineeringProject.ToolStartedBy,
-                ToolDrawn = oldEngineeringProject.ToolDrawn,
-                ToolDrawnDateTime = oldEngineeringProject.ToolDrawnDateTime,
-                ToolDrawnBy = oldEngineeringProject.ToolDrawnBy,
-                ToolSubmitted = oldEngineeringProject.ToolSubmitted,
-                ToolSubmittedDateTime = oldEngineeringProject.ToolSubmittedDateTime,
-                ToolSubmittedBy = oldEngineeringProject.ToolSubmittedBy,
-                ToolChecked = oldEngineeringProject.ToolChecked,
-                ToolCheckedDateTime = oldEngineeringProject.ToolCheckedDateTime,
-                ToolCheckedBy = oldEngineeringProject.ToolCheckedBy,
-                NewDrawing = NewDrawing,
-                UpdateExistingDrawing = UpdateExistingDrawing,
-                UpdateTextOnDrawing = UpdateTextOnDrawing,
-                PerSampleTablet = PerSampleTablet,
-                RefTabletDrawing = RefTabletDrawing,
-                PerSampleTool = PerSampleTool,
-                RefToolDrawing = RefToolDrawing,
-                PerSuppliedPicture = PerSuppliedPicture,
-                RefNatoliDrawing = RefNatoliDrawing,
-                RefNonNatoliDrawing = RefNonNatoliDrawing,
-                MultiTipSketch = MultiTipSketch.IsChecked ?? false,
-                MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
-                NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
-                BinLocation = BinLocation,
-                MultiTipSolid = MultiTipStyle.Text == "SOLID",
-                MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
-                OnHold = oldEngineeringProject.OnHold,
-                OnHoldComment = oldEngineeringProject.OnHoldComment,
-                OnHoldDateTime = oldEngineeringProject.OnHoldDateTime,
-                RevisedBy = oldEngineeringProject.RevisedBy,
-                Changes = oldEngineeringProject.Changes,
-            };
-            _projectsContext.Dispose();
-            return engineeringProject;
+                using var _projectsContext = new ProjectsContext();
+
+                EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
+                EngineeringProjects engineeringProject = new EngineeringProjects
+                {
+                    ProjectNumber = projectNumber,
+                    RevNumber = projectRevNumber,
+                    ActiveProject = projectWillBeActive,
+                    QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
+                    QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
+                    RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
+                    RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
+                    RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
+                    RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
+                    RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
+                    CSR = CSR.Text,
+                    ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
+                    CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
+                    CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
+                    ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
+                    ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
+                    ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
+                    EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
+                    EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
+                    EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
+                    UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
+                    Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
+                    Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
+                    MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
+                    DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
+                    DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
+                    Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
+                    Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
+                    UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?)upperCupType : null,
+                    UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
+                    UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
+                    UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
+                    UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
+                    LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
+                    LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
+                    LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
+                    LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
+                    LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
+                    ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
+                    ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
+                    ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
+                    ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
+                    ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
+                    LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
+                    LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
+                    LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
+                    LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
+                    LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
+                    UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
+                    LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
+                    ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
+                    LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
+                    DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
+                    Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
+                    TimeSubmitted = DateTime.UtcNow,
+                    DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
+                    Priority = Priority.IsChecked ?? false,
+                    TabletStarted = projectWillBeActive ? oldEngineeringProject.TabletStarted : false,
+                    TabletStartedDateTime = projectWillBeActive ? oldEngineeringProject.TabletStartedDateTime : null,
+                    TabletStartedBy = projectWillBeActive ? oldEngineeringProject.TabletStartedBy : "",
+                    TabletDrawn = projectWillBeActive ? oldEngineeringProject.TabletDrawn : false,
+                    TabletDrawnDateTime = projectWillBeActive ? oldEngineeringProject.TabletDrawnDateTime : null,
+                    TabletDrawnBy = projectWillBeActive ? oldEngineeringProject.TabletDrawnBy : "",
+                    TabletSubmitted = projectWillBeActive ? oldEngineeringProject.TabletSubmitted : false,
+                    TabletSubmittedDateTime = projectWillBeActive ? oldEngineeringProject.TabletSubmittedDateTime : null,
+                    TabletSubmittedBy = projectWillBeActive ? oldEngineeringProject.TabletSubmittedBy : "",
+                    TabletChecked = projectWillBeActive ? oldEngineeringProject.TabletChecked : false,
+                    TabletCheckedDateTime = projectWillBeActive ? oldEngineeringProject.TabletCheckedDateTime : null,
+                    TabletCheckedBy = projectWillBeActive ? oldEngineeringProject.TabletCheckedBy : "",
+                    ToolStarted = projectWillBeActive ? oldEngineeringProject.ToolStarted : false,
+                    ToolStartedDateTime = projectWillBeActive ? oldEngineeringProject.ToolStartedDateTime : null,
+                    ToolStartedBy = projectWillBeActive ? oldEngineeringProject.ToolStartedBy : "",
+                    ToolDrawn = projectWillBeActive ? oldEngineeringProject.ToolDrawn : false,
+                    ToolDrawnDateTime = projectWillBeActive ? oldEngineeringProject.ToolDrawnDateTime : null,
+                    ToolDrawnBy = projectWillBeActive ? oldEngineeringProject.ToolDrawnBy : "",
+                    ToolSubmitted = projectWillBeActive ? oldEngineeringProject.ToolSubmitted : false,
+                    ToolSubmittedDateTime = projectWillBeActive ? oldEngineeringProject.ToolSubmittedDateTime : null,
+                    ToolSubmittedBy = projectWillBeActive ? oldEngineeringProject.ToolSubmittedBy : "",
+                    ToolChecked = projectWillBeActive ? oldEngineeringProject.ToolChecked : false,
+                    ToolCheckedDateTime = projectWillBeActive ? oldEngineeringProject.ToolCheckedDateTime : null,
+                    ToolCheckedBy = projectWillBeActive ? oldEngineeringProject.ToolCheckedBy : "",
+                    NewDrawing = NewDrawing,
+                    UpdateExistingDrawing = UpdateExistingDrawing,
+                    UpdateTextOnDrawing = UpdateTextOnDrawing,
+                    PerSampleTablet = PerSampleTablet,
+                    RefTabletDrawing = RefTabletDrawing,
+                    PerSampleTool = PerSampleTool,
+                    RefToolDrawing = RefToolDrawing,
+                    PerSuppliedPicture = PerSuppliedPicture,
+                    RefNatoliDrawing = RefNatoliDrawing,
+                    RefNonNatoliDrawing = RefNonNatoliDrawing,
+                    MultiTipSketch = MultiTipSketch.IsChecked ?? false,
+                    MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
+                    NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
+                    BinLocation = BinLocation,
+                    MultiTipSolid = MultiTipStyle.Text == "SOLID",
+                    MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
+                    OnHold = projectWillBeActive ? oldEngineeringProject.OnHold : false,
+                    OnHoldComment = projectWillBeActive ? oldEngineeringProject.OnHoldComment : "",
+                    OnHoldDateTime = projectWillBeActive ? oldEngineeringProject.OnHoldDateTime : null,
+                    RevisedBy = projectWillBeActive ? oldEngineeringProject.RevisedBy : null,
+                    Changes = projectWillBeActive ? oldEngineeringProject.Changes : null
+                };
+                _projectsContext.Dispose();
+                return engineeringProject;
+            }
+            else
+            {
+                return null;
+            }
         }
         /// <summary>
         /// Creates a new EngineeringTabletProjects from the information in the form.
@@ -4507,10 +4519,12 @@ namespace NatoliOrderInterface
             if (CurrentProjectType.Text == "TABLETS")
             {
                 CurrentProjectType.Text="TOOLS";
+                RefreshRoutingButtons();
             }
             else
             {
                 CurrentProjectType.Text = "TABLETS";
+                RefreshRoutingButtons();
             }
         }
         /// <summary>
@@ -5371,15 +5385,14 @@ namespace NatoliOrderInterface
                     engineeringProject.TabletStartedBy = user.GetDWPrincipalId();
 
                     // Drive specification transition name to "Started - Tablets"
-                    // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if(_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-                        spec.StateName = "Started - Tablets";
-                        _driveworksContext.Specifications.Update(spec);
-                        _driveworksContext.SaveChanges();
-                    }
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if(_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
+                    //    spec.StateName = "Started - Tablets";
+                    //    _driveworksContext.Specifications.Update(spec);
+                    //    _driveworksContext.SaveChanges();
+                    //}
                     _projectsContext.SaveChanges();
                 }
                 else
@@ -5390,16 +5403,15 @@ namespace NatoliOrderInterface
                     engineeringProject.ToolStartedBy = user.GetDWPrincipalId();
 
                     // Drive specification transition name to "Started - Tools"
-                    // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Started - Tools";
-                        _driveworksContext.Specifications.Update(spec);
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //    spec.StateName = "Started - Tools";
+                    //    _driveworksContext.Specifications.Update(spec);
 
-                        _driveworksContext.SaveChanges();
-                    }
+                    //    _driveworksContext.SaveChanges();
+                    //}
 
                     _projectsContext.SaveChanges();
                 }
@@ -5436,14 +5448,14 @@ namespace NatoliOrderInterface
                     engineeringProject.TabletDrawnBy = user.GetDWPrincipalId();
 
                     // Drive specification transition name to "Drawn - Tablets"
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Drawn - Tablets";
-                        _driveworksContext.Specifications.Update(spec);
-                        _driveworksContext.SaveChanges();
-                    }
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //    spec.StateName = "Drawn - Tablets";
+                    //    _driveworksContext.Specifications.Update(spec);
+                    //    _driveworksContext.SaveChanges();
+                    //}
                     _projectsContext.SaveChanges();
                 }
                 else
@@ -5455,14 +5467,14 @@ namespace NatoliOrderInterface
 
                     // Drive specification transition name to "Drawn - Tools"
                     // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Drawn - Tools";
-                        _driveworksContext.Specifications.Update(spec);
-                        _driveworksContext.SaveChanges();
-                    }
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //    spec.StateName = "Drawn - Tools";
+                    //    _driveworksContext.Specifications.Update(spec);
+                    //    _driveworksContext.SaveChanges();
+                    //}
                     _projectsContext.SaveChanges();
                     
                 }
@@ -5493,14 +5505,14 @@ namespace NatoliOrderInterface
                     engineeringProject.TabletSubmittedBy = user.GetDWPrincipalId();
 
                     // Drive specification transition name to "Submitted - Tablets"
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Submitted - Tablets";
-                        _driveworksContext.Specifications.Update(spec);
-                        _driveworksContext.SaveChanges();
-                    }
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //    spec.StateName = "Submitted - Tablets";
+                    //    _driveworksContext.Specifications.Update(spec);
+                    //    _driveworksContext.SaveChanges();
+                    //}
                     _projectsContext.SaveChanges();
                 }
                 else
@@ -5512,14 +5524,14 @@ namespace NatoliOrderInterface
 
                     // Drive specification transition name to "Submitted - Tools"
                     // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    {
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Submitted - Tools";
-                        _driveworksContext.Specifications.Update(spec);
-                        _driveworksContext.SaveChanges();
-                    }
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                    //{
+                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //    spec.StateName = "Submitted - Tools";
+                    //    _driveworksContext.Specifications.Update(spec);
+                    //    _driveworksContext.SaveChanges();
+                    //}
                     _projectsContext.SaveChanges();
                 }
             }
@@ -5565,11 +5577,11 @@ namespace NatoliOrderInterface
 
                     // Drive specification transition name to "Checked - Tablets"
                     // Archive if necessary
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-                    spec.IsArchived = !_tools;
-                    _driveworksContext.Specifications.Update(spec);
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
+                    //spec.IsArchived = !_tools;
+                    //_driveworksContext.Specifications.Update(spec);
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
                 }
@@ -5588,11 +5600,11 @@ namespace NatoliOrderInterface
 
                     // Drive specification transition name to "Checked - Tools"
                     // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "Checked - Tools";
-                    spec.IsArchived = true;
-                    _driveworksContext.Specifications.Update(spec);
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //spec.StateName = "Checked - Tools";
+                    //spec.IsArchived = true;
+                    //_driveworksContext.Specifications.Update(spec);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
@@ -5660,11 +5672,11 @@ namespace NatoliOrderInterface
 
                     // Drive specification transition name to "Canceled"
                     // Auto archive project specification
-                    string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "Canceled";
-                    spec.IsArchived = true;
-                    _driveworksContext.Specifications.Update(spec);
+                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
+                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //spec.StateName = "Canceled";
+                    //spec.IsArchived = true;
+                    //_driveworksContext.Specifications.Update(spec);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
@@ -5742,7 +5754,7 @@ namespace NatoliOrderInterface
                             body += change + "<br>";
                         }
                     }
-                    engineeringProject.RevisedBy = user.GetUserName();
+                    engineeringProject.RevisedBy = user.GetDWPrincipalId();
                     List<string> to = new List<string>();
                     to.Add(engineeringProject.CSR);
                     to.Add(engineeringProject.ReturnToCSR);
@@ -5827,11 +5839,11 @@ namespace NatoliOrderInterface
                         CreationBorder.Visibility = Visibility.Hidden;
                         ProjectNavigation.Visibility = Visibility.Visible;
                         CreateButton.Content = "Create";
-                        RevisionDate.Text = DateTime.Now.ToString("d");
+                        RevisionDate.Text = DateTime.Now.ToString("M/d/yy h:mm tt");
                         RevisedBy.Text = user.GetDWPrincipalId();
+                        projectRevNumber = (Convert.ToInt16(projectRevNumber) + 1).ToString();
+                        Title = "Project# " + projectNumber + "-" + projectRevNumber;
                         AllControlsEnabledOrDisabled(false);
-
-
                     }
 
                 }
@@ -5841,7 +5853,18 @@ namespace NatoliOrderInterface
         {
             using var _projectsContext = new ProjectsContext();
             EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(false);
-            _projectsContext.Update(engineeringProject);
+            if (engineeringProject == null)
+            {
+                return;
+            }
+            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+            {
+                _projectsContext.Update(engineeringProject);
+            }
+            else
+            {
+                _projectsContext.Add(engineeringProject);
+            }
             if (TabletsRequired.IsChecked ?? false)
             { 
                EngineeringTabletProjects engineeringTabletProject = GetTabletProjectFromCurrentForm();
@@ -5866,6 +5889,7 @@ namespace NatoliOrderInterface
                     _projectsContext.EngineeringToolProjects.Add(engineeringToolProject);
                 }
             }
+            _projectsContext.SaveChanges();
             _projectsContext.Dispose();
             if (MessageBox.Show("Project Saved!\nWould you like to close now?", "Save Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
             {

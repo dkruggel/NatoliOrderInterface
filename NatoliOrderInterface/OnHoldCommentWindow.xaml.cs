@@ -101,10 +101,10 @@ namespace NatoliOrderInterface
                     eProject.OnHoldComment = CommentBox.Text;
                     eProject.OnHoldDateTime = DateTime.UtcNow;
 
-                    string _name = projectNumber + (Convert.ToInt32(revisionNumber) > 0 ? "_" + revisionNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "On Hold - " + projectType;
-                    _driveworksContext.Specifications.Update(spec);
+                    //string _name = projectNumber + (Convert.ToInt32(revisionNumber) > 0 ? "_" + revisionNumber : "");
+                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    //spec.StateName = "On Hold - " + projectType;
+                    //_driveworksContext.Specifications.Update(spec);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
