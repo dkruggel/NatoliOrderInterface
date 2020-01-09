@@ -171,7 +171,10 @@
                 <Label x:Name="QTYLabel" Content="55***" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
                 <Label x:Name="LineItemType" Content="U*" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,0,0,0" FontWeight="Bold"/>
                 <Label x:Name="HobOrDieNo" Content="132389" Padding="0" VerticalContentAlignment="Center" Grid.Column="3" FontWeight="Bold"/>
-                <Label x:Name="MachineNo" Content="2- 2355" Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                <DockPanel Grid.Column="4" Grid.ColumnSpan="2">
+                    <Label x:Name="NoOfTips" Content="2-" Padding="0" Margin="1,0,0,0" Width="14" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                    <Label x:Name="MachineNo" Content="2355" Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                </DockPanel>
                 <Label x:Name="Material" Content="ESR S7 STEEL" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="1" Grid.ColumnSpan="4"/>
                 <Label x:Name="StockSize" Content="1 x 5-3/4" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="4"/>
                 <Label x:Name="HobDescription1" Content="UPPER PUNCH FROM HOB # 132389***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="9" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>

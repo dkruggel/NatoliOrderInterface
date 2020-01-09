@@ -237,12 +237,29 @@ namespace NatoliOrderInterface
             HobOrDieNo.Content = orderLineItems[lineItemNumber - 1].HobNoShapeID;
             if (orderLineItems[lineItemNumber - 1].TipQTY > 1)
             {
-                MachineNo.Content = orderLineItems[lineItemNumber - 1].TipQTY + "- " + orderLineItems[lineItemNumber - 1].MachineNo;
+                NoOfTips.Content = orderLineItems[lineItemNumber - 1].TipQTY + "-";
             }
             else
             {
-                MachineNo.Content = " - " + orderLineItems[lineItemNumber - 1].MachineNo;
+                NoOfTips.Content = "-";
             }
+
+            using var _nat01Context = new NAT01Context();
+            if (_nat01Context.MachineList.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo))
+            {
+                List<MachineList> machine = _nat01Context.MachineList.Where(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo).ToList();
+                DataGrid dataGrid = new DataGrid();
+                
+                dataGrid.ItemsSource = machine;
+                //System.Reflection.PropertyInfo[] properties = typeof(MachineList).GetProperties();
+                //foreach (System.Reflection.PropertyInfo propertyInfo in properties)
+                //{
+
+                //}
+            }
+            MachineNo.Content = orderLineItems[lineItemNumber - 1].TipQTY + "- " + orderLineItems[lineItemNumber - 1].MachineNo;
+
+
             Material.Content = orderLineItems[lineItemNumber - 1].Material;
             StockSize.Content = orderLineItems[lineItemNumber - 1].StockSize;
             HobDescription1.Content = orderLineItems[lineItemNumber - 1].HobDescription1;
