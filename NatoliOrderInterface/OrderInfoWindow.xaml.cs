@@ -26,6 +26,8 @@ using Org.BouncyCastle.Crypto.Parameters;
 using System.Runtime.InteropServices;
 using System.Windows.Navigation;
 using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace NatoliOrderInterface
 {
@@ -231,10 +233,302 @@ namespace NatoliOrderInterface
         }
         private void LineItemChange()
         {
+            
             Order_Info_Window.Background = orderLineItems[lineItemNumber - 1].SheetColor;
             QTYLabel.Content = orderLineItems[lineItemNumber - 1].QTY;
             LineItemType.Content = orderLineItems[lineItemNumber - 1].LineItemType;
             HobOrDieNo.Content = orderLineItems[lineItemNumber - 1].HobNoShapeID;
+            using var _nat01Context = new NAT01Context();
+            if (!string.IsNullOrEmpty(orderLineItems[lineItemNumber - 1].HobNoShapeID) &&
+                !string.IsNullOrWhiteSpace(orderLineItems[lineItemNumber - 1].HobNoShapeID) &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "D" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DS" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DH" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DI" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DA" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DP" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DS" &&
+                orderLineItems[lineItemNumber - 1].LineItemType != "DC" &&
+                _nat01Context.HobList.Any(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim()
+                && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY))
+            {
+                HobList hob = _nat01Context.HobList.First(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY);
+                Grid grid = new Grid();
+                grid.ShowGridLines = false;
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                for (UInt16 ii = 0; ii < 22; ii++)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                }
+                Border headerBorder = new Border { BorderBrush = Brushes.Gray, BorderThickness = new Thickness(0, 0, 0, 1), VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
+                headerBorder.SetValue(Grid.ColumnSpanProperty, 100);
+                grid.Children.Add(headerBorder);
+                System.Reflection.PropertyInfo[] properties = typeof(HobList).GetProperties();
+                foreach (System.Reflection.PropertyInfo property in properties)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                    TextBlock textBlock0 = null;
+                    TextBlock textBlock1 = null;
+                    switch (property.Name)
+                    {
+                        case "HobNo":
+                            textBlock0 = new TextBlock { Text = "Hob No", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 0);
+                            textBlock1.SetValue(Grid.ColumnProperty, 0);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "TipQty":
+                            textBlock0 = new TextBlock { Text = "Tip", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "1" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 1);
+                            textBlock1.SetValue(Grid.ColumnProperty, 1);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "BoreCircle":
+                            textBlock0 = new TextBlock { Text = "Bore Circle", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((float)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 2);
+                            textBlock1.SetValue(Grid.ColumnProperty, 2);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "HobYorNorD":
+                            textBlock0 = new TextBlock { Text = "Hob Status", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 3);
+                            textBlock1.SetValue(Grid.ColumnProperty, 3);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "DieID":
+                            textBlock0 = new TextBlock { Text = "Die ID", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 4);
+                            textBlock1.SetValue(Grid.ColumnProperty, 4);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "Size":
+                            textBlock0 = new TextBlock { Text = property.Name, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 5);
+                            textBlock1.SetValue(Grid.ColumnProperty, 5);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "Shape":
+                            textBlock0 = new TextBlock { Text = property.Name, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 6);
+                            textBlock1.SetValue(Grid.ColumnProperty, 6);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "CupDepth":
+                            textBlock0 = new TextBlock { Text = "Cup Depth", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((float)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 7);
+                            textBlock1.SetValue(Grid.ColumnProperty, 7);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "Land":
+                            textBlock0 = new TextBlock { Text = property.Name, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((float)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 8);
+                            textBlock1.SetValue(Grid.ColumnProperty, 8);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "LandRange":
+                            textBlock0 = new TextBlock { Text = "Land Range", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((float)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 9);
+                            textBlock1.SetValue(Grid.ColumnProperty, 9);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "LandBlendedYorN":
+                            textBlock0 = new TextBlock { Text = "Blended?", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 10);
+                            textBlock1.SetValue(Grid.ColumnProperty, 10);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "MeasurableCd":
+                            textBlock0 = new TextBlock { Text = "Meas. Cup Depth", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((float)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 11);
+                            textBlock1.SetValue(Grid.ColumnProperty, 11);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "CupCode":
+                            textBlock0 = new TextBlock { Text = "Cup Code", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 12);
+                            textBlock1.SetValue(Grid.ColumnProperty, 12);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "BisectCode":
+                            textBlock0 = new TextBlock { Text = "Bisect Code", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 13);
+                            textBlock1.SetValue(Grid.ColumnProperty, 13);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "OwnerReservedFor":
+                            textBlock0 = new TextBlock { Text = "Owner" , Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 14);
+                            textBlock1.SetValue(Grid.ColumnProperty, 14);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "DateDesigned":
+                            textBlock0 = new TextBlock { Text = "Date Designed", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : ((DateTime)property.GetValue(hob)).ToString("dd/mm/yy"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 15);
+                            textBlock1.SetValue(Grid.ColumnProperty, 15);
+                            break;
+                        case "Class":
+                            textBlock0 = new TextBlock { Text = property.Name, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 16);
+                            textBlock1.SetValue(Grid.ColumnProperty, 16);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "DrawingYorN":
+                            textBlock0 = new TextBlock { Text = "Drawing?", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 17);
+                            textBlock1.SetValue(Grid.ColumnProperty, 17);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "DrawingType":
+                            textBlock0 = new TextBlock { Text = "Drawing Type", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 18);
+                            textBlock1.SetValue(Grid.ColumnProperty, 18);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "ProgramNo":
+                            textBlock0 = new TextBlock { Text = "Project No", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 19);
+                            textBlock1.SetValue(Grid.ColumnProperty, 19);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "CupRadius":
+                            textBlock0 = new TextBlock { Text = "Cup Radius", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "0.0000" : ((decimal)property.GetValue(hob)).ToString("#0.0000"), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 20);
+                            textBlock1.SetValue(Grid.ColumnProperty, 20);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "Nnumber":
+                            textBlock0 = new TextBlock { Text = "N-Number", Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                            textBlock0.SetValue(Grid.RowProperty, 0);
+                            textBlock1.SetValue(Grid.RowProperty, 1);
+                            textBlock0.SetValue(Grid.ColumnProperty, 21);
+                            textBlock1.SetValue(Grid.ColumnProperty, 21);
+                            grid.Children.Add(textBlock0);
+                            grid.Children.Add(textBlock1);
+                            break;
+                        case "Note1":
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch };
+                            Border border1 = new Border { BorderBrush = Brushes.Black, BorderThickness = new Thickness(1), Margin = new Thickness(4, 4, -20, 4), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+                            border1.SetValue(Grid.RowProperty, 3);
+                            border1.SetValue(Grid.ColumnProperty, 3);
+                            border1.SetValue(Grid.ColumnSpanProperty, 3);
+                            border1.Child = textBlock1;
+                            grid.Children.Add(border1);
+                            break;
+                        case "Note2":
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch };
+                            Border border2 = new Border { BorderBrush = Brushes.Black, BorderThickness = new Thickness(1), Margin = new Thickness(24, 4, 4, 4), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+                            border2.SetValue(Grid.RowProperty, 3);
+                            border2.SetValue(Grid.ColumnProperty, 6);
+                            border2.SetValue(Grid.ColumnSpanProperty, 4);
+                            border2.Child = textBlock1;
+                            grid.Children.Add(border2);
+                            break;
+                        case "Note3":
+                            textBlock1 = new TextBlock { Text = property.GetValue(hob) == null ? "" : property.GetValue(hob).ToString().Trim(), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch };
+                            Border border3 = new Border { BorderBrush = Brushes.Black, BorderThickness = new Thickness(1), Margin = new Thickness(4), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+                            border3.SetValue(Grid.RowProperty, 3);
+                            border3.SetValue(Grid.ColumnProperty, 10);
+                            border3.SetValue(Grid.ColumnSpanProperty, 5);
+                            border3.Child = textBlock1;
+                            grid.Children.Add(border3);
+                            break;
+
+                    }
+                }
+                HobOrDieNo.ToolTip = grid;
+            }
+            else
+            {
+                HobOrDieNo.ToolTip = null;
+            }
+
+
             if (orderLineItems[lineItemNumber - 1].TipQTY > 1)
             {
                 NoOfTips.Content = orderLineItems[lineItemNumber - 1].TipQTY + "-";
@@ -244,37 +538,49 @@ namespace NatoliOrderInterface
                 NoOfTips.Content = "-";
             }
 
-            using var _nat01Context = new NAT01Context();
+            MachineNo.Content = orderLineItems[lineItemNumber - 1].MachineNo.ToString();
+
+            
             if (_nat01Context.CustomerMachines.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber))
             {
                 CustomerMachines machine = _nat01Context.CustomerMachines.First(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber);
-                string s = "";
 
                 Grid grid = new Grid();
-                System.Reflection.PropertyInfo[] properties = typeof(CustomerMachines).GetProperties();
+                grid.ShowGridLines = false;
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                Border headerBorder = new Border { BorderBrush = Brushes.Gray, BorderThickness = new Thickness(0, 0, 0, 1), VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
+                headerBorder.SetValue(Grid.ColumnSpanProperty, 100);
+                Border headerBorder1 = new Border { BorderBrush = Brushes.Gray, BorderThickness = new Thickness(0, 0, 0, 1), VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch };
+                headerBorder1.SetValue(Grid.ColumnSpanProperty, 100);
+                headerBorder1.SetValue(Grid.RowProperty, 3);
+                grid.Children.Add(headerBorder);
+                grid.Children.Add(headerBorder1);
                 int x = 0;
-                grid.RowDefinitions.Add(new RowDefinition());
-                grid.RowDefinitions.Add(new RowDefinition());
+                System.Reflection.PropertyInfo[] properties = typeof(CustomerMachines).GetProperties();
                 foreach (System.Reflection.PropertyInfo property in properties)
                 {
-                    grid.ColumnDefinitions.Add(new ColumnDefinition());
-                    TextBlock textBlock0 = new TextBlock { Text = property.Name };
-                    TextBlock textBlock1 = new TextBlock { Text = property.GetValue(machine).ToString() };
-                    textBlock0.SetValue(Grid.RowProperty, 0);
-                    textBlock0.SetValue(Grid.RowProperty, 1);
-                    textBlock0.SetValue(Grid.ColumnProperty, x);
-                    textBlock0.SetValue(Grid.ColumnProperty, x);
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                    TextBlock textBlock0 = new TextBlock { Text = property.Name, Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center};
+                    TextBlock textBlock1 = new TextBlock { Text = property.GetValue(machine) == null ? "" : property.GetValue(machine).ToString().Trim(), Margin = new Thickness(4), VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center };
+                    textBlock0.SetValue(Grid.RowProperty, x > 9 ? 3 : 0);
+                    textBlock1.SetValue(Grid.RowProperty, x > 9 ? 4 : 1);
+                    textBlock0.SetValue(Grid.ColumnProperty, x % 10 );
+                    textBlock1.SetValue(Grid.ColumnProperty, x % 10);
                     grid.Children.Add(textBlock0);
                     grid.Children.Add(textBlock1);
                     x++;
                 }
-                MachineNo.Content = grid;
+                MachineNo.ToolTip = grid;
             }
             else
             {
-                MachineNo.Content = "Not in customer machines list";
+                MachineNo.ToolTip = null;
             }
-            
+            _nat01Context.Dispose();
 
 
             Material.Content = orderLineItems[lineItemNumber - 1].Material;
