@@ -205,6 +205,7 @@ namespace NatoliOrderInterface
             context.Dispose();
             LineItemsDataGrid.LoadingRow += LineItemsDataGrid_LoadingRow;
             LineItemsDataGrid.ItemsSource = lineItems.DefaultView;
+            lineItems.Dispose();
         }
         private void LineItemsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
@@ -628,6 +629,7 @@ namespace NatoliOrderInterface
                         updateConnection.Open();
                         DataTable TransferBatch = new DataTable();
                         TransferBatch.Load(updateCommand.ExecuteReader());
+                        TransferBatch.Dispose();
                     }
                 }
                 catch (Exception ex)

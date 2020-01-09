@@ -549,6 +549,10 @@ namespace NatoliOrderInterface
                 Header = "File",
                 Height = MainMenu.Height
             };
+            MenuItem createProject = new MenuItem()
+            {
+                Header = "Create Project"
+            };
             MenuItem forceRefresh = new MenuItem
             {
                 Header = "Force Refresh"
@@ -569,11 +573,13 @@ namespace NatoliOrderInterface
             {
                 Header = "Print Drawings"
             };
+            createProject.Click += CreateProject_Click;
             forceRefresh.Click += ForceRefresh_Click;
             editLayout.Click += EditLayout_Click;
             checkMissingVariables.Click += CheckMissingVariables_Click;
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
+            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
             fileMenu.Items.Add(forceRefresh);
             fileMenu.Items.Add(editLayout);
             if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
@@ -995,7 +1001,9 @@ namespace NatoliOrderInterface
                         updateConnection.Open();
                         DataTable TransferBatch = new DataTable();
                         TransferBatch.Load(updateCommand.ExecuteReader());
+                        TransferBatch.Dispose();
                     }
+                    updateCommand.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -2261,6 +2269,22 @@ namespace NatoliOrderInterface
             MainRefresh();
         }
 
+        private void CreateProject_Click(object sender, RoutedEventArgs e)
+        {
+            // Select max project number
+            using var projectsContext = new ProjectsContext();
+            string projectNumber = (Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1).ToString();
+
+            // Dispose of project context
+            projectsContext.Dispose();
+
+            // Create new project window/project
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true);
+
+            // Dispose of project window
+            projectWindow.Dispose();
+        }
+
         private void EditLayout_Click(object sender, RoutedEventArgs e)
         {
             EditLayoutWindow editLayoutWindow = new EditLayoutWindow(User, this);
@@ -2579,6 +2603,7 @@ namespace NatoliOrderInterface
                 try
                 {
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                    projectWindow.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -9759,6 +9784,7 @@ namespace NatoliOrderInterface
                     //    System.IO.Directory.CreateDirectory(path);
                     //System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                    projectWindow.Dispose();
                 }
                 catch (Exception ex)
                 {
