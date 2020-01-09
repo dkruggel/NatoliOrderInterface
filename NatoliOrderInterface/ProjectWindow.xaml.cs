@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Reflection;
+using System.IO;
 
 namespace NatoliOrderInterface
 {
@@ -1053,6 +1054,10 @@ namespace NatoliOrderInterface
         /// </summary>
         private void PopulateBlankWindow()
         {
+            if (!Directory.Exists(projectsDirectory + projectNumber+ "\\"))
+            {
+                Directory.CreateDirectory(projectsDirectory + projectNumber + "\\");
+            }
             ProjectNavigation.Visibility = Visibility.Hidden;
             CreationBorder.Visibility = Visibility.Visible;
             ArchivedOrInactive.Visibility = Visibility.Collapsed;
