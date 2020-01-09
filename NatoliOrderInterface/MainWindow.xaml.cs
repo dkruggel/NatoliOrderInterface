@@ -1161,21 +1161,29 @@ namespace NatoliOrderInterface
                         string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
                         // Insert into StartedBy
-                        ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
-                        tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
-                        tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
-                        tabletProjectStarted.TimeSubmitted = DateTime.Now;
-                        tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                                     User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                                     User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                        _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
 
-                        // Drive specification transition name to "Started - Tablets"
-                        // Auto archive project specification
-                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Started - Tablets";
-                        _driveworksContext.Specifications.Update(spec);
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+                        {
+                            ProjectWindow.StartProject(project.Item1, project.Item2, "TABLETS", User);
+                        }
+                        else
+                        {
+                            ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
+                            tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
+                            tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
+                            tabletProjectStarted.TimeSubmitted = DateTime.Now;
+                            tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                                         User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                                         User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+                            _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
+
+                            // Drive specification transition name to "Started - Tablets"
+                            // Auto archive project specification
+                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                            spec.StateName = "Started - Tablets";
+                            _driveworksContext.Specifications.Update(spec);
+                        }
 
                         _projectsContext.SaveChanges();
                         _driveworksContext.SaveChanges();
@@ -1209,27 +1217,33 @@ namespace NatoliOrderInterface
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+                        {
+                            ProjectWindow.DrawProject(project.Item1, project.Item2, "TABLETS", User);
+                        }
+                        else
+                        {
+                            // Get project revision number
+                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
-                        // Insert into CheckedBy
-                        TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
-                        tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
-                        tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
-                        tabletDrawnBy.TimeSubmitted = DateTime.Now;
-                        tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                       User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                       User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                        _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
+                            // Insert into CheckedBy
+                            TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
+                            tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
+                            tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
+                            tabletDrawnBy.TimeSubmitted = DateTime.Now;
+                            tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                           User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+                            _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
 
-                        // Drive specification transition name to "Drawn - Tablets"
-                        // Auto archive project specification
-                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Drawn - Tablets";
-                        _driveworksContext.Specifications.Update(spec);
-
+                            // Drive specification transition name to "Drawn - Tablets"
+                            // Auto archive project specification
+                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                            spec.StateName = "Drawn - Tablets";
+                            _driveworksContext.Specifications.Update(spec);
+                        }
                         _projectsContext.SaveChanges();
                         _driveworksContext.SaveChanges();
                         _projectsContext.Dispose();
@@ -1262,35 +1276,42 @@ namespace NatoliOrderInterface
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                        // Insert into CheckedBy
-                        TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
-                        tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
-                        tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
-                        tabletSubmittedBy.TimeSubmitted = DateTime.Now;
-                        tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                               User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
-                        _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
-
-                        // Drive specification transition name to "Submitted - Tablets"
-                        // Auto archive project specification
-
-                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                        if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-                            spec.StateName = "Submitted - Tablets";
-                            _driveworksContext.Specifications.Update(spec);
+                            ProjectWindow.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
                         }
                         else
                         {
-                            MessageBox.Show(
-                                "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
-                                "Perhaps it is in a save state.",
-                                "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
+                            // Get project revision number
+                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+                            // Insert into CheckedBy
+                            TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
+                            tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
+                            tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
+                            tabletSubmittedBy.TimeSubmitted = DateTime.Now;
+                            tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                                   User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
+                            _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
+
+                            // Drive specification transition name to "Submitted - Tablets"
+                            // Auto archive project specification
+
+                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                            if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+                            {
+                                Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
+                                spec.StateName = "Submitted - Tablets";
+                                _driveworksContext.Specifications.Update(spec);
+                            }
+                            else
+                            {
+                                MessageBox.Show(
+                                    "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
+                                    "Perhaps it is in a save state.",
+                                    "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
                         }
 
                         _projectsContext.SaveChanges();
@@ -1340,29 +1361,36 @@ namespace NatoliOrderInterface
                 using var _projectsContext = new ProjectsContext();
                 using var _driveworksContext = new DriveWorksContext();
 
-                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                 {
-                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-                    holdStatus.HoldStatus1 = "OFF HOLD";
-                    holdStatus.TimeSubmitted = DateTime.Now;
-                    _projectsContext.HoldStatus.Update(holdStatus);
+                    ProjectWindow.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
                 }
                 else
                 {
-                    // Insert into HoldStatus
-                    HoldStatus holdStatus = new HoldStatus();
-                    holdStatus.ProjectNumber = _projectNumber.ToString();
-                    holdStatus.RevisionNumber = _revNumber.ToString();
-                    holdStatus.TimeSubmitted = DateTime.Now;
-                    holdStatus.HoldStatus1 = "OFF HOLD";
-                    _projectsContext.HoldStatus.Add(holdStatus);
-                }
+                    if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+                    {
+                        HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
+                        holdStatus.HoldStatus1 = "OFF HOLD";
+                        holdStatus.TimeSubmitted = DateTime.Now;
+                        _projectsContext.HoldStatus.Update(holdStatus);
+                    }
+                    else
+                    {
+                        // Insert into HoldStatus
+                        HoldStatus holdStatus = new HoldStatus();
+                        holdStatus.ProjectNumber = _projectNumber.ToString();
+                        holdStatus.RevisionNumber = _revNumber.ToString();
+                        holdStatus.TimeSubmitted = DateTime.Now;
+                        holdStatus.HoldStatus1 = "OFF HOLD";
+                        _projectsContext.HoldStatus.Add(holdStatus);
+                    }
 
-                // Drive specification transition name to "Off Hold - Tablets"
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                spec.StateName = "Off Hold - Tablets";
-                _driveworksContext.Specifications.Update(spec);
+                    // Drive specification transition name to "Off Hold - Tablets"
+                    string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
+                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    spec.StateName = "Off Hold - Tablets";
+                    _driveworksContext.Specifications.Update(spec);
+                }
 
                 _projectsContext.SaveChanges();
                 _driveworksContext.SaveChanges();
@@ -1422,54 +1450,65 @@ namespace NatoliOrderInterface
                         using var _driveworksContext = new DriveWorksContext();
                         using var _nat02Context = new NAT02Context();
 
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-                        // Insert into CheckedBy
-                        TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
-                        tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
-                        tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
-                        tabletCheckedBy.TimeSubmitted = DateTime.Now;
-                        tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
-                        _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
-
-                        // Insert into ProjectsFinished  (Now a Trigger)
-                        //if (!(bool)_tools)
-                        //{
-                        //    EoiProjectsFinished finished = new EoiProjectsFinished();
-                        //    finished.ProjectNumber = _projectNumber;
-                        //    finished.RevisionNumber = _revNumber;
-                        //    finished.Csr = _csr;
-                        //    _nat02Context.EoiProjectsFinished.Add(finished);
-                        //    _nat02Context.SaveChanges();
-                        //}
-
-                        // Drive specification transition name to "Completed"
-                        // Auto archive project specification
-                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                        bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-                        spec.IsArchived = (bool)!_tools;
-                        _driveworksContext.Specifications.Update(spec);
-
-
-
-                        //Send Email To CSR
-                        if (!(bool)_tools)
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            List<string> _CSRs = new List<string>();
-                            _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
-                            {
-                                _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-                            }
-                            SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
+                            ProjectWindow.CheckProject(project.Item1, project.Item2, "TABLETS", User);
                         }
-                        // Save pending changes
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
+                        else
+                        {
+                            // Get project revision number
+                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
 
+                            // Insert into CheckedBy
+                            TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
+                            tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
+                            tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
+                            tabletCheckedBy.TimeSubmitted = DateTime.Now;
+                            tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
+                            _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
+
+                            // Insert into ProjectsFinished  (Now a Trigger)
+                            //if (!(bool)_tools)
+                            //{
+                            // using var _nat02Context = new NAT02Context();
+                            //    EoiProjectsFinished finished = new EoiProjectsFinished();
+                            //    finished.ProjectNumber = _projectNumber;
+                            //    finished.RevisionNumber = _revNumber;
+                            //    finished.Csr = _csr;
+                            //    _nat02Context.EoiProjectsFinished.Add(finished);
+                            //    _nat02Context.SaveChanges();
+                            //}
+
+                            // Drive specification transition name to "Completed"
+                            // Auto archive project specification
+                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                            bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
+                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                            spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
+                            spec.IsArchived = (bool)!_tools;
+                            _driveworksContext.Specifications.Update(spec);
+
+
+
+                            //Send Email To CSR
+                            if (!(bool)_tools)
+                            {
+                                List<string> _CSRs = new List<string>();
+                                
+                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
+                                { 
+                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
+                                }
+                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                {
+                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+                                }
+                                SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
+                            }
+                            // Save pending changes
+                            _projectsContext.SaveChanges();
+                            _driveworksContext.SaveChanges();
+                        }
                         // Dispose of contexts
                         _projectsContext.Dispose();
                         _driveworksContext.Dispose();
@@ -1489,57 +1528,69 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
+                
                 foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?");
-                    if (res == MessageBoxResult.Yes)
+                    using var _projectsContext = new ProjectsContext();
+                    using var _driveworksContext = new DriveWorksContext();
+                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        try
+                        ProjectWindow.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+                    }
+                    else
+                    {
+
+                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?");
+                        if (res == MessageBoxResult.Yes)
                         {
-                            // Uncheck project expander
-                            project.Item3.IsChecked = false;
-
-                            using var _projectsContext = new ProjectsContext();
-                            using var _driveworksContext = new DriveWorksContext();
-
-                            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+                            try
                             {
-                                // Update data in HoldStatus
-                                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-                                holdStatus.HoldStatus1 = "CANCELLED";
-                                holdStatus.TimeSubmitted = DateTime.Now;
-                                holdStatus.OnHoldComment = "";
-                                _projectsContext.HoldStatus.Update(holdStatus);
+                                // Uncheck project expander
+                                project.Item3.IsChecked = false;
+
+                                
+
+                                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+                                {
+                                    // Update data in HoldStatus
+                                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
+                                    holdStatus.HoldStatus1 = "CANCELLED";
+                                    holdStatus.TimeSubmitted = DateTime.Now;
+                                    holdStatus.OnHoldComment = "";
+                                    _projectsContext.HoldStatus.Update(holdStatus);
+                                }
+                                else
+                                {
+                                    // Insert into HoldStatus
+                                    HoldStatus holdStatus = new HoldStatus();
+                                    holdStatus.ProjectNumber = project.Item1;
+                                    holdStatus.RevisionNumber = project.Item2;
+                                    holdStatus.TimeSubmitted = DateTime.Now;
+                                    holdStatus.HoldStatus1 = "CANCELLED";
+                                    holdStatus.OnHoldComment = "";
+                                    _projectsContext.HoldStatus.Add(holdStatus);
+                                }
+
+                                // Drive specification transition name to "On Hold - " projectType
+                                string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
+                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                                spec.StateName = "Cancelled - Tablets";
+                                spec.IsArchived = true;
+                                _driveworksContext.Specifications.Update(spec);
+
+                                _projectsContext.SaveChanges();
+                                _driveworksContext.SaveChanges();
+                                MainRefresh();
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                // Insert into HoldStatus
-                                HoldStatus holdStatus = new HoldStatus();
-                                holdStatus.ProjectNumber = project.Item1;
-                                holdStatus.RevisionNumber = project.Item2;
-                                holdStatus.TimeSubmitted = DateTime.Now;
-                                holdStatus.HoldStatus1 = "CANCELLED";
-                                holdStatus.OnHoldComment = "";
-                                _projectsContext.HoldStatus.Add(holdStatus);
+                                // MessageBox.Show(ex.Message);
+                                WriteToErrorLog("SetOnHold", ex.Message);
                             }
-
-                            // Drive specification transition name to "On Hold - " projectType
-                            string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Cancelled - Tablets";
-                            spec.IsArchived = true;
-                            _driveworksContext.Specifications.Update(spec);
-
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
-                            MainRefresh();
-                        }
-                        catch (Exception ex)
-                        {
-                            // MessageBox.Show(ex.Message);
-                            WriteToErrorLog("SetOnHold", ex.Message);
                         }
                     }
+                    _projectsContext.Dispose();
+                    _driveworksContext.Dispose();
                 }
             }
         }
@@ -1558,43 +1609,50 @@ namespace NatoliOrderInterface
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-                        string usrName = User.GetUserName().Split(" ")[0];
-                        int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
-                                                                            string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
-                                                                            p.ProjectsId > 80000).Count();
-                        if (false) //(count > 5)
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            MessageBox.Show(
-                                "Maximum simultaneous projects limit reached.\n" +
-                                "Please finish a project before starting more.");
+                            ProjectWindow.StartProject(project.Item1, project.Item2, "TOOLS", User);
                         }
                         else
                         {
-                            // Insert into CheckedBy
-                            ProjectStartedTool toolProjectStarted = new ProjectStartedTool();
-                            toolProjectStarted.ProjectNumber = int.Parse(project.Item1);
-                            toolProjectStarted.RevisionNumber = int.Parse(project.Item2);
-                            toolProjectStarted.TimeSubmitted = DateTime.Now;
-                            toolProjectStarted.ProjectStartedTool1 = User.GetUserName().Split(' ')[0];
-                            _projectsContext.ProjectStartedTool.Add(toolProjectStarted);
+                            // Get project revision number
+                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+                            string usrName = User.GetUserName().Split(" ")[0];
+                            int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
+                                                                                string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
+                                                                                p.ProjectsId > 80000).Count();
+                            if (false) //(count > 5)
+                            {
+                                MessageBox.Show(
+                                    "Maximum simultaneous projects limit reached.\n" +
+                                    "Please finish a project before starting more.");
+                            }
+                            else
+                            {
+                                // Insert into CheckedBy
+                                ProjectStartedTool toolProjectStarted = new ProjectStartedTool();
+                                toolProjectStarted.ProjectNumber = int.Parse(project.Item1);
+                                toolProjectStarted.RevisionNumber = int.Parse(project.Item2);
+                                toolProjectStarted.TimeSubmitted = DateTime.Now;
+                                toolProjectStarted.ProjectStartedTool1 = User.GetUserName().Split(' ')[0];
+                                _projectsContext.ProjectStartedTool.Add(toolProjectStarted);
 
-                            // Drive specification transition name to "Started - Tools"
-                            // Auto archive project specification
-                            string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Started - Tools";
-                            _driveworksContext.Specifications.Update(spec);
+                                // Drive specification transition name to "Started - Tools"
+                                // Auto archive project specification
+                                string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                                spec.StateName = "Started - Tools";
+                                _driveworksContext.Specifications.Update(spec);
 
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
-                            _projectsContext.Dispose();
-                            _driveworksContext.Dispose();
+                                _projectsContext.SaveChanges();
+                                _driveworksContext.SaveChanges();
+                                _projectsContext.Dispose();
+                                _driveworksContext.Dispose();
 
-                            // Email CSR
-                            // SendEmailToCSR(_csr, _projectNumber.ToString());
+                                // Email CSR
+                                // SendEmailToCSR(_csr, _projectNumber.ToString());
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -1623,24 +1681,32 @@ namespace NatoliOrderInterface
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
 
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
-                        // Insert into CheckedBy
-                        ToolDrawnBy toolDrawnBy = new ToolDrawnBy();
-                        toolDrawnBy.ProjectNumber = int.Parse(project.Item1);
-                        toolDrawnBy.RevisionNumber = int.Parse(project.Item2);
-                        toolDrawnBy.TimeSubmitted = DateTime.Now;
-                        toolDrawnBy.ToolDrawnBy1 = User.GetUserName().Split(' ')[0];
-                        _projectsContext.ToolDrawnBy.Add(toolDrawnBy);
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+                        {
+                            ProjectWindow.DrawProject(project.Item1, project.Item2, "TOOLS", User);
+                        }
+                        else
+                        {
+                            // Get project revision number
+                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
-                        // Drive specification transition name to "Drawn - Tools"
-                        // Auto archive project specification
-                        string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                        spec.StateName = "Drawn - Tools";
-                        _driveworksContext.Specifications.Update(spec);
+                            // Insert into CheckedBy
+                            ToolDrawnBy toolDrawnBy = new ToolDrawnBy();
+                            toolDrawnBy.ProjectNumber = int.Parse(project.Item1);
+                            toolDrawnBy.RevisionNumber = int.Parse(project.Item2);
+                            toolDrawnBy.TimeSubmitted = DateTime.Now;
+                            toolDrawnBy.ToolDrawnBy1 = User.GetUserName().Split(' ')[0];
+                            _projectsContext.ToolDrawnBy.Add(toolDrawnBy);
+
+                            // Drive specification transition name to "Drawn - Tools"
+                            // Auto archive project specification
+                            string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                            spec.StateName = "Drawn - Tools";
+                            _driveworksContext.Specifications.Update(spec);
+                        }
 
                         _projectsContext.SaveChanges();
                         _driveworksContext.SaveChanges();
@@ -1680,35 +1746,43 @@ namespace NatoliOrderInterface
                             using var _projectsContext = new ProjectsContext();
                             using var _driveworksContext = new DriveWorksContext();
 
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
 
-
-                            // Insert into CheckedBy
-                            ToolCheckedBy toolCheckedBy = new ToolCheckedBy();
-                            toolCheckedBy.ProjectNumber = int.Parse(project.Item1);
-                            toolCheckedBy.RevisionNumber = int.Parse(project.Item2);
-                            toolCheckedBy.TimeSubmitted = DateTime.Now;
-                            toolCheckedBy.ToolCheckedBy1 = User.GetUserName().Split(' ')[0];
-                            _projectsContext.ToolCheckedBy.Add(toolCheckedBy);
-
-                            // Drive specification transition name to "Completed"
-                            // Auto archive project specification
-                            string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Completed";
-                            spec.IsArchived = true;
-                            _driveworksContext.Specifications.Update(spec);
-
-                            //Send Email To CSR
-                            List<string> _CSRs = new List<string>();
-                            _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
+                            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                             {
-                                _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+                                ProjectWindow.CheckProject(project.Item1, project.Item2, "TOOLS", User);
                             }
-                            SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString());
+                            else
+                            {
+                                // Get project revision number
+                                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
 
+
+                                // Insert into CheckedBy
+                                ToolCheckedBy toolCheckedBy = new ToolCheckedBy();
+                                toolCheckedBy.ProjectNumber = int.Parse(project.Item1);
+                                toolCheckedBy.RevisionNumber = int.Parse(project.Item2);
+                                toolCheckedBy.TimeSubmitted = DateTime.Now;
+                                toolCheckedBy.ToolCheckedBy1 = User.GetUserName().Split(' ')[0];
+                                _projectsContext.ToolCheckedBy.Add(toolCheckedBy);
+
+                                // Drive specification transition name to "Completed"
+                                // Auto archive project specification
+                                string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                                spec.StateName = "Completed";
+                                spec.IsArchived = true;
+                                _driveworksContext.Specifications.Update(spec);
+
+                                //Send Email To CSR
+                                List<string> _CSRs = new List<string>();
+                                _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
+                                {
+                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+                                }
+                                SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString());
+
+                            }
                             // Save pending changes
                             _projectsContext.SaveChanges();
                             _driveworksContext.SaveChanges();
@@ -1756,28 +1830,35 @@ namespace NatoliOrderInterface
                 using var _projectsContext = new ProjectsContext();
                 using var _driveworksContext = new DriveWorksContext();
 
-                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                 {
-                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-                    holdStatus.HoldStatus1 = "OFF HOLD";
-                    _projectsContext.HoldStatus.Update(holdStatus);
+                    ProjectWindow.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
                 }
                 else
                 {
-                    // Insert into HoldStatus
-                    HoldStatus holdStatus = new HoldStatus();
-                    holdStatus.ProjectNumber = _projectNumber.ToString();
-                    holdStatus.RevisionNumber = _revNumber.ToString();
-                    holdStatus.TimeSubmitted = DateTime.Now;
-                    holdStatus.HoldStatus1 = "OFF HOLD";
-                    _projectsContext.HoldStatus.Add(holdStatus);
-                }
+                    if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+                    {
+                        HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
+                        holdStatus.HoldStatus1 = "OFF HOLD";
+                        _projectsContext.HoldStatus.Update(holdStatus);
+                    }
+                    else
+                    {
+                        // Insert into HoldStatus
+                        HoldStatus holdStatus = new HoldStatus();
+                        holdStatus.ProjectNumber = _projectNumber.ToString();
+                        holdStatus.RevisionNumber = _revNumber.ToString();
+                        holdStatus.TimeSubmitted = DateTime.Now;
+                        holdStatus.HoldStatus1 = "OFF HOLD";
+                        _projectsContext.HoldStatus.Add(holdStatus);
+                    }
 
-                // Drive specification transition name to "Off Hold - Tools"
-                string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                spec.StateName = "Off Hold - Tools";
-                _driveworksContext.Specifications.Update(spec);
+                    // Drive specification transition name to "Off Hold - Tools"
+                    string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
+                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                    spec.StateName = "Off Hold - Tools";
+                    _driveworksContext.Specifications.Update(spec);
+                }
 
                 _projectsContext.SaveChanges();
                 _driveworksContext.SaveChanges();
@@ -1833,54 +1914,63 @@ namespace NatoliOrderInterface
             {
                 foreach ((string, string, CheckBox) project in selectedProjects)
                 {
-                    MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?");
-                    if (res == MessageBoxResult.Yes)
+                    using var _projectsContext = new ProjectsContext();
+                    using var _driveworksContext = new DriveWorksContext();
+
+                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        try
+                        ProjectWindow.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                    }
+                    else
+                    {
+                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?");
+                        if (res == MessageBoxResult.Yes)
                         {
-                            // Uncheck project expander
-                            project.Item3.IsChecked = false;
-
-                            using var _projectsContext = new ProjectsContext();
-                            using var _driveworksContext = new DriveWorksContext();
-
-                            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+                            try
                             {
-                                // Update data in HoldStatus
-                                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-                                holdStatus.HoldStatus1 = "CANCELLED";
-                                holdStatus.TimeSubmitted = DateTime.Now;
-                                holdStatus.OnHoldComment = "";
-                                _projectsContext.HoldStatus.Update(holdStatus);
+                                // Uncheck project expander
+                                project.Item3.IsChecked = false;
+
+                                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+                                {
+                                    // Update data in HoldStatus
+                                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
+                                    holdStatus.HoldStatus1 = "CANCELLED";
+                                    holdStatus.TimeSubmitted = DateTime.Now;
+                                    holdStatus.OnHoldComment = "";
+                                    _projectsContext.HoldStatus.Update(holdStatus);
+                                }
+                                else
+                                {
+                                    // Insert into HoldStatus
+                                    HoldStatus holdStatus = new HoldStatus();
+                                    holdStatus.ProjectNumber = project.Item1;
+                                    holdStatus.RevisionNumber = project.Item2;
+                                    holdStatus.TimeSubmitted = DateTime.Now;
+                                    holdStatus.HoldStatus1 = "CANCELLED";
+                                    holdStatus.OnHoldComment = "";
+                                    _projectsContext.HoldStatus.Add(holdStatus);
+                                }
+
+                                // Drive specification transition name to "On Hold - " projectType
+                                string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
+                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                                spec.StateName = "Cancelled - Tools";
+                                spec.IsArchived = true;
+                                _driveworksContext.Specifications.Update(spec);
+
+                                _projectsContext.SaveChanges();
+                                _driveworksContext.SaveChanges();
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                // Insert into HoldStatus
-                                HoldStatus holdStatus = new HoldStatus();
-                                holdStatus.ProjectNumber = project.Item1;
-                                holdStatus.RevisionNumber = project.Item2;
-                                holdStatus.TimeSubmitted = DateTime.Now;
-                                holdStatus.HoldStatus1 = "CANCELLED";
-                                holdStatus.OnHoldComment = "";
-                                _projectsContext.HoldStatus.Add(holdStatus);
+                                // MessageBox.Show(ex.Message);
+                                WriteToErrorLog("SetOnHold", ex.Message);
                             }
-
-                            // Drive specification transition name to "On Hold - " projectType
-                            string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Cancelled - Tools";
-                            spec.IsArchived = true;
-                            _driveworksContext.Specifications.Update(spec);
-
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            // MessageBox.Show(ex.Message);
-                            WriteToErrorLog("SetOnHold", ex.Message);
                         }
                     }
+                    _projectsContext.Dispose();
+                    _driveworksContext.Dispose();
                 }
             }
         }

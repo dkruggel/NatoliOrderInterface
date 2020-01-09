@@ -522,6 +522,7 @@ namespace NatoliOrderInterface
         {
             using var _projectsContext = new ProjectsContext();
             using var _driveworksContext = new DriveWorksContext();
+            using var _nat02Context = new NAT02Context();
             try
             {
                 if (projectType == "TABLETS")
@@ -544,10 +545,32 @@ namespace NatoliOrderInterface
                         EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                         engineeringArchivedProject.ArchivedFromCheck = true;
                         engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+
+
+                        List<string> _CSRs = new List<string>();
+
+                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr))
+                        {
+                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr);
+                        }
+                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr))
+                        {
+                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr);
+                        }
+
+                        
+                        EoiProjectsFinished finished = new EoiProjectsFinished();
+                        finished.ProjectNumber = int.Parse(projectNumber);
+                        finished.RevisionNumber = int.Parse(projectRevNumber);
+                        finished.Csr = _CSRs[0];
+                        _nat02Context.EoiProjectsFinished.Add(finished);
+
+                        MainWindow.SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
                     }
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
+                    _nat02Context.SaveChanges();
                 }
                 else if (projectType == "TOOLS")
                 {
@@ -562,8 +585,29 @@ namespace NatoliOrderInterface
                     engineeringArchivedProject.ArchivedFromCheck = true;
                     engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
 
+                    List<string> _CSRs = new List<string>();
+
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr))
+                    {
+                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr);
+                    }
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr))
+                    {
+                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr);
+                    }
+
+
+                    EoiProjectsFinished finished = new EoiProjectsFinished();
+                    finished.ProjectNumber = int.Parse(projectNumber);
+                    finished.RevisionNumber = int.Parse(projectRevNumber);
+                    finished.Csr = _CSRs[0];
+                    _nat02Context.EoiProjectsFinished.Add(finished);
+
+                    MainWindow.SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
+
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
+                    _nat02Context.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -572,6 +616,7 @@ namespace NatoliOrderInterface
             }
             _projectsContext.Dispose();
             _driveworksContext.Dispose();
+            _nat02Context.Dispose();
         }
         /// <summary>
         /// Puts on Hold an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
@@ -635,7 +680,6 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
-
 
         /// <summary>
         /// Checks the form for possible errors.

@@ -2559,30 +2559,37 @@ namespace NatoliOrderInterface
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
-            SubmitButton1.IsEnabled = false;
-            RecallButton1.IsEnabled = true;
-            using var context = new NAT01Context();
-            using var nat02Context = new NAT02Context();
-            using var necContext = new NECContext();
-            QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-            string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-            string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-            EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+            try
             {
-                QuoteNo = quote.QuoteNumber,
-                QuoteRevNo = quote.QuoteRevNo,
-                CustomerName = customerName,
-                Csr = csr,
-                CsrMarked = user.GetUserName(),
-                TimeSubmitted = DateTime.Now,
-                Rush = r.RushYorN
-            };
-            nat02Context.EoiQuotesMarkedForConversion.Add(q);
-            nat02Context.SaveChanges();
-            nat02Context.Dispose();
-            necContext.Dispose();
-            context.Dispose();
-            parent.BoolValue = true;
+                SubmitButton1.IsEnabled = false;
+                RecallButton1.IsEnabled = true;
+                using var context = new NAT01Context();
+                using var nat02Context = new NAT02Context();
+                using var necContext = new NECContext();
+                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                {
+                    QuoteNo = quote.QuoteNumber,
+                    QuoteRevNo = quote.QuoteRevNo,
+                    CustomerName = customerName,
+                    Csr = csr,
+                    CsrMarked = user.GetUserName(),
+                    TimeSubmitted = DateTime.Now,
+                    Rush = r.RushYorN
+                };
+                nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                nat02Context.SaveChanges();
+                nat02Context.Dispose();
+                necContext.Dispose();
+                context.Dispose();
+                parent.BoolValue = true;
+            }
+            catch
+            {
+                
+            }
             Cursor = Cursors.Arrow;
             Close();
         }
