@@ -2273,7 +2273,10 @@ namespace NatoliOrderInterface
         {
             // Select max project number
             using var projectsContext = new ProjectsContext();
-            string projectNumber = (Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1).ToString();
+            int engProjMax = Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
+            int engProjArchMax = Convert.ToInt32(projectsContext.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
+            string projectNumber = engProjArchMax > engProjMax ? engProjArchMax.ToString() : engProjMax.ToString();
+            
 
             // Dispose of project context
             projectsContext.Dispose();
