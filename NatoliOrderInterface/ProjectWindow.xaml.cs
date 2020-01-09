@@ -587,13 +587,13 @@ namespace NatoliOrderInterface
 
                     List<string> _CSRs = new List<string>();
 
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr))
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
                     {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).Csr);
+                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
                     }
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr))
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
                     {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCsr);
+                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
                     }
 
 

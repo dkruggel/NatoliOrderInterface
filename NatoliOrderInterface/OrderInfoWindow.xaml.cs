@@ -245,19 +245,36 @@ namespace NatoliOrderInterface
             }
 
             using var _nat01Context = new NAT01Context();
-            if (_nat01Context.MachineList.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo))
+            if (_nat01Context.CustomerMachines.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber))
             {
-                List<MachineList> machine = _nat01Context.MachineList.Where(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo).ToList();
-                DataGrid dataGrid = new DataGrid();
-                
-                dataGrid.ItemsSource = machine;
-                //System.Reflection.PropertyInfo[] properties = typeof(MachineList).GetProperties();
-                //foreach (System.Reflection.PropertyInfo propertyInfo in properties)
-                //{
+                CustomerMachines machine = _nat01Context.CustomerMachines.First(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber);
+                string s = "";
 
-                //}
+                Grid grid = new Grid();
+                System.Reflection.PropertyInfo[] properties = typeof(CustomerMachines).GetProperties();
+                int x = 0;
+                grid.RowDefinitions.Add(new RowDefinition());
+                grid.RowDefinitions.Add(new RowDefinition());
+                foreach (System.Reflection.PropertyInfo property in properties)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition());
+                    TextBlock textBlock0 = new TextBlock { Text = property.Name };
+                    TextBlock textBlock1 = new TextBlock { Text = property.GetValue(machine).ToString() };
+                    textBlock0.SetValue(Grid.RowProperty, 0);
+                    textBlock0.SetValue(Grid.RowProperty, 1);
+                    textBlock0.SetValue(Grid.ColumnProperty, x);
+                    textBlock0.SetValue(Grid.ColumnProperty, x);
+                    grid.Children.Add(textBlock0);
+                    grid.Children.Add(textBlock1);
+                    x++;
+                }
+                MachineNo.Content = grid;
             }
-            MachineNo.Content = orderLineItems[lineItemNumber - 1].TipQTY + "- " + orderLineItems[lineItemNumber - 1].MachineNo;
+            else
+            {
+                MachineNo.Content = "Not in customer machines list";
+            }
+            
 
 
             Material.Content = orderLineItems[lineItemNumber - 1].Material;

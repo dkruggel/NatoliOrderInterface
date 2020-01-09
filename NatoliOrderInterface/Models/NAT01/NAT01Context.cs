@@ -73,6 +73,7 @@ namespace NatoliOrderInterface.Models.NAT01
         public virtual DbSet<ShapeFields> ShapeFields { get; set; }
         public virtual DbSet<DieList> DieList { get; set; }
         public virtual DbSet<CupConfig> CupConfig { get; set; }
+        public virtual DbSet<CustomerMachines> CustomerMachines { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -4268,8 +4269,13 @@ namespace NatoliOrderInterface.Models.NAT01
                         .IsFixedLength();
                 });
 
+                modelBuilder.Entity<CustomerMachines>(entity =>
+                {
+                    entity.HasKey(e => e.CustomerMachineID);
+                });
                 OnModelCreatingPartial(modelBuilder);
             }
+
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
