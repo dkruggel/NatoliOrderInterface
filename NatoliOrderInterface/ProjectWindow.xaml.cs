@@ -84,7 +84,7 @@ namespace NatoliOrderInterface
             }
         }
 
-        #region Public Static Getters
+        #region Public Static Functions
         /// <summary>
         /// Returns all Shape Descriptions as a list of strings from NAT01.ShapeFields.
         /// </summary>
@@ -272,7 +272,6 @@ namespace NatoliOrderInterface
             _driveworks_USRContext.Dispose();
             return engineeringProject;
         }
-        #endregion
         /// <summary>
         /// Tries to create directory link (shortcut) from directory1 to directory2 and vice-versa.
         /// If directory2 does not exist, tries directory 3
@@ -386,7 +385,7 @@ namespace NatoliOrderInterface
                        let AValue = type.GetProperty(pi.Name).GetValue(A, null)
                        let BValue = type.GetProperty(pi.Name).GetValue(B, null)
                        where AValue != BValue && (AValue == null || !AValue.Equals(BValue))
-                       select pi.Name + ": " + (AValue ?? "null").ToString() + " => " + (BValue ?? "null").ToString();
+                       select pi.Name + ": " + (string.IsNullOrEmpty((AValue ?? "null").ToString()) ? "null" : (AValue ?? "null").ToString())   + " => " + (string.IsNullOrEmpty((BValue ?? "null").ToString()) ? "null" : (BValue ?? "null").ToString());
                 return unequalProperties.ToList();
             }
             else
@@ -394,6 +393,250 @@ namespace NatoliOrderInterface
                 throw new ArgumentNullException("You need to provide 2 non-null objects");
             }
         }
+        /// <summary>
+        /// Starts an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="projectType"></param>
+        /// <param name="user"></param>
+        public static void StartProject(string projectNumber, string projectRevNumber, string projectType, User user)
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _driveworksContext = new DriveWorksContext();
+            try
+            {
+                if (projectType == "TABLETS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.TabletStarted = true;
+                    engineeringProject.TabletStartedDateTime = DateTime.UtcNow;
+                    engineeringProject.TabletStartedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                }
+                else if (projectType == "TOOLS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.ToolStarted = true;
+                    engineeringProject.ToolStartedDateTime = DateTime.UtcNow;
+                    engineeringProject.ToolStartedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+            _driveworksContext.Dispose();
+        }
+        /// <summary>
+        /// Draws an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="projectType"></param>
+        /// <param name="user"></param>
+        public static void DrawProject(string projectNumber, string projectRevNumber, string projectType, User user)
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _driveworksContext = new DriveWorksContext();
+            try
+            {
+                if (projectType == "TABLETS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.TabletDrawn = true;
+                    engineeringProject.TabletDrawnDateTime = DateTime.UtcNow;
+                    engineeringProject.TabletDrawnBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                }
+                else if (projectType == "TOOLS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.ToolDrawn = true;
+                    engineeringProject.ToolDrawnDateTime = DateTime.UtcNow;
+                    engineeringProject.ToolDrawnBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+            _driveworksContext.Dispose();
+        }
+        /// <summary>
+        /// Submits an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="projectType"></param>
+        /// <param name="user"></param>
+        public static void SubmitProject(string projectNumber, string projectRevNumber, string projectType, User user)
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _driveworksContext = new DriveWorksContext();
+            try
+            {
+                if (projectType == "TABLETS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.TabletSubmitted = true;
+                    engineeringProject.TabletSubmittedDateTime = DateTime.UtcNow;
+                    engineeringProject.TabletSubmittedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                }
+                else if (projectType == "TOOLS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.ToolSubmitted = true;
+                    engineeringProject.ToolSubmittedDateTime = DateTime.UtcNow;
+                    engineeringProject.ToolSubmittedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+            _driveworksContext.Dispose();
+        }
+        /// <summary>
+        /// Checks an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="projectType"></param>
+        /// <param name="user"></param>
+        public static void CheckProject(string projectNumber, string projectRevNumber, string projectType, User user)
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _driveworksContext = new DriveWorksContext();
+            try
+            {
+                if (projectType == "TABLETS")
+                {
+                    bool _tools = _projectsContext.EngineeringToolProjects.Any();
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.TabletChecked = true;
+                    engineeringProject.TabletCheckedDateTime = DateTime.UtcNow;
+                    engineeringProject.TabletCheckedBy = user.GetDWPrincipalId();
+                    _projectsContext.SaveChanges();
+                    // Removes from engineeringprojects, trigger puts into archive table, then must specify if it was checked or canceled
+                    if (!_tools)
+                    {
+                        _projectsContext.Remove(engineeringProject);
+                        _projectsContext.SaveChanges();
+                        while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            System.Threading.Thread.Sleep(500);
+                        }
+                        EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        engineeringArchivedProject.ArchivedFromCheck = true;
+                        engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+                    }
+
+                    _projectsContext.SaveChanges();
+                    _driveworksContext.SaveChanges();
+                }
+                else if (projectType == "TOOLS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.ToolChecked = true;
+                    engineeringProject.ToolCheckedDateTime = DateTime.UtcNow;
+                    engineeringProject.ToolCheckedBy = user.GetDWPrincipalId();
+                    _projectsContext.SaveChanges();
+                    _projectsContext.Remove(engineeringProject);
+                    _projectsContext.SaveChanges();
+                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringArchivedProject.ArchivedFromCheck = true;
+                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                    _driveworksContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+            _driveworksContext.Dispose();
+        }
+        /// <summary>
+        /// Puts on Hold an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        public static void TakeProjectOffHold(string projectNumber, string projectRevNumber)
+        {
+            using var _projectsContext = new ProjectsContext();
+            try
+            {
+                EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                engineeringProject.OnHold = false;
+                engineeringProject.OnHoldComment = "";
+                engineeringProject.OnHoldDateTime = null;
+                _projectsContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+        }
+        /// <summary>
+        /// Cancels an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="user"></param>
+        public static void CancelProject(string projectNumber, string projectRevNumber, User user)
+        {
+            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + projectNumber + "_" + projectRevNumber + "?", "Cancel Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (res == MessageBoxResult.Yes)
+            {
+                using var _projectsContext = new ProjectsContext();
+                using var _driveworksContext = new DriveWorksContext();
+                try
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    _projectsContext.Remove(engineeringProject);
+                    _projectsContext.SaveChanges();
+                    while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    {
+                        System.Threading.Thread.Sleep(500);
+                    }
+                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringArchivedProject.ArchivedFromCancel = true;
+                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+
+                    _projectsContext.SaveChanges();
+                    _driveworksContext.SaveChanges();
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                _projectsContext.Dispose();
+                _driveworksContext.Dispose();
+            }
+        }
+        #endregion
+
+
         /// <summary>
         /// Checks the form for possible errors.
         /// Will throw MessageBoxes when it finds an error.
@@ -4150,7 +4393,7 @@ namespace NatoliOrderInterface
             DieOD.IsEnabled = isEnabled;
             DieOL.IsEnabled = isEnabled;
             MachineDescription.IsEnabled = isEnabled;
-            DueDate.IsEditable = isEnabled;
+            DueDate.IsEditable = false;
             DueDate.IsEnabled = isEnabled;
             Priority.IsEnabled = isEnabled;
             Notes.IsEnabled = isEnabled;
@@ -4271,8 +4514,8 @@ namespace NatoliOrderInterface
             DiePlateSteelID.IsEnabled = isEnabled;
             DieSegment.IsEnabled = isEnabled;
             DieSegmentSteelID.IsEnabled = isEnabled;
-            KeyType.IsEditable = isEnabled;
             KeyType.IsEditable = false;
+            KeyType.IsEnabled = false;
             KeyType.IsEnabled = isEnabled;
             KeyAngle.IsEnabled = isEnabled;
             KeyOrientation.IsEnabled = isEnabled;
@@ -5361,6 +5604,7 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
+       
 
         #region Project Routing
         /// <summary>
@@ -5373,55 +5617,9 @@ namespace NatoliOrderInterface
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (CurrentProjectType.Text == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletStarted = true;
-                    engineeringProject.TabletStartedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletStartedBy = user.GetDWPrincipalId();
 
-                    // Drive specification transition name to "Started - Tablets"
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if(_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-                    //    spec.StateName = "Started - Tablets";
-                    //    _driveworksContext.Specifications.Update(spec);
-                    //    _driveworksContext.SaveChanges();
-                    //}
-                    _projectsContext.SaveChanges();
-                }
-                else
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolStarted = true;
-                    engineeringProject.ToolStartedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolStartedBy = user.GetDWPrincipalId();
-
-                    // Drive specification transition name to "Started - Tools"
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //    spec.StateName = "Started - Tools";
-                    //    _driveworksContext.Specifications.Update(spec);
-
-                    //    _driveworksContext.SaveChanges();
-                    //}
-
-                    _projectsContext.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
+            StartProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
+            
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
             mainWindow.BoolValue = true;
@@ -5429,271 +5627,83 @@ namespace NatoliOrderInterface
         /// <summary>
         /// Changes TabletDrawn or ToolDrawn in Projects.EngineeringProjects to be true.
         /// Changes TabletDrawnBy or ToolDrawn in Projects.EngineeringProjects to the users DriveWorksPrincipalId.
-        /// Changes TabletDrawnDateTime or ToolDrawn in Projects.EngineeringProjects to DateTime.Now.
+        /// Changes TabletDrawnDateTime or ToolDrawnDateTime in Projects.EngineeringProjects to DateTime.Now.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FinishButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (CurrentProjectType.Text == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletDrawn = true;
-                    engineeringProject.TabletDrawnDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletDrawnBy = user.GetDWPrincipalId();
 
-                    // Drive specification transition name to "Drawn - Tablets"
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //    spec.StateName = "Drawn - Tablets";
-                    //    _driveworksContext.Specifications.Update(spec);
-                    //    _driveworksContext.SaveChanges();
-                    //}
-                    _projectsContext.SaveChanges();
-                }
-                else
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolDrawn = true;
-                    engineeringProject.ToolDrawnDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolDrawnBy = user.GetDWPrincipalId();
+            DrawProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
-                    // Drive specification transition name to "Drawn - Tools"
-                    // Auto archive project specification
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //    spec.StateName = "Drawn - Tools";
-                    //    _driveworksContext.Specifications.Update(spec);
-                    //    _driveworksContext.SaveChanges();
-                    //}
-                    _projectsContext.SaveChanges();
-                    
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
             mainWindow.BoolValue = true;
         }
-
+        /// <summary>
+        /// Changes TabletSubmitted or ToolSubmitted in Projects.EngineeringProjects to be true.
+        /// Changes TabletSubmittedBy or ToolSubmittedBy in Projects.EngineeringProjects to the users DriveWorksPrincipalId.
+        /// Changes TabletSubmittedDateTime or ToolSubmittedDateTime in Projects.EngineeringProjects to DateTime.Now.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (CurrentProjectType.Text == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletSubmitted = true;
-                    engineeringProject.TabletSubmittedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletSubmittedBy = user.GetDWPrincipalId();
 
-                    // Drive specification transition name to "Submitted - Tablets"
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //    spec.StateName = "Submitted - Tablets";
-                    //    _driveworksContext.Specifications.Update(spec);
-                    //    _driveworksContext.SaveChanges();
-                    //}
-                    _projectsContext.SaveChanges();
-                }
-                else
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolSubmitted = true;
-                    engineeringProject.ToolSubmittedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolSubmittedBy = user.GetDWPrincipalId();
+            SubmitProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
-                    // Drive specification transition name to "Submitted - Tools"
-                    // Auto archive project specification
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                    //{
-                    //    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //    spec.StateName = "Submitted - Tools";
-                    //    _driveworksContext.Specifications.Update(spec);
-                    //    _driveworksContext.SaveChanges();
-                    //}
-                    _projectsContext.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
             mainWindow.BoolValue = true;
         }
-
+        /// <summary>
+        /// Checks Tablet or Tool Project in EngineeringProjects
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (CurrentProjectType.Text == "TABLETS")
-                {
-                    bool _tools = _projectsContext.EngineeringToolProjects.Any();
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletChecked = true;
-                    engineeringProject.TabletCheckedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletCheckedBy = user.GetDWPrincipalId();
-                    _projectsContext.SaveChanges();
-                    // Removes from engineeringprojects, trigger puts into archive table, then must specify if it was checked or canceled
-                    if (!_tools)
-                    {
-                        _projectsContext.Remove(engineeringProject);
-                        _projectsContext.SaveChanges();
-                        while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                        {
-                            System.Threading.Thread.Sleep(500);
-                        }
-                        EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        engineeringArchivedProject.ArchivedFromCheck = true;
-                        engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-                    }
 
-                    // Drive specification transition name to "Checked - Tablets"
-                    // Archive if necessary
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-                    //spec.IsArchived = !_tools;
-                    //_driveworksContext.Specifications.Update(spec);
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                }
-                else
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolChecked = true;
-                    engineeringProject.ToolCheckedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolCheckedBy = user.GetDWPrincipalId();
-                    _projectsContext.SaveChanges();
-                    _projectsContext.Remove(engineeringProject);
-                    _projectsContext.SaveChanges();
-                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringArchivedProject.ArchivedFromCheck = true;
-                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+            CheckProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
-                    // Drive specification transition name to "Checked - Tools"
-                    // Auto archive project specification
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //spec.StateName = "Checked - Tools";
-                    //spec.IsArchived = true;
-                    //_driveworksContext.Specifications.Update(spec);
-
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
             mainWindow.BoolValue = true;
+            Close();
         }
-
+        /// <summary>
+        /// Puts on Hold or Takes off hold in EngineeringProjects
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PutOnHoldButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (PutOnHoldButton.Content.ToString() != "Put On Hold")
             {
-                if (PutOnHoldButton.Content.ToString() == "Put On Hold")
-                {
-                    OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow(CurrentProjectType.Text.ToString(), Convert.ToInt32(projectNumber), Convert.ToInt32(projectRevNumber), mainWindow, user, true, this);
-                }
-                else
-                {
-                    using var _projectsContext = new ProjectsContext();
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.OnHold = false;
-                    engineeringProject.OnHoldComment = "";
-                    engineeringProject.OnHoldDateTime = null;
-                    _projectsContext.SaveChanges();
-                    _projectsContext.Dispose();
-                    PutOnHoldButton.Content = "Put On Hold";
-                }
+                TakeProjectOffHold(projectNumber, projectRevNumber);
+
+                PutOnHoldButton.Content = "Put On Hold";
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
+                OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow(CurrentProjectType.Text, Convert.ToInt32(projectNumber), Convert.ToInt32(projectRevNumber), mainWindow, user, true, this);
             }
             RefreshRoutingButtons();
             mainWindow.BoolValue = true;
         }
-
+        /// <summary>
+        /// Cancels project in EngineeringProjects
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + projectNumber + "_" + projectRevNumber + "?", "Cancel Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.Yes)
-            {
-                Cursor = Cursors.AppStarting;
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-                try
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    _projectsContext.Remove(engineeringProject);
-                    _projectsContext.SaveChanges();
-                    while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        System.Threading.Thread.Sleep(500);
-                    }
-                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringArchivedProject.ArchivedFromCancel = true;
-                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-
-                    // Drive specification transition name to "Canceled"
-                    // Auto archive project specification
-                    //string _name = projectNumber + (Convert.ToInt16(projectRevNumber) > 0 ? "_" + projectRevNumber : "");
-                    //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    //spec.StateName = "Canceled";
-                    //spec.IsArchived = true;
-                    //_driveworksContext.Specifications.Update(spec);
-
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                    _projectsContext.Dispose();
-                    _driveworksContext.Dispose();
-                    Cursor = Cursors.Arrow;
-                    mainWindow.BoolValue = true;
-                    Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    _projectsContext.Dispose();
-                    _driveworksContext.Dispose();
-                }
-                Cursor = Cursors.Arrow;
-            }
+            CancelProject(projectNumber, projectRevNumber, user);
+            mainWindow.BoolValue = true;
+            Close();
         }
         #endregion
 
@@ -5712,20 +5722,32 @@ namespace NatoliOrderInterface
                 Button button = sender as Button;
                 if (button.Content.ToString() == "Create")
                 {
-
-
                     using var _projectsContext = new ProjectsContext();
                     EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
                     _projectsContext.Update(engineeringProject);
                     if (TabletsRequired.IsChecked ?? false)
                     {
                         EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
-                        _projectsContext.Add(TabletProject);
+                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            _projectsContext.Update(TabletProject);
+                        }
+                        else
+                        {
+                            _projectsContext.Add(TabletProject);
+                        }
                     }
                     if (ToolsRequired.IsChecked ?? false)
                     {
                         EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
-                        _projectsContext.Add(ToolProject);
+                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            _projectsContext.Update(ToolProject);
+                        }
+                        else
+                        {
+                            _projectsContext.Add(ToolProject);
+                        }
                     }
                     _projectsContext.SaveChanges();
                     _projectsContext.Dispose();
@@ -5746,6 +5768,10 @@ namespace NatoliOrderInterface
                         "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
                         "Here are the changes made:<br><b>";
                     var changed = GetChangedProperties(oldEngineeringProject, engineeringProject);
+                    if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
+                    {
+                        changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
+                    }
                     foreach (string change in changed)
                     {
                         if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
@@ -5806,7 +5832,7 @@ namespace NatoliOrderInterface
                         _projectsContext.Add(ToolProject);
                     }
 
-                    if (engineeringProject.Changes.Length > 0)
+                    if (!string.IsNullOrEmpty(engineeringProject.Changes))
                     {
                         engineeringProject.Changes = engineeringProject.Changes.TrimEnd('|');
                     }
