@@ -1428,8 +1428,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -2368,8 +2371,11 @@ namespace NatoliOrderInterface
             using var _nat02context = new NAT02Context();
             if (selectedQuotes.Any())
             {
-                foreach ((string, string, CheckBox) quote in selectedQuotes)
+                //foreach ((string, string, CheckBox) quote in selectedQuotes)
+                int count = selectedQuotes.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) quote = selectedQuotes[0];
                     quote.Item3.IsChecked = false;
 
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
@@ -2404,8 +2410,11 @@ namespace NatoliOrderInterface
             using var necContext = new NECContext();
             if (selectedQuotes.Any())
             {
-                foreach ((string, string, CheckBox) selectedQuote in selectedQuotes)
+                //foreach ((string, string, CheckBox) selectedQuote in selectedQuotes)
+                int _count = selectedQuotes.Count;
+                for (int i = 0; i < _count; i++)
                 {
+                    (string, string, CheckBox) selectedQuote = selectedQuotes[0];
                     selectedQuote.Item3.IsChecked = false;
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
