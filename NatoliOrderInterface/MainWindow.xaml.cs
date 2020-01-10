@@ -5802,18 +5802,20 @@ namespace NatoliOrderInterface
             {
                 using var _natbcContext = new NATBCContext();
                 List<NatoliOrderList> natoliOrderList = new List<NatoliOrderList>();
+                string username = Environment.UserDomainName + "\\" + Environment.UserName;
                 if (User.Department == "D1133")
                 {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", Environment.UserDomainName + "\\" + Environment.UserName).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
                 }
                 else if (User.EmployeeCode == "E4408")
                 {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", "NATOLI\\tsimonpietri").ToList();
+                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
                     natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
                 }
                 else
                 {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", Environment.UserDomainName + "\\" + Environment.UserName).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
+                    natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
                 }
                 _natbcContext.Dispose();
 
