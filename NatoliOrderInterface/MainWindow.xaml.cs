@@ -4481,7 +4481,7 @@ namespace NatoliOrderInterface
                     SolidColorBrush back;
                     SolidColorBrush fore;
                     FontWeight weight;
-                    if (quote.Rush == "Y")
+                    if (quote.Rush.Trim() == "Y")
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         weight = FontWeights.ExtraBold;
