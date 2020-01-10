@@ -580,7 +580,7 @@ namespace NatoliOrderInterface
             checkMissingVariables.Click += CheckMissingVariables_Click;
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
+            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
             fileMenu.Items.Add(forceRefresh);
             fileMenu.Items.Add(editLayout);
             if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
