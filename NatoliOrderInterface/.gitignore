@@ -9,6 +9,8 @@ NatoliOrderInterface.config
 # Publish Package
 NatoliOrderInterface_Package/
 NatoliOrderInterface.Package/
+./NatoliOrderInterface_Package/
+./NatoliOrderInterface.Package/
 
 # User-specific files
 *.rsuser
