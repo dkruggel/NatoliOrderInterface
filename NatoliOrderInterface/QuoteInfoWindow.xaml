@@ -14,9 +14,9 @@
         <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
             <TabItem x:Name="QuoteTabItem" Header="Quote" Height="22">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
-                <Border Padding="15,0,0,0">
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" HorizontalAlignment="Stretch"  Background="WhiteSmoke" Margin="-10,0,0,0">
-                    <Border x:Name="ButtonBorder1" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                <Border Padding="0,0,0,0">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" HorizontalAlignment="Stretch"  Background="WhiteSmoke" Margin="0,0,0,0">
+                    <Border x:Name="ButtonBorder1" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
                         <Grid Margin="0,2,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -405,9 +405,9 @@
 
             <TabItem x:Name="SMITabItem" Header="Price/SMI Check" Height="22">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
-                <Border Padding="15,0,0,0">
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-10,0,0,0">
-                        <Border x:Name="ButtonBorder2" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                <Border Padding="0,0,0,0">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="0,0,0,0">
+                        <Border x:Name="ButtonBorder2" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -519,76 +519,78 @@
             </TabItem>
 
             <TabItem x:Name="FilesTabItem" Header="Files" Height="22">
-                <DockPanel Name="FilesStackPanel" Background="WhiteSmoke" Margin="0,0,10,0">
-                    <Border DockPanel.Dock="Top" x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
-                        <Grid Margin="0,2,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Button x:Name="QuoteFolderButton3" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
-                            <Button x:Name="ChecklistButton3" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
-                            <Button x:Name="OrderEntryChecklistButton3" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
-                            <Button x:Name="OrderFolderButton3" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
-                            <Button x:Name="SubmitButton3" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
-                            <Button x:Name="RecallButton3" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
-                        </Grid>
+                <Border Padding="0,0,0,0">
+                    <DockPanel Name="FilesStackPanel" Background="WhiteSmoke" Margin="0,0,0,0">
+                        <Border DockPanel.Dock="Top" x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,15,0">
+                            <Grid Margin="0,2,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="QuoteFolderButton3" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                                <Button x:Name="ChecklistButton3" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                                <Button x:Name="OrderEntryChecklistButton3" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                                <Button x:Name="OrderFolderButton3" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                                <Button x:Name="SubmitButton3" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                                <Button x:Name="RecallButton3" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                            </Grid>
+                        </Border>
+                        <Border DockPanel.Dock="Top" Padding="0,0,6,0">
+                            <!-- Height="{Binding Height, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 80}}"-->
+                            <Grid VerticalAlignment="Stretch"  Margin="0,0,10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35"/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
+                                <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Project:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                                <TextBox x:Name="ProjectNumberTextBox" Grid.Row="0" Grid.ColumnSpan="3" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Height="22" Width="120"/>
+                                <Button x:Name="LinkProjectButton" Grid.Column="0" Grid.ColumnSpan="3" Margin="240,0,0,0"  Content="Link Project" HorizontalAlignment="Left" Width="100" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
+                                <Button x:Name="EuropeanTolerancesButton" Content="European Tolerances" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="120" Height="22" Click="EuropeanTolerancesButton_Click"/>
+                                <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
+                                <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Order:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,236,0"/>
+                                <TextBox x:Name="OrderNumberTextBox" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Margin="0,0,110,0"/>
+                                <Button Grid.Column="0" Grid.ColumnSpan="3" x:Name="LinkOrderButton" Content="Link Order" HorizontalAlignment="Right" Width="100" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
+                                <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="White" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                    <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                                </Grid>
+                                <Grid x:Name="QuoteSentGrid" Margin="0,20,0,20" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                    <Label Content="Quote Sent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                                </Grid>
+                                <Grid x:Name="POGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="3" Grid.Column="2"  Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                    <Label Content="PO" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                                </Grid>
+                                <Grid x:Name="ScratchSheetGrid" Margin="0,20,0,40" Grid.Row="5" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                    <Label Content="SMI Sheet" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                                </Grid>
+                                <Grid x:Name="MiscGrid" Margin="0,20,0,40" Grid.Row="4" Grid.RowSpan="3" Grid.Column="2" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                    <Label Content="Misc" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DockPanel>
                     </Border>
-                    <Border DockPanel.Dock="Top" Padding="0,0,0,-0">
-                        <!-- Height="{Binding Height, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 80}}"-->
-                        <Grid VerticalAlignment="Stretch"  Margin="0,0,10,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="40"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="35"/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
-                            <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Project:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
-                            <TextBox x:Name="ProjectNumberTextBox" Grid.Row="0" Grid.ColumnSpan="3" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Height="22" Width="120"/>
-                            <Button x:Name="LinkProjectButton" Grid.Column="0" Grid.ColumnSpan="3" Margin="240,0,0,0"  Content="Link Project" HorizontalAlignment="Left" Width="100" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
-                            <Button x:Name="EuropeanTolerancesButton" Content="European Tolerances" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="120" Height="22" Click="EuropeanTolerancesButton_Click"/>
-                            <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
-                            <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Order:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,236,0"/>
-                            <TextBox x:Name="OrderNumberTextBox" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Margin="0,0,110,0"/>
-                            <Button Grid.Column="0" Grid.ColumnSpan="3" x:Name="LinkOrderButton" Content="Link Order" HorizontalAlignment="Right" Width="100" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
-                            <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="White" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
-                                <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
-                            </Grid>
-                            <Grid x:Name="QuoteSentGrid" Margin="0,20,0,20" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
-                                <Label Content="Quote Sent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
-                            </Grid>
-                            <Grid x:Name="POGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="3" Grid.Column="2"  Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
-                                <Label Content="PO" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
-                            </Grid>
-                            <Grid x:Name="ScratchSheetGrid" Margin="0,20,0,40" Grid.Row="5" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
-                                <Label Content="SMI Sheet" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
-                            </Grid>
-                            <Grid x:Name="MiscGrid" Margin="0,20,0,40" Grid.Row="4" Grid.RowSpan="3" Grid.Column="2" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
-                                <Label Content="Misc" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
-                            </Grid>
-                        </Grid>
-                    </Border>
-                </DockPanel>
             </TabItem>
 
             <TabItem x:Name="OrderEntryTabItem" Header="Order Entry Instructions" Height="22">
-                <Border Padding="15,0,0,0">
+                <Border Padding="0,0,0,0">
                     <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}"-->
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-10,0,0,0">
-                        <Border x:Name="ButtonBorder4" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,10,0">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
+                        <Border x:Name="ButtonBorder4" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -606,7 +608,7 @@
                                 <Button x:Name="RecallButton4" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             </Grid>
                         </Border>
-                        <StackPanel Margin="0,0,10,0">
+                        <StackPanel Margin="0,0,21,0">
                             <Grid Height="30">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -670,10 +672,7 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-
-
             </TabItem>
-
         </TabControl>
 
     </Grid>
