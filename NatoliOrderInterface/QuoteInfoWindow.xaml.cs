@@ -1853,6 +1853,7 @@ namespace NatoliOrderInterface
         {
             try
             {
+                
                 foreach (TabItem tab in ScratchPadTabs.Items)
                 {
                     string tabLineItemType = tab.Name.ToString().Remove(tab.Name.ToString().IndexOf('_'));
@@ -1990,6 +1991,7 @@ namespace NatoliOrderInterface
                         quoteDetails.ExtendedPrice = (double)extendedPrice;
                         quoteDetails.OptionsIncrements = (float)optionsIncrements;
                         quoteDetails.OptionsPercentage = (float)optionsPercentage;
+                        _nat01Context.Update(quoteDetails);
                         _nat01Context.SaveChanges();
                         _nat01Context.Dispose();
                     }
@@ -2025,6 +2027,16 @@ namespace NatoliOrderInterface
                         _nat02Context.SaveChanges();
                         _nat02Context.Dispose();
                     }
+                }
+                // Enter Data into NAT01 Quote Header for subtotal and total.
+                using (NAT01Context _nat01Context = new NAT01Context())
+                {
+                    QuoteHeader quoteHeader = _nat01Context.QuoteHeader.First(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo);
+                    quoteHeader.QuoteSubtotal = Convert.ToDouble(QuoteSubTotal.Text);
+                    quoteHeader.QuoteTotal = Convert.ToDouble(QuoteTotal.Text);
+                    _nat01Context.Update(quoteHeader);
+                    _nat01Context.SaveChanges();
+                    _nat01Context.Dispose();
                 }
                 MessageBox.Show("Prices Updated Successfully", "Success!", MessageBoxButton.OK);
             }

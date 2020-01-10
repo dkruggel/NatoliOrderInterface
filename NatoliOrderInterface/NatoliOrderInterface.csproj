@@ -9,11 +9,13 @@
     <ApplicationIcon>Workflow.ico</ApplicationIcon>
     <StartupObject></StartupObject>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Configurations>Debug;Release;Temp</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,13 +24,6 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Temp|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -49,10 +44,6 @@
     <PackageReference Include="DK.WshRuntime" Version="4.0.1.191215025" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.0-beta0002" />
     <PackageReference Include="itext7" Version="7.1.9" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0">
@@ -64,8 +55,6 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
-    <PackageReference Include="WpfAnimatedGif" Version="1.4.18" />
-    <PackageReference Include="XamlAnimatedGif" Version="1.2.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -109,16 +98,6 @@
     <Content Include="NatoliOrderInterface.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PdfPrinter">
-      <HintPath>..\PdfPrinter\bin\Debug\PdfPrinter.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Reference Include="System.Windows.Forms">
-      <HintPath>System.Windows.Forms</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

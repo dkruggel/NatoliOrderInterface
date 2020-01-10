@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Linq;
 using System.IO;
-using System.Windows.Controls;
 
 namespace NatoliOrderInterface
 {
@@ -16,6 +15,7 @@ namespace NatoliOrderInterface
         public static string Password = "";
         public static void GetConnectionString()
         {
+            var x = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
             StreamReader reader = File.OpenText("NatoliOrderInterface.config");
             string line;
             while ((line = reader.ReadLine()) != null)
