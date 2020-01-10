@@ -849,7 +849,8 @@ namespace NatoliOrderInterface
             LineItemChoices.Owner = owner;
             LineItemChoices.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             LineItemChoices.Width = 250;
-            LineItemChoices.Height = 200;
+            //LineItemChoices.Height = 200;
+            Grid grid = new Grid();
             StackPanel stackPanel = new StackPanel();
             stackPanel.Width = 225;
             stackPanel.Margin = new Thickness(0, 15, 0, 0);
@@ -859,7 +860,9 @@ namespace NatoliOrderInterface
             label.HorizontalContentAlignment = HorizontalAlignment.Center;
             stackPanelTemp = stackPanel;
             stackPanel.Children.Add(label);
-            LineItemChoices.Content = stackPanel;
+            grid.Children.Add(stackPanel);
+            LineItemChoices.Content = grid;
+            LineItemChoices.SizeToContent = SizeToContent.Height;
 
             foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
             {

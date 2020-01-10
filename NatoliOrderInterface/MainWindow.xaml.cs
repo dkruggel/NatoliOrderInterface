@@ -593,7 +593,6 @@ namespace NatoliOrderInterface
             subsMenu.Header = "Subscriptions";
             subsMenu.Height = MainMenu.Height;
             subsMenu.SubmenuClosed += Subscriptions_SubmenuClosed;
-            subsMenu.SubmenuOpened += Subscriptions_SubmenuOpened;
             using var natbccontext = new NATBCContext();
             using var nat02context = new NAT02Context();
             List<string> csrList = natbccontext.MoeEmployees.Where(e => (e.MoeDepartmentCode == "D1149" || e.MoeDepartmentCode == "D1147" || e.MoeDepartmentCode == "D1143")
@@ -617,8 +616,6 @@ namespace NatoliOrderInterface
                 {
                     menuItem.IsChecked = false;
                 }
-                menuItem.Checked += Subscriptions_MenuItem_Checked;
-                menuItem.Unchecked += Subscriptions_MenuItem_UnChecked;
                 subsMenu.Items.Add(menuItem);
             }
             MainMenu.Items.Add(subsMenu);
@@ -2328,11 +2325,6 @@ namespace NatoliOrderInterface
             missing.Show();
         }
 
-        private void ProjectModules_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
         {
             using var _nat02context = new NAT02Context();
@@ -2454,41 +2446,6 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
-
-        private void Subscriptions_MenuItem_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Subscriptions_MenuItem_UnChecked(object sender, RoutedEventArgs e)
-        {
-            /*MenuItem topMenu = (MenuItem)sender;
-            Properties.Settings.Default.Subscribed = new System.Collections.Specialized.StringCollection();
-            for (int i = 0; i < topMenu.Items.Count; i++)
-            {
-                MenuItem item = (MenuItem)topMenu.Items[i];
-                if (item.IsChecked)
-                {
-                    Properties.Settings.Default.Subscribed.Add(item.Header.ToString());
-                }
-            }
-            Properties.Settings.Default.Save();
-            ExecuteQueries();*/
-        }
-
-        private void Subscriptions_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            //subscribedOnOpen = new System.Collections.Specialized.StringCollection();
-            //MenuItem topMenu = (MenuItem)sender;
-            //for (int i = 0; i < topMenu.Items.Count; i++)
-            //{
-            //    MenuItem item = (MenuItem)topMenu.Items[i];
-            //    if (item.IsChecked)
-            //    {
-            //        subscribedOnOpen.Add(item.Header.ToString());
-            //    }
-            //}
-        }
 
         private void Subscriptions_SubmenuClosed(object sender, RoutedEventArgs e)
         {
