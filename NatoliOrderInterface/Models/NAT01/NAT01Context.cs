@@ -2451,7 +2451,7 @@ namespace NatoliOrderInterface.Models.NAT01
 
                 modelBuilder.Entity<QuoteHeader>(entity =>
                 {
-                    entity.HasNoKey();
+                    entity.HasKey(e => new { e.QuoteNo, e.QuoteRevNo });
 
                     entity.HasIndex(e => new { e.QuoteNo, e.QuoteRevNo })
                         .HasName("QuoteNo")
