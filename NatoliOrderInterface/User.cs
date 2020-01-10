@@ -45,6 +45,7 @@ namespace NatoliOrderInterface
         public short? Left { get; set; }
         public float SignatureLeft { get; set; }
         public float SignatureBottom { get; set; }
+        public string DepartmentCode { get; set; }
 
         public User()
         {
@@ -81,6 +82,7 @@ namespace NatoliOrderInterface
             Height = settings.Height;
             Top = settings.Top;
             Left = settings.Left;
+            DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
             {
                 Department = "Engineering";

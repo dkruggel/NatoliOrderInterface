@@ -2604,44 +2604,44 @@ namespace NatoliOrderInterface
             {
                 string projectNumber = ProjectSearchTextBlock.Text;
                 string revNumber = ProjectRevNoSearchTextBlock.Text;
-                try
-                {
-                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
-                    projectWindow.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message);
-                }
-                //string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
                 //try
                 //{
-                //    if (revNumber != "0")
-                //    {
-                //        if (System.IO.Directory.Exists(path + "_" + revNumber + @"\"))
-                //        {
-                //            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + revNumber + @"\");
-                //        }
-                //        else
-                //        {
-                //            if (!System.IO.Directory.Exists(path + @"\"))
-                //                System.IO.Directory.CreateDirectory(path + @"\");
-                //            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (!System.IO.Directory.Exists(path + @"\"))
-                //            System.IO.Directory.CreateDirectory(path + @"\");
-                //        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
-                //    }
+                //    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                //    projectWindow.Dispose();
                 //}
                 //catch (Exception ex)
                 //{
                 //    // MessageBox.Show(ex.Message);
-                //    WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message);
+                //    WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message);
                 //}
+                string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
+                try
+                {
+                    if (revNumber != "0")
+                    {
+                        if (System.IO.Directory.Exists(path + "_" + revNumber + @"\"))
+                        {
+                            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + revNumber + @"\");
+                        }
+                        else
+                        {
+                            if (!System.IO.Directory.Exists(path + @"\"))
+                                System.IO.Directory.CreateDirectory(path + @"\");
+                            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                        }
+                    }
+                    else
+                    {
+                        if (!System.IO.Directory.Exists(path + @"\"))
+                            System.IO.Directory.CreateDirectory(path + @"\");
+                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // MessageBox.Show(ex.Message);
+                    WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -3718,7 +3718,38 @@ namespace NatoliOrderInterface
 
             }
         }
-
+        private int GetNumberOfDays(string csr)
+        {
+            switch (csr)
+            {
+                case "Alex Heimberger":
+                    return 14;
+                case "Anna King":
+                    return 7;
+                case "Bryan Foy":
+                    return 7;
+                case "David Nelson":
+                    return 7;
+                case "Gregory Lyle":
+                    return 14;
+                case "Heather Lane":
+                    return 7;
+                case "Humberto Zamora":
+                    return 14;
+                case "James Willis":
+                    return 14;
+                case "Miral Bouzitoun":
+                    return 14;
+                case "Nicholas Tarte":
+                    return 14;
+                case "Samantha Bowman":
+                    return 7;
+                case "Tiffany Simonpietri":
+                    return 7;
+                default:
+                    return 14;
+            }
+        }
         #region GetsAndBinds
         private void GetBeingEntered()
         {
@@ -4387,8 +4418,10 @@ namespace NatoliOrderInterface
                         weight = FontWeights.Normal;
                     }
 
+                    int days = GetNumberOfDays(quote.Csr);
+
                     bool needs_followup = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
-                                          DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 14;
+                                          DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days;
                     if (needs_followup)
                     {
                         back = new SolidColorBrush(Colors.Pink);
@@ -5775,7 +5808,7 @@ namespace NatoliOrderInterface
                 }
                 else if (User.EmployeeCode == "E4408")
                 {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", "NATOLI\\dnelson").ToList();
+                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", "NATOLI\\tsimonpietri").ToList();
                     natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
                 }
                 else
@@ -9784,12 +9817,12 @@ namespace NatoliOrderInterface
                 string revNumber = grid.Children[1].GetValue(ContentProperty).ToString();
                 try
                 {
-                    //string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
-                    //if (!System.IO.Directory.Exists(path))
-                    //    System.IO.Directory.CreateDirectory(path);
-                    //System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
-                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
-                    projectWindow.Dispose();
+                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                    //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                    //projectWindow.Dispose();
                 }
                 catch (Exception ex)
                 {
