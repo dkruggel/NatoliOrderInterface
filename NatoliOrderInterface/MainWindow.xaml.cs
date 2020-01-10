@@ -554,6 +554,10 @@ namespace NatoliOrderInterface
             {
                 Header = "Create Project"
             };
+            MenuItem projectSearch = new MenuItem()
+            {
+                Header = "Project Search"
+            };
             MenuItem forceRefresh = new MenuItem
             {
                 Header = "Force Refresh"
@@ -575,12 +579,14 @@ namespace NatoliOrderInterface
                 Header = "Print Drawings"
             };
             createProject.Click += CreateProject_Click;
+            projectSearch.Click += ProjectSearch_Click;
             forceRefresh.Click += ForceRefresh_Click;
             editLayout.Click += EditLayout_Click;
             checkMissingVariables.Click += CheckMissingVariables_Click;
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
             // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
+            fileMenu.Items.Add(projectSearch);
             fileMenu.Items.Add(forceRefresh);
             fileMenu.Items.Add(editLayout);
             if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
@@ -2322,6 +2328,16 @@ namespace NatoliOrderInterface
 
             // Dispose of project window
             projectWindow.Dispose();
+        }
+
+        private void ProjectSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ProjectSearchWindow projectSearchWindow = new ProjectSearchWindow()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            projectSearchWindow.Show();
         }
 
         private void EditLayout_Click(object sender, RoutedEventArgs e)
@@ -9776,6 +9792,11 @@ namespace NatoliOrderInterface
             expander.ContextMenu = RightClickMenu;
             expander.ContextMenu.Tag = "RightClickMenu";
             expander.ContextMenu.Closed += ContextMenu_Closed;
+
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
 
@@ -9804,6 +9825,11 @@ namespace NatoliOrderInterface
             expander.ContextMenu = RightClickMenu;
             expander.ContextMenu.Tag = "RightClickMenu";
             expander.ContextMenu.Closed += ContextMenu_Closed;
+
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
 
