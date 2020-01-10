@@ -120,7 +120,7 @@ namespace NatoliOrderInterface
 
         #region View Dictionaries
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
-        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string background, string foreground, string fontWeight)> quotesToConvertDict;
+        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
         Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> ordersBeingEnteredDict;
         Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> ordersInTheOfficeDict;
         Dictionary<double, (string customerName, int daysToShip, string background, string foreground, string fontWeight)> ordersEnteredUnscannedDict;
@@ -4516,7 +4516,8 @@ namespace NatoliOrderInterface
                     eoiQuotesMarkedForConversion = _nat02context.EoiQuotesMarkedForConversionView.OrderBy(q => q.TimeSubmitted).ToList();
                 }
 
-                quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string background, string foreground, string fontWeight)>();
+
+                quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
 
                 foreach (EoiQuotesMarkedForConversionView quote in eoiQuotesMarkedForConversion)
                 {
@@ -4535,8 +4536,10 @@ namespace NatoliOrderInterface
                     }
 
                     back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-
-                    quotesToConvertDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, (int)quote.DaysMarked, (DateTime)quote.TimeSubmitted, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+                    using var nAT01Context = new NAT01Context();
+                    string shipment = nAT01Context.QuoteHeader.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Shipment ?? "";
+                    nAT01Context.Dispose();
+                    quotesToConvertDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, (int)quote.DaysMarked, (DateTime)quote.TimeSubmitted, shipment.Trim(), back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
                 }
                 eoiQuotesMarkedForConversion.Clear();
                 _nat02context.Dispose();
@@ -6194,7 +6197,7 @@ namespace NatoliOrderInterface
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InEngineering").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
         }
-        private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string background, string foreground, string fontWeight)> dict)
+        private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> dict)
         {
             int i = User.VisiblePanels.IndexOf("QuotesToConvert");
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
@@ -7341,7 +7344,7 @@ namespace NatoliOrderInterface
                 return new Expander();
             }
         }
-        private Expander CreateQuotesToConvertExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string background, string foreground, string fontWeight)> kvp)
+        private Expander CreateQuotesToConvertExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> kvp)
         {
             try
             {
@@ -7362,7 +7365,8 @@ namespace NatoliOrderInterface
                 {
                     IsExpanded = false,
                     Header = grid,
-                    HorizontalAlignment = HorizontalAlignment.Stretch
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    ToolTip = kvp.Value.shipment
                 };
 
                 expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
