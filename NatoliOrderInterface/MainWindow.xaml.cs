@@ -1152,8 +1152,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1198,7 +1201,7 @@ namespace NatoliOrderInterface
 
                         // Email CSR
                         // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        MainRefresh();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1206,6 +1209,7 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("StartTabletProject_CLick", ex.Message);
                     }
                 }
+                MainRefresh();
             }
         }
 
@@ -1213,8 +1217,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1257,7 +1264,7 @@ namespace NatoliOrderInterface
 
                         // Email CSR
                         // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        MainRefresh();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1265,6 +1272,7 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("FinishTabletProject_Click", ex.Message);
                     }
                 }
+                MainRefresh();
             }
         }
 
@@ -1272,8 +1280,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i< count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1290,7 +1301,7 @@ namespace NatoliOrderInterface
                         {
                             // Get project revision number
                             // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+                            //string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
                             // Insert into CheckedBy
                             TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
@@ -1327,7 +1338,7 @@ namespace NatoliOrderInterface
 
                         // Email CSR
                         // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        MainRefresh();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1335,6 +1346,8 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
                     }
                 }
+                selectedProjects.Clear();
+                MainRefresh();
             }
         }
 
@@ -1430,7 +1443,7 @@ namespace NatoliOrderInterface
                         _nat02Context.SaveChanges();
                         _nat02Context.Dispose();
                         selectedProjects.Clear();
-                        MainRefresh();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1438,6 +1451,7 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
                     }
                 }
+                MainRefresh();
             }
         }
 
@@ -1445,8 +1459,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1519,7 +1536,7 @@ namespace NatoliOrderInterface
                         _projectsContext.Dispose();
                         _driveworksContext.Dispose();
                         _nat02Context.Dispose();
-                        MainRefresh();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1527,6 +1544,7 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CheckTabletProject_Click", ex.Message);
                     }
                 }
+                MainRefresh();
             }
         }
 
@@ -1534,9 +1552,12 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                
-                foreach ((string, string, CheckBox) project in selectedProjects)
+
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
@@ -1586,7 +1607,7 @@ namespace NatoliOrderInterface
 
                                 _projectsContext.SaveChanges();
                                 _driveworksContext.SaveChanges();
-                                MainRefresh();
+                                
                             }
                             catch (Exception ex)
                             {
@@ -1598,6 +1619,7 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+                MainRefresh();
             }
         }
 
@@ -1605,8 +1627,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int _count = selectedProjects.Count;
+                for (int i = 0; i < _count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1677,8 +1702,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     try
                     {
                         // Uncheck project expander
@@ -1736,8 +1764,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     using var _nat02Context = new NAT02Context();
                     bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
                     _nat02Context.Dispose();
@@ -1890,8 +1921,11 @@ namespace NatoliOrderInterface
 
                 if (selectedProjects.Any())
                 {
-                    foreach ((string, string, CheckBox) project in selectedProjects)
+                    //foreach ((string, string, CheckBox) project in selectedProjects)
+                    int count = selectedProjects.Count;
+                    for (int i = 0; i < count; i++)
                     {
+                        (string, string, CheckBox) project = selectedProjects[0];
                         EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
                     }
@@ -1918,8 +1952,11 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                foreach ((string, string, CheckBox) project in selectedProjects)
+                //foreach ((string, string, CheckBox) project in selectedProjects)
+                int count = selectedProjects.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, string, CheckBox) project = selectedProjects[0];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
 
@@ -1978,6 +2015,7 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+                MainRefresh();
             }
         }
 
