@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Customer Instructions" Height="450" Width="800">
+        Title="Customer Instructions" Height="450" Width="850">
     <Grid>
 
         <TextBlock x:Name="SMIUserSpecificHeader" Text="SMI Header" HorizontalAlignment="Center" VerticalAlignment="Top"  FontWeight="Bold" FontSize="30"/>
