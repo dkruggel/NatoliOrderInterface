@@ -154,7 +154,7 @@ namespace NatoliOrderInterface
             ShipToCustomerNameButton.Content = workOrder.ShipToCustomerName;
             ShipDateContext.Content = workOrder.ShipDate.ToShortDateString();
             EndUserNameButton.Content = workOrder.EndUserName;
-            ReferenceOrderButton.Content = "REF WO#: " + workOrder.ReferenceOrder;
+            ReferenceOrderButton.Content = workOrder.ReferenceOrder == 0 ? "N/A" : workOrder.ReferenceOrder + " 00";
             ReferenceOrderButton.IsEnabled = !(workOrder.ReferenceOrder is null) && workOrder.ReferenceOrder != 0;
             EngineeringNotesContext.Text = workOrder.EngineeringNotes;
             CSRTextBlock.Text = workOrder.Csr;
@@ -167,7 +167,7 @@ namespace NatoliOrderInterface
             OrderHobStatus.Content = workOrder.HobRequired;
             EndUserNumber.Content = workOrder.UserNumber;
             ProductName.Content = workOrder.ProductName;
-            Project.Content = "Project: " + workOrder.ProjectNumber;
+            Project.Content = workOrder.ProjectNumber == 0 ? "N/A" : workOrder.ProjectNumber.ToString();
             Project.IsEnabled = workOrder.ProjectNumber != 0;
             if (workOrder.RushYOrN != "Y" && workOrder.PaidRushFee != "Y")
             {
@@ -1753,7 +1753,7 @@ namespace NatoliOrderInterface
             using var _nat01context = new NAT01Context();
             try
             {
-                WorkOrder refWorkOrder = new WorkOrder((int)workOrder.ReferenceOrder, _nat01context);
+                WorkOrder refWorkOrder = new WorkOrder((int)workOrder.ReferenceOrder);
                 OrderInfoWindow referenceOrderInfoWindow = new OrderInfoWindow(refWorkOrder, parent, orderLocation, user, true)
                 {
                     Left = Left,

@@ -16,8 +16,8 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="Header" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Hold Comment For Project# " FontWeight="Bold" FontSize="18" Margin="0,6,0,0"/>
         <TextBox x:Name="CommentBox" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="" TextWrapping="Wrap" Margin="20,40,20,0" PreviewKeyUp="CommentBox_PreviewKeyUp"/>
-        <Button x:Name="PutOnHoldButton" Content="Put On Hold" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-200,5,0,0" Width="80" Click="PutOnHoldButton_Click"/>
-        <Button x:Name="CancelButton" Content="Cancel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="200,5,0,0" Width="80" Click="CancelButton_Click"/>
+        <Button x:Name="PutOnHoldButton" Style="{StaticResource Button}" Content="Put On Hold" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-200,5,0,0" Width="80" Click="PutOnHoldButton_Click"/>
+        <Button x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="200,5,0,0" Width="80" Click="CancelButton_Click"/>
 
     </Grid>
 </Window>

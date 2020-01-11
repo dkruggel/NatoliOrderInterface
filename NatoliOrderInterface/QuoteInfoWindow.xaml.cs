@@ -2662,7 +2662,7 @@ namespace NatoliOrderInterface
             try
             {
                 string orderNumber = quote.OrderNo.ToString().Substring(0, 6);
-                workOrder = new WorkOrder(int.Parse(orderNumber), nat01context);
+                workOrder = new WorkOrder(int.Parse(orderNumber));
                 WindowCollection collection = App.Current.Windows;
                 foreach (Window w in collection)
                 {

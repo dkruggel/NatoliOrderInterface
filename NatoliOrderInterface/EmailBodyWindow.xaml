@@ -8,7 +8,7 @@
         Title="EmailBodyWindow" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         <RichTextBox x:Name="EmailBodyTextBlock" Margin="30,30,30,75"/>
-        <Button x:Name="SendButton" Content="Send" Margin="0,0,50,25" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" Click="SendButton_Click"/>
+        <Button x:Name="SendButton" Style="{StaticResource Button}" Content="Send" Margin="0,0,50,25" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom" Click="SendButton_Click"/>
 
     </Grid>
 </Window>
