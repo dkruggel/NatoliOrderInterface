@@ -87,9 +87,9 @@ namespace NatoliOrderInterface
                 }
                 return email;
             }
-            catch (Exception eSql)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error resolving email address");
+                MessageBox.Show("Error resolving email address\n" + ex.Message);
                 Close();
             }
             return null;

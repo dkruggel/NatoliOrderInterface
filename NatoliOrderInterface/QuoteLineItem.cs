@@ -11,19 +11,6 @@ namespace NatoliOrderInterface
         #region Declarations
         private short lineItemNumber = 0;
         private short qtyOrdered = 0;
-        private short optionLastLine = 0;
-        private Single basePrice = 0;
-        private Single optionsIncrements = 0;
-        private Single optionsPercentage = 0;
-        private short remakeQty = 0;
-        private Single lineTaxes = 0;
-        private short sequence = 0;
-        private short tipQTY = 0;
-        private short dieShapeID = 0;
-        private Single dieMinorDiameter = 0;
-        private Single dieMajorDiameter = 0;
-        private double boreCircle = 0;
-        private Dictionary<short, string[]> options = new Dictionary<short, string[]>();
         private readonly Dictionary<string, string> titles = new Dictionary<string, string> {
             { "A","ALIGNMENT TOOL" },
             { "CT","COPPER TABLETS" },
@@ -113,7 +100,7 @@ namespace NatoliOrderInterface
         public Dictionary<string, float?> OptionPrice { get; set; } = new Dictionary<string, float?>();
         public Dictionary<string, string> OptionType { get; set; } = new Dictionary<string, string>();
         public string Title { get; set; } = "";
-        public Dictionary<short, string[]> Options { get => options; set => options = value; }
+        public Dictionary<short, string[]> Options { get; set; } = new Dictionary<short, string[]>();
         #endregion
 
         #region DataTables
