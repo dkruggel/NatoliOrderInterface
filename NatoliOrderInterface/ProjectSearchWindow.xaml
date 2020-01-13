@@ -4,16 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
+        xmlns:data="clr-namespace:NatoliOrderInterface.Models.Projects"
         mc:Ignorable="d"
-        Title="Project Search" Height="800" Width="1240">
-    <DockPanel>
+        Title="Project Search"
+        Height="1000" Width="1800" Loaded="Window_Loaded">
+    <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
             <Menu x:Name="MainMenu" Height="25" Grid.Column="0">
                 <MenuItem x:Name="FileMenu" Header="File" Margin="0,3">
                     <MenuItem x:Name="CloseMenuItem" Header="Close" Click="CloseMenuItem_Click"/>
                 </MenuItem>
             </Menu>
+            <TextBox x:Name="SearchBox" Grid.Column="1" Margin="2" TextChanged="SearchBox_TextChanged"/>
         </Grid>
-        <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding ProjectSpecSheet}"/>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <StackPanel x:Name="ProjectsStackPanel"/>
+        </ScrollViewer>
     </DockPanel>
 </Window>

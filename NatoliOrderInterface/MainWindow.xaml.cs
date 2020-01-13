@@ -2113,7 +2113,7 @@ namespace NatoliOrderInterface
                     Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
                     Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                         app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", selectedOrders);
+                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", selectedOrders.Select(o => o.Item1));
                     mailItem.To = GetEmailAddress(workOrder.Csr);
                     mailItem.Body = "";
                     mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
@@ -3775,6 +3775,7 @@ namespace NatoliOrderInterface
                     return 14;
             }
         }
+
         #region GetsAndBinds
         private void GetBeingEntered()
         {
@@ -4785,13 +4786,11 @@ namespace NatoliOrderInterface
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
                     }
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
                         fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
                     }
 
                     if (late && User.Department == "Engineering")
@@ -4886,13 +4885,11 @@ namespace NatoliOrderInterface
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
                     }
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
                         fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
                     }
 
                     if (late && User.Department == "Engineering")
@@ -4984,17 +4981,16 @@ namespace NatoliOrderInterface
                         fontWeight = FontWeights.Normal;
                         fontStyle = FontStyles.Normal;
                     }
+
                     if (priority)
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
                     }
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
                         fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
                     }
 
                     if (late && User.Department == "Engineering")
@@ -5086,17 +5082,16 @@ namespace NatoliOrderInterface
                         fontWeight = FontWeights.Normal;
                         fontStyle = FontStyles.Normal;
                     }
+
                     if (priority)
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
                     }
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
                         fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
                     }
 
                     if (late && User.Department == "Engineering")
@@ -5190,17 +5185,16 @@ namespace NatoliOrderInterface
                         fontWeight = FontWeights.Normal;
                         fontStyle = FontStyles.Normal;
                     }
+
                     if (priority)
                     {
                         fore = new SolidColorBrush(Colors.DarkRed);
                         fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
                     }
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
                         fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
                     }
 
                     if (late && User.Department == "Engineering")
