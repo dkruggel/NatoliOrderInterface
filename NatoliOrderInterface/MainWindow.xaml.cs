@@ -5104,7 +5104,7 @@ namespace NatoliOrderInterface
                     {
                         back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
                     }
-                    tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+                    tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy ?? project.ProjectStartedTablet ?? project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
                 }
                 eoiTabletProjectsSubmitted.Clear();
             }
