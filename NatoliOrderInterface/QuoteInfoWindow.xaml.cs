@@ -136,13 +136,29 @@ namespace NatoliOrderInterface
 
         private string GetUserName()
         {
-            using var context = new NAT02Context();
-            EoiQuotesNotConvertedView row = context.EoiQuotesNotConvertedView.Where(x => x.QuoteNo == quote.QuoteNumber && x.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-            if (row is null)
-            { return ""; }
+            using var _nat01Context = new NAT01Context();
+            using var _necContext = new NECContext();
+            if (_nat01Context.QuoteHeader.Any(x => x.QuoteNo == quote.QuoteNumber && x.QuoteRevNo == quote.QuoteRevNo))
+            {
+                QuoteHeader quoteHeader = _nat01Context.QuoteHeader.First(x => x.QuoteNo == quote.QuoteNumber && x.QuoteRevNo == quote.QuoteRevNo);
+                if (_necContext.Rm00101.Any(c => c.Custnmbr == quoteHeader.UserAcctNo))
+                {
+                    string user = !string.IsNullOrEmpty(_necContext.Rm00101.First(c => c.Custnmbr == quoteHeader.UserAcctNo).Custname) ? _necContext.Rm00101.First(c => c.Custnmbr == quoteHeader.UserAcctNo).Custname.ToString().Trim() : "";
+                    _nat01Context.Dispose();
+                    _necContext.Dispose();
+                    return user;
+                }
+                else
+                {
+                    return "";
+                }
+            }
             else
-            { return row.CustomerName.ToString().Trim(); }
-
+            {
+                _nat01Context.Dispose();
+                _necContext.Dispose();
+                return "";
+            }
         }
 
         #region QuoteInfoPage
@@ -654,10 +670,11 @@ namespace NatoliOrderInterface
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(0, 20, 0, 20),
-                Height = 28,
+                MinHeight = 24,
                 Width = 130,
                 Name = "SaveSMICheck",
-                IsEnabled = !isConvertedToOrder
+                IsEnabled = !isConvertedToOrder,
+                Style =  FindResource("Button") as Style
             };
             saveSMIButton.Click += SaveSMIButton_Click;
             SMIStackPanel.Children.Add(saveSMIButton);
@@ -675,6 +692,7 @@ namespace NatoliOrderInterface
                     TabItem tab = new TabItem();
                     tab.Name = lineItem.Value.ToString().ToUpper() + "_" + lineItem.Key.ToString();
                     tab.Header = quoteLineItem.Title;
+                    tab.Style = FindResource("NormalTabItem") as Style;
                     //--------------------------------------------------------------------------------------------
                     ScrollViewer scrollViewer = new ScrollViewer();
                     scrollViewer.Name = "ScrollViewer" + lineItem.Value.ToString().ToUpper() + lineItem.Key.ToString();
@@ -840,12 +858,13 @@ namespace NatoliOrderInterface
                     saveLineItemButton.IsEnabled = !isConvertedToOrder;
                     saveLineItemButton.Name = lineItem.Value.ToString().ToUpper() + lineItem.Key.ToString() + "SMIScratchPadButton";
                     saveLineItemButton.Content = "Save Line Item";
-                    saveLineItemButton.Width = 100;
-                    saveLineItemButton.Height = 28;
+                    saveLineItemButton.Width = 1400;
+                    saveLineItemButton.MinHeight = 24;
                     saveLineItemButton.HorizontalAlignment = HorizontalAlignment.Center;
                     saveLineItemButton.VerticalAlignment = VerticalAlignment.Center;
                     saveLineItemButton.Margin = new Thickness(0, 0, 40, 0);
                     saveLineItemButton.Click += SaveLineItemButton_Click;
+                    saveLineItemButton.Style = FindResource("Button") as Style;
                     saveLineItemButton.SetValue(Grid.ColumnProperty, 1);
                     saveLineItemButton.SetValue(Grid.ColumnSpanProperty, 1);
                     saveLineItemButton.SetValue(Grid.RowProperty, 2);
