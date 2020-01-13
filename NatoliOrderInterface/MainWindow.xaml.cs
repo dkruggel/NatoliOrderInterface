@@ -437,7 +437,7 @@ namespace NatoliOrderInterface
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
-
+            
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
@@ -445,6 +445,10 @@ namespace NatoliOrderInterface
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
+            if (User.Maximized == true)
+            {
+                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
+            }
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -475,6 +479,7 @@ namespace NatoliOrderInterface
             try
             {
                 EoiSettings eoiSettings = context.EoiSettings.Where(s => s.EmployeeId == User.EmployeeCode).First();
+                eoiSettings.Maximized = WindowState == WindowState.Maximized;
                 eoiSettings.Width = (short?)Width;
                 eoiSettings.Height = (short?)Height;
                 eoiSettings.Top = (short?)Top;
@@ -531,7 +536,7 @@ namespace NatoliOrderInterface
             }
             else if (WindowState != WindowState.Minimized)
             {
-                MainRefresh();
+                //MainRefresh();
                 mainTimer.Start();
                 quoteTimer.Start();
                 NatoliOrderListTimer.Start();
@@ -3738,7 +3743,7 @@ namespace NatoliOrderInterface
 
             }
         }
-        private int GetNumberOfDays(string csr)
+        private static int GetNumberOfDays(string csr)
         {
             switch (csr)
             {

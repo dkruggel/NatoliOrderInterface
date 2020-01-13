@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
-        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing" MouseWheel="Order_Info_Window_MouseWheel">
+        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterOwner" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing" MouseWheel="Order_Info_Window_MouseWheel">
     <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
         <StackPanel x:Name="ButtonPanel" DockPanel.Dock="Left" Width="170" Margin="10,0,10,0" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
             <Button x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>

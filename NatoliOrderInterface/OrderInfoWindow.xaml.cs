@@ -60,16 +60,25 @@ namespace NatoliOrderInterface
         }
         public OrderInfoWindow(WorkOrder _workOrder, MainWindow _parent, string _orderLocation, User _user, bool _isReferenceWO = false)
         {
+            // For centerowner startup
+            Owner = _parent ?? new MainWindow();
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
             orderNumber = workOrder.OrderNumber;
             Title = "Work Order " + orderNumber;
             parent = _parent ?? new MainWindow();
-            Top = parent.Top;
-            Left = parent.Left;
-            Width = parent.Width;
-            Height = parent.Height;
+            if (_parent.WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                //Top = parent.Top;
+                //Left = parent.Left;
+                Width = parent.Width;
+                Height = parent.Height;
+            }
             orderLocation = _orderLocation ?? "";
             isReferenceWO = _isReferenceWO;
             if (user.Department == "Customer Service")

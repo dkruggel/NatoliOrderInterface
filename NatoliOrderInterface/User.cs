@@ -46,6 +46,7 @@ namespace NatoliOrderInterface
         public float SignatureLeft { get; set; }
         public float SignatureBottom { get; set; }
         public string DepartmentCode { get; set; }
+        public bool Maximized { get; set; }
 
         public User()
         {
@@ -82,6 +83,7 @@ namespace NatoliOrderInterface
             Height = settings.Height;
             Top = settings.Top;
             Left = settings.Left;
+            Maximized = settings.Maximized;
             DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
             {
