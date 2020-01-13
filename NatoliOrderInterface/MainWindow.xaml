@@ -371,22 +371,29 @@
                     <TextBox x:Name="ProjectSearchTextBlock" DockPanel.Dock="Top" Margin="-4,5" Width="50" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" LostFocus="ProjectSearchTextBlock_LostFocus"/>
                     <Label Content="-"/>
                     <TextBox x:Name="ProjectRevNoSearchTextBlock" DockPanel.Dock="Top" Margin="-4,5" Width="20" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown"/>
-                    <Button x:Name="ProjectSearchButton" Content="Open Project" Margin="10,5,5,5" Click="ProjectSearchButton_Click"/>
+                    <Grid Width="110">
+                        <Button x:Name="ProjectSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Project" Click="ProjectSearchButton_Click"/>
+                    </Grid>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="LightGray" BorderThickness="1,0,1,0" Margin="0,2,0,2">
+                    <StackPanel Orientation="Horizontal">
                     <Label Content="Quote#"/>
                     <TextBox x:Name="QuoteSearchTextBlock" DockPanel.Dock="Top" Margin="-4,5" Width="50" PreviewKeyDown="QuoteSearchTextBlock_PreviewKeyDown" LostFocus="QuoteSearchTextBlock_LostFocus"/>
                     <Label Content="-"/>
                     <TextBox x:Name="QuoteRevNoSearchTextBlock" DockPanel.Dock="Top" Margin="-4,5" Width="20" PreviewKeyDown="QuoteSearchTextBlock_PreviewKeyDown"/>
-                    <Button x:Name="QuoteSearchButton" Content="Open Quote" Margin="10,5,5,5" Click="QuoteSearchButton_Click"/>
-                </StackPanel>
+                    <Grid Width="110">
+                        <Button x:Name="QuoteSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Quote" Click="QuoteSearchButton_Click"/>
+                    </Grid>
+                    </StackPanel>
+                </Border>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Order#"/>
                     <TextBox x:Name="OrderSearchTextBlock" DockPanel.Dock="Top" Margin="-4,5" Width="50" PreviewKeyDown="OrderSearchTextBlock_PreviewKeyDown"/>
-                    <Button x:Name="OrderSearchButton" Content="Open Order" Margin="10,5,5,5" Click="OrderSearchButton_Click"/>
+                    <Grid Width="110">
+                        <Button x:Name="OrderSearchButton" Style="{StaticResource Button}" Content="Open Order" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Click="OrderSearchButton_Click"/>
+                    </Grid>
                 </StackPanel>
             </DockPanel>
-            
         </Grid>
 
         <Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0">

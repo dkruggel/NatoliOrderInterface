@@ -15,5 +15,6 @@ namespace NatoliOrderInterface.Models
         public short? Height { get; set; }
         public short? Top { get; set; }
         public short? Left { get; set; }
+        public bool Maximized { get; set; }
     }
 }

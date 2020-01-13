@@ -55,6 +55,7 @@ namespace NatoliOrderInterface
 
         public QuoteInfoWindow(Quote quote, MainWindow parent, string quote_location, User user)
         {
+            Owner = parent;
             InitializeComponent();
             this.user = user;
             if (quote.OrderNo != 0)
@@ -111,10 +112,17 @@ namespace NatoliOrderInterface
             Title = "Quote#: " + quoteNumber + " Rev#: " + quote.QuoteRevNo;
             this.quote = quote;
             this.parent = parent;
-            Top = parent.Top;
-            Left = parent.Left;
-            Height = parent.Height;
-            Width = 855;
+            if (parent.WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                //Top = parent.Top;
+                //Left = parent.Left;
+                Width = parent.Width;
+                Height = parent.Height;
+            }
             //quoteLocation = quote_location;
             QuoteTopHeaderExpanderHeader.Text = "Quote: " + quote.QuoteNumber + " Rev: " + quote.QuoteRevNo;
             List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == quote.QuoteNumber && l.Revision == quote.QuoteRevNo).ToList();
