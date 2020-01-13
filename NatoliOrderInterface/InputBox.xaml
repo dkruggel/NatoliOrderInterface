@@ -21,8 +21,8 @@
             <PasswordBox x:Name="PasswordTextBox" VerticalAlignment="Center" Width="120"/>-->
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="2" FlowDirection="RightToLeft">
-            <Button x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click" Width="70" Margin="5,15,5,15"/>
-            <Button x:Name="OkayButton" Content="OK" Click="OkayButton_Click" Width="70" Margin="5,15,5,15"/>
+            <Button x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" Click="CancelButton_Click" Width="70" Margin="5,15,5,15"/>
+            <Button x:Name="OkayButton" Style="{StaticResource Button}" Content="OK" Click="OkayButton_Click" Width="70" Margin="5,15,5,15"/>
         </StackPanel>        
     </Grid>
 </Window>

@@ -11,7 +11,7 @@
     </Window.Background>
     <Grid x:Name="MasterGrid" SizeChanged="MasterGrid_SizeChanged" HorizontalAlignment="Center">
         <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
-            <TabItem x:Name="QuoteTabItem" Header="Quote" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteTabItem" Header="Quote" Height="22">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
                 <Border Padding="0,0,0,0">
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" HorizontalAlignment="Stretch"  Background="WhiteSmoke" Margin="0,0,0,0">
@@ -25,12 +25,12 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="QuoteFolderButton1" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
-                            <Button x:Name="ChecklistButton1" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
-                            <Button x:Name="OrderEntryChecklistButton1" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
-                            <Button x:Name="OrderFolderButton1" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
-                            <Button x:Name="SubmitButton1" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
-                            <Button x:Name="RecallButton1" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                            <Button x:Name="QuoteFolderButton1" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                                <Button x:Name="ChecklistButton1" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                                <Button x:Name="OrderEntryChecklistButton1" Style="{StaticResource Button}" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                                <Button x:Name="OrderFolderButton1" Content="Work Order" Style="{StaticResource Button}" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                                <Button x:Name="SubmitButton1" Content="Submit" Style="{StaticResource Button}" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                                <Button x:Name="RecallButton1" Content="Recall" Style="{StaticResource Button}" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                         </Grid>
                     </Border>
                     <Expander x:Name="QuoteTopHeaderExpander" IsExpanded="True" Collapsed="QuoteTopHeaderExpander_Collapsed" Expanded="QuoteTopHeaderExpander_Expanded" Width="835" HorizontalAlignment="Left" Background="White">
@@ -49,10 +49,10 @@
                             <TextBlock x:Name="Attention" HorizontalAlignment="Left" Margin="10,90,0,0" TextWrapping="Wrap" Text="ATTN:   JEFF CURRINGTON" VerticalAlignment="Top" FontWeight="Bold" FontSize="16"/>
                             <TextBlock x:Name="CustEmail" HorizontalAlignment="Left" Margin="311,90,0,0" TextWrapping="Wrap" Text="EMail: jc@uniwelllabs.com" VerticalAlignment="Top" FontWeight="Bold" FontSize="16" FontFamily="Arial"/>
                             <!-- <TextBlock x:Name="BillToNo" HorizontalAlignment="Left" Margin="10,130,0,0" TextWrapping="Wrap" Text="Bill To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
-                            <Button x:Name="BillToButton" HorizontalAlignment="Left" Margin="10,130,0,0" Content="Bill To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="BillToButton_Click"/>
+                                <Button x:Name="BillToButton" Style="{StaticResource Button}" MinHeight="20" HorizontalAlignment="Left" Margin="10,130,0,0" Content="Bill To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="BillToButton_Click"/>
                             <StackPanel x:Name="BillToAddress" HorizontalAlignment="Left" Margin="55,152,0,0" VerticalAlignment="Top" Width="350"></StackPanel>
                             <!-- <TextBlock x:Name="ShipToNo" HorizontalAlignment="Left" Margin="410,130,0,0" TextWrapping="Wrap" Text="Ship To: 1908273 - 01" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
-                            <Button x:Name="ShipToButton" HorizontalAlignment="Left" Margin="410,130,0,0" Content="Ship To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="ShipToButton_Click"/>
+                                <Button x:Name="ShipToButton" Style="{StaticResource Button}" MinHeight="20" HorizontalAlignment="Left" Margin="410,130,0,0" Content="Ship To: 1908273" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="ShipToButton_Click"/>
                             <StackPanel x:Name="ShipToAddress" HorizontalAlignment="Left" Margin="470,152,0,0" Width="350" VerticalAlignment="Top"></StackPanel>
                             <TextBlock HorizontalAlignment="Left" Margin="10,270,0,0" Text="User:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
                             <TextBlock HorizontalAlignment="Left" Margin="10,290,0,0" Text="Product:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
@@ -63,7 +63,7 @@
                             <TextBlock HorizontalAlignment="Left" Margin="555,310,0,0" Text="Incoterms:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
                             <TextBlock HorizontalAlignment="Left" Margin="501,330,0,0" Text="Duties/Taxes/Fees:" VerticalAlignment="Top" FontFamily="Arial" FontWeight="Bold" FontSize="14"/>
                             <!-- <TextBlock x:Name="UserName" HorizontalAlignment="Left" Margin="49,270,0,0" TextWrapping="Wrap" Text="UNIWELL LABORATORIES LLC" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/> -->
-                            <Button x:Name="UserButton" HorizontalAlignment="Left" Margin="49,270,0,0" Content="UNIWELL LABORATORIES LLC" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="UserButton_Click"/>
+                                <Button x:Name="UserButton" Style="{StaticResource Button}" MinHeight="20" HorizontalAlignment="Left" Margin="49,270,0,0" Content="UNIWELL LABORATORIES LLC" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" Click="UserButton_Click"/>
                             <TextBlock x:Name="ProductName" HorizontalAlignment="Left" Margin="70,290,0,0" Text="Product Name" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
                             <TextBlock x:Name="Reference" HorizontalAlignment="Left" Margin="84,310,0,0" Text="13MM (0.5118) DIAMETER STD CUP" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
                             <TextBlock x:Name="PaymentTerms" HorizontalAlignment="Left" Margin="120,330,0,0" Text="NET 30 DAYS" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
@@ -402,7 +402,7 @@
                 </Border>
             </TabItem>
 
-            <TabItem x:Name="SMITabItem" Header="Price/SMI Check" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="SMITabItem" Header="Price/SMI Check" Height="22">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
                 <Border Padding="0,0,0,0">
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="0,0,0,0">
@@ -416,12 +416,12 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="QuoteFolderButton2" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
-                                <Button x:Name="ChecklistButton2" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
-                                <Button x:Name="OrderEntryChecklistButton2" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
-                                <Button x:Name="OrderFolderButton2" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
-                                <Button x:Name="SubmitButton2" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
-                                <Button x:Name="RecallButton2" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                                <Button x:Name="QuoteFolderButton2" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                                <Button x:Name="ChecklistButton2" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                                <Button x:Name="OrderEntryChecklistButton2" Style="{StaticResource Button}" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                                <Button x:Name="OrderFolderButton2" Style="{StaticResource Button}" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                                <Button x:Name="SubmitButton2" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                                <Button x:Name="RecallButton2" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             </Grid>
                         </Border>
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,2,0">
@@ -508,7 +508,12 @@
                                     <TextBox x:Name="QuoteTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
                                     <TextBlock Text=" QUOTE TOTAL" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
                                 </Grid>
-                                <Button IsEnabled="True" x:Name="SaveAllLineItemsButton" Content="Save All Line Items" Width="120" Grid.Column="3" Height="28" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,-100,100,0" Click="SaveAllLineItemsButton_Click"/>
+                                <Grid HorizontalAlignment="Right" Margin="0,-100,80,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="160"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button IsEnabled="True" x:Name="SaveAllLineItemsButton" Style="{StaticResource Button}" MinHeight="24" VerticalAlignment="Center" MinWidth="140" Content="Save All Line Items"   Click = "SaveAllLineItemsButton_Click"/>
+                                </Grid>
                             </StackPanel>
 
                         </Grid>
@@ -517,7 +522,7 @@
 
             </TabItem>
 
-            <TabItem x:Name="FilesTabItem" Header="Files" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="FilesTabItem" Header="Files" Height="22">
                 <Border Padding="0,0,0,0">
                     <DockPanel Name="FilesStackPanel" Background="WhiteSmoke" Margin="0,0,0,0">
                         <Border DockPanel.Dock="Top" x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,15,0">
@@ -530,12 +535,12 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="QuoteFolderButton3" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
-                                <Button x:Name="ChecklistButton3" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
-                                <Button x:Name="OrderEntryChecklistButton3" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
-                                <Button x:Name="OrderFolderButton3" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
-                                <Button x:Name="SubmitButton3" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
-                                <Button x:Name="RecallButton3" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                                <Button x:Name="QuoteFolderButton3" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                                <Button x:Name="ChecklistButton3" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                                <Button x:Name="OrderEntryChecklistButton3" Style="{StaticResource Button}" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                                <Button x:Name="OrderFolderButton3" Style="{StaticResource Button}" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                                <Button x:Name="SubmitButton3" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                                <Button x:Name="RecallButton3" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             </Grid>
                         </Border>
                         <Border DockPanel.Dock="Top" Padding="0,0,6,0">
@@ -547,7 +552,7 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="35"/>
+                                    <RowDefinition Height="45"/>
                                     <RowDefinition/>
                                     <RowDefinition/>
                                     <RowDefinition/>
@@ -556,14 +561,33 @@
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
                                 <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
-                                <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Project:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
-                                <TextBox x:Name="ProjectNumberTextBox" Grid.Row="0" Grid.ColumnSpan="3" Margin="110,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Height="22" Width="120"/>
-                                <Button x:Name="LinkProjectButton" Grid.Column="0" Grid.ColumnSpan="3" Margin="240,0,0,0"  Content="Link Project" HorizontalAlignment="Left" Width="100" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
-                                <Button x:Name="EuropeanTolerancesButton" Content="European Tolerances" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" Width="120" Height="22" Click="EuropeanTolerancesButton_Click"/>
+                                <Grid VerticalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <DockPanel>
+                                        <Label  Content="Reference Project:" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                        <TextBox x:Name="ProjectNumberTextBox" Margin="0,0,0,0" VerticalAlignment="Center" Height="22"/>
+                                    </DockPanel>
+                                    <Grid Grid.Column="1" Width="100">
+                                        <Button x:Name="LinkProjectButton" Style="{StaticResource Button}" MinHeight="24"  Content="Link Project" Margin="0,0,0,0" HorizontalAlignment="Center" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <Grid Grid.Column="2" Width="160">
+                                        <Button  x:Name="EuropeanTolerancesButton" Style="{StaticResource Button}" Content="European Tolerances" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" MinHeight="24" Click="EuropeanTolerancesButton_Click"/>
+                                    </Grid>
+                                    <DockPanel Grid.Column="3" >
+                                        <Label Content="Reference Order:"  VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                        <TextBox x:Name="OrderNumberTextBox" VerticalAlignment="Center" Height="22" Margin="0,0,0,0"/>
+                                    </DockPanel>
+                                    <Grid Grid.Column="4" Width="90" Margin="2,0">
+                                        <Button x:Name="LinkOrderButton" Style="{StaticResource Button}" Content="Link Order" HorizontalAlignment="Center" Margin="0,0,0,0" MinHeight="24" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Grid>
                                 <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
-                                <Label Grid.Column="0" Grid.ColumnSpan="3" Content="Reference Order:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,236,0"/>
-                                <TextBox x:Name="OrderNumberTextBox" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Margin="0,0,110,0"/>
-                                <Button Grid.Column="0" Grid.ColumnSpan="3" x:Name="LinkOrderButton" Content="Link Order" HorizontalAlignment="Right" Width="100" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
                                 <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="White" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
                                     <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
                                 </Grid>
@@ -585,7 +609,7 @@
                     </Border>
             </TabItem>
 
-            <TabItem x:Name="OrderEntryTabItem" Header="Order Entry Instructions" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="OrderEntryTabItem" Header="Order Entry Instructions" Height="22">
                 <Border Padding="0,0,0,0">
                     <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}"-->
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
@@ -599,12 +623,12 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="QuoteFolderButton4" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
-                                <Button x:Name="ChecklistButton4" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
-                                <Button x:Name="OrderEntryChecklistButton4" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
-                                <Button x:Name="OrderFolderButton4" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
-                                <Button x:Name="SubmitButton4" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
-                                <Button x:Name="RecallButton4" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
+                                <Button x:Name="QuoteFolderButton4" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
+                                <Button x:Name="ChecklistButton4" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
+                                <Button x:Name="OrderEntryChecklistButton4" Style="{StaticResource Button}" Content="PO Checklist OE" Grid.Column="2" HorizontalAlignment="Stretch" ToolTip="Opens Order Entry PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistOrderEntryButton_Click"/>
+                                <Button x:Name="OrderFolderButton4" Style="{StaticResource Button}" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
+                                <Button x:Name="SubmitButton4" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
+                                <Button x:Name="RecallButton4" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             </Grid>
                         </Border>
                         <StackPanel Margin="0,0,21,0">

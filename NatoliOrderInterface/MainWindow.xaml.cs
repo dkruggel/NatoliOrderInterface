@@ -175,7 +175,7 @@ namespace NatoliOrderInterface
             }
             ConstructModules();
             BuildMenus();
-            // ProjectWindow projectWindow = new ProjectWindow("99342", "0", this, User, false);
+            // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false);
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
             mainTimer.Elapsed += MainTimer_Elapsed;
@@ -2072,7 +2072,7 @@ namespace NatoliOrderInterface
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1));
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -2125,7 +2125,7 @@ namespace NatoliOrderInterface
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                workOrder = new WorkOrder((int)_orderNumber, _nat01context);
+                workOrder = new WorkOrder((int)_orderNumber);
 
                 foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                 {
@@ -2197,7 +2197,7 @@ namespace NatoliOrderInterface
                         nat02context.Dispose();
                     }
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1));
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -2213,7 +2213,7 @@ namespace NatoliOrderInterface
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                workOrder = new WorkOrder((int)_orderNumber, _nat01context);
+                workOrder = new WorkOrder((int)_orderNumber);
 
                 foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                 {
@@ -2269,7 +2269,7 @@ namespace NatoliOrderInterface
                         nat02context.Dispose();
                     }
                     Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1), _nat01context);
+                    workOrder = new WorkOrder(int.Parse(order.Item1));
 
                     foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                     {
@@ -2286,7 +2286,7 @@ namespace NatoliOrderInterface
             else
             {
                 Expander expander = sender as Expander;
-                workOrder = new WorkOrder((int)_orderNumber, _nat01context);
+                workOrder = new WorkOrder((int)_orderNumber);
 
                 foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
                 {
@@ -2699,7 +2699,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        workOrder = new WorkOrder(int.Parse(orderNumber), nat01context);
+                        workOrder = new WorkOrder(int.Parse(orderNumber));
                         WindowCollection collection = App.Current.Windows;
                         foreach (Window w in collection)
                         {
@@ -5099,7 +5099,7 @@ namespace NatoliOrderInterface
                     {
                         back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
                     }
-                    tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+                    tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy ?? project.ProjectStartedTablet ?? project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
                 }
                 eoiTabletProjectsSubmitted.Clear();
             }
@@ -9524,7 +9524,7 @@ namespace NatoliOrderInterface
             {
                 Grid grid = expander.Header as Grid;
                 string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                workOrder = new WorkOrder(int.Parse(orderNumber), _nat01context);
+                workOrder = new WorkOrder(int.Parse(orderNumber));
                 WindowCollection collection = App.Current.Windows;
                 foreach (Window w in collection)
                 {
@@ -9587,7 +9587,7 @@ namespace NatoliOrderInterface
                 {
                     Grid grid = expander.Header as Grid;
                     string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                    workOrder = new WorkOrder(int.Parse(orderNumber), nat01context);
+                    workOrder = new WorkOrder(int.Parse(orderNumber));
                     WindowCollection collection = App.Current.Windows;
                     foreach (Window w in collection)
                     {

@@ -201,7 +201,6 @@ namespace NatoliOrderInterface
         };
 
         #endregion
-        private NAT01Context nat01Context;
         private OrderDetails orderDetails = new OrderDetails();
         private List<OrderDetailOptions> orderDetailOptions = new List<OrderDetailOptions>();
         private MachineList machineList = new MachineList();
@@ -235,19 +234,22 @@ namespace NatoliOrderInterface
         {
             this.order = workOrder;
             this.lineItemNumber = lineNumber;
-            nat01Context = workOrder.Nat01context;
-            orderDetails = nat01Context.OrderDetails.Where(x => x.OrderNo == order.OrderNumber * 100 && x.LineNumber == lineItemNumber).FirstOrDefault();
-            lineItemType = orderDetails.DetailTypeId.ToString().Trim();
-            orderDetailOptions = nat01Context.OrderDetailOptions.Where(x => x.OrderNumber == order.OrderNumber * 100 && x.OrderDetailLineNo == lineItemNumber && !string.IsNullOrEmpty(x.OptionCode.Trim())).ToList();
-            machineNo = orderDetails.MachineNo.GetValueOrDefault();
-            machineList = nat01Context.MachineList.Where(m => m.MachineNo == machineNo).FirstOrDefault();
-            if(MachineNo != 0  && (lineItemType == "U" || lineItemType == "L" || lineItemType == "R" || lineItemType == "UH" || lineItemType == "LH" || lineItemType == "RH") && (machineList.MachineTypePrCode.Trim() =="B" || machineList.MachineTypePrCode.Trim() == "D"))
+            using (NAT01Context nat01Context = new NAT01Context())
             {
-                order.CanRunOnAutocell = true;
+                orderDetails = nat01Context.OrderDetails.FirstOrDefault(x => x.OrderNo == order.OrderNumber * 100 && x.LineNumber == lineItemNumber);
+                lineItemType = orderDetails.DetailTypeId.ToString().Trim();
+                orderDetailOptions = nat01Context.OrderDetailOptions.Where(x => x.OrderNumber == order.OrderNumber * 100 && x.OrderDetailLineNo == lineItemNumber && !string.IsNullOrEmpty(x.OptionCode.Trim())).ToList();
+                machineNo = orderDetails.MachineNo.GetValueOrDefault();
+                machineList = nat01Context.MachineList.Where(m => m.MachineNo == machineNo).FirstOrDefault();
+                steelType = nat01Context.SteelType.Where(s => s.TypeId == orderDetails.SteelId).FirstOrDefault();
+                optionsList = nat01Context.OptionsList.ToList();
+                nat01Context.Dispose();
+                if (MachineNo != 0 && (lineItemType == "U" || lineItemType == "L" || lineItemType == "R" || lineItemType == "UH" || lineItemType == "LH" || lineItemType == "RH") && (machineList.MachineTypePrCode.Trim() == "B" || machineList.MachineTypePrCode.Trim() == "D"))
+                {
+                    order.CanRunOnAutocell = true;
+                }
+                SetInfo(orderDetails, orderDetailOptions, optionsList);
             }
-            steelType = nat01Context.SteelType.Where(s => s.TypeId == orderDetails.SteelId).FirstOrDefault();
-            optionsList = nat01Context.OptionsList.ToList();
-            SetInfo(orderDetails, orderDetailOptions, optionsList);
         }
         public void SetInfo(OrderDetails orderDetails, List<OrderDetailOptions> orderDetailOptions, List<OptionsList> optionsList)
         {
@@ -255,15 +257,18 @@ namespace NatoliOrderInterface
             #region HobYorNorD
             if ((lineItemType == "U" || lineItemType == "UT" || lineItemType == "L" || lineItemType == "LT" || lineItemType == "R" || lineItemType == "RT") && hobNoShapeID.Length == 6)
             {
+                NAT01Context nat01Context = new NAT01Context();
                 try
                 {
                     hobList = nat01Context.HobList.Where(h => h.HobNo == orderDetails.HobNoShapeId && h.TipQty == orderDetails.TipQty).FirstOrDefault();
                 }
                 catch
                 {
+                    
                     hobYorNorD = "";
                 }
-                hobYorNorD = hobList.HobYorNorD.ToString().Trim();
+                nat01Context.Dispose();
+                hobYorNorD = string.IsNullOrEmpty(hobList.HobYorNorD) ? "" : hobList.HobYorNorD;
             }
             else
                 hobYorNorD = "";
@@ -381,6 +386,7 @@ namespace NatoliOrderInterface
         }
         public void GetOptionValues(int orderNo, string lineItemType)
         {
+            NAT01Context nat01Context = new NAT01Context();
             optionValuesA = nat01Context.OrdOptionValueASingleNum.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
             optionValuesB = nat01Context.OrdOptionValueBDoubleNum.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
             optionValuesC = nat01Context.OrdOptionValueCTolerance.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
@@ -401,6 +407,7 @@ namespace NatoliOrderInterface
             optionValuesR = nat01Context.OrdOptionValueRIntegerText.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
             optionValuesS = nat01Context.OrdOptionValueSText.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
             optionValuesT = nat01Context.OrdOptionValueTDecText.Where(o => o.OrderNo == orderNo && o.OrderDetailType.Trim() == lineItemType).ToList();
+            nat01Context.Dispose();
         }
     }
 }

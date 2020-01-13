@@ -27,12 +27,12 @@
                     </Grid.RowDefinitions>
                     <Border Grid.ColumnSpan="3" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                     <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="2,0,2,2">
-                        <DockPanel Height="24" VerticalAlignment="Stretch" LastChildFill="True" HorizontalAlignment="Stretch" Margin="2,6">
+                        <DockPanel VerticalAlignment="Stretch" LastChildFill="True" HorizontalAlignment="Stretch" Margin="2,6">
                             <TextBlock x:Name="Quote_WO_Label"  Text="Quote#:" Width="43" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Dash" Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteRevNumber"  Text="" Width="20" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource Button}" x:Name="LinkQuoteButton" Content="Link To Quote" Grid.Column="0" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
+                            <Button Style="{StaticResource Button}" MinHeight="24" x:Name="LinkQuoteButton" VerticalAlignment="Center" Content="Link To Quote" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
                         </DockPanel>
                     </Border>                    
                     <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
@@ -89,21 +89,21 @@
                                     </DockPanel>
                                 </Border>
                             </Grid>
-                            <Button Style="{StaticResource Button}" x:Name="StartButton" Content="Start" Click="StartButton_Click" IsEnabled="True"/>
-                            <Button Style="{StaticResource Button}" x:Name="FinishButton" Content="Finish" Click="FinishButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="SubmitButton" Content="Submit" Click="SubmitButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="CheckButton" Content="Check" Click="CheckButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="PutOnHoldButton" Content="Put On Hold" Click="PutOnHoldButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="ReviseButton" Content="Revise" Click="ReviseButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="StartButton" Content="Start" Click="StartButton_Click" IsEnabled="True"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="FinishButton" Content="Finish" Click="FinishButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="SubmitButton" Content="Submit" Click="SubmitButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="CheckButton" Content="Check" Click="CheckButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="PutOnHoldButton" Content="Put On Hold" Click="PutOnHoldButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="CancelButton" Content="Cancel" Click="CancelButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="ReviseButton" Content="Revise" Click="ReviseButton_Click"/>
                         </StackPanel>
                     </Border>
                     <!-- One will be hidden ^ or v -->
                     <Border x:Name="CreationBorder" Visibility="Hidden" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0">
                         <StackPanel>
-                            <Button Style="{StaticResource Button}" x:Name="CreateButton" Content="Create" Click="CreateButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
-                            <Button Style="{StaticResource Button}" x:Name="CancelCreateButton" Content="Cancel" Click="CancelCreateButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="CreateButton" Content="Create" Click="CreateButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="SaveButton" Content="Save" Click="SaveButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" x:Name="CancelCreateButton" Content="Cancel" Click="CancelCreateButton_Click"/>
                         </StackPanel>
                     </Border>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
@@ -293,9 +293,9 @@
                     </StackPanel>
                     <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Right">
                         <DockPanel Width="{Binding ActualWidth, ElementName=RoutingStackPanel}">
-                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
-                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>
-                            <Button Style="{StaticResource Button}" DockPanel.Dock="Top" x:Name="SpecificationsButton" Content="Specifications" Click="SpecificationsButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="SpecificationsButton" Content="Specifications" Click="SpecificationsButton_Click"/>
                             <Border DockPanel.Dock="Bottom" BorderThickness="0,2,0,0" BorderBrush="Black" x:Name="AttachFilesBorder" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop">
                                 <DockPanel VerticalAlignment="Center">
                                     <Image DockPanel.Dock="Bottom" Margin="4,0,4,0" Source="attach_file.png" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
