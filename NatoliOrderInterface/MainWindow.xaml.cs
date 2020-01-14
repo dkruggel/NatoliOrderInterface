@@ -1751,7 +1751,7 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        ProjectWindow.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
                     }
                     else
                     {
