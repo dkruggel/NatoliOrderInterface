@@ -1775,18 +1775,21 @@ namespace NatoliOrderInterface
             {
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
+                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
-                    int retVal = workOrder.TransferOrder(User, "D040");
+                    int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected
-            else
-            {
-                workOrder = new WorkOrder((int)_orderNumber, this);
-                int retVal = workOrder.TransferOrder(User, "D040");
-                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-            }
+            //else
+            //{
+            //    workOrder = new WorkOrder((int)_orderNumber, this);
+            //    int retVal = workOrder.TransferOrder(User, "D040");
+            //    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+            //}
 
             selectedOrders.Clear();
 
@@ -5497,7 +5500,7 @@ namespace NatoliOrderInterface
                 expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key == double.Parse(_order)).Value.background)));
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5548,7 +5551,7 @@ namespace NatoliOrderInterface
                 expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -5603,7 +5606,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
@@ -5661,7 +5664,7 @@ namespace NatoliOrderInterface
 
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5716,7 +5719,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5738,59 +5741,67 @@ namespace NatoliOrderInterface
         }
         private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> dict)
         {
-            int i = User.VisiblePanels.IndexOf("QuotesToConvert");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                               , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
-                                                              .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
-            foreach ((double, short?) quote in newQuotes)
+            try
             {
-                int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-            }
+                int i = User.VisiblePanels.IndexOf("QuotesToConvert");
+                DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+                Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+                StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+                                                                                                                   , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+                IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
+                                                                  .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
+                foreach ((double, short?) quote in newQuotes)
                 {
-                    removeThese.Add(expander);
-                    continue;
+                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
                 }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if (dict.Keys.Count > 16)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Grid>().First(p => !p.Name.EndsWith("HeaderLabelGrid"));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Grid>().First(p => !p.Name.EndsWith("HeaderLabelGrid"));
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
 
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+                List<Expander> removeThese = new List<Expander>();
+                foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+                {
+                    double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+                    short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+                    if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+                    {
+                        removeThese.Add(expander);
+                        continue;
+                    }
+                    Dispatcher.Invoke(() =>
+                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
+                }
+                foreach (Expander expander1 in removeThese)
+                {
+                    interiorStackPanel.Children.Remove(expander1);
+                }
+                
+                if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                {
+                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+                    {
+                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                        AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+                    }
+                }
+                else
+                {
+                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+                    {
+                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                        headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+                    }
+                }
+
+                dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
+                dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void OrdersReadyToPrintExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
         {
@@ -5826,7 +5837,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5880,7 +5891,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5946,7 +5957,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6002,7 +6013,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6059,7 +6070,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6116,7 +6127,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6173,7 +6184,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6230,7 +6241,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6296,7 +6307,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6353,7 +6364,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6410,7 +6421,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6467,7 +6478,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6524,7 +6535,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6576,7 +6587,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
@@ -6627,7 +6638,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
