@@ -2121,6 +2121,7 @@ namespace NatoliOrderInterface
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             projectSearchWindow.Show();
+            projectSearchWindow.Dispose();
         }
 
         private void EditLayout_Click(object sender, RoutedEventArgs e)
@@ -6964,7 +6965,7 @@ namespace NatoliOrderInterface
             expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
             expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
             expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
+            expander.MouseRightButtonUp += OrdersInTheOfficeExpander_MouseRightButtonUp;
 
             // expander.Expanded += InTheOfficeExpander_Expanded;
             return expander;
@@ -9605,6 +9606,31 @@ namespace NatoliOrderInterface
             {
                 RightClickMenu.Items.Add(toProdManOrder);
             }
+            expander.ContextMenu = RightClickMenu;
+            expander.ContextMenu.Tag = "RightClickMenu";
+            expander.ContextMenu.Closed += ContextMenu_Closed;
+
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        }
+
+        private void OrdersInTheOfficeExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu RightClickMenu = new ContextMenu();
+
+            MenuItem startOrder = new MenuItem
+            {
+                Header = "Start Order"
+            };
+
+            Expander expander = sender as Expander;
+            startOrder.Click += StartWorkOrder_Click;
+            
+            RightClickMenu.Items.Add(startOrder);
+
             expander.ContextMenu = RightClickMenu;
             expander.ContextMenu.Tag = "RightClickMenu";
             expander.ContextMenu.Closed += ContextMenu_Closed;

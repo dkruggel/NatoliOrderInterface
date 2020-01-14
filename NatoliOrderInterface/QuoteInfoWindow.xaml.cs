@@ -134,9 +134,9 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    var X = 0;
+                    // var X = 0;
                     // MessageBox.Show(ex.Message);
-                    // WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message);
+                    WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message);
                 }
             }
             Show();
@@ -2910,18 +2910,25 @@ namespace NatoliOrderInterface
         #endregion
 
         #region ErrorHandling
-        //private void WriteToErrorLog(string errorLoc, string errorMessage)
-        //{
-        //    string path = @"\\nsql03\data1\Logs\Error_Log.txt";
-        //    System.IO.StreamReader sr = new System.IO.StreamReader(path);
-        //    string existing = sr.ReadToEnd();
-        //    existing = existing.TrimEnd();
-        //    sr.Close();
-        //    System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-        //    sw.Write(DateTime.Now + "  " + user.GetUserName() + "  " + errorLoc + "\r\n" + errorMessage.PadLeft(20) + "\r\n" + existing);
-        //    sw.Flush();
-        //    sw.Close();
-        //}
+        private void WriteToErrorLog(string errorLoc, string errorMessage)
+        {
+            try
+            {
+                string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt";
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                string existing = sr.ReadToEnd();
+                existing = existing.TrimEnd();
+                sr.Close();
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                sw.Write(DateTime.Now + "  " + user.GetUserName() + "  " + errorLoc + "\r\n" + errorMessage.PadLeft(20) + "\r\n" + existing);
+                sw.Flush();
+                sw.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Error in the Error Handling of Errors");
+            }
+        }
         #endregion
     }
 }

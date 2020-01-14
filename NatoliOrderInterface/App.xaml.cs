@@ -9,10 +9,10 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class App : Application
     {
-        public static string Server = "";
-        public static string PersistSecurityInfo = "";
-        public static string UserID = "";
-        public static string Password = "";
+        public static string Server;
+        public static string PersistSecurityInfo;
+        public static string UserID;
+        public static string Password;
         public static void GetConnectionString()
         {
             var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
