@@ -991,173 +991,6 @@ namespace NatoliOrderInterface
             }
         }
 
-        private void BarcodeTransfer(string employeeCode, string departmentCode, string travellerNumber, bool firstScan = false)
-        {
-            if (firstScan)
-            {
-                string lineNumber = travellerNumber.Substring(1, 2);
-                string strSQL = "Update [NAT01].[dbo].[OrderDetails] set [TravellerNo] = '" + travellerNumber + "' where [OrderNo] = '" + workOrder.OrderNumber + "00' and [LineNumber] = '" + lineNumber + "'";
-                SqlConnection updateConnection = new SqlConnection();
-                SqlCommand updateCommand = new SqlCommand();
-                try
-                {
-                    updateCommand.Connection = updateConnection;
-                    updateCommand.CommandText = strSQL;
-                    updateCommand.CommandType = CommandType.Text;
-                    using (updateConnection)
-                    {
-                        updateConnection.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                        updateConnection.Open();
-                        DataTable TransferBatch = new DataTable();
-                        TransferBatch.Load(updateCommand.ExecuteReader());
-                        TransferBatch.Dispose();
-                    }
-                    updateCommand.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    updateCommand.Dispose();
-                    updateConnection.Close();
-                }
-            }
-
-            SqlConnection con = new SqlConnection();
-            SqlCommand cmd = new SqlCommand();
-            try
-            {
-                cmd.Connection = con;
-                cmd.CommandText = "spValidateScanTransfer";
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                // Terminal ID
-                cmd.Parameters.Add("@TerminalID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TerminalID"].Size = 50;
-                cmd.Parameters["@TerminalID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TerminalID"].Value = Environment.MachineName;
-
-                // NTUserID
-                cmd.Parameters.Add("@NTUserID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@NTUserID"].Size = 35;
-                cmd.Parameters["@NTUserID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@NTUserID"].Value = Environment.MachineName;
-
-                // ApplicationVersion
-                cmd.Parameters.Add("@ApplicationVersion", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ApplicationVersion"].Size = 25;
-                cmd.Parameters["@ApplicationVersion"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@ApplicationVersion"].Value = "V3.4";
-
-                // Browser Details
-                cmd.Parameters.Add("@BrowserDetails", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BrowserDetails"].Size = 75;
-                cmd.Parameters["@BrowserDetails"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@BrowserDetails"].Value = "";
-
-                // ActionPerformed
-                cmd.Parameters.Add("@ActionPerformed", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ActionPerformed"].Size = 75;
-                cmd.Parameters["@ActionPerformed"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeCode
-                cmd.Parameters.Add("@EmployeeCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@EmployeeCode"].Size = 7;
-                cmd.Parameters["@EmployeeCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@EmployeeCode"].Value = employeeCode;
-
-                // CardCode
-                cmd.Parameters.Add("@CardCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@CardCode"].Size = 7;
-                cmd.Parameters["@CardCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@CardCode"].Value = "";
-
-
-                // EmployeeValidationCode
-                cmd.Parameters.Add("@EmployeeValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@EmployeeValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeValidationText
-                cmd.Parameters.Add("@EmployeeValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@EmployeeValidationText"].Size = 75;
-                cmd.Parameters["@EmployeeValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentCode
-                cmd.Parameters.Add("@DepartmentCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@DepartmentCode"].Size = 7;
-                cmd.Parameters["@DepartmentCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@DepartmentCode"].Value = departmentCode;
-
-                // DepartmentValidationCode
-                cmd.Parameters.Add("@DepartmentValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@DepartmentValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentValidationText
-                cmd.Parameters.Add("@DepartmentValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@DepartmentValidationText"].Size = 75;
-                cmd.Parameters["@DepartmentValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-
-                // TravellerNo
-                cmd.Parameters.Add("@TravellerNo", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TravellerNo"].Size = 11;
-                cmd.Parameters["@TravellerNo"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TravellerNo"].Value = travellerNumber;
-
-                // WorkOrderNumber
-                cmd.Parameters.Add("@WorkOrderNumber", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumber"].Size = 11;
-                cmd.Parameters["@WorkOrderNumber"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@WorkOrderNumber"].Value = "W" + travellerNumber.Substring(3, 6) + "S0" + travellerNumber.Substring(1, 2);
-
-                // WorkOrderNumberValidated
-                cmd.Parameters.Add("@WorkOrderNumberValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@WorkOrderNumberValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // WorkOrderNumberValidationText
-                cmd.Parameters.Add("@WorkOrderNumberValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumberValidationText"].Size = 75;
-                cmd.Parameters["@WorkOrderNumberValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // BatchID
-                cmd.Parameters.Add("@BatchID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BatchID"].Size = 27;
-                cmd.Parameters["@BatchID"].Direction = System.Data.ParameterDirection.InputOutput;
-                cmd.Parameters["@BatchID"].Value = "none";
-
-
-                // SaveValidationCode
-                cmd.Parameters.Add("@SaveValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@SaveValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // SaveValidationText
-                cmd.Parameters.Add("@SaveValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@SaveValidationText"].Size = 75;
-                cmd.Parameters["@SaveValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                using (con)
-                {
-                    con.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                    con.Open();
-                    DataTable TransferBatch = new DataTable();
-                    TransferBatch.Load(cmd.ExecuteReader());
-                    TransferBatch.Dispose();
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                cmd.Dispose();
-                con.Close();
-            }
-        }
-
         #region Clicks
         private void StartTabletProject_Click(object sender, RoutedEventArgs e)
         {
@@ -2061,33 +1894,14 @@ namespace NatoliOrderInterface
 
         private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // Scan selected line items first and then clear the list
-            if (selectedLineItems.Any())
-            {
-                foreach (string travellerNumber in selectedLineItems)
-                {
-                    BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                }
-                selectedLineItems.Clear();
-            }
-
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                        }
-                    }
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D080");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
                     if (workOrder.Finished)
                     {
@@ -2130,17 +1944,9 @@ namespace NatoliOrderInterface
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                    }
-                }
+                workOrder = new WorkOrder((int)_orderNumber, this);
+                int retVal = workOrder.TransferOrder(User, "D080");
+                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
                 if (workOrder.Finished)
                 {
@@ -2186,49 +1992,25 @@ namespace NatoliOrderInterface
 
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Get whether this is the first scan/coming from ordersenteredunscanned
+
+
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
-                    using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersEnteredAndUnscannedView.Any(o => o.OrderNo.ToString() == order.Item1))
-                    {
-                        nat02context.Dispose();
-                        continue;
-                    }
-                    else
-                    {
-                        nat02context.Dispose();
-                    }
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D040", travellerNumber);
-                        }
-                    }
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D040");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D040", travellerNumber);
-                    }
-                }
+                workOrder = new WorkOrder((int)_orderNumber, this);
+                int retVal = workOrder.TransferOrder(User, "D040");
+                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
             }
 
             selectedOrders.Clear();
@@ -2238,26 +2020,6 @@ namespace NatoliOrderInterface
 
         private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
         {
-            // Scan selected line items first and then clear the list
-            if (selectedLineItems.Any())
-            {
-                foreach (string travellerNumber in selectedLineItems)
-                {
-                    using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == travellerNumber.Substring(2, 6)))
-                    {
-                        nat02context.Dispose();
-                        continue;
-                    }
-                    else
-                    {
-                        nat02context.Dispose();
-                    }
-                    BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                }
-                selectedLineItems.Clear();
-            }
-
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
@@ -2273,35 +2035,17 @@ namespace NatoliOrderInterface
                     {
                         nat02context.Dispose();
                     }
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                        }
-                    }
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D921");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                Expander expander = sender as Expander;
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                    }
-                }
+                workOrder = new WorkOrder((int)_orderNumber, this);
+                int retVal = workOrder.TransferOrder(User, "D921");
+                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
             }
 
             selectedOrders.Clear();
@@ -2705,7 +2449,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        workOrder = new WorkOrder(int.Parse(orderNumber));
+                        workOrder = new WorkOrder(int.Parse(orderNumber), this);
                         WindowCollection collection = App.Current.Windows;
                         foreach (Window w in collection)
                         {
@@ -9530,7 +9274,7 @@ namespace NatoliOrderInterface
             {
                 Grid grid = expander.Header as Grid;
                 string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                workOrder = new WorkOrder(int.Parse(orderNumber));
+                workOrder = new WorkOrder(int.Parse(orderNumber), this);
                 WindowCollection collection = App.Current.Windows;
                 foreach (Window w in collection)
                 {
@@ -9593,7 +9337,7 @@ namespace NatoliOrderInterface
                 {
                     Grid grid = expander.Header as Grid;
                     string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                    workOrder = new WorkOrder(int.Parse(orderNumber));
+                    workOrder = new WorkOrder(int.Parse(orderNumber), this);
                     WindowCollection collection = App.Current.Windows;
                     foreach (Window w in collection)
                     {
