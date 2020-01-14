@@ -191,8 +191,6 @@ namespace NatoliOrderInterface
             oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
             oqTimer.Enabled = true;
         }
-
-
         private void MainRefresh()
         {
             BindData("Main");
@@ -206,8 +204,6 @@ namespace NatoliOrderInterface
             NatoliOrderListTimer.Stop();
             NatoliOrderListTimer.Start();
         }
-
-        public delegate void RemovedFromSelectedOrdersEventHandler(object sender, EventArgs e);
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -9357,7 +9353,7 @@ namespace NatoliOrderInterface
             toProdManOrder.Click += ToProdManOrder_Click;
 
             RightClickMenu.Items.Add(toOfficeOrder);
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E3236")
+            if (User.Department == "Engineering" || User.Department == "Order Entry")
             {
                 RightClickMenu.Items.Add(toProdManOrder);
             }
