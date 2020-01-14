@@ -191,8 +191,6 @@ namespace NatoliOrderInterface
             oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
             oqTimer.Enabled = true;
         }
-
-
         private void MainRefresh()
         {
             BindData("Main");
@@ -206,8 +204,6 @@ namespace NatoliOrderInterface
             NatoliOrderListTimer.Stop();
             NatoliOrderListTimer.Start();
         }
-
-        public delegate void RemovedFromSelectedOrdersEventHandler(object sender, EventArgs e);
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -763,173 +759,6 @@ namespace NatoliOrderInterface
                 _nat02Context.MaMachineVariables.RemoveRange(_nat02Context.MaMachineVariables.Where(m => m.WorkOrderNumber.Trim() == orderNo));
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
-            }
-        }
-
-        private void BarcodeTransfer(string employeeCode, string departmentCode, string travellerNumber, bool firstScan = false)
-        {
-            if (firstScan)
-            {
-                string lineNumber = travellerNumber.Substring(1, 2);
-                string strSQL = "Update [NAT01].[dbo].[OrderDetails] set [TravellerNo] = '" + travellerNumber + "' where [OrderNo] = '" + workOrder.OrderNumber + "00' and [LineNumber] = '" + lineNumber + "'";
-                SqlConnection updateConnection = new SqlConnection();
-                SqlCommand updateCommand = new SqlCommand();
-                try
-                {
-                    updateCommand.Connection = updateConnection;
-                    updateCommand.CommandText = strSQL;
-                    updateCommand.CommandType = CommandType.Text;
-                    using (updateConnection)
-                    {
-                        updateConnection.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                        updateConnection.Open();
-                        DataTable TransferBatch = new DataTable();
-                        TransferBatch.Load(updateCommand.ExecuteReader());
-                        TransferBatch.Dispose();
-                    }
-                    updateCommand.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    updateCommand.Dispose();
-                    updateConnection.Close();
-                }
-            }
-
-            SqlConnection con = new SqlConnection();
-            SqlCommand cmd = new SqlCommand();
-            try
-            {
-                cmd.Connection = con;
-                cmd.CommandText = "spValidateScanTransfer";
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                // Terminal ID
-                cmd.Parameters.Add("@TerminalID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TerminalID"].Size = 50;
-                cmd.Parameters["@TerminalID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TerminalID"].Value = Environment.MachineName;
-
-                // NTUserID
-                cmd.Parameters.Add("@NTUserID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@NTUserID"].Size = 35;
-                cmd.Parameters["@NTUserID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@NTUserID"].Value = Environment.MachineName;
-
-                // ApplicationVersion
-                cmd.Parameters.Add("@ApplicationVersion", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ApplicationVersion"].Size = 25;
-                cmd.Parameters["@ApplicationVersion"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@ApplicationVersion"].Value = "V3.4";
-
-                // Browser Details
-                cmd.Parameters.Add("@BrowserDetails", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BrowserDetails"].Size = 75;
-                cmd.Parameters["@BrowserDetails"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@BrowserDetails"].Value = "";
-
-                // ActionPerformed
-                cmd.Parameters.Add("@ActionPerformed", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ActionPerformed"].Size = 75;
-                cmd.Parameters["@ActionPerformed"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeCode
-                cmd.Parameters.Add("@EmployeeCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@EmployeeCode"].Size = 7;
-                cmd.Parameters["@EmployeeCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@EmployeeCode"].Value = employeeCode;
-
-                // CardCode
-                cmd.Parameters.Add("@CardCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@CardCode"].Size = 7;
-                cmd.Parameters["@CardCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@CardCode"].Value = "";
-
-
-                // EmployeeValidationCode
-                cmd.Parameters.Add("@EmployeeValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@EmployeeValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeValidationText
-                cmd.Parameters.Add("@EmployeeValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@EmployeeValidationText"].Size = 75;
-                cmd.Parameters["@EmployeeValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentCode
-                cmd.Parameters.Add("@DepartmentCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@DepartmentCode"].Size = 7;
-                cmd.Parameters["@DepartmentCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@DepartmentCode"].Value = departmentCode;
-
-                // DepartmentValidationCode
-                cmd.Parameters.Add("@DepartmentValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@DepartmentValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentValidationText
-                cmd.Parameters.Add("@DepartmentValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@DepartmentValidationText"].Size = 75;
-                cmd.Parameters["@DepartmentValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-
-                // TravellerNo
-                cmd.Parameters.Add("@TravellerNo", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TravellerNo"].Size = 11;
-                cmd.Parameters["@TravellerNo"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TravellerNo"].Value = travellerNumber;
-
-                // WorkOrderNumber
-                cmd.Parameters.Add("@WorkOrderNumber", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumber"].Size = 11;
-                cmd.Parameters["@WorkOrderNumber"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@WorkOrderNumber"].Value = "W" + travellerNumber.Substring(3, 6) + "S0" + travellerNumber.Substring(1, 2);
-
-                // WorkOrderNumberValidated
-                cmd.Parameters.Add("@WorkOrderNumberValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@WorkOrderNumberValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // WorkOrderNumberValidationText
-                cmd.Parameters.Add("@WorkOrderNumberValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumberValidationText"].Size = 75;
-                cmd.Parameters["@WorkOrderNumberValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // BatchID
-                cmd.Parameters.Add("@BatchID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BatchID"].Size = 27;
-                cmd.Parameters["@BatchID"].Direction = System.Data.ParameterDirection.InputOutput;
-                cmd.Parameters["@BatchID"].Value = "none";
-
-
-                // SaveValidationCode
-                cmd.Parameters.Add("@SaveValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@SaveValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // SaveValidationText
-                cmd.Parameters.Add("@SaveValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@SaveValidationText"].Size = 75;
-                cmd.Parameters["@SaveValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                using (con)
-                {
-                    con.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                    con.Open();
-                    DataTable TransferBatch = new DataTable();
-                    TransferBatch.Load(cmd.ExecuteReader());
-                    TransferBatch.Dispose();
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                cmd.Dispose();
-                con.Close();
             }
         }
 
@@ -1836,33 +1665,14 @@ namespace NatoliOrderInterface
 
         private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // Scan selected line items first and then clear the list
-            if (selectedLineItems.Any())
-            {
-                foreach (string travellerNumber in selectedLineItems)
-                {
-                    BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                }
-                selectedLineItems.Clear();
-            }
-
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                        }
-                    }
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D080");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
                     if (workOrder.Finished)
                     {
@@ -1905,17 +1715,9 @@ namespace NatoliOrderInterface
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D080", travellerNumber);
-                    }
-                }
+                workOrder = new WorkOrder((int)_orderNumber, this);
+                int retVal = workOrder.TransferOrder(User, "D080");
+                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
                 if (workOrder.Finished)
                 {
@@ -1961,50 +1763,29 @@ namespace NatoliOrderInterface
 
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Get whether this is the first scan/coming from ordersenteredunscanned
+
+
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
                 foreach ((string, CheckBox) order in selectedOrders)
                 {
-                    using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersEnteredAndUnscannedView.Any(o => o.OrderNo.ToString() == order.Item1))
-                    {
-                        nat02context.Dispose();
-                        continue;
-                    }
-                    else
-                    {
-                        nat02context.Dispose();
-                    }
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D040", travellerNumber);
-                        }
-                    }
+                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected
-            else
-            {
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D040", travellerNumber);
-                    }
-                }
-            }
+            //else
+            //{
+            //    workOrder = new WorkOrder((int)_orderNumber, this);
+            //    int retVal = workOrder.TransferOrder(User, "D040");
+            //    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+            //}
 
             selectedOrders.Clear();
 
@@ -2013,26 +1794,6 @@ namespace NatoliOrderInterface
 
         private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
         {
-            // Scan selected line items first and then clear the list
-            if (selectedLineItems.Any())
-            {
-                foreach (string travellerNumber in selectedLineItems)
-                {
-                    using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == travellerNumber.Substring(2, 6)))
-                    {
-                        nat02context.Dispose();
-                        continue;
-                    }
-                    else
-                    {
-                        nat02context.Dispose();
-                    }
-                    BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                }
-                selectedLineItems.Clear();
-            }
-
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
@@ -2048,35 +1809,17 @@ namespace NatoliOrderInterface
                     {
                         nat02context.Dispose();
                     }
-                    Expander expander = sender as Expander;
-                    workOrder = new WorkOrder(int.Parse(order.Item1));
-
-                    foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                    {
-                        string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                            BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                        }
-                    }
+                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
+                    int retVal = workOrder.TransferOrder(User, "D921");
+                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected
             else
             {
-                Expander expander = sender as Expander;
-                workOrder = new WorkOrder((int)_orderNumber);
-
-                foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-                {
-                    string lineType = kvp.Value.Trim();
-                    if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                    {
-                        string travellerNumber = "1" + kvp.Key.ToString("00") + workOrder.OrderNumber + "00";
-                        BarcodeTransfer(User.EmployeeCode, "D921", travellerNumber);
-                    }
-                }
+                workOrder = new WorkOrder((int)_orderNumber, this);
+                int retVal = workOrder.TransferOrder(User, "D921");
+                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
             }
 
             selectedOrders.Clear();
@@ -2480,7 +2223,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        workOrder = new WorkOrder(int.Parse(orderNumber));
+                        workOrder = new WorkOrder(int.Parse(orderNumber), this);
                         WindowCollection collection = App.Current.Windows;
                         foreach (Window w in collection)
                         {
@@ -5753,7 +5496,7 @@ namespace NatoliOrderInterface
                 expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key == double.Parse(_order)).Value.background)));
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5804,7 +5547,7 @@ namespace NatoliOrderInterface
                 expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -5859,7 +5602,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
@@ -5917,7 +5660,7 @@ namespace NatoliOrderInterface
 
             }
             foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5972,7 +5715,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -5994,59 +5737,67 @@ namespace NatoliOrderInterface
         }
         private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> dict)
         {
-            int i = User.VisiblePanels.IndexOf("QuotesToConvert");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                               , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
-                                                              .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
-            foreach ((double, short?) quote in newQuotes)
+            try
             {
-                int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-            }
+                int i = User.VisiblePanels.IndexOf("QuotesToConvert");
+                DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+                Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+                StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+                                                                                                                   , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+                IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
+                                                                  .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
+                foreach ((double, short?) quote in newQuotes)
                 {
-                    removeThese.Add(expander);
-                    continue;
+                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
                 }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if (dict.Keys.Count > 16)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Grid>().First(p => !p.Name.EndsWith("HeaderLabelGrid"));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Grid>().First(p => !p.Name.EndsWith("HeaderLabelGrid"));
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
 
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+                List<Expander> removeThese = new List<Expander>();
+                foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+                {
+                    double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+                    short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+                    if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+                    {
+                        removeThese.Add(expander);
+                        continue;
+                    }
+                    Dispatcher.Invoke(() =>
+                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
+                }
+                foreach (Expander expander1 in removeThese)
+                {
+                    interiorStackPanel.Children.Remove(expander1);
+                }
+                
+                if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                {
+                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+                    {
+                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                        AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+                    }
+                }
+                else
+                {
+                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+                    {
+                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                        headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+                    }
+                }
+
+                dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
+                dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void OrdersReadyToPrintExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
         {
@@ -6082,7 +5833,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -6136,7 +5887,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
                 {
@@ -6202,7 +5953,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6258,7 +6009,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6315,7 +6066,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6372,7 +6123,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6429,7 +6180,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6486,7 +6237,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6552,7 +6303,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6609,7 +6360,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6666,7 +6417,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6723,7 +6474,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6780,7 +6531,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
                 {
@@ -6832,7 +6583,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 15)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
@@ -6883,7 +6634,7 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if (dict.Keys.Count > 16)
+            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
             {
                 if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
                 {
@@ -7211,7 +6962,7 @@ namespace NatoliOrderInterface
             expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
             expander.MouseRightButtonUp += AllTabletProjectsDataGrid_MouseRightButtonUp;
 
-            // expander.Expanded += AllTabletProjectsExpander_Expanded;
+            expander.Expanded += AllTabletProjectsExpander_Expanded;
             using var __nat02context = new NAT02Context();
             if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
             {
@@ -7456,7 +7207,7 @@ namespace NatoliOrderInterface
             expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
             expander.MouseRightButtonUp += AllToolProjectsDataGrid_MouseRightButtonUp;
 
-            // expander.Expanded += AllToolProjectsExpander_Expanded;
+            expander.Expanded += AllToolProjectsExpander_Expanded;
             using var __nat02context = new NAT02Context();
             if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
             {
@@ -8153,6 +7904,99 @@ namespace NatoliOrderInterface
             }
 
             expander.Content = lineItemsStackPanel;
+        }
+        private void AllTabletProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+            using var _projectsContext = new ProjectsContext();
+            ProjectSpecSheet eoiAllTabletProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+            StackPanel stagesStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.ProjectStartedTablet)) { stages.Add(("Started", eoiAllTabletProjectsView.ProjectStartedTablet,
+                _projectsContext.ProjectStartedTablet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted)); }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletDrawnBy)) { stages.Add(("Drawn", eoiAllTabletProjectsView.TabletDrawnBy,
+                _projectsContext.TabletDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletSubmittedBy)) { stages.Add(("Submitted", eoiAllTabletProjectsView.TabletSubmittedBy,
+                _projectsContext.TabletSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletCheckedBy)) { stages.Add(("Checked", eoiAllTabletProjectsView.TabletCheckedBy,
+                _projectsContext.TabletCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            _projectsContext.Dispose();
+
+            foreach ((string, string, DateTime?) stage in stages)
+            {
+                Grid stagesGrid = new Grid();
+                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+                
+                stagesStackPanel.Children.Add(stagesGrid);
+            }
+
+            expander.Content = stagesStackPanel;
+        }
+        private void AllToolProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+            using var _projectsContext = new ProjectsContext();
+            ProjectSpecSheet eoiAllToolProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+            StackPanel stagesStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ProjectStartedTool))
+            {
+                stages.Add(("Started", eoiAllToolProjectsView.ProjectStartedTool,
+                    _projectsContext.ProjectStartedTool.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolDrawnBy))
+            {
+                stages.Add(("Drawn", eoiAllToolProjectsView.ToolDrawnBy,
+                    _projectsContext.ToolDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolSubmittedBy))
+            {
+                stages.Add(("Submitted", eoiAllToolProjectsView.ToolSubmittedBy,
+                    _projectsContext.ToolSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolCheckedBy))
+            {
+                stages.Add(("Checked", eoiAllToolProjectsView.ToolCheckedBy,
+                    _projectsContext.ToolCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            _projectsContext.Dispose();
+
+            foreach ((string, string, DateTime?) stage in stages)
+            {
+                Grid stagesGrid = new Grid();
+                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+
+                stagesStackPanel.Children.Add(stagesGrid);
+            }
+
+            expander.Content = stagesStackPanel;
         }
         #endregion
         #endregion
@@ -9305,7 +9149,7 @@ namespace NatoliOrderInterface
             {
                 Grid grid = expander.Header as Grid;
                 string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                workOrder = new WorkOrder(int.Parse(orderNumber));
+                workOrder = new WorkOrder(int.Parse(orderNumber), this);
                 WindowCollection collection = App.Current.Windows;
                 foreach (Window w in collection)
                 {
@@ -9368,7 +9212,7 @@ namespace NatoliOrderInterface
                 {
                     Grid grid = expander.Header as Grid;
                     string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                    workOrder = new WorkOrder(int.Parse(orderNumber));
+                    workOrder = new WorkOrder(int.Parse(orderNumber), this);
                     WindowCollection collection = App.Current.Windows;
                     foreach (Window w in collection)
                     {
@@ -9602,7 +9446,7 @@ namespace NatoliOrderInterface
             toProdManOrder.Click += ToProdManOrder_Click;
 
             RightClickMenu.Items.Add(toOfficeOrder);
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E3236")
+            if (User.Department == "Engineering" || User.Department == "Order Entry")
             {
                 RightClickMenu.Items.Add(toProdManOrder);
             }

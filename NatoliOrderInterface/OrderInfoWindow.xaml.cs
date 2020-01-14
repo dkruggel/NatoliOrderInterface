@@ -8,11 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.IO;
 using System.Diagnostics;
-using System.Threading;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.NAT01;
 using Microsoft.EntityFrameworkCore;
-using NatoliOrderInterface.Models.DriveWorks;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
@@ -26,7 +24,6 @@ using Org.BouncyCastle.Crypto.Parameters;
 using System.Runtime.InteropServices;
 using System.Windows.Navigation;
 using System.Windows.Documents;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace NatoliOrderInterface
@@ -44,9 +41,6 @@ namespace NatoliOrderInterface
         private readonly User user;
         private bool isReferenceWO = false;
         private Quote quote;
-
-        private List<int> lineItemsToScan = new List<int>();
-        private StackPanel stackPanelTemp;
 
         private Dictionary<double, string> ordersDoNoProcess;
         private bool doNotProc = false;
@@ -852,48 +846,6 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void GetLineItemsToScan(Window owner)
-        {
-            Window LineItemChoices = new Window();
-            LineItemChoices.Owner = owner;
-            LineItemChoices.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            LineItemChoices.Width = 250;
-            //LineItemChoices.Height = 200;
-            Grid grid = new Grid();
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Width = 225;
-            stackPanel.Margin = new Thickness(0, 15, 0, 0);
-            Label label = new Label();
-            label.Content = "Check the items you want to send back.";
-            label.Width = 225;
-            label.HorizontalContentAlignment = HorizontalAlignment.Center;
-            stackPanelTemp = stackPanel;
-            stackPanel.Children.Add(label);
-            grid.Children.Add(stackPanel);
-            LineItemChoices.Content = grid;
-            LineItemChoices.SizeToContent = SizeToContent.Height;
-
-            foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-            {
-                string lineType = kvp.Value.Trim();
-                if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                {
-                    using var context = new NAT01Context();
-                    string lineDesc = context.OedetailType.Where(x => lineType == x.TypeId.Trim()).FirstOrDefault().ShortDesc.Trim();
-                    CheckBox checkBox = new CheckBox
-                    {
-                        Name = lineType + "CheckBox",
-                        Content = lineDesc,
-                        IsChecked = true
-                    };
-                    stackPanel.Children.Add(checkBox);
-                    context.Dispose();
-                }
-            }
-
-            LineItemChoices.Closed += LineItemChoices_Closed;
-            LineItemChoices.ShowDialog();
-        }
         private void DeleteMachineVariables(string orderNo, int lineNumber)
         {
             using var _nat02Context = new NAT02Context();
@@ -1299,41 +1251,20 @@ namespace NatoliOrderInterface
         #region Order Movement
         private void StartOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (KeyValuePair<int, string> kvp in workOrder.lineItems)
-            {
-                string lineType = kvp.Value.Trim();
-                if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
-                {
-                    lineItemsToScan.Add(kvp.Key);
-                }
-            }
-
-            foreach (int lineNumber in lineItemsToScan)
-            {
-                try
-                {
-                    string travellerNumber = "1" + lineNumber.ToString("00") + orderNumber + "00";
-                    BarcodeTransfer(user.EmployeeCode, "D040", travellerNumber, true);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + Environment.UserName);
-                }
-            }
-            //InsertIntoDWAutoRun(workOrder.OrderNumber);
+            int retVal = workOrder.TransferOrder(user, "D040", true);
+            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+            
             Dispatcher.Invoke(() => { ButtonRefresh("Start"); });
             parent.BoolValue = true;
         }
         private void SendToOfficeButton_Click(object sender, RoutedEventArgs e)
         {
-            GetLineItemsToScan(this);
-
-            foreach (int lineNumber in lineItemsToScan)
+            int retVal = workOrder.TransferOrder(user, "D080", true);
+            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+            foreach (int lineNumber in workOrder.lineItems.Keys)
             {
                 DeleteMachineVariables(orderNumber.ToString().Trim(), lineNumber);
-                string travellerNumber = "1" + lineNumber.ToString("00") + orderNumber + "00";
-                BarcodeTransfer(user.EmployeeCode, "D080", travellerNumber);
-            }
+            } 
 
             if (workOrder.Finished)
             {
@@ -1762,7 +1693,7 @@ namespace NatoliOrderInterface
             using var _nat01context = new NAT01Context();
             try
             {
-                WorkOrder refWorkOrder = new WorkOrder((int)workOrder.ReferenceOrder);
+                WorkOrder refWorkOrder = new WorkOrder((int)workOrder.ReferenceOrder, this);
                 OrderInfoWindow referenceOrderInfoWindow = new OrderInfoWindow(refWorkOrder, parent, orderLocation, user, true)
                 {
                     Left = Left,
@@ -1825,23 +1756,6 @@ namespace NatoliOrderInterface
             Close();
         }
         #endregion
-        #endregion
-
-        #region Sending To Office
-        private void LineItemChoices_Closed(object sender, EventArgs e)
-        {
-            UIElementCollection collection = stackPanelTemp.Children;
-            foreach (UIElement element in collection)
-            {
-                if (element.GetType().FullName.Contains("CheckBox"))
-                {
-                    CheckBox c = (CheckBox)element;
-                    IEnumerable<KeyValuePair<int, string>> lineItem = workOrder.lineItems.Where(x => c.Name[0..^8] == x.Value);
-                    lineItemsToScan.Add(lineItem.ElementAt(0).Key);
-                }
-            }
-            parent.BoolValue = true;
-        }
         #endregion
 
         #region Line Item Stuff
