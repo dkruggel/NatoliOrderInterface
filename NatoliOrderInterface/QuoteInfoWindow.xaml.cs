@@ -30,7 +30,7 @@ namespace NatoliOrderInterface
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
-    public partial class QuoteInfoWindow : Window
+    public partial class QuoteInfoWindow : Window , IMethods
     {
         enum SymbolicLink
         {
@@ -125,7 +125,7 @@ namespace NatoliOrderInterface
             }
             //quoteLocation = quote_location;
             QuoteTopHeaderExpanderHeader.Text = "Quote: " + quote.QuoteNumber + " Rev: " + quote.QuoteRevNo;
-            List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == quote.QuoteNumber && l.Revision == quote.QuoteRevNo).ToList();
+            List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == quote.QuoteNumber && l.Revision == quote.QuoteRevNo).OrderBy(q => q.LineNumber).ToList();
             foreach (QuoteDetails line in quoteDetails)
             {
                 try
@@ -141,6 +141,7 @@ namespace NatoliOrderInterface
             }
             Show();
         }
+        
 
         private string GetUserName()
         {
@@ -168,6 +169,8 @@ namespace NatoliOrderInterface
                 return "";
             }
         }
+
+        
 
         #region QuoteInfoPage
         private void FillQuoteInfoPage()
@@ -2816,7 +2819,7 @@ namespace NatoliOrderInterface
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
                 else
                 {
@@ -2824,7 +2827,7 @@ namespace NatoliOrderInterface
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        MainWindow.BringProcessToFront("explorer");
+                        IMethods.BringProcessToFront("explorer");
                     }
                     else
                     {
@@ -2849,7 +2852,7 @@ namespace NatoliOrderInterface
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
                 else
                 {
@@ -2857,7 +2860,7 @@ namespace NatoliOrderInterface
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        MainWindow.BringProcessToFront("explorer");
+                        IMethods.BringProcessToFront("explorer");
                     }
                     else
                     {
@@ -2882,7 +2885,7 @@ namespace NatoliOrderInterface
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
                 else
                 {
@@ -2890,7 +2893,7 @@ namespace NatoliOrderInterface
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        MainWindow.BringProcessToFront("explorer");
+                        IMethods.BringProcessToFront("explorer");
                     }
                     else
                     {

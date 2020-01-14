@@ -20,7 +20,7 @@ namespace NatoliOrderInterface
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
-    public partial class ProjectWindow : Window, IDisposable
+    public partial class ProjectWindow : Window, IDisposable , IMethods
     {
         private readonly string projectNumber;
         private string projectRevNumber;
@@ -87,600 +87,7 @@ namespace NatoliOrderInterface
         }
 
         #region Public Static Functions
-        /// <summary>
-        /// Returns all Shape Descriptions as a list of strings from NAT01.ShapeFields.
-        /// </summary>
-        /// <returns></returns>
-        public static List<string> GetShapeDescriptionsItemsSource()
-        {
-            using var _nat01Context = new NAT01Context();
-            List<ShapeFields> shapeFields = _nat01Context.ShapeFields.Where(p => !string.IsNullOrWhiteSpace(p.ShapeDescription)).ToList();
-            List<string> descriptions = shapeFields.Select(p => p.ShapeDescription.Trim()).ToList();
-            _nat01Context.Dispose();
-            return descriptions;
-        }
-        /// <summary>
-        /// Returns possible project due dates in a format of "x Day(s) | mm/dd/yyyy" as a list of strings.
-        /// </summary>
-        /// <returns></returns>
-        public static List<string> GetDueDatesItemsSource()
-        {
-            List<string> openDates = new List<string>();
-            for (short i = 0; i < 15; i++)
-            {
-                DateTime day = DateTime.Today.AddDays(i);
-                openDates.Add(i + " Day(s) | " + day.ToString("d"));
-            }
-            return openDates;
-        }
-        /// <summary>
-        /// Returns "{CupCodes} - {Description}"as a list of strings from NAT01.CupConfig.
-        /// </summary>
-        /// <returns></returns>
-        public static List<string> GetCupTypeItemsSource()
-        {
-            using var _nat01Context = new NAT01Context();
-            List<string> cupTypes = new List<string>() { { "" } };
-            cupTypes.AddRange(_nat01Context.CupConfig.Where(c => c.CupID > 0).Select(c => c.CupID + " - " + c.Description.Trim()).ToList());
-            _nat01Context.Dispose();
-            return cupTypes;
-        }
-        /// <summary>
-        /// Returns all Steel ID's as a list of strings from NAT01.SteelType.
-        /// </summary>
-        /// <returns></returns>
-        public static List<string> GetSteelIDItemsSource()
-        {
-            using (var _nat01Context = new NAT01Context())
-            {
-                List<string> steelIDs = _nat01Context.SteelType.OrderBy(s => s.TypeId).Select(s => s.TypeId.Trim()).ToList();
-                return steelIDs;
-            }
-        }
-        /// <summary>
-        /// Returns all Users as a list of strings from Driveworks.UserCustomizations (group info).
-        /// </summary>
-        /// <returns></returns>
-        public static List<string> GetDWCSRs()
-        {
-            using var _driveworks_USRContext = new Driveworks_USRContext();
-            List<UserCustomizations> userCustomizations = _driveworks_USRContext.UserCustomizations.OrderBy(uc => uc.User).ToList();
-            List<string> dwCSRUsers = new List<string> { "" };
-            foreach (UserCustomizations userCustomization in userCustomizations)
-            {
-                dwCSRUsers.Add(userCustomization.User.ToString().Trim());
-            }
-            _driveworks_USRContext.Dispose();
-            dwCSRUsers.Remove("Admin");
-            return dwCSRUsers;
-
-        }
-        /// <summary>
-        /// Returns a "blank" EngineeringProjects that can be used to fill in the window before creating a project.
-        /// It includes user preferences.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <returns></returns>
-        public static EngineeringProjects GetBlankEngineeringProject(User user, string projectNumber, string projectRevNumber)
-        {
-            using var _driveworks_USRContext = new Driveworks_USRContext();
-            EngineeringProjects engineeringProject = new EngineeringProjects
-            {
-                ProjectNumber = projectNumber,
-                RevNumber = projectRevNumber,
-                ActiveProject = false,
-                QuoteNumber = "",
-                QuoteRevNumber = "",
-                RefProjectNumber = "",
-                RefProjectRevNumber = "",
-                RefQuoteNumber = "",
-                RefQuoteRevNumber = "",
-                RefOrderNumber = "",
-                CSR = user == null ? new User().GetDWPrincipalId() : user.GetDWPrincipalId(),
-                ReturnToCSR = "",
-                CustomerNumber = "",
-                CustomerName = "",
-                ShipToNumber = "",
-                ShipToLocNumber = "",
-                ShipToName = "",
-                EndUserNumber = "",
-                EndUserLocNumber = "",
-                EndUserName = "",
-                UnitOfMeasure = _driveworks_USRContext.UserCustomizations.Any(u => u.User == user.GetDWPrincipalId()) ? _driveworks_USRContext.UserCustomizations.First(u => u.User == user.GetDWPrincipalId()).UnitOfMeasure.Split("|").First() : "IN",
-                Product = "",
-                Attention = "",
-                MachineNumber = "",
-                DieNumber = "",
-                DieShape = "",
-                Width = null,
-                Length = null,
-                UpperHobNumber = "",
-                UpperHobDescription = "",
-                UpperCupType = null,
-                UpperCupDepth = null,
-                UpperLand = null,
-                LowerHobNumber = "",
-                LowerHobDescription = "",
-                LowerCupType = null,
-                LowerCupDepth = null,
-                LowerLand = null,
-                ShortRejectHobNumber = "",
-                ShortRejectHobDescription = "",
-                ShortRejectCupType = null,
-                ShortRejectCupDepth = null,
-                ShortRejectLand = null,
-                LongRejectHobNumber = "",
-                LongRejectHobDescription = "",
-                LongRejectCupType = null,
-                LongRejectCupDepth = null,
-                LongRejectLand = null,
-                UpperTolerances = "",
-                LowerTolerances = "",
-                ShortRejectTolerances = "",
-                LongRejectTolerances = "",
-                DieTolerances = "",
-                Notes = "",
-                TimeSubmitted = DateTime.UtcNow,
-                DueDate = DateTime.MaxValue,
-                Priority = false,
-                TabletStarted = false,
-                TabletStartedDateTime = null,
-                TabletStartedBy = "",
-                TabletDrawn = false,
-                TabletDrawnDateTime = null,
-                TabletDrawnBy = "",
-                TabletSubmitted = false,
-                TabletSubmittedDateTime = null,
-                TabletSubmittedBy = "",
-                TabletChecked = false,
-                TabletCheckedDateTime = null,
-                TabletCheckedBy = "",
-                ToolStarted = false,
-                ToolStartedDateTime = null,
-                ToolStartedBy = "",
-                ToolDrawn = false,
-                ToolDrawnDateTime = null,
-                ToolDrawnBy = "",
-                ToolSubmitted = false,
-                ToolSubmittedDateTime = null,
-                ToolSubmittedBy = "",
-                ToolChecked = false,
-                ToolCheckedDateTime = null,
-                ToolCheckedBy = "",
-                NewDrawing = false,
-                UpdateExistingDrawing = false,
-                UpdateTextOnDrawing = false,
-                PerSampleTablet = false,
-                RefTabletDrawing = false,
-                PerSampleTool = false,
-                RefToolDrawing = false,
-                PerSuppliedPicture = false,
-                RefNatoliDrawing = false,
-                RefNonNatoliDrawing = false,
-                MultiTipSketch = false,
-                MultiTipSketchID = null,
-                NumberOfTips = 1,
-                BinLocation = "",
-                MultiTipSolid = false,
-                MultiTipAssembled = false,
-                OnHold = false,
-                OnHoldComment = "",
-                OnHoldDateTime = null,
-                RevisedBy = null,
-                Changes = null,
-            };
-            _driveworks_USRContext.Dispose();
-            return engineeringProject;
-        }
-        /// <summary>
-        /// Tries to create directory link (shortcut) from directory1 to directory2 and vice-versa.
-        /// If directory2 does not exist, tries directory 3
-        /// </summary>
-        /// <param name="directory1"></param>
-        /// <param name="directory2"></param>
-        /// <param name="directory3"></param>
-        /// <returns>MessageBoxOverloads</returns>
-        public static (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) LinkFolders(string directory1, string directory2, string directory3 = "")
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(directory2) || !System.IO.Directory.Exists(directory2) && !string.IsNullOrEmpty(directory3))
-                {
-                    directory2 = directory3;
-                }
-                if (!string.IsNullOrEmpty(directory1) && !string.IsNullOrEmpty(directory2) && System.IO.Directory.Exists(directory1) && System.IO.Directory.Exists(directory2))
-                {
-                    directory1 = directory1.Last() == '\\' ? directory1.Remove(directory1.Length - 1) : directory1;
-                    directory2 = directory2.Last() == '\\' ? directory2.Remove(directory2.Length - 1) : directory2;
-                    string name1 = directory1.Remove(0, directory1.LastIndexOf('\\') + 1);
-                    string name2 = directory2.Remove(0, directory2.LastIndexOf('\\') + 1);
-                    string rootName1 = directory1.Remove(directory1.LastIndexOf('\\')).Remove(0, directory1.Remove(directory1.LastIndexOf('\\')).LastIndexOf('\\') + 1);
-                    string rootName2 = directory2.Remove(directory2.LastIndexOf('\\')).Remove(0, directory2.Remove(directory2.LastIndexOf('\\')).LastIndexOf('\\') + 1);
-
-                    List<string> directories = new List<string>() { directory1, directory2 };
-                    foreach (string directory in directories)
-                    {
-                        string[] existingLinks = System.IO.Directory.GetFiles(directory).Where(f => f.Contains(".lnk")).ToArray();
-                        if (existingLinks.Any())
-                        {
-                            string rootName = directory.Remove(directory.LastIndexOf('\\')).Remove(0, directory.Remove(directory.LastIndexOf('\\')).LastIndexOf('\\') + 1);
-                            string name = directory.Remove(0, directory.LastIndexOf('\\') + 1);
-                            string message = "In the folder, " + rootName + "\\" + name + ",\nThere are already link(s) to:\n";
-                            foreach (string link in existingLinks)
-                            {
-                                message += " " + link.Remove(link.Length - 4).Remove(0, link.Remove(link.Length - 4).LastIndexOf('\\') + 1) + "\n";
-                            }
-                            message += "Would you like to delete the link(s)?";
-                            MessageBoxResult result = MessageBox.Show(message, "Existing Links", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-                            if (result == MessageBoxResult.Yes)
-                            {
-                                foreach (string link in existingLinks)
-                                {
-                                    System.IO.File.Delete(link);
-                                }
-                            }
-                        }
-                    }
-                    if (!System.IO.File.Exists(directory1 + "\\" + name2 + ".lnk"))
-                    {
-                        WshInterop.CreateShortcut(
-                            directory1 + "\\" + name2 + ".lnk", "",
-                            directory2, "", "");
-                    }
-                    if (!System.IO.File.Exists(directory2 + "\\" + name1 + ".lnk"))
-                    {
-                        WshInterop.CreateShortcut(
-                        directory2 + "\\" + name1 + ".lnk", "",
-                        directory1, "", "");
-                    }
-                    return (Message: rootName1 + " folder " + name1 + " was successfully linked with " + rootName2 + " folder " + name2 + "!", Caption: "Success", Button: MessageBoxButton.OK, Image: MessageBoxImage.Information, Result: MessageBoxResult.OK);
-                }
-                else
-                {
-                    return (Message: "One of the folders,\n" + directory1 + "\n or \n" + directory2 + ",\n do not exists.", Caption: "Directory Does Not Exist", Button: MessageBoxButton.OK, Image: MessageBoxImage.Error, Result: MessageBoxResult.OK);
-                }
-            }
-
-            catch
-            {
-                return (Message: "Something went wrong!" + "\n" + "Nothing was linked.", Caption: "Oops", Button: MessageBoxButton.OK, Image: MessageBoxImage.Error, Result: MessageBoxResult.OK);
-            }
-
-        }
-        /// <summary>
-        /// Returns true if the type is of SimpleType.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsSimpleType(Type type)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-            {
-                // nullable type, check if the nested type is simple.
-                return IsSimpleType(type.GetGenericArguments()[0]);
-            }
-            return type.IsPrimitive
-              || type.IsEnum
-              || type.Equals(typeof(string))
-              || type.Equals(typeof(decimal));
-        }
-        /// <summary>
-        /// Compares two Classes Properties for differences and returns a list of strings describing what changed.
-        /// A => original class values
-        /// B => new class values
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="A"></param>
-        /// <param name="B"></param>
-        /// <returns></returns>
-        public static List<string> GetChangedProperties<T>(T A, T B)
-        {
-            if (A != null && B != null)
-            {
-                var type = typeof(T);
-                var allProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                var allSimpleProperties = allProperties.Where(pi => IsSimpleType(pi.PropertyType));
-                var unequalProperties =
-                       from pi in allSimpleProperties
-                       let AValue = type.GetProperty(pi.Name).GetValue(A, null)
-                       let BValue = type.GetProperty(pi.Name).GetValue(B, null)
-                       where AValue != BValue && (AValue == null || !AValue.Equals(BValue))
-                       select pi.Name + ": " + (string.IsNullOrEmpty((AValue ?? "null").ToString()) ? "null" : (AValue ?? "null").ToString())   + " => " + (string.IsNullOrEmpty((BValue ?? "null").ToString()) ? "null" : (BValue ?? "null").ToString());
-                return unequalProperties.ToList();
-            }
-            else
-            {
-                throw new ArgumentNullException("You need to provide 2 non-null objects");
-            }
-        }
-        /// <summary>
-        /// Starts an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <param name="projectType"></param>
-        /// <param name="user"></param>
-        public static void StartProject(string projectNumber, string projectRevNumber, string projectType, User user)
-        {
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (projectType == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletStarted = true;
-                    engineeringProject.TabletStartedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletStartedBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                }
-                else if (projectType == "TOOLS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolStarted = true;
-                    engineeringProject.ToolStartedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolStartedBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
-        }
-        /// <summary>
-        /// Draws an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <param name="projectType"></param>
-        /// <param name="user"></param>
-        public static void DrawProject(string projectNumber, string projectRevNumber, string projectType, User user)
-        {
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (projectType == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletDrawn = true;
-                    engineeringProject.TabletDrawnDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletDrawnBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                }
-                else if (projectType == "TOOLS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolDrawn = true;
-                    engineeringProject.ToolDrawnDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolDrawnBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
-        }
-        /// <summary>
-        /// Submits an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <param name="projectType"></param>
-        /// <param name="user"></param>
-        public static void SubmitProject(string projectNumber, string projectRevNumber, string projectType, User user)
-        {
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            try
-            {
-                if (projectType == "TABLETS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletSubmitted = true;
-                    engineeringProject.TabletSubmittedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletSubmittedBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                }
-                else if (projectType == "TOOLS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolSubmitted = true;
-                    engineeringProject.ToolSubmittedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolSubmittedBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
-        }
-        /// <summary>
-        /// Checks an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <param name="projectType"></param>
-        /// <param name="user"></param>
-        public static void CheckProject(string projectNumber, string projectRevNumber, string projectType, User user)
-        {
-            using var _projectsContext = new ProjectsContext();
-            using var _driveworksContext = new DriveWorksContext();
-            using var _nat02Context = new NAT02Context();
-            try
-            {
-                if (projectType == "TABLETS")
-                {
-                    bool _tools = _projectsContext.EngineeringToolProjects.Any();
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.TabletChecked = true;
-                    engineeringProject.TabletCheckedDateTime = DateTime.UtcNow;
-                    engineeringProject.TabletCheckedBy = user.GetDWPrincipalId();
-                    _projectsContext.SaveChanges();
-                    // Removes from engineeringprojects, trigger puts into archive table, then must specify if it was checked or canceled
-                    if (!_tools)
-                    {
-                        _projectsContext.Remove(engineeringProject);
-                        _projectsContext.SaveChanges();
-                        while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                        {
-                            System.Threading.Thread.Sleep(500);
-                        }
-                        EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        engineeringArchivedProject.ArchivedFromCheck = true;
-                        engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-
-
-                        List<string> _CSRs = new List<string>();
-
-                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
-                        {
-                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
-                        }
-                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
-                        {
-                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
-                        }
-
-                        
-                        EoiProjectsFinished finished = new EoiProjectsFinished();
-                        finished.ProjectNumber = int.Parse(projectNumber);
-                        finished.RevisionNumber = int.Parse(projectRevNumber);
-                        finished.Csr = _CSRs[0];
-                        _nat02Context.EoiProjectsFinished.Add(finished);
-
-                        MainWindow.SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
-                    }
-
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                    _nat02Context.SaveChanges();
-                }
-                else if (projectType == "TOOLS")
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringProject.ToolChecked = true;
-                    engineeringProject.ToolCheckedDateTime = DateTime.UtcNow;
-                    engineeringProject.ToolCheckedBy = user.GetDWPrincipalId();
-                    _projectsContext.SaveChanges();
-                    _projectsContext.Remove(engineeringProject);
-                    _projectsContext.SaveChanges();
-                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringArchivedProject.ArchivedFromCheck = true;
-                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-
-                    List<string> _CSRs = new List<string>();
-
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
-                    {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
-                    }
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
-                    {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
-                    }
-
-
-                    EoiProjectsFinished finished = new EoiProjectsFinished();
-                    finished.ProjectNumber = int.Parse(projectNumber);
-                    finished.RevisionNumber = int.Parse(projectRevNumber);
-                    finished.Csr = _CSRs[0];
-                    _nat02Context.EoiProjectsFinished.Add(finished);
-
-                    MainWindow.SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
-
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-                    _nat02Context.SaveChanges();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-            _driveworksContext.Dispose();
-            _nat02Context.Dispose();
-        }
-        /// <summary>
-        /// Puts on Hold an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        public static void TakeProjectOffHold(string projectNumber, string projectRevNumber)
-        {
-            using var _projectsContext = new ProjectsContext();
-            try
-            {
-                EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                engineeringProject.OnHold = false;
-                engineeringProject.OnHoldComment = "";
-                engineeringProject.OnHoldDateTime = null;
-                _projectsContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _projectsContext.Dispose();
-        }
-        /// <summary>
-        /// Cancels an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
-        /// </summary>
-        /// <param name="projectNumber"></param>
-        /// <param name="projectRevNumber"></param>
-        /// <param name="user"></param>
-        public static void CancelProject(string projectNumber, string projectRevNumber, User user)
-        {
-            MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + projectNumber + "_" + projectRevNumber + "?", "Cancel Project", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.Yes)
-            {
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-                try
-                {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    _projectsContext.Remove(engineeringProject);
-                    _projectsContext.SaveChanges();
-                    while (!_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        System.Threading.Thread.Sleep(500);
-                    }
-                    EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    engineeringArchivedProject.ArchivedFromCancel = true;
-                    engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-
-                    _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
-
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
-            }
-        }
+        
         #endregion
 
         /// <summary>
@@ -993,7 +400,7 @@ namespace NatoliOrderInterface
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
 
-            System.Collections.IEnumerable items = GetSteelIDItemsSource();
+            System.Collections.IEnumerable items = IMethods.GetSteelIDItemsSource();
             List<ComboBox> steelComboBoxes = new List<ComboBox>()
                 {
                     UpperPunchSteelID,
@@ -1033,22 +440,22 @@ namespace NatoliOrderInterface
             }
             DieShape.Items.Clear();
             DieShape.ItemsSource = null;
-            DieShape.ItemsSource = GetShapeDescriptionsItemsSource();
+            DieShape.ItemsSource = IMethods.GetShapeDescriptionsItemsSource();
             DueDate.Items.Clear();
             DueDate.ItemsSource = null;
-            DueDate.ItemsSource = GetDueDatesItemsSource();
+            DueDate.ItemsSource = IMethods.GetDueDatesItemsSource();
             UpperCupType.Items.Clear();
             UpperCupType.ItemsSource = null;
-            UpperCupType.ItemsSource = GetCupTypeItemsSource();
+            UpperCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
             LowerCupType.Items.Clear();
             LowerCupType.ItemsSource = null;
-            LowerCupType.ItemsSource = GetCupTypeItemsSource();
+            LowerCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
             ShortRejectCupType.Items.Clear();
             ShortRejectCupType.ItemsSource = null;
-            ShortRejectCupType.ItemsSource = GetCupTypeItemsSource();
+            ShortRejectCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
             LongRejectCupType.Items.Clear();
             LongRejectCupType.ItemsSource = null;
-            LongRejectCupType.ItemsSource = GetCupTypeItemsSource();
+            LongRejectCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
         }
         /// <summary>
         /// Fills in the controls for a blank project ready to be created.
@@ -1064,7 +471,7 @@ namespace NatoliOrderInterface
             ArchivedOrInactive.Visibility = Visibility.Collapsed;
             using var _projectsContext = new ProjectsContext();
             using var _nat01Context = new NAT01Context();
-            EngineeringProjects engineeringProject = GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
+            EngineeringProjects engineeringProject = IMethods.GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
             StartButton.IsEnabled = false;
             FinishButton.IsEnabled = false;
             SubmitButton.IsEnabled = false;
@@ -1073,7 +480,7 @@ namespace NatoliOrderInterface
             CancelButton.IsEnabled = false;
             QuoteFolderButton.IsEnabled = false;
             ReturnToCSR.ItemsSource = null;
-            ReturnToCSR.ItemsSource = GetDWCSRs();
+            ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
             CSR.Text = user.GetDWPrincipalId();
             UnitOfMeasure.SelectedItem = engineeringProject.UnitOfMeasure;
 
@@ -1144,7 +551,7 @@ namespace NatoliOrderInterface
 
                     CSR.Text = engineeringProject.CSR;
                     ReturnToCSR.ItemsSource = null;
-                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = GetDWCSRs();
+                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
                     ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
                     ReturnToCSR.IsEnabled = false;
 
@@ -1577,7 +984,7 @@ namespace NatoliOrderInterface
 
                     CSR.Text = engineeringProject.CSR;
                     ReturnToCSR.ItemsSource = null;
-                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = GetDWCSRs();
+                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
                     ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
                     ReturnToCSR.IsEnabled = false;
 
@@ -4717,7 +4124,7 @@ namespace NatoliOrderInterface
                                         string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
                                         string quoteDirectory = @"\\nsql03\data1\Quotes\" + quoteNumber;
                                         string orderDirectory = _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quoteNumber) && q.QuoteRevNo == Convert.ToDouble(quoteRevNumber) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quoteNumber) && q.QuoteRevNo == Convert.ToDouble(quoteRevNumber) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quoteNumber) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quoteNumber) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : "";
-                                        (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) messageBoxOverloads = LinkFolders(projectDirectory, quoteDirectory, orderDirectory);
+                                        (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) messageBoxOverloads = IMethods.LinkFolders(projectDirectory, quoteDirectory, orderDirectory);
                                         MessageBox.Show(messageBoxOverloads.Message, messageBoxOverloads.Caption, messageBoxOverloads.Button, messageBoxOverloads.Image, messageBoxOverloads.Result);
                                     }
                                     catch
@@ -5668,7 +5075,7 @@ namespace NatoliOrderInterface
         {
             Cursor = Cursors.AppStarting;
 
-            StartProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
+            IMethods.StartProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
             
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
@@ -5685,7 +5092,7 @@ namespace NatoliOrderInterface
         {
             Cursor = Cursors.AppStarting;
 
-            DrawProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
+            IMethods.DrawProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
@@ -5702,7 +5109,7 @@ namespace NatoliOrderInterface
         {
             Cursor = Cursors.AppStarting;
 
-            SubmitProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
+            IMethods.SubmitProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
@@ -5717,7 +5124,7 @@ namespace NatoliOrderInterface
         {
             Cursor = Cursors.AppStarting;
 
-            CheckProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
+            IMethods.CheckProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
 
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
@@ -5733,7 +5140,7 @@ namespace NatoliOrderInterface
         {
             if (PutOnHoldButton.Content.ToString() != "Put On Hold")
             {
-                TakeProjectOffHold(projectNumber, projectRevNumber);
+                IMethods.TakeProjectOffHold(projectNumber, projectRevNumber);
 
                 PutOnHoldButton.Content = "Put On Hold";
             }
@@ -5751,7 +5158,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            CancelProject(projectNumber, projectRevNumber, user);
+            IMethods.CancelProject(projectNumber, projectRevNumber, user);
             mainWindow.BoolValue = true;
             Close();
         }
@@ -5817,7 +5224,7 @@ namespace NatoliOrderInterface
                     string body = "To Whom It May Concern,<br><br>" +
                         "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
                         "Here are the changes made:<br><b>";
-                    var changed = GetChangedProperties(oldEngineeringProject, engineeringProject);
+                    var changed = IMethods.GetChangedProperties(oldEngineeringProject, engineeringProject);
                     if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
                     {
                         changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
@@ -5850,7 +5257,7 @@ namespace NatoliOrderInterface
                         if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber))
                         {
                             EngineeringTabletProjects oldTabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber);
-                            var changedTablet = GetChangedProperties(oldTabletProject, TabletProject);
+                            var changedTablet = IMethods.GetChangedProperties(oldTabletProject, TabletProject);
                             foreach (string change in changedTablet)
                             {
                                 if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
@@ -5869,7 +5276,7 @@ namespace NatoliOrderInterface
                         if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber))
                         {
                             EngineeringToolProjects oldToolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber);
-                            var changedTool = GetChangedProperties(oldToolProject, ToolProject);
+                            var changedTool = IMethods.GetChangedProperties(oldToolProject, ToolProject);
                             foreach (string change in changedTool)
                             {
                                 if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
@@ -5903,7 +5310,7 @@ namespace NatoliOrderInterface
                         _projectsContext.SaveChanges();
                     }
 
-                    MainWindow.SendEmail(to, null, new List<string> { "Tyler" }, subject, body, null, System.Net.Mail.MailPriority.High);
+                    IMethods.SendEmail(to, null, new List<string> { "Tyler" }, subject, body, null, System.Net.Mail.MailPriority.High);
                     _projectsContext.Dispose();
                     if (MessageBox.Show("Project Revised!\nWould you like to close now?", "Revise Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                     {

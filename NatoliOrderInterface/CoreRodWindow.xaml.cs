@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 
 namespace NatoliOrderInterface
 {
-    public partial class CoreRodWindow : Window
+    public partial class CoreRodWindow : Window ,IMethods
     {
         public CoreRodWindow(Window owner, bool isEnabled ,
             bool coreRod, string coreRodSteelID,
@@ -31,10 +31,10 @@ namespace NatoliOrderInterface
             LowerCoreRodKeyCollarSteelID.Text = coreRodKeyCollarSteelID ?? "";
             LowerCoreRodPunch.IsChecked = coreRodPunch;
             LowerCoreRodPunchSteelID.Text = coreRodPunchSteelID ?? "";
-            LowerCoreRodSteelID.ItemsSource = ProjectWindow.GetSteelIDItemsSource();
-            LowerCoreRodKeySteelID.ItemsSource = ProjectWindow.GetSteelIDItemsSource();
-            LowerCoreRodKeyCollarSteelID.ItemsSource = ProjectWindow.GetSteelIDItemsSource();
-            LowerCoreRodPunchSteelID.ItemsSource = ProjectWindow.GetSteelIDItemsSource();
+            LowerCoreRodSteelID.ItemsSource = IMethods.GetSteelIDItemsSource();
+            LowerCoreRodKeySteelID.ItemsSource = IMethods.GetSteelIDItemsSource();
+            LowerCoreRodKeyCollarSteelID.ItemsSource = IMethods.GetSteelIDItemsSource();
+            LowerCoreRodPunchSteelID.ItemsSource = IMethods.GetSteelIDItemsSource();
 
             LowerCoreRodPunchSteelID.IsEnabled = IsEnabled;
             LowerCoreRodPunch.IsEnabled = IsEnabled;

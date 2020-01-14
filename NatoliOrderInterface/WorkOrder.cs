@@ -159,6 +159,13 @@ namespace NatoliOrderInterface
             set { this.userNumber = value; }
         }
 
+        private string userLoc;
+        public string UserLoc
+        {
+            get { return userLoc; }
+            set { this.userLoc = value; }
+        }
+
         private string productName;
         public string ProductName
         {
@@ -266,6 +273,7 @@ namespace NatoliOrderInterface
             projectNumber = orderHeader.ProjectNo;
             hobRequired = string.IsNullOrEmpty(orderHeader.HobRequired) ? "" : orderHeader.HobRequired.Trim();
             userNumber = string.IsNullOrEmpty(orderHeader.UserAcctNo) ? "" : orderHeader.UserAcctNo.Trim();
+            userLoc = string.IsNullOrEmpty(orderHeader.UserLocNo) ? "" : orderHeader.UserLocNo.Trim(); 
             productName = string.IsNullOrEmpty(orderHeader.ProductName) ? "" : orderHeader.ProductName.Trim();
             rushYOrN = string.IsNullOrEmpty(orderHeader.RushYorN) ? "" : orderHeader.RushYorN.Trim();
             paidRushFee = string.IsNullOrEmpty(orderHeader.PaidRushFee) ? "" : orderHeader.PaidRushFee.Trim();

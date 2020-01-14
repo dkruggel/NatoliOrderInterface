@@ -556,7 +556,7 @@ namespace NatoliOrderInterface
             MachineNo.Content = orderLineItems[lineItemNumber - 1].MachineNo.ToString();
 
             
-            if (_nat01Context.CustomerMachines.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber))
+            if (_nat01Context.CustomerMachines.Any(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo.Trim() == workOrder.UserNumber && m.CustAddressCode.Trim() == workOrder.UserLoc))
             {
                 CustomerMachines machine = _nat01Context.CustomerMachines.First(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo && m.CustomerNo == workOrder.UserNumber);
 
@@ -1281,7 +1281,7 @@ namespace NatoliOrderInterface
                 Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
                 Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                     app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                mailItem.To = MainWindow.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceLow;
@@ -1357,7 +1357,7 @@ namespace NatoliOrderInterface
                 Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                     app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
                 mailItem.Subject = "REQUEST FOR CHANGES WO# " + workOrder.OrderNumber.ToString();
-                mailItem.To = MainWindow.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
@@ -1588,7 +1588,7 @@ namespace NatoliOrderInterface
                     Directory.CreateDirectory(path);
                 }
                 System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
-                MainWindow.BringProcessToFront("explorer");
+                IMethods.BringProcessToFront("explorer");
             }
             catch (Exception ex)
             {
@@ -1606,7 +1606,7 @@ namespace NatoliOrderInterface
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
                 else
                 {
@@ -1614,7 +1614,7 @@ namespace NatoliOrderInterface
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        MainWindow.BringProcessToFront("explorer");
+                        IMethods.BringProcessToFront("explorer");
                     }
                     else
                     {
@@ -1689,7 +1689,7 @@ namespace NatoliOrderInterface
                 if (Directory.Exists(path))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
             }
             catch (Exception ex)
@@ -1706,12 +1706,12 @@ namespace NatoliOrderInterface
                 if (Directory.Exists(projectPath))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + projectPath + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
                 else if (Directory.Exists(orderPath))
                 {
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + orderPath + @"""");
-                    MainWindow.BringProcessToFront("explorer");
+                    IMethods.BringProcessToFront("explorer");
                 }
             }
             catch (Exception ex)
