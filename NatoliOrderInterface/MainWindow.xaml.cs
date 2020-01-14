@@ -6962,7 +6962,7 @@ namespace NatoliOrderInterface
             expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
             expander.MouseRightButtonUp += AllTabletProjectsDataGrid_MouseRightButtonUp;
 
-            // expander.Expanded += AllTabletProjectsExpander_Expanded;
+            expander.Expanded += AllTabletProjectsExpander_Expanded;
             using var __nat02context = new NAT02Context();
             if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
             {
@@ -7207,7 +7207,7 @@ namespace NatoliOrderInterface
             expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
             expander.MouseRightButtonUp += AllToolProjectsDataGrid_MouseRightButtonUp;
 
-            // expander.Expanded += AllToolProjectsExpander_Expanded;
+            expander.Expanded += AllToolProjectsExpander_Expanded;
             using var __nat02context = new NAT02Context();
             if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
             {
@@ -7904,6 +7904,99 @@ namespace NatoliOrderInterface
             }
 
             expander.Content = lineItemsStackPanel;
+        }
+        private void AllTabletProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+            using var _projectsContext = new ProjectsContext();
+            ProjectSpecSheet eoiAllTabletProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+            StackPanel stagesStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.ProjectStartedTablet)) { stages.Add(("Started", eoiAllTabletProjectsView.ProjectStartedTablet,
+                _projectsContext.ProjectStartedTablet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted)); }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletDrawnBy)) { stages.Add(("Drawn", eoiAllTabletProjectsView.TabletDrawnBy,
+                _projectsContext.TabletDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletSubmittedBy)) { stages.Add(("Submitted", eoiAllTabletProjectsView.TabletSubmittedBy,
+                _projectsContext.TabletSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletCheckedBy)) { stages.Add(("Checked", eoiAllTabletProjectsView.TabletCheckedBy,
+                _projectsContext.TabletCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            _projectsContext.Dispose();
+
+            foreach ((string, string, DateTime?) stage in stages)
+            {
+                Grid stagesGrid = new Grid();
+                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+                
+                stagesStackPanel.Children.Add(stagesGrid);
+            }
+
+            expander.Content = stagesStackPanel;
+        }
+        private void AllToolProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+            using var _projectsContext = new ProjectsContext();
+            ProjectSpecSheet eoiAllToolProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+            StackPanel stagesStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ProjectStartedTool))
+            {
+                stages.Add(("Started", eoiAllToolProjectsView.ProjectStartedTool,
+                    _projectsContext.ProjectStartedTool.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolDrawnBy))
+            {
+                stages.Add(("Drawn", eoiAllToolProjectsView.ToolDrawnBy,
+                    _projectsContext.ToolDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolSubmittedBy))
+            {
+                stages.Add(("Submitted", eoiAllToolProjectsView.ToolSubmittedBy,
+                    _projectsContext.ToolSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolCheckedBy))
+            {
+                stages.Add(("Checked", eoiAllToolProjectsView.ToolCheckedBy,
+                    _projectsContext.ToolCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+            }
+            _projectsContext.Dispose();
+
+            foreach ((string, string, DateTime?) stage in stages)
+            {
+                Grid stagesGrid = new Grid();
+                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+
+                stagesStackPanel.Children.Add(stagesGrid);
+            }
+
+            expander.Content = stagesStackPanel;
         }
         #endregion
         #endregion
