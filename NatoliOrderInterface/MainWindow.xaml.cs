@@ -31,7 +31,7 @@ namespace NatoliOrderInterface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisposable
+    public partial class MainWindow : Window, IDisposable , IMethods
     {
         #region Declarations
         [DllImport("USER32.DLL")]
@@ -192,97 +192,7 @@ namespace NatoliOrderInterface
             oqTimer.Enabled = true;
         }
 
-        /// <summary>
-        /// Takes List<string> of Driveworks.SecurityUsers.PrincipalId's for to, cc, and bcc
-        /// </summary>
-        /// <param name="to"></param>
-        /// <param name="cc"></param>
-        /// <param name="bcc"></param>
-        /// <param name="subject"></param>
-        /// <param name="body"></param>
-        /// <param name="priority"></param>
-        public static void SendEmail(List<string> to, List<string> cc = null, List<string> bcc = null, string subject = "", string body = "", List<string> attachments = null, MailPriority priority = MailPriority.Normal)
-        {
-            SmtpClient smtpServer = new SmtpClient();
-            MailMessage mail = new MailMessage();
-            try
-            {
-                smtpServer.Port = 25;
-                smtpServer.Host = "192.168.1.186";
-                mail.IsBodyHtml = true;
-                mail.From = new MailAddress("AutomatedEmail@natoli.com");
-                if (to != null)
-                {
-                    foreach (string recipient in to)
-                    {
-                        mail.To.Add(GetEmailAddressFromDWFirstName(recipient));
-                    }
-                }
-                if (cc != null)
-                {
-                    foreach (string recipient in cc)
-                    {
-                        mail.CC.Add(GetEmailAddressFromDWFirstName(recipient));
-                    }
-                }
-                if (bcc != null)
-                {
-                    foreach (string recipient in bcc)
-                    {
-                        mail.Bcc.Add(GetEmailAddressFromDWFirstName(recipient));
-                    }
-                }
-                if (attachments != null)
-                {
-                    foreach (string path in attachments)
-                    {
-                        Attachment attachment = new Attachment(path);
-                        mail.Attachments.Add(attachment);
-                    }
-                }
-                mail.Subject = subject;
-                mail.Body = body;
-                mail.Priority = priority;
-                smtpServer.Send(mail);
-                smtpServer.Dispose();
-                mail.Dispose();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            smtpServer.Dispose();
-            mail.Dispose();
-        }
-        public static void BringProcessToFront(string processName)
-        {
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            try
-            {
-                // Get process Name
-                process = System.Diagnostics.Process.GetProcessesByName(processName)[0];
-            }
-            catch
-            {
-                process.Dispose();
-                return;
-            }
-            process.WaitForInputIdle(5000); // wait 5 seconds
 
-            // Get a handle of the process.
-            IntPtr handle = FindWindow(null, process.MainWindowTitle);
-
-            // Verify that it is a running process.
-            if (handle == IntPtr.Zero)
-            {
-                process.Dispose();
-                return;
-            }
-
-            // Make it the foreground application
-            SetForegroundWindow(handle);
-            process.Dispose();
-        }
         private void MainRefresh()
         {
             BindData("Main");
@@ -296,142 +206,7 @@ namespace NatoliOrderInterface
             NatoliOrderListTimer.Stop();
             NatoliOrderListTimer.Start();
         }
-        public static string GetEmailAddress(string userName)
-        {
-            try
-            {
-                switch (userName)
-                {
-                    case "GREGORY":
-                        userName = "Greg";
-                        return "intlcs1@natoli.com";
-                    case "NICHOLAS":
-                        userName = "Nick";
-                        return "intlcs1@natoli.com";
-                    default:
-                        break;
-                }
-                using var _driveworksContext = new DriveWorksContext();
-                return _driveworksContext.SecurityUsers.Where(u => u.DisplayName.Contains(userName)).FirstOrDefault().EmailAddress;
-            }
-            catch (Exception eSql)
-            {
-                MessageBox.Show("Error resolving email address.\n" + eSql.Message);
-                return null;
-            }
-        }
-        /// <summary>
-        /// Takes the PrincipalId of the Driveworks.SecurityUsers table and returns the EmailAddress.
-        /// </summary>
-        /// <param name="dWfirstName"></param>
-        /// <returns></returns>
-        public static string GetEmailAddressFromDWFirstName(string dWfirstName)
-        {
-            try
-            {
-                using var _driveworksContext = new DriveWorksContext();
-                switch (dWfirstName)
-                {
-                    case "Greg":
-                        _driveworksContext.Dispose();
-                        return "intlcs1@natoli.com";
-                    case "Nick":
-                        _driveworksContext.Dispose();
-                        return "intlcs3@natoli.com";
-                    default:
-                        if (_driveworksContext.SecurityUsers.Any(su => su.PrincipalId.Trim() == dWfirstName.Trim()))
-                        {
-                            string fullName = _driveworksContext.SecurityUsers.First(su => su.PrincipalId.Trim() == dWfirstName.Trim()).EmailAddress.Trim();
-                            _driveworksContext.Dispose();
-                            return fullName;
-                        }
-                        else
-                        {
-                            _driveworksContext.Dispose();
-                            return "";
-                        }
-                }
-            }
-            catch //(Exception ex)
-            {
-                return "";
-                //MessageBox.Show(ex.Message);
-            }
 
-        }
-        public static void CreateZipFile(string inputDirectory, string outputZipFile)
-        {
-            System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
-        }
-        public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo)
-        {
-            SmtpClient smtpServer = new SmtpClient();
-            MailMessage mail = new MailMessage();
-            try
-            {
-                // Send email
-                smtpServer.Port = 25;
-                smtpServer.Host = "192.168.1.186";
-                mail.IsBodyHtml = true;
-                mail.From = new MailAddress("AutomatedEmail@natoli.com");
-                if (CSRs != null)
-                {
-                    foreach (string CSR in CSRs)
-                    {
-                        mail.To.Add(GetEmailAddressFromDWFirstName(CSR));
-                    }
-                    //mail.Bcc.Add("eng6@natoli.com");
-                    //mail.Bcc.Add("eng5@natoli.com");
-                    string projectNumber = _projectNumber ?? "";
-                    string revNo = _revNo ?? "";
-                    mail.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
-                    string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
-                    string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
-                    if (System.IO.Directory.Exists(filesForCustomerDirectory))
-                    {
-                        CreateZipFile(filesForCustomerDirectory, zipFile);
-                        //string[] files = System.IO.Directory.GetFiles(filesForCustomerDirectory);
-
-                        //foreach (string file in files)
-                        //{
-                        //    string fileName = file.Substring(file.LastIndexOf(@"\") + 1, file.Length - file.LastIndexOf(@"\") - 1);
-                        //    Attachment attachment = new Attachment(file);
-                        //    mail.Attachments.Add(attachment);
-                        //}
-
-                        Attachment attachment = new Attachment(zipFile);
-                        mail.Attachments.Add(attachment);
-                    }
-                    mail.IsBodyHtml = true;
-                    mail.Body = "Dear " + CSRs.First() + ",<br><br>" +
-
-                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                    "The drawings for the customer are attached.<br><br>" +
-                    "Thanks,<br>" +
-                    "Engineering Team<br><br><br>" +
-
-
-                    "This is an automated email and not monitored by any person(s).";
-                    smtpServer.Send(mail);
-                    smtpServer.Dispose();
-                    mail.Dispose();
-                    System.IO.File.Delete(zipFile);
-                    //MessageBox.Show("Message sent to CSR.");
-                }
-                else
-                {
-                    MessageBox.Show("List of strings 'CSRs' was null.");
-                }
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-                // WriteToErrorLog("SendEmailToCSR", ex.Message);
-            }
-            smtpServer.Dispose();
-            mail.Dispose();
-        }
         public delegate void RemovedFromSelectedOrdersEventHandler(object sender, EventArgs e);
 
         #region Main Window Events
@@ -1017,7 +792,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.StartProject(project.Item1, project.Item2, "TABLETS", User);
+                            IMethods.StartProject(project.Item1, project.Item2, "TABLETS", User);
                         }
                         else
                         {
@@ -1076,7 +851,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.DrawProject(project.Item1, project.Item2, "TABLETS", User);
+                            IMethods.DrawProject(project.Item1, project.Item2, "TABLETS", User);
                         }
                         else
                         {
@@ -1139,7 +914,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
+                            IMethods.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
                         }
                         else
                         {
@@ -1226,7 +1001,7 @@ namespace NatoliOrderInterface
 
                 if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                 {
-                    ProjectWindow.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                    IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
                 }
                 else
                 {
@@ -1322,7 +1097,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+                            IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
                         }
                         else
                         {
@@ -1373,7 +1148,7 @@ namespace NatoliOrderInterface
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
                                 }
-                                SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
+                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
                             }
                             // Save pending changes
                             _projectsContext.SaveChanges();
@@ -1409,7 +1184,7 @@ namespace NatoliOrderInterface
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        ProjectWindow.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+                        IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
                     }
                     else
                     {
@@ -1489,7 +1264,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.StartProject(project.Item1, project.Item2, "TOOLS", User);
+                            IMethods.StartProject(project.Item1, project.Item2, "TOOLS", User);
                         }
                         else
                         {
@@ -1565,7 +1340,7 @@ namespace NatoliOrderInterface
 
                         if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                         {
-                            ProjectWindow.DrawProject(project.Item1, project.Item2, "TOOLS", User);
+                            IMethods.DrawProject(project.Item1, project.Item2, "TOOLS", User);
                         }
                         else
                         {
@@ -1633,7 +1408,7 @@ namespace NatoliOrderInterface
 
                             if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                             {
-                                ProjectWindow.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                                IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
                             }
                             else
                             {
@@ -1664,7 +1439,7 @@ namespace NatoliOrderInterface
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                                 }
-                                SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString());
+                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString());
 
                             }
                             // Save pending changes
@@ -1716,7 +1491,7 @@ namespace NatoliOrderInterface
 
                 if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                 {
-                    ProjectWindow.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                    IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
                 }
                 else
                 {
@@ -1809,7 +1584,7 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        ProjectWindow.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
                     }
                     else
                     {
@@ -1928,7 +1703,7 @@ namespace NatoliOrderInterface
                     Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                         app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
                     mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", selectedOrders.Select(o => o.Item1));
-                    mailItem.To = GetEmailAddress(workOrder.Csr);
+                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
                     mailItem.Body = "";
                     mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                     mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
@@ -1969,7 +1744,7 @@ namespace NatoliOrderInterface
                     Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                         app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
                     mailItem.Subject = "REQUEST FOR CHANGES WO# " + ((int)_orderNumber).ToString();
-                    mailItem.To = GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
                     mailItem.Body = "";
                     mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                     mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
