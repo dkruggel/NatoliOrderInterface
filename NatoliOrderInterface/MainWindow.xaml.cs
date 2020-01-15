@@ -2687,10 +2687,9 @@ namespace NatoliOrderInterface
             CheckBox checkBox = new CheckBox()
             {
                 IsChecked = false,
-                Style = App.Current.Resources["CheckBox"] as Style,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(20, 0, 0, 0),
-                LayoutTransform = new ScaleTransform(1.1, 1.1)
+                LayoutTransform = new ScaleTransform(0.65, 0.65)
             };
             checkBox.Checked += CheckBox_Checked;
             checkBox.Unchecked += CheckBox_Checked;
