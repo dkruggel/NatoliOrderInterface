@@ -21,7 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 // using WpfAnimatedGif;
-//using XamlAnimatedGif;
+// using XamlAnimatedGif;
 using Colors = System.Windows.Media.Colors;
 
 namespace NatoliOrderInterface
@@ -166,6 +166,10 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
             if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
+            if (User.Maximized == true)
+            {
+                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
+            }
             this.Show();
             originalProps = new List<string>();
             dictList = new List<object>();
@@ -216,10 +220,7 @@ namespace NatoliOrderInterface
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
-            if (User.Maximized == true)
-            {
-                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
-            }
+
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {

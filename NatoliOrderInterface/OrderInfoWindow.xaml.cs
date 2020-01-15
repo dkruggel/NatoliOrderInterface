@@ -56,6 +56,7 @@ namespace NatoliOrderInterface
         {
             // For centerowner startup
             Owner = _parent ?? new MainWindow();
+            
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
@@ -118,6 +119,7 @@ namespace NatoliOrderInterface
             CreateBarcodeDataGrid();
             Show();
         }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             string url = e.Uri.ToString();
@@ -1025,6 +1027,8 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
             nat02context.Dispose();
+            quote.Dispose();
+            parent.BoolValue = true;
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
