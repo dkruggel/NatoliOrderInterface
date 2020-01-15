@@ -175,7 +175,7 @@ namespace NatoliOrderInterface
             }
             ConstructModules();
             BuildMenus();
-             ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
+            // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
             mainTimer.Elapsed += MainTimer_Elapsed;

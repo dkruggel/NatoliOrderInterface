@@ -393,10 +393,21 @@ namespace NatoliOrderInterface
         /// </summary>
         private void WindowSetup()
         {
-            Left = mainWindow.Left;
-            Top = mainWindow.Top;
-            Width = mainWindow.ActualWidth;
-            Height = mainWindow.ActualHeight;
+            if (mainWindow.WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                //Top = parent.Top;
+                //Left = parent.Left;
+                Width = mainWindow.Width;
+                Height = mainWindow.Height;
+            }
+            //Left = mainWindow.Left;
+            //Top = mainWindow.Top;
+            //Width = mainWindow.ActualWidth;
+            //Height = mainWindow.ActualHeight;
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
 

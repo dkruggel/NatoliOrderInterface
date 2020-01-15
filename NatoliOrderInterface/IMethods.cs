@@ -17,14 +17,7 @@ namespace NatoliOrderInterface
     
     public interface IMethods
     {
-        #region DLL Imports
-        [DllImport("USER32.DLL")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-        public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
-        #endregion
-
-
+        
         /// <summary>
         /// Checks if string 'input' contains any strings 'containsKeywords' using Default StringComparison.InvariantCulture. Returns bool.
         /// </summary>
@@ -711,7 +704,7 @@ namespace NatoliOrderInterface
             }
 
             // Get a handle of the process.
-            IntPtr handle = FindWindow(null, process.MainWindowTitle);
+            IntPtr handle = NativeMethods.FindWindow(null, process.MainWindowTitle);
 
             // Verify that it is a running process.
             if (handle == IntPtr.Zero)
@@ -721,7 +714,7 @@ namespace NatoliOrderInterface
             }
 
             // Make it the foreground application
-            SetForegroundWindow(handle);
+            NativeMethods.SetForegroundWindow(handle);
             process.Dispose();
         }
         /// <summary>
