@@ -2029,7 +2029,7 @@ namespace NatoliOrderInterface
             //}
         }
         #endregion
-
+        #endregion
         #region MainWindowSearches
         private void QuoteSearchButton_Click(object sender, RoutedEventArgs e)
         {
