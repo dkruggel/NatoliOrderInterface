@@ -175,7 +175,7 @@ namespace NatoliOrderInterface
             }
             ConstructModules();
             BuildMenus();
-            // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false);
+             ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
             mainTimer.Elapsed += MainTimer_Elapsed;
@@ -973,11 +973,13 @@ namespace NatoliOrderInterface
                 // Uncheck project expander
                 selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
 
-                OnHoldCommentWindow orderInfoWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
+                OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                onHoldCommentWindow.Show();
             }
             catch (Exception ex)
             {
@@ -1463,11 +1465,13 @@ namespace NatoliOrderInterface
         {
             try
             {
-                OnHoldCommentWindow orderInfoWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
+                OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                onHoldCommentWindow.Show();
             }
             catch (Exception ex)
             {
@@ -1850,7 +1854,9 @@ namespace NatoliOrderInterface
             projectsContext.Dispose();
 
             // Create new project window/project
-            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true);
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true) { Owner = this};
+
+            projectWindow.Show();
 
             // Dispose of project window
             projectWindow.Dispose();
@@ -2089,9 +2095,11 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                quoteInfoWindow.Show();
             }
             catch (Exception ex)
             {
@@ -2150,7 +2158,8 @@ namespace NatoliOrderInterface
                 string revNumber = ProjectRevNoSearchTextBlock.Text;
                 //try
                 //{
-                //    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                //    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false) { Owner = this};
+                //    projectWindow.Show();
                 //    projectWindow.Dispose();
                 //}
                 //catch (Exception ex)
@@ -2257,9 +2266,12 @@ namespace NatoliOrderInterface
                 }
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, "", User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                orderInfoWindow.Show();
+                orderInfoWindow.Dispose();
             AlreadyOpen:
                 context.Dispose();
                 nat01context.Dispose();
@@ -9184,9 +9196,12 @@ namespace NatoliOrderInterface
 
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                orderInfoWindow.Show();
+                orderInfoWindow.Dispose();
             }
             catch (Exception ex)
             {
@@ -9246,9 +9261,12 @@ namespace NatoliOrderInterface
                     string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
                     OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                     {
+                        Owner = this,
                         Left = Left,
                         Top = Top
                     };
+                    orderInfoWindow.Show();
+                    orderInfoWindow.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -9293,9 +9311,11 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
+                quoteInfoWindow.Show();
             }
             catch (Exception ex)
             {
@@ -9341,9 +9361,11 @@ namespace NatoliOrderInterface
                 {
                     QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
                     {
+                        Owner = this,
                         Left = Left,
                         Top = Top
                     };
+                    quoteInfoWindow.Show();
                 }
                 catch (Exception ex)
                 {
@@ -9502,6 +9524,7 @@ namespace NatoliOrderInterface
                         System.IO.Directory.CreateDirectory(path);
                     System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
                     //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                    //projectWindow.Show();
                     //projectWindow.Dispose();
                 }
                 catch (Exception ex)
