@@ -966,13 +966,69 @@ namespace NatoliOrderInterface
 
                 string workingLengthTolerance = null;
                 bool varyingWLTolerances = false;
+                string machineDescription = null;
                 foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                 {
+                    if (quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0)
+                    {
+                        // Machine description is NOT empty
+                        if (!string.IsNullOrEmpty(quoteLineItem.MachineDescription))
+                        {
+                            // First
+                            if (machineDescription == null)
+                            {
+                                machineDescription = quoteLineItem.MachineDescription.Trim();
+                            }
+                            // Comparing
+                            else
+                            {
+                                // Do not match
+                                if (machineDescription != quoteLineItem.MachineDescription.Trim())
+                                {
+                                    errors.Add("A machine description does not match '" + quoteLineItem.LineItemType + "'s machine description.");
+                                }
+                                machineDescription = quoteLineItem.MachineDescription.Trim();
+                            }
+                        }
+                        else
+                        {
+                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine description.");
+                        }
+                    }
                     // Upper, Lower, Reject
                     if (quoteLineItem.LineItemType == "U" ||
                         quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
                         quoteLineItem.LineItemType == "R")
                     {
+                        // Upper
+                        if (quoteLineItem.LineItemType == "U")
+                        {
+                            // Machine Exists
+                            if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                            {
+                                MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                                // Is B or D Machine
+                                if (((machine.UpperSize ?? machine.LowerSize) != @"3/4 X 5-3/4" && machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
+                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4")) || (machine.MachineTypePrCode.Trim() == "D" ||
+                                        ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1-1/4 x 5-3/4") ||
+                                        machine.MachineNo == 1015))
+                                {
+                                    // Is NOT Apotex
+                                    if (!(quote.UserAcctNo == "1031250" || quote.UserAcctNo == "1001400"))
+                                    {
+                                        // Machine requires tip length for oil seals
+                                        if (ContainsAny(machine.Description,new List<string> { "FETTE", "KILIAN", "KORSCH", "X-PRESS" ,"XS-PRESS"}, StringComparison.InvariantCultureIgnoreCase) || ( machine.Description.Contains("GENESIS",StringComparison.InvariantCultureIgnoreCase) && machine.Description.Contains("STOKES", StringComparison.InvariantCultureIgnoreCase)) || machine.SpecialInfo.Contains("102") )
+                                        {
+                                            // Does not have option 102
+                                            if (!quoteLineItem.OptionNumbers.Contains("102"))
+                                            {
+                                                errors.Add("'U' may require tip length for oil seals.");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         if (!varyingWLTolerances)
                         {
                             if (quoteLineItem.OptionNumbers.Contains("336"))
@@ -999,12 +1055,12 @@ namespace NatoliOrderInterface
                     if (quoteLineItem.LineItemType == "D")
                     {
                         // No Die Groove
-                        if (!IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "430", "431", "432", "433", "434", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture))
+                        if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "430", "431", "432", "433", "434", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture))
                         {
                             errors.Add("No die groove on 'D'");
                         }
                         // Too Many Die Grooves
-                        if (!quoteLineItem.OptionNumbers.Contains("435") && quoteLineItem.OptionNumbers.Count(o => IMethods.ContainsAny(o, new List<string> { "430", "431", "432", "433", "434", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture)) > 1)
+                        if (!quoteLineItem.OptionNumbers.Contains("435") && quoteLineItem.OptionNumbers.Count(o => ContainsAny(o, new List<string> { "430", "431", "432", "433", "434", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture)) > 1)
                         {
                             errors.Add("'D' has too many die grooves.");
                         }
@@ -1052,6 +1108,16 @@ namespace NatoliOrderInterface
                         {
                             errors.Add("'D' has incorrect Die Number");
                         }
+
+                        // Has Inserts
+                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "491", "492", "493", "494", "495", "496" }, StringComparison.CurrentCulture))
+                        {
+                            // Die Groove W/O Relief
+                            if (quoteLineItem.OptionNumbers.Contains("437"))
+                            {
+                                errors.Add("'D' cannot have groove without relief and an insert.");
+                            }
+                        }
                     }
 
                     // Punches and Holders
@@ -1060,7 +1126,7 @@ namespace NatoliOrderInterface
                         quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH")
                     {
                         // No Head Option
-                        if (!IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "014", "015", "016", "018", "019", "022", "024", "025" }, StringComparison.CurrentCulture))
+                        if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "014", "015", "016", "018", "019", "022", "024", "025" }, StringComparison.CurrentCulture))
                         {
                             errors.Add("'" + quoteLineItem.LineItemType + "' is missing a head type option.");
                         }
@@ -1071,9 +1137,22 @@ namespace NatoliOrderInterface
                         quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
                         quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
                     {
+                        // Upper or Upper Assembly
+                        if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UA")
+                        {
+                            // Natoli Deep Fill
+                            if (quoteLineItem.MachineDescription.Contains("DEEP") && quoteLineItem.MachineDescription.Contains("FILL") && quoteLineItem.MachineDescription.Contains("NATOLI"))
+                            {
+                                // Special tip straight is not .75"
+                                if (!_nat01Context.QuoteOptionValueASingleNum.Any(ov=> ov.QuoteNo == Convert.ToInt32(quoteNo) && ov.RevNo == Convert.ToInt16(quoteRevNo) && (ov.QuoteDetailType=="U" || ov.QuoteDetailType=="UA") && ov.OptionCode=="217" && Math.Round((decimal)ov.Number1,3)==(decimal).750))
+                                {
+                                    errors.Add("Upper or Upper Assembly should have a tip straight of .75\"");
+                                }
+                            }
+                        }
                         // No Key Angle
-                        if (IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture) &&
-                            !IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
+                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture) &&
+                            !ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
                         {
                             errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
                         }
@@ -1236,10 +1315,10 @@ namespace NatoliOrderInterface
                             if (quoteLineItem.LineItemType == "L")
                             {
                                 // Is Bisected
-                                if (!IMethods.ContainsAny(hob.BisectCode, new List<string> { "000", "010", "020", "030" }, StringComparison.CurrentCulture))
+                                if (!ContainsAny(hob.BisectCode, new List<string> { "000", "010", "020", "030" }, StringComparison.CurrentCulture))
                                 {
                                     // Isn't Keyed
-                                    if (!IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture))
+                                    if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture))
                                     {
                                         errors.Add("'L' is bisected. Please add key at appropriate take-off angle.");
                                     }
@@ -1290,7 +1369,7 @@ namespace NatoliOrderInterface
                                                 {
                                                     foreach (QuoteLineItem qli in quoteLineItems)
                                                     {
-                                                        if (IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "333", "003", "004", "005", "006", "007", "009" }, StringComparison.CurrentCulture))
+                                                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "333", "003", "004", "005", "006", "007", "009" }, StringComparison.CurrentCulture))
                                                         {
                                                             eu = true;
                                                         }
@@ -1329,7 +1408,7 @@ namespace NatoliOrderInterface
                                                 {
                                                     foreach (QuoteLineItem qli in quoteLineItems)
                                                     {
-                                                        if (IMethods.ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "333", "003", "004", "005", "006", "007", "009" }, StringComparison.CurrentCulture))
+                                                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "333", "003", "004", "005", "006", "007", "009" }, StringComparison.CurrentCulture))
                                                         {
                                                             eu = true;
                                                         }
@@ -1365,13 +1444,6 @@ namespace NatoliOrderInterface
                 }
 
             }
-            //If(IfError(AlignmentToolGenerationError = 28, 0), "[color red]No die groove without relief with inserts.[/color]", "No die groove without relief with inserts.") & NewLine() &
-
-            //If(IfError(CoatingToolGenerationError = 29, 0), "[color red]Please evaluate tip straight option for accuracy.[/color]", "Please evaluate tip straight option for accuracy.") & NewLine() &
-
-            //If(IfError(CopperTabletToolGenerationError = 30, 0), "[color red]Please check if tip length for oil seals is required.[/color]", "Please check if tip length for oil seals is required.") & NewLine() &
-
-            //If(IfError(UpperInchError = 31, 0), "[color red]Machine Description not on order or they do not match.[/color]", "Machine Description not on order or they do not match.") & NewLine() &
 
             //If(IfError(UpperTipGenerationError = 32, 0), "[color red]Machine not appropriate for Head OD.[/color]", "Machine not appropriate for Head OD.") & NewLine() &
 
