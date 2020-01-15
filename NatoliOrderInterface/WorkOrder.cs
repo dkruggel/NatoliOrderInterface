@@ -517,15 +517,11 @@ namespace NatoliOrderInterface
         }
         private void LineItemChoices_Closed(object sender, EventArgs e)
         {
-            UIElementCollection collection = stackPanelTemp.Children;
-            foreach (UIElement element in collection)
+            IEnumerable<CheckBox> collection = stackPanelTemp.Children.OfType<CheckBox>().Where(c => c.IsChecked == true);
+            foreach (CheckBox checkBox in collection)
             {
-                if (element.GetType().FullName.Contains("CheckBox"))
-                {
-                    CheckBox c = (CheckBox)element;
-                    IEnumerable<KeyValuePair<int, string>> lineItem = lineItems.Where(x => c.Name[0..^8] == x.Value);
-                    lineItemsToScan.Add(lineItem.ElementAt(0).Key);
-                }
+                IEnumerable<KeyValuePair<int, string>> lineItem = lineItems.Where(x => checkBox.Name[0..^8] == x.Value);
+                lineItemsToScan.Add(lineItem.ElementAt(0).Key);
             }
         }
         private void GetLineItemsToScan(Window owner)

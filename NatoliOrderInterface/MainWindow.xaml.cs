@@ -3142,7 +3142,14 @@ namespace NatoliOrderInterface
 
         private CheckBox CreateCheckBox(int row, int column, bool isChecked)
         {
-            CheckBox checkBox = new CheckBox();
+            CheckBox checkBox = new CheckBox()
+            {
+                IsChecked = false,
+                Style = App.Current.Resources["CheckBox"] as Style,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(20, 0, 0, 0),
+                LayoutTransform = new ScaleTransform(1.1, 1.1)
+            };
             try
             {
                 checkBox.IsChecked = isChecked;
