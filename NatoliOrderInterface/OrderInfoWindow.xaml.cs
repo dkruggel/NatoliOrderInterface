@@ -1657,8 +1657,7 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.SoldToCustomerName, workOrder.CustomerNumber)
             {
-                Left = Left,
-                Top = Top,
+                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1668,8 +1667,7 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.EndUserName, workOrder.UserNumber)
             {
-                Left = Left,
-                Top = Top,
+                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1679,8 +1677,7 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.ShipToCustomerName, workOrder.AccountNumber)
             {
-                Left = Left,
-                Top = Top,
+                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1701,6 +1698,7 @@ namespace NatoliOrderInterface
                 };
                 _nat01context.Dispose();
                 referenceOrderInfoWindow.Show();
+                referenceOrderInfoWindow.Dispose();
             }
             catch (Exception ex)
             {
@@ -1739,6 +1737,7 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, parent, "", user)
                 {
+                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
