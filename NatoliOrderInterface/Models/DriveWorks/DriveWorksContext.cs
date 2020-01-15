@@ -18,8 +18,10 @@ namespace NatoliOrderInterface.Models.DriveWorks
         public virtual DbSet<QueueView> QueueView { get; set; }
         public virtual DbSet<Specifications> Specifications { get; set; }
         public virtual DbSet<SecurityUsers> SecurityUsers { get; set; }
+        public virtual DbSet<TipClearancesRoundUpper> TipClearancesRoundUpper { get; set; }
+        public virtual DbSet<TipClearancesRoundLower> TipClearancesRoundLower { get; set; }
         //public virtual DbSet<UserCustomizations> UserCustomizations { get; set; }
-        
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -99,12 +101,22 @@ namespace NatoliOrderInterface.Models.DriveWorks
                 entity.Property(e => e.EmailAddress).HasMaxLength(255);
             });
 
+            modelBuilder.Entity<TipClearancesRoundUpper>(entity =>
+            {
+                entity.HasKey(e => e.NominalDiameter);
+            });
+
+            modelBuilder.Entity<TipClearancesRoundLower>(entity =>
+            {
+                entity.HasKey(e => e.NominalDiameter);
+            });
+
             //modelBuilder.Entity<UserCustomizations>(entity =>
             //{
             //    entity.HasKey(e => e.User);
             //});
-            
-            //OnModelCreatingPartial(modelBuilder);
+
+            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
