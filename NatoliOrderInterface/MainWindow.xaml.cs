@@ -175,7 +175,7 @@ namespace NatoliOrderInterface
             }
             ConstructModules();
             BuildMenus();
-             ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
+            // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
             mainTimer.Elapsed += MainTimer_Elapsed;
@@ -307,7 +307,7 @@ namespace NatoliOrderInterface
             }
             else if (WindowState != WindowState.Minimized)
             {
-                //MainRefresh();
+                MainRefresh();
                 mainTimer.Start();
                 quoteTimer.Start();
                 NatoliOrderListTimer.Start();
@@ -1041,6 +1041,8 @@ namespace NatoliOrderInterface
             {
                 //foreach ((string, string, CheckBox) project in selectedProjects)
                 int count = selectedProjects.Count;
+                using var _nat02Context = new NAT02Context();
+
                 for (int i = 0; i < count; i++)
                 {
                     (string, string, CheckBox) project = selectedProjects[0];
@@ -1049,15 +1051,8 @@ namespace NatoliOrderInterface
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
-                        using var _nat02Context = new NAT02Context();
-
                         EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-
-                        _nat02Context.SaveChanges();
-                        _nat02Context.Dispose();
-                        selectedProjects.Clear();
-                        
                     }
                     catch (Exception ex)
                     {
@@ -1065,6 +1060,11 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
                     }
                 }
+
+                _nat02Context.SaveChanges();
+                _nat02Context.Dispose();
+                selectedProjects.Clear();
+
                 MainRefresh();
             }
         }
@@ -2030,6 +2030,7 @@ namespace NatoliOrderInterface
         }
         #endregion
         #endregion
+
         #region MainWindowSearches
         private void QuoteSearchButton_Click(object sender, RoutedEventArgs e)
         {
