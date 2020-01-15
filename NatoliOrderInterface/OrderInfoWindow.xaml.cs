@@ -885,171 +885,6 @@ namespace NatoliOrderInterface
             _nat02Context.Dispose();
             
         }
-        private void BarcodeTransfer(string employeeCode, string departmentCode, string travellerNumber, bool firstScan = false)
-        {
-            if (firstScan)
-            {
-                string lineNumber = travellerNumber.Substring(1, 2);
-                string strSQL = "Update [NAT01].[dbo].[OrderDetails] set [TravellerNo] = '" + travellerNumber + "' where [OrderNo] = '" + workOrder.OrderNumber + "00' and [LineNumber] = '" + lineNumber + "'";
-                SqlConnection updateConnection = new SqlConnection();
-                SqlCommand updateCommand = new SqlCommand();
-                try
-                {
-                    updateCommand.Connection = updateConnection;
-                    updateCommand.CommandText = strSQL;
-                    updateCommand.CommandType = CommandType.Text;
-                    using (updateConnection)
-                    {
-                        updateConnection.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                        updateConnection.Open();
-                        DataTable TransferBatch = new DataTable();
-                        TransferBatch.Load(updateCommand.ExecuteReader());
-                        TransferBatch.Dispose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    updateCommand.Dispose();
-                    updateConnection.Close();
-                }
-            }
-
-            SqlConnection con = new SqlConnection();
-            SqlCommand cmd = new SqlCommand();
-            try
-            {
-                cmd.Connection = con;
-                cmd.CommandText = "spValidateScanTransfer";
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                // Terminal ID
-                cmd.Parameters.Add("@TerminalID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TerminalID"].Size = 50;
-                cmd.Parameters["@TerminalID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TerminalID"].Value = Environment.MachineName;
-
-                // NTUserID
-                cmd.Parameters.Add("@NTUserID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@NTUserID"].Size = 35;
-                cmd.Parameters["@NTUserID"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@NTUserID"].Value = Environment.MachineName;
-
-                // ApplicationVersion
-                cmd.Parameters.Add("@ApplicationVersion", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ApplicationVersion"].Size = 25;
-                cmd.Parameters["@ApplicationVersion"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@ApplicationVersion"].Value = "V3.4";
-
-                // Browser Details
-                cmd.Parameters.Add("@BrowserDetails", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BrowserDetails"].Size = 75;
-                cmd.Parameters["@BrowserDetails"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@BrowserDetails"].Value = "";
-
-                // ActionPerformed
-                cmd.Parameters.Add("@ActionPerformed", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@ActionPerformed"].Size = 75;
-                cmd.Parameters["@ActionPerformed"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeCode
-                cmd.Parameters.Add("@EmployeeCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@EmployeeCode"].Size = 7;
-                cmd.Parameters["@EmployeeCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@EmployeeCode"].Value = employeeCode;
-
-                // CardCode
-                cmd.Parameters.Add("@CardCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@CardCode"].Size = 7;
-                cmd.Parameters["@CardCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@CardCode"].Value = "";
-
-
-                // EmployeeValidationCode
-                cmd.Parameters.Add("@EmployeeValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@EmployeeValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // EmployeeValidationText
-                cmd.Parameters.Add("@EmployeeValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@EmployeeValidationText"].Size = 75;
-                cmd.Parameters["@EmployeeValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentCode
-                cmd.Parameters.Add("@DepartmentCode", System.Data.SqlDbType.Char);
-                cmd.Parameters["@DepartmentCode"].Size = 7;
-                cmd.Parameters["@DepartmentCode"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@DepartmentCode"].Value = departmentCode;
-
-                // DepartmentValidationCode
-                cmd.Parameters.Add("@DepartmentValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@DepartmentValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // DepartmentValidationText
-                cmd.Parameters.Add("@DepartmentValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@DepartmentValidationText"].Size = 75;
-                cmd.Parameters["@DepartmentValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-
-                // TravellerNo
-                cmd.Parameters.Add("@TravellerNo", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@TravellerNo"].Size = 11;
-                cmd.Parameters["@TravellerNo"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@TravellerNo"].Value = travellerNumber;
-
-                // WorkOrderNumber
-                cmd.Parameters.Add("@WorkOrderNumber", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumber"].Size = 11;
-                cmd.Parameters["@WorkOrderNumber"].Direction = System.Data.ParameterDirection.Input;
-                cmd.Parameters["@WorkOrderNumber"].Value = "W" + travellerNumber.Substring(3, 6) + "S0" + travellerNumber.Substring(1, 2);
-
-                // WorkOrderNumberValidated
-                cmd.Parameters.Add("@WorkOrderNumberValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@WorkOrderNumberValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // WorkOrderNumberValidationText
-                cmd.Parameters.Add("@WorkOrderNumberValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@WorkOrderNumberValidationText"].Size = 75;
-                cmd.Parameters["@WorkOrderNumberValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                // BatchID
-                cmd.Parameters.Add("@BatchID", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@BatchID"].Size = 27;
-                cmd.Parameters["@BatchID"].Direction = System.Data.ParameterDirection.InputOutput;
-                cmd.Parameters["@BatchID"].Value = "none";
-
-
-                // SaveValidationCode
-                cmd.Parameters.Add("@SaveValidationCode", System.Data.SqlDbType.SmallInt);
-                cmd.Parameters["@SaveValidationCode"].Direction = System.Data.ParameterDirection.Output;
-
-                // SaveValidationText
-                cmd.Parameters.Add("@SaveValidationText", System.Data.SqlDbType.VarChar);
-                cmd.Parameters["@SaveValidationText"].Size = 75;
-                cmd.Parameters["@SaveValidationText"].Direction = System.Data.ParameterDirection.Output;
-
-                using (con)
-                {
-                    con.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                    con.Open();
-                    DataTable TransferBatch = new DataTable();
-                    TransferBatch.Load(cmd.ExecuteReader());
-                    TransferBatch.Dispose();
-                }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                cmd.Dispose();
-                con.Close();
-            }
-        }
         private void ButtonRefresh(string button = "None")
         {
             if (isReferenceWO)
@@ -1932,7 +1767,6 @@ namespace NatoliOrderInterface
             }
             return ret;
         }
-
         private void OrderPanel_Drop(object sender, DragEventArgs e)
         {
             string tempFile;
@@ -1993,7 +1827,6 @@ namespace NatoliOrderInterface
                 MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the pdfs", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
-
         private void PdfSignature(string[] filePaths)
         {
             string filename;
@@ -2078,7 +1911,6 @@ namespace NatoliOrderInterface
                 pdfDocument.Close();
             }
         }
-
         private void OrderPanel_DragEnter(object sender, DragEventArgs e)
         {
             string filename;

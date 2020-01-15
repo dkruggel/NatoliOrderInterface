@@ -307,7 +307,7 @@ namespace NatoliOrderInterface
             }
             else if (WindowState != WindowState.Minimized)
             {
-                //MainRefresh();
+                MainRefresh();
                 mainTimer.Start();
                 quoteTimer.Start();
                 NatoliOrderListTimer.Start();
@@ -743,7 +743,6 @@ namespace NatoliOrderInterface
                     break;
             }
         }
-
         private void DeleteMachineVariables(string orderNo, int lineNumber = 0)
         {
             if (lineNumber != 0)
@@ -827,7 +826,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void FinishTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -890,7 +888,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void SubmitTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -965,7 +962,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void OnHoldTabletProject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -986,7 +982,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("OnHoldTabletProject_Click", ex.Message);
             }
         }
-
         private void OffHoldTabletProject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1040,13 +1035,14 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("OffHoldTabletProject_Click", ex.Message);
             }
         }
-
         private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
             {
                 //foreach ((string, string, CheckBox) project in selectedProjects)
                 int count = selectedProjects.Count;
+                using var _nat02Context = new NAT02Context();
+
                 for (int i = 0; i < count; i++)
                 {
                     (string, string, CheckBox) project = selectedProjects[0];
@@ -1055,15 +1051,8 @@ namespace NatoliOrderInterface
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
-                        using var _nat02Context = new NAT02Context();
-
                         EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-
-                        _nat02Context.SaveChanges();
-                        _nat02Context.Dispose();
-                        selectedProjects.Clear();
-                        
                     }
                     catch (Exception ex)
                     {
@@ -1071,10 +1060,14 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
                     }
                 }
+
+                _nat02Context.SaveChanges();
+                _nat02Context.Dispose();
+                selectedProjects.Clear();
+
                 MainRefresh();
             }
         }
-
         private void CheckTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1167,7 +1160,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1242,7 +1234,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void StartToolProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1317,7 +1308,6 @@ namespace NatoliOrderInterface
             }
 
         }
-
         private void FinishToolProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1379,7 +1369,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void CheckToolProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1460,7 +1449,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void OnHoldToolProject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1478,7 +1466,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("OnHoldToolProject_Click", ex.Message);
             }
         }
-
         private void OffHoldToolProject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1531,7 +1518,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("OffHoldToolProject_Click", ex.Message);
             }
         }
-
         private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1569,7 +1555,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("CompleteToolProject_Click", ex.Message);
             }
         }
-
         private void CancelToolProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -1640,7 +1625,6 @@ namespace NatoliOrderInterface
                 MainRefresh();
             }
         }
-
         private void DoNotProcessMenuItem_Click(object sender, RoutedEventArgs e)
         {
             bool doNotProc = false;
@@ -1666,7 +1650,6 @@ namespace NatoliOrderInterface
             doNotProc = !doNotProc;
             MainRefresh();
         }
-
         private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // Scan selected orders if there are any and then clear the list
@@ -1764,7 +1747,6 @@ namespace NatoliOrderInterface
 
             MainRefresh();
         }
-
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
             // TODO: Get whether this is the first scan/coming from ordersenteredunscanned
@@ -1795,7 +1777,6 @@ namespace NatoliOrderInterface
 
             MainRefresh();
         }
-
         private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
         {
             // Scan selected orders if there are any and then clear the list
@@ -1830,17 +1811,14 @@ namespace NatoliOrderInterface
 
             MainRefresh();
         }
-
         private void ReadyToPrintMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MainRefresh();
         }
-
         private void ForceRefresh_Click(object sender, RoutedEventArgs e)
         {
             MainRefresh();
         }
-
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             // Select max project number
@@ -1861,7 +1839,6 @@ namespace NatoliOrderInterface
             // Dispose of project window
             projectWindow.Dispose();
         }
-
         private void ProjectSearch_Click(object sender, RoutedEventArgs e)
         {
             ProjectSearchWindow projectSearchWindow = new ProjectSearchWindow()
@@ -1872,13 +1849,11 @@ namespace NatoliOrderInterface
             projectSearchWindow.Show();
             projectSearchWindow.Dispose();
         }
-
         private void EditLayout_Click(object sender, RoutedEventArgs e)
         {
             EditLayoutWindow editLayoutWindow = new EditLayoutWindow(User, this);
             editLayoutWindow.Show();
         }
-
         private void CheckMissingVariables_Click(object sender, RoutedEventArgs e)
         {
             Window missing = new Window()
@@ -1911,7 +1886,6 @@ namespace NatoliOrderInterface
             MainGrid.Children.Add(textBlock);
             missing.Show();
         }
-
         private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
         {
             using var _nat02context = new NAT02Context();
@@ -1947,7 +1921,6 @@ namespace NatoliOrderInterface
             _nat02context.Dispose();
             MainRefresh();
         }
-
         private void SubmitQuote_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
@@ -2005,7 +1978,6 @@ namespace NatoliOrderInterface
             Cursor = Cursors.Arrow;
             MainRefresh();
         }
-
         private void FilterProjects_Click(object sender, RoutedEventArgs e)
         {
             _filterProjects = !_filterProjects;
@@ -2013,7 +1985,6 @@ namespace NatoliOrderInterface
             menuItem.IsChecked = _filterProjects;
             MainRefresh();
         }
-
         private void LineItemCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
@@ -2022,7 +1993,6 @@ namespace NatoliOrderInterface
             string travellerNumber = "1" + lineNumber.ToString("00") + order + "00";
             selectedLineItems.Add(travellerNumber);
         }
-
         private void LineItemCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             try
@@ -2038,8 +2008,6 @@ namespace NatoliOrderInterface
 
             }
         }
-        #endregion
-
         private void Subscriptions_SubmenuClosed(object sender, RoutedEventArgs e)
         {
             MenuItem topMenu = (MenuItem)sender;
@@ -2060,6 +2028,7 @@ namespace NatoliOrderInterface
             //    ExecuteQueries();
             //}
         }
+        #endregion
         #endregion
 
         #region MainWindowSearches
