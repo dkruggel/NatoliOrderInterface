@@ -695,7 +695,8 @@ namespace NatoliOrderInterface
             try
             {
                 // Get process Name
-                process = System.Diagnostics.Process.GetProcessesByName(processName)[0];
+                
+                process = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(processName))[0];
             }
             catch
             {
