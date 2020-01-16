@@ -166,7 +166,7 @@ namespace NatoliOrderInterface
             Top = (double)User.Top;
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
+            if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
             if (User.Maximized == true)
             {
                 Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));

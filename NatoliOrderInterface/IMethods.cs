@@ -695,7 +695,8 @@ namespace NatoliOrderInterface
             try
             {
                 // Get process Name
-                process = System.Diagnostics.Process.GetProcessesByName(processName)[0];
+                
+                process = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(processName))[0];
             }
             catch
             {
@@ -1000,9 +1001,9 @@ namespace NatoliOrderInterface
                             {
                                 MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
                                 // Is B or D Machine
-                                if (((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" &&( machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4"))) 
-                                    || 
+                                if (((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
+                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4")))
+                                    ||
                                     (machine.MachineTypePrCode.Trim() == "D" ||
                                         ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1-1/4 x 5-3/4") ||
                                         machine.MachineNo == 1015))
@@ -1011,7 +1012,7 @@ namespace NatoliOrderInterface
                                     if (!(quote.UserAcctNo == "1031250" || quote.UserAcctNo == "1001400"))
                                     {
                                         // Machine requires tip length for oil seals
-                                        if (ContainsAny(machine.Description,new List<string> { "FETTE", "KILIAN", "KORSCH", "X-PRESS" ,"XS-PRESS"}, StringComparison.InvariantCultureIgnoreCase) || ( machine.Description.Contains("GENESIS",StringComparison.InvariantCultureIgnoreCase) && machine.Description.Contains("STOKES", StringComparison.InvariantCultureIgnoreCase)) || machine.SpecialInfo.Contains("102") )
+                                        if (ContainsAny(machine.Description, new List<string> { "FETTE", "KILIAN", "KORSCH", "X-PRESS", "XS-PRESS" }, StringComparison.InvariantCultureIgnoreCase) || (machine.Description.Contains("GENESIS", StringComparison.InvariantCultureIgnoreCase) && machine.Description.Contains("STOKES", StringComparison.InvariantCultureIgnoreCase)) || machine.SpecialInfo.Contains("102"))
                                         {
                                             // Does not have option 102
                                             if (!quoteLineItem.OptionNumbers.Contains("102"))
@@ -1075,7 +1076,7 @@ namespace NatoliOrderInterface
                             {
                                 MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
                                 // Is in shallow groove range
-                                if(machine.Od<.946 && die.LengthMajorAxis>.625)
+                                if (machine.Od < .946 && die.LengthMajorAxis > .625)
                                 {
                                     // Does not have Shallow Groove and A2 Steel
                                     if (!quoteLineItem.OptionNumbers.Contains("430") && !quoteLineItem.Material.Contains("A2 "))
@@ -1124,16 +1125,63 @@ namespace NatoliOrderInterface
                                         errors.Add("If both tips and die are carbide/ceramic, TX2 must be added to the die.");
                                     }
                                 }
-                                
+
                             }
+                        }
+                    }
+
+                    // Die Segment
+                    if (quoteLineItem.LineItemType == "D")
+                    {
+                        // Has multi-bore
+                        if (quoteLineItem.OptionNumbers.Contains("470"))
+                        {
+                            // Not Assembled
+                            if (!quoteLineItems.Any(qli =>
+                             qli.LineItemType == "UA" || qli.LineItemType == "UT" ||
+                             qli.LineItemType == "LA" || qli.LineItemType == "LT" ||
+                             qli.LineItemType == "LA" || qli.LineItemType == "LT"
+                            ))
+                            {
+                                // Not Solid Multi-Tip
+                                if (!quoteLineItems.Any(qli => (qli.TipQTY ?? 1) > 1))
+                                {
+                                    // Machine Exists
+                                    if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                                    {
+                                        MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                                        short stations = machine.Stations ?? 1;
+                                        byte segmentQTY = machine.SegmentQty ?? 1;
+                                        // Stations / SegmentQTY has no remainder
+                                        if (stations % segmentQTY == 0 || stations == 1 || segmentQTY == 1)
+                                        {
+                                            byte boresPerSegment = (byte)(stations / segmentQTY);
+                                            // # of Multibores != boresPerSegment
+                                            if((_nat01Context.QuoteOptionValueOInteger.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == "DS" && qov.OptionCode=="470").Integer ?? 1) != boresPerSegment)
+                                            {
+                                                errors.Add("'DS' has multi-bore option that does not equal (# of stations) / (# of segments).");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            errors.Add("Check that the number of stations and number of segments are correct.");
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            errors.Add("Please check to see if 'DS' needs multi-bore (470).");
                         }
                     }
 
 
                     // Punches, Holders, and Assemblies
                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "UA" ||
-                        quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
-                        quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
+                    quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
+                    quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
                     {
                         // Upper or Upper Assembly
                         if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UA")
@@ -1142,7 +1190,7 @@ namespace NatoliOrderInterface
                             if (quoteLineItem.MachineDescription.Contains("DEEP") && quoteLineItem.MachineDescription.Contains("FILL") && quoteLineItem.MachineDescription.Contains("NATOLI"))
                             {
                                 // Special tip straight is not .75"
-                                if (!_nat01Context.QuoteOptionValueASingleNum.Any(ov=> ov.QuoteNo == Convert.ToInt32(quoteNo) && ov.RevNo == Convert.ToInt16(quoteRevNo) && (ov.QuoteDetailType=="U" || ov.QuoteDetailType=="UA") && ov.OptionCode=="217" && Math.Round((decimal)ov.Number1,3)==(decimal).750))
+                                if (!_nat01Context.QuoteOptionValueASingleNum.Any(ov => ov.QuoteNo == Convert.ToInt32(quoteNo) && ov.RevNo == Convert.ToInt16(quoteRevNo) && (ov.QuoteDetailType == "U" || ov.QuoteDetailType == "UA") && ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
                                 {
                                     errors.Add("Upper or Upper Assembly should have a tip straight of .75\"");
                                 }
@@ -1217,7 +1265,7 @@ namespace NatoliOrderInterface
                             if (((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4"))))
                             {
                                 // Has FS-12 style head option
-                                if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "017"}, StringComparison.CurrentCulture))
+                                if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "017" }, StringComparison.CurrentCulture))
                                 {
                                     errors.Add("'" + quoteLineItem.LineItemType + "' has an FS-12 style head but the machine is a normal 'B' machine.");
                                 }
@@ -1333,7 +1381,7 @@ namespace NatoliOrderInterface
                                     if (quoteLineItems.Any(qli => qli.LineItemType == "D" || qli.LineItemType == "DS"))
                                     {
                                         QuoteLineItem dieQuoteLineItem = quoteLineItems.First(qli => qli.LineItemType == "D" || qli.LineItemType == "DS");
-                                        
+
                                         double? punchWidth = null;
                                         double? punchLength = null;
                                         // Special tip size
@@ -1356,7 +1404,7 @@ namespace NatoliOrderInterface
                                                 {
                                                     punchWidth = (double)die.WidthMinorAxis - (double)_driveworksContext.TipClearancesRoundUpper.Where(c => c.NominalDiameter < (decimal)die.WidthMinorAxis).Max(c => c.Clearance);
                                                 }
-                                                
+
                                             }
                                             else
                                             {
@@ -1440,7 +1488,7 @@ namespace NatoliOrderInterface
                                             }
                                         }
 
-                                        if ((punchWidth ?? 0) > (dieWidth ?? ((punchWidth ?? 0)+1)) || ((punchLength ?? -1) > (dieLength ?? (punchLength ?? -1) + 1)))
+                                        if ((punchWidth ?? 0) > (dieWidth ?? ((punchWidth ?? 0) + 1)) || ((punchLength ?? -1) > (dieLength ?? (punchLength ?? -1) + 1)))
                                         {
                                             errors.Add("Tip sizes are larger than die bore.");
                                         }
@@ -1499,7 +1547,7 @@ namespace NatoliOrderInterface
                                                 }
                                             }
                                             // Reduced tip width
-                                            else if(quoteLineItem.Options.ContainsKey(204) && _nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "204" && qo.Number1 < .1875))
+                                            else if (quoteLineItem.Options.ContainsKey(204) && _nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "204" && qo.Number1 < .1875))
                                             {
                                                 bool eu = false;
                                                 if (quoteLineItem.OptionNumbers.Contains("116") && machine.Description.ToUpper().Contains("SYNTHESIS"))
@@ -1586,7 +1634,7 @@ namespace NatoliOrderInterface
 
             }
 
-            //If(IfError(ShortRejectTipGenerationError = 36, 0), "[color red]Check number of bores in segment on order/quote.[/color]", "Check number of bores in segment on order/quote.") & NewLine() &
+            // ------------------------------------------------------------ Rules left to add ------------------------------------------------------------
 
             //If(IfError(ShortRejectCapGenerationError = 37, 0), "[color red]Key angle on order does not match customer machines list.[/color]", "Key angle on order does not match customer machines list.") & NewLine() &
 
