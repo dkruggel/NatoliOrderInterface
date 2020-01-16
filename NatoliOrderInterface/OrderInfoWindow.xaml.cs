@@ -56,6 +56,7 @@ namespace NatoliOrderInterface
         {
             // For centerowner startup
             Owner = _parent ?? new MainWindow();
+            
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
@@ -118,6 +119,7 @@ namespace NatoliOrderInterface
             CreateBarcodeDataGrid();
             Show();
         }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             string url = e.Uri.ToString();
@@ -253,10 +255,11 @@ namespace NatoliOrderInterface
                 orderLineItems[lineItemNumber - 1].LineItemType != "DP" &&
                 orderLineItems[lineItemNumber - 1].LineItemType != "DS" &&
                 orderLineItems[lineItemNumber - 1].LineItemType != "DC" &&
-                _nat01Context.HobList.Any(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim()
-                && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY))
+                _nat01Context.HobList.Any(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() &&
+                 h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY &&
+                 h.BoreCircle == (string.IsNullOrEmpty(orderLineItems[lineItemNumber - 1].BoreCircle) ? (float)0 : (float)Convert.ToDouble(orderLineItems[lineItemNumber - 1].BoreCircle))))
             {
-                HobList hob = _nat01Context.HobList.First(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY);
+                HobList hob = _nat01Context.HobList.First(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY && h.BoreCircle == (string.IsNullOrEmpty(orderLineItems[lineItemNumber - 1].BoreCircle) ? (float)0 : (float)Convert.ToDouble(orderLineItems[lineItemNumber - 1].BoreCircle)));
                 Grid grid = new Grid();
                 grid.ShowGridLines = false;
                 grid.RowDefinitions.Add(new RowDefinition());
@@ -1025,6 +1028,8 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
             nat02context.Dispose();
+            quote.Dispose();
+            parent.BoolValue = true;
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {

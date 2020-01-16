@@ -393,10 +393,21 @@ namespace NatoliOrderInterface
         /// </summary>
         private void WindowSetup()
         {
-            Left = mainWindow.Left;
-            Top = mainWindow.Top;
-            Width = mainWindow.ActualWidth;
-            Height = mainWindow.ActualHeight;
+            if (mainWindow.WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                //Top = parent.Top;
+                //Left = parent.Left;
+                Width = mainWindow.Width;
+                Height = mainWindow.Height;
+            }
+            //Left = mainWindow.Left;
+            //Top = mainWindow.Top;
+            //Width = mainWindow.ActualWidth;
+            //Height = mainWindow.ActualHeight;
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
 
@@ -1569,9 +1580,9 @@ namespace NatoliOrderInterface
                         kvp.Key.DetailTypeId.Trim() == "R" ||
                         kvp.Key.DetailTypeId.Trim() == "RT")).Key;
                         string hobNumber = quoteDetail.HobNoShapeId;
-                        if (_nat01Context.HobList.Any(h => h.HobNo == hobNumber))
+                        if (_nat01Context.HobList.Any(h => h.HobNo == hobNumber && h.TipQty == (quoteDetail.TipQty ?? 1) && h.BoreCircle == (quoteDetail.BoreCircle ?? 0)))
                         {
-                            string dieNumber = _nat01Context.HobList.First(h => h.HobNo == hobNumber).DieId;
+                            string dieNumber = _nat01Context.HobList.First(h => h.HobNo == hobNumber && h.TipQty == (quoteDetail.TipQty ?? 1) && h.BoreCircle == (quoteDetail.BoreCircle ?? 0)).DieId;
                             DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == dieNumber.Trim());
                             // Use Note2 from Die List if present
                             if (!string.IsNullOrWhiteSpace(die.Note2))
@@ -1625,9 +1636,10 @@ namespace NatoliOrderInterface
                             // Take the cup depth from other items
                             if (quoteDetailOptionsDictionary.Any(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW"))
                             {
-                                if (_nat01Context.HobList.Any(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId))
+                                var _key = quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
+                                if (_nat01Context.HobList.Any(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0)))
                                 {
-                                    HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId);
+                                    HobList hob = _nat01Context.HobList.First(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ((float)hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ((float)hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
@@ -1649,9 +1661,9 @@ namespace NatoliOrderInterface
                             }
                         }
                         // Hob exists
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim()))
+                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0)))
                         {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim());
+                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0));
                             string hobNumber = hob.HobNo.Trim();
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
@@ -1694,9 +1706,10 @@ namespace NatoliOrderInterface
                             // Take the cup depth from other items
                             if (quoteDetailOptionsDictionary.Any(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW"))
                             {
-                                if (_nat01Context.HobList.Any(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId))
+                                var _key = quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
+                                if (_nat01Context.HobList.Any(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0)))
                                 {
-                                    HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "R" || kvp.Key.DetailTypeId.Trim() == "RT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId);
+                                    HobList hob = _nat01Context.HobList.First(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ((float)hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ((float)hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
@@ -1719,9 +1732,9 @@ namespace NatoliOrderInterface
                             }
                         }
                         // Hob exists
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim()))
+                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0)))
                         {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim());
+                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0));
                             string hobNumber = hob.HobNo.Trim();
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
@@ -1770,9 +1783,10 @@ namespace NatoliOrderInterface
                                     // Take the cup depth from other items
                                     if (quoteDetailOptionsDictionary.Any(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW"))
                                     {
-                                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId))
+                                        var _key =quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
+                                        if (_nat01Context.HobList.Any(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0)))
                                         {
-                                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId);
+                                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ((float)hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ((float)hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
@@ -1795,9 +1809,9 @@ namespace NatoliOrderInterface
                                     }
                                 }
                                 // Hob exists
-                                if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim()))
+                                if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0)))
                                 {
-                                    HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim());
+                                    HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0));
                                     string hobNumber = hob.HobNo.Trim();
                                     string note1 = hob.Note1.Trim();
                                     string note2 = hob.Note2.Trim();
@@ -1828,9 +1842,11 @@ namespace NatoliOrderInterface
                                     // Take the cup depth from other items
                                     if (quoteDetailOptionsDictionary.Any(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW"))
                                     {
-                                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId))
+                                        var _key = quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
+                                        if (_nat01Context.HobList.Any(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0)))
                                         {
-                                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key.HobNoShapeId);
+
+                                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ((float)hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ((float)hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
                                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
@@ -1853,9 +1869,9 @@ namespace NatoliOrderInterface
                                     }
                                 }
                                 // Hob exists
-                                if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim()))
+                                if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0)))
                                 {
-                                    HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim());
+                                    HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == quoteDetails.HobNoShapeId.Trim() && h.TipQty == (quoteDetails.TipQty ?? 1) && h.BoreCircle == (quoteDetails.BoreCircle ?? 0));
                                     string hobNumber = hob.HobNo.Trim();
                                     string note1 = hob.Note1.Trim();
                                     string note2 = hob.Note2.Trim();

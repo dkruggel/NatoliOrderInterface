@@ -258,20 +258,21 @@ namespace NatoliOrderInterface
             if ((lineItemType == "U" || lineItemType == "UT" || lineItemType == "L" || lineItemType == "LT" || lineItemType == "R" || lineItemType == "RT") && hobNoShapeID.Length == 6)
             {
                 NAT01Context nat01Context = new NAT01Context();
-                try
+                if (nat01Context.HobList.Any(h => h.HobNo == orderDetails.HobNoShapeId && h.TipQty == (orderDetails.TipQty ?? 1) && h.BoreCircle == (orderDetails.BoreCircle ?? 0)))
                 {
-                    hobList = nat01Context.HobList.Where(h => h.HobNo == orderDetails.HobNoShapeId && h.TipQty == orderDetails.TipQty).FirstOrDefault();
+                    hobList = nat01Context.HobList.First(h => h.HobNo == orderDetails.HobNoShapeId && h.TipQty == (orderDetails.TipQty ?? 1) && h.BoreCircle == (orderDetails.BoreCircle ?? 0));
+                    hobYorNorD = string.IsNullOrEmpty(hobList.HobYorNorD) ? "" : hobList.HobYorNorD;
                 }
-                catch
+                else
                 {
-                    
                     hobYorNorD = "";
                 }
                 nat01Context.Dispose();
-                hobYorNorD = string.IsNullOrEmpty(hobList.HobYorNorD) ? "" : hobList.HobYorNorD;
             }
             else
+            {
                 hobYorNorD = "";
+            }
             #endregion
             #region SheetColor
             try
@@ -286,7 +287,7 @@ namespace NatoliOrderInterface
             qty = orderDetails.QuantityOrdered;
             title = titles[lineItemType];
             tipQTY = orderDetails.TipQty is null ? (short)1 : (short)orderDetails.TipQty;
-            boreCircle = Convert.ToDouble(orderDetails.BoreCircle) == 0 ? "" : String.Format("{0:0.0000}", orderDetails.BoreCircle);
+            boreCircle = boreCircle == null ? "" : Convert.ToDouble(orderDetails.BoreCircle) == 0 ? "" : String.Format("{0:0.0000}", orderDetails.BoreCircle);
             stockSize = lineItemType == "U" ? machineList.UpperSize.Trim() : lineItemType == "L" ? machineList.LowerSize.Trim() : "";
             hobDescription1 = orderDetails.Desc1.ToString().Trim();
             hobDescription2 = String.Join(" ", orderDetails.Desc3.Trim(), orderDetails.Desc4.Trim()).Trim();

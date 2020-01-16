@@ -21,7 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 // using WpfAnimatedGif;
-//using XamlAnimatedGif;
+// using XamlAnimatedGif;
 using Colors = System.Windows.Media.Colors;
 
 namespace NatoliOrderInterface
@@ -167,6 +167,10 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
             if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
+            if (User.Maximized == true)
+            {
+                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
+            }
             this.Show();
             originalProps = new List<string>();
             dictList = new List<object>();
@@ -217,10 +221,7 @@ namespace NatoliOrderInterface
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
-            if (User.Maximized == true)
-            {
-                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
-            }
+
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -1247,12 +1248,12 @@ namespace NatoliOrderInterface
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+                        IMethods.CancelProject(project.Item1, project.Item2, User);
                     }
                     else
                     {
 
-                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?");
+                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (res == MessageBoxResult.Yes)
                         {
                             try
@@ -1696,11 +1697,11 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                        IMethods.CancelProject(project.Item1, project.Item2, User);
                     }
                     else
                     {
-                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?");
+                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (res == MessageBoxResult.Yes)
                         {
                             try
