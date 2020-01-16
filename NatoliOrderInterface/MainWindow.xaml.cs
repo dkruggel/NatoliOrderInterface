@@ -146,14 +146,16 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
+            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
+            splashScreen.Show(true);
             var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
             if (currentlyRunningProcesses.Any())
             {
+                var process =currentlyRunningProcesses.First();
+                var id = process.Id;
                 BringToFront(currentlyRunningProcesses.First());
-                System.Windows.Application.Current.Shutdown();
+                Application.Current.Shutdown();
             }
-            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
-            splashScreen.Show(true);
             InitializeComponent();
             App.GetConnectionString();
             UpdatedFromChild = MainRefresh;
@@ -172,6 +174,10 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
             if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
+            using var _nat02Context = new NAT02Context();
+            _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()));
+            _nat02Context.SaveChanges();
+            _nat02Context.Dispose();
             this.Show();
             if (User.Maximized == true)
             {
@@ -202,7 +208,7 @@ namespace NatoliOrderInterface
             oqTimer.Enabled = true;
         }
 
-        private void BringToFront(System.Diagnostics.Process process)
+        private void BringToFront(Process process)
         {
             IntPtr handle = NativeMethods.FindWindow(null, process.MainWindowTitle);
             if (handle == IntPtr.Zero)
