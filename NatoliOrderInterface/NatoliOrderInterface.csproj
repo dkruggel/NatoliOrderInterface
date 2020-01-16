@@ -42,6 +42,7 @@
     <None Remove="NatoliOrderInterface.config.example" />
     <None Remove="NATOLI_ANIMATION.gif" />
     <None Remove="Natoli_Logo.gif" />
+    <None Remove="Natoli_Logo_Color.png" />
     <None Remove="redxdeleteicon.png" />
     <None Remove="SAVED_ANIMATION.gif" />
     <None Remove="Switch_Logo.PNG" />
@@ -121,6 +122,7 @@
     </Content>
     <Resource Include="NATOLI_ANIMATION.gif" />
     <Resource Include="Natoli_Logo.gif" />
+    <Resource Include="Natoli_Logo_Color.png" />
     <Resource Include="redxdeleteicon.png" />
     <Resource Include="SAVED_ANIMATION.gif" />
     <Resource Include="Switch_Logo.PNG" />
