@@ -1922,7 +1922,7 @@ namespace NatoliOrderInterface
                 int count = validOrders.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, CheckBox, string) order = validOrders[0];
+                    (string, CheckBox, string) order = validOrders[i];
                     using var nat02context = new NAT02Context();
                     if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
