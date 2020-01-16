@@ -773,7 +773,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -846,7 +846,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -922,7 +922,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1086,7 +1086,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1133,7 +1133,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1243,7 +1243,7 @@ namespace NatoliOrderInterface
                 int count = validProjects.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
@@ -1315,7 +1315,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1402,7 +1402,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1477,7 +1477,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     using var _nat02Context = new NAT02Context();
                     bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
                     _nat02Context.Dispose();
@@ -1643,7 +1643,7 @@ namespace NatoliOrderInterface
 
                 for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     try
                     {
                         // Check to see if the project is in the correct module
@@ -1691,7 +1691,7 @@ namespace NatoliOrderInterface
                 int count = validProjects.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, string, CheckBox, string) project = validProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[i];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
 
@@ -1789,7 +1789,7 @@ namespace NatoliOrderInterface
                 int count = validOrders.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, CheckBox, string) order = validOrders[0];
+                    (string, CheckBox, string) order = validOrders[i];
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
                     int retVal = workOrder.TransferOrder(User, "D080");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
@@ -1892,7 +1892,7 @@ namespace NatoliOrderInterface
                 int count = validOrders.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, CheckBox, string) order = validOrders[0];
+                    (string, CheckBox, string) order = validOrders[i];
                     var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
                     var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
@@ -1918,7 +1918,7 @@ namespace NatoliOrderInterface
                 int count = validOrders.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, CheckBox, string) order = validOrders[0];
+                    (string, CheckBox, string) order = validOrders[i];
                     using var nat02context = new NAT02Context();
                     if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
@@ -2026,7 +2026,7 @@ namespace NatoliOrderInterface
             {
                 for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox, string) quote = validQuotes[0];
+                    (string, string, CheckBox, string) quote = validQuotes[i];
                     quote.Item3.IsChecked = false;
 
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
@@ -2066,7 +2066,7 @@ namespace NatoliOrderInterface
             {
                 for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox, string) selectedQuote = validQuotes[0];
+                    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
                     selectedQuote.Item3.IsChecked = false;
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
@@ -2124,7 +2124,7 @@ namespace NatoliOrderInterface
             {
                 for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox, string) selectedQuote = validQuotes[0];
+                    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
                     selectedQuote.Item3.IsChecked = false;
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
@@ -8189,6 +8189,41 @@ namespace NatoliOrderInterface
 
                 stagesStackPanel.Children.Add(stagesGrid);
             }
+
+            expander.Content = stagesStackPanel;
+        }
+        private void QuotesNotConvertedExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = sender as Expander;
+            int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+
+            // Get the quote date/revision date
+            using var _nat01Context = new NAT01Context();
+
+
+            // Get the follow-up date(s)
+
+
+            _nat01context.Dispose();
+
+            StackPanel stagesStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+
+            //foreach ((string, string, DateTime?) stage in stages)
+            //{
+            //    Grid stagesGrid = new Grid();
+            //    stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+
+            //    stagesStackPanel.Children.Add(stagesGrid);
+            //}
 
             expander.Content = stagesStackPanel;
         }
