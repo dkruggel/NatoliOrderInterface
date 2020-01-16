@@ -255,10 +255,11 @@ namespace NatoliOrderInterface
                 orderLineItems[lineItemNumber - 1].LineItemType != "DP" &&
                 orderLineItems[lineItemNumber - 1].LineItemType != "DS" &&
                 orderLineItems[lineItemNumber - 1].LineItemType != "DC" &&
-                _nat01Context.HobList.Any(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim()
-                && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY))
+                _nat01Context.HobList.Any(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() &&
+                 h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY &&
+                 h.BoreCircle == (string.IsNullOrEmpty(orderLineItems[lineItemNumber - 1].BoreCircle) ? (float)0 : (float)Convert.ToDouble(orderLineItems[lineItemNumber - 1].BoreCircle))))
             {
-                HobList hob = _nat01Context.HobList.First(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY);
+                HobList hob = _nat01Context.HobList.First(h => h.HobNo.Trim() == orderLineItems[lineItemNumber - 1].HobNoShapeID.Trim() && h.TipQty == orderLineItems[lineItemNumber - 1].TipQTY && h.BoreCircle == (string.IsNullOrEmpty(orderLineItems[lineItemNumber - 1].BoreCircle) ? (float)0 : (float)Convert.ToDouble(orderLineItems[lineItemNumber - 1].BoreCircle)));
                 Grid grid = new Grid();
                 grid.ShowGridLines = false;
                 grid.RowDefinitions.Add(new RowDefinition());

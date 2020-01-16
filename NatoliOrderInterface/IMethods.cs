@@ -896,7 +896,7 @@ namespace NatoliOrderInterface
                     string shapeDescription = "";
                     foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                     {
-                        if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
+                        if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
                         {
                             errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
                             break;
@@ -924,7 +924,7 @@ namespace NatoliOrderInterface
                         {
                             // Has A Hob W/ a Die ID of width or length > .75
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75))))
+                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -942,7 +942,7 @@ namespace NatoliOrderInterface
                         {
                             // Has A Hob W/ a Die ID of width or length > 1.0
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0))))
+                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -1306,9 +1306,9 @@ namespace NatoliOrderInterface
                     {
 
                         // Has HobNo in HobList
-                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID))
+                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                         {
-                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID);
+                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
 
                             // Has DieId in HobList
                             if (!string.IsNullOrEmpty(hob.DieId))
@@ -1568,7 +1568,7 @@ namespace NatoliOrderInterface
                         }
                         else
                         {
-                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number.");
+                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
                         }
                     }
 
