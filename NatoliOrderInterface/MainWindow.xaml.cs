@@ -89,10 +89,11 @@ namespace NatoliOrderInterface
         private int quotesCompletedCount = 0;
         private double _orderNumber = 0;
         private bool _filterProjects = false;
-        private List<(string, CheckBox)> selectedOrders = new List<(string, CheckBox)>();
+        private string rClickModule;
+        private List<(string, CheckBox, string)> selectedOrders = new List<(string, CheckBox, string)>();
         private List<string> selectedLineItems = new List<string>();
-        private List<(string, string, CheckBox)> selectedProjects = new List<(string, string, CheckBox)>();
-        private List<(string, string, CheckBox)> selectedQuotes = new List<(string, string, CheckBox)>();
+        private List<(string, string, CheckBox, string)> selectedProjects = new List<(string, string, CheckBox, string)>();
+        private List<(string, string, CheckBox, string)> selectedQuotes = new List<(string, string, CheckBox, string)>();
 
         NAT01Context _nat01context = new NAT01Context();
         public string ChildWindow { get; set; }
@@ -767,13 +768,26 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i < count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllTabletProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -813,10 +827,6 @@ namespace NatoliOrderInterface
                         _driveworksContext.SaveChanges();
                         _projectsContext.Dispose();
                         _driveworksContext.Dispose();
-
-                        // Email CSR
-                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        
                     }
                     catch (Exception ex)
                     {
@@ -831,13 +841,27 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i < count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllTabletProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -893,13 +917,28 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i< count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllTabletProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) || 
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -1040,15 +1079,31 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
                 using var _nat02Context = new NAT02Context();
 
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllTabletProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -1073,13 +1128,29 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i < count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllTabletProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -1165,12 +1236,14 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
 
                 //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
+                int count = validProjects.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
@@ -1187,8 +1260,6 @@ namespace NatoliOrderInterface
                             {
                                 // Uncheck project expander
                                 project.Item3.IsChecked = false;
-
-                                
 
                                 if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
                                 {
@@ -1239,13 +1310,26 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int _count = selectedProjects.Count;
-                for (int i = 0; i < _count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllToolProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -1313,13 +1397,27 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i < count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     try
                     {
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllToolProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
 
@@ -1374,11 +1472,12 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
-                for (int i = 0; i < count; i++)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     using var _nat02Context = new NAT02Context();
                     bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
                     _nat02Context.Dispose();
@@ -1387,6 +1486,20 @@ namespace NatoliOrderInterface
                     {
                         try
                         {
+                            // Check to see if the project is in the correct module
+                            if (project.Item4 == "AllToolProjects")
+                            {
+                                using var _ = new ProjectsContext();
+                                if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
+                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                                {
+                                    _.Dispose();
+                                    continue;
+                                }
+                                _.Dispose();
+                            }
+
                             // Uncheck project expander
                             project.Item3.IsChecked = false;
 
@@ -1521,50 +1634,64 @@ namespace NatoliOrderInterface
         }
         private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (selectedProjects.Count > 0)
             {
-                // Uncheck project expander
-                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
 
                 using var _nat02Context = new NAT02Context();
 
-                if (selectedProjects.Any())
+                for (int i = 0; i < validProjects.Count; i++)
                 {
-                    //foreach ((string, string, CheckBox) project in selectedProjects)
-                    int count = selectedProjects.Count;
-                    for (int i = 0; i < count; i++)
+                    (string, string, CheckBox, string) project = validProjects[0];
+                    try
                     {
-                        (string, string, CheckBox) project = selectedProjects[0];
-                        EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
+                        // Check to see if the project is in the correct module
+                        if (project.Item4 == "AllToolProjects")
+                        {
+                            using var _ = new ProjectsContext();
+                            if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                            _.Dispose();
+                        }
+
+                        // Uncheck project expander
+                        project.Item3.IsChecked = false;
+
+                        EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
                         _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
                     }
-                }
-                else
-                {
-                    EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).First();
-                    _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        WriteToErrorLog("CompleteToolProject_Click", ex.Message);
+                    }
                 }
 
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 selectedProjects.Clear();
+
                 MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("CompleteToolProject_Click", ex.Message);
             }
         }
         private void CancelToolProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
             {
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
                 //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = selectedProjects.Count;
+                int count = validProjects.Count;
                 for (int i = 0; i < count; i++)
                 {
-                    (string, string, CheckBox) project = selectedProjects[0];
+                    (string, string, CheckBox, string) project = validProjects[0];
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
 
@@ -1656,8 +1783,13 @@ namespace NatoliOrderInterface
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach ((string, CheckBox) order in selectedOrders)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, CheckBox, string) order = validOrders[0];
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
                     int retVal = workOrder.TransferOrder(User, "D080");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
@@ -1677,7 +1809,10 @@ namespace NatoliOrderInterface
                         }
                     }
 
-                    DeleteMachineVariables(((int)_orderNumber).ToString());
+                    // Uncheck order expander
+                    order.Item2.IsChecked = false;
+
+                    DeleteMachineVariables(workOrder.OrderNumber.ToString());
                 }
 
                 try
@@ -1744,37 +1879,31 @@ namespace NatoliOrderInterface
                 DeleteMachineVariables(((int)_orderNumber).ToString());
             }
 
-            selectedOrders.Clear();
-
             MainRefresh();
         }
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Get whether this is the first scan/coming from ordersenteredunscanned
-
-
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach ((string, CheckBox) order in selectedOrders)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, CheckBox, string) order = validOrders[0];
                     var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
                     var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
                     int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+                    // Uncheck order expander
+                    order.Item2.IsChecked = false;
                 }
             }
-            // Scan just the order that was right clicked if nothing else has been selected
-            //else
-            //{
-            //    workOrder = new WorkOrder((int)_orderNumber, this);
-            //    int retVal = workOrder.TransferOrder(User, "D040");
-            //    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-            //}
-
-            selectedOrders.Clear();
 
             MainRefresh();
         }
@@ -1783,8 +1912,13 @@ namespace NatoliOrderInterface
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                foreach ((string, CheckBox) order in selectedOrders)
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
                 {
+                    (string, CheckBox, string) order = validOrders[0];
                     using var nat02context = new NAT02Context();
                     if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
@@ -1798,17 +1932,11 @@ namespace NatoliOrderInterface
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
                     int retVal = workOrder.TransferOrder(User, "D921");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+                    // Uncheck order expander
+                    order.Item2.IsChecked = false;
                 }
             }
-            // Scan just the order that was right clicked if nothing else has been selected
-            else
-            {
-                workOrder = new WorkOrder((int)_orderNumber, this);
-                int retVal = workOrder.TransferOrder(User, "D921");
-                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-            }
-
-            selectedOrders.Clear();
 
             MainRefresh();
         }
@@ -1890,13 +2018,15 @@ namespace NatoliOrderInterface
         private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
         {
             using var _nat02context = new NAT02Context();
-            if (selectedQuotes.Any())
+
+            // New list of projects that are in the same module that was right clicked inside of
+            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+
+            if (validQuotes.Any())
             {
-                //foreach ((string, string, CheckBox) quote in selectedQuotes)
-                int count = selectedQuotes.Count;
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox) quote = selectedQuotes[0];
+                    (string, string, CheckBox, string) quote = validQuotes[0];
                     quote.Item3.IsChecked = false;
 
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
@@ -1928,13 +2058,15 @@ namespace NatoliOrderInterface
             using var context = new NAT01Context();
             using var nat02Context = new NAT02Context();
             using var necContext = new NECContext();
-            if (selectedQuotes.Any())
+
+            // New list of projects that are in the same module that was right clicked inside of
+            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+
+            if (validQuotes.Any())
             {
-                //foreach ((string, string, CheckBox) selectedQuote in selectedQuotes)
-                int _count = selectedQuotes.Count;
-                for (int i = 0; i < _count; i++)
+                for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox) selectedQuote = selectedQuotes[0];
+                    (string, string, CheckBox, string) selectedQuote = validQuotes[0];
                     selectedQuote.Item3.IsChecked = false;
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
@@ -1971,6 +2103,64 @@ namespace NatoliOrderInterface
                     Rush = r.RushYorN
                 };
                 nat02Context.EoiQuotesMarkedForConversion.Add(q);
+            }
+            nat02Context.SaveChanges();
+            nat02Context.Dispose();
+            necContext.Dispose();
+            context.Dispose();
+            Cursor = Cursors.Arrow;
+            MainRefresh();
+        }
+        private void RecallQuote_Click(object sender, RoutedEventArgs e)
+        {
+            Cursor = Cursors.AppStarting;
+            using var context = new NAT01Context();
+            using var nat02Context = new NAT02Context();
+            using var necContext = new NECContext();
+            // New list of projects that are in the same module that was right clicked inside of
+            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+
+            if (validQuotes.Any())
+            {
+                for (int i = 0; i < validQuotes.Count; i++)
+                {
+                    (string, string, CheckBox, string) selectedQuote = validQuotes[0];
+                    selectedQuote.Item3.IsChecked = false;
+
+                    quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
+                    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                    {
+                        QuoteNo = quote.QuoteNumber,
+                        QuoteRevNo = quote.QuoteRevNo,
+                        CustomerName = customerName,
+                        Csr = csr,
+                        CsrMarked = User.GetUserName(),
+                        TimeSubmitted = DateTime.Now,
+                        Rush = r.RushYorN
+                    };
+                    nat02Context.EoiQuotesMarkedForConversion.Remove(q);
+                }
+            }
+            else
+            {
+                quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
+                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                {
+                    QuoteNo = quote.QuoteNumber,
+                    QuoteRevNo = quote.QuoteRevNo,
+                    CustomerName = customerName,
+                    Csr = csr,
+                    CsrMarked = User.GetUserName(),
+                    TimeSubmitted = DateTime.Now,
+                    Rush = r.RushYorN
+                };
+                nat02Context.EoiQuotesMarkedForConversion.Remove(q);
             }
             nat02Context.SaveChanges();
             nat02Context.Dispose();
@@ -2082,7 +2272,6 @@ namespace NatoliOrderInterface
             QuoteSearchTextBlock.Text = "";
             QuoteRevNoSearchTextBlock.Text = "";
         }
-
         private void QuoteSearchTextBlock_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -2100,7 +2289,6 @@ namespace NatoliOrderInterface
 
             }
         }
-
         private void ProjectSearchTextBlock_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -2118,7 +2306,6 @@ namespace NatoliOrderInterface
 
             }
         }
-
         private void ProjectSearchButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
@@ -2175,7 +2362,6 @@ namespace NatoliOrderInterface
             ProjectSearchTextBlock.Text = "";
             ProjectRevNoSearchTextBlock.Text = "";
         }
-
         private void OrderSearchButton_Click(object sender, RoutedEventArgs e)
         {
             if (OrderSearchTextBlock.Text.Length != 6)
@@ -2249,7 +2435,6 @@ namespace NatoliOrderInterface
             }
             OrderSearchTextBlock.Text = "";
         }
-
         private void ProjectSearchTextBlock_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -2271,7 +2456,6 @@ namespace NatoliOrderInterface
                 ProjectSearchButton_Click(sender, new RoutedEventArgs());
             }
         }
-
         private void QuoteSearchTextBlock_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -2293,7 +2477,6 @@ namespace NatoliOrderInterface
                 QuoteSearchButton_Click(sender, new RoutedEventArgs());
             }
         }
-
         private void OrderSearchTextBlock_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -6665,7 +6848,7 @@ namespace NatoliOrderInterface
             expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
             expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
             expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
+            expander.MouseRightButtonUp += OrdersBeingEnteredExpander_MouseRightButtonUp;
             return expander;
         }
         private Expander CreateInTheOfficeExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> kvp)
@@ -6759,7 +6942,7 @@ namespace NatoliOrderInterface
             expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
             expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
             expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
+            expander.MouseRightButtonUp += OrdersInEngineeringUnprintedExpander_MouseRightButtonUp;
 
             expander.Expanded += InEngineeringExpander_Expanded;
             return expander;
@@ -6797,7 +6980,7 @@ namespace NatoliOrderInterface
             expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
             expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
             expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
+            expander.MouseRightButtonUp += OrdersReadyToPrintExpander_MouseRightButtonUp;
 
             //expander.Expanded += ReadyToPrintExpander_Expanded;
             return expander;
@@ -6860,7 +7043,7 @@ namespace NatoliOrderInterface
                 expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
                 expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
                 expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
-                expander.MouseRightButtonUp += QuoteDataGrid_MouseRightButtonUp;
+                expander.MouseRightButtonUp += QuotesNotConverted_MouseRightButtonUp;
 
                 //expander.Expanded += QuotesNotConvertedExpander_Expanded;
                 return expander;
@@ -6900,7 +7083,7 @@ namespace NatoliOrderInterface
                 expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
                 expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
                 expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
-                expander.MouseRightButtonUp += QuoteDataGrid_MouseRightButtonUp;
+                expander.MouseRightButtonUp += QuotesToConvert_MouseRightButtonUp;
 
                 //expander.Expanded += QuotesNotConvertedExpander_Expanded;
                 return expander;
@@ -9183,7 +9366,6 @@ namespace NatoliOrderInterface
             expander.IsExpanded = false;
             Cursor = Cursors.Arrow;
         }
-
         private void OrderDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -9247,7 +9429,6 @@ namespace NatoliOrderInterface
                 Cursor = Cursors.Arrow;
             }
         }
-
         private void QuoteDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             using var nat01context = new NAT01Context();
@@ -9294,7 +9475,6 @@ namespace NatoliOrderInterface
             nat01context.Dispose();
             Cursor = Cursors.Arrow;
         }
-
         private void QuoteDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -9345,7 +9525,6 @@ namespace NatoliOrderInterface
                 Cursor = Cursors.Arrow;
             }
         }
-
         private void OrderDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || sender.GetType().Name == "Expander")
@@ -9357,7 +9536,6 @@ namespace NatoliOrderInterface
                 //(sender as DataGrid).SelectedItem = null;
             }
         }
-
         private void QuoteDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
@@ -9369,8 +9547,7 @@ namespace NatoliOrderInterface
                 //(sender as DataGrid).SelectedItem = null;
             }
         }
-
-        private void OrderDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void OrdersBeingEnteredExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ContextMenu RightClickMenu = new ContextMenu();
 
@@ -9382,13 +9559,19 @@ namespace NatoliOrderInterface
             Expander expander = sender as Expander;
             toOfficeOrder.Click += SendToOfficeMenuItem_Click;
 
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+            // Set the right click module variable
+            rClickModule = "BeingEntered";
+
             RightClickMenu.Items.Add(toOfficeOrder);
             expander.ContextMenu = RightClickMenu;
             expander.ContextMenu.Tag = "RightClickMenu";
             expander.ContextMenu.Closed += ContextMenu_Closed;
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
-
         private void OrdersEnteredUnscannedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ContextMenu RightClickMenu = new ContextMenu();
@@ -9416,9 +9599,61 @@ namespace NatoliOrderInterface
             var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
             ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+            // Set the right click module variable
+            rClickModule = "EnteredUnscanned";
+
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
+        private void OrdersInEngineeringUnprintedExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu RightClickMenu = new ContextMenu();
 
+            MenuItem toOfficeOrder = new MenuItem
+            {
+                Header = "Send to Office"
+            };
+
+            Expander expander = sender as Expander;
+            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+            // Set the right click module variable
+            rClickModule = "InEngineering";
+
+            RightClickMenu.Items.Add(toOfficeOrder);
+            expander.ContextMenu = RightClickMenu;
+            expander.ContextMenu.Tag = "RightClickMenu";
+            expander.ContextMenu.Closed += ContextMenu_Closed;
+            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        }
+        private void OrdersReadyToPrintExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu RightClickMenu = new ContextMenu();
+
+            MenuItem toOfficeOrder = new MenuItem
+            {
+                Header = "Send to Office"
+            };
+
+            Expander expander = sender as Expander;
+            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+
+            // Check the checkbox for the right-clicked expander
+            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+            // Set the right click module variable
+            rClickModule = "ReadyToPrint";
+
+            RightClickMenu.Items.Add(toOfficeOrder);
+            expander.ContextMenu = RightClickMenu;
+            expander.ContextMenu.Tag = "RightClickMenu";
+            expander.ContextMenu.Closed += ContextMenu_Closed;
+            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        }
         private void OrderPrintedInEngineeringDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ContextMenu RightClickMenu = new ContextMenu();
@@ -9449,9 +9684,11 @@ namespace NatoliOrderInterface
             var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
             ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+            // Set the right click module variable
+            rClickModule = "PrintedInEngineering";
+
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
-
         private void OrdersInTheOfficeExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ContextMenu RightClickMenu = new ContextMenu();
@@ -9474,9 +9711,11 @@ namespace NatoliOrderInterface
             var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
             ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+            // Set the right click module variable
+            rClickModule = "InTheOffice";
+
             _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
         }
-
         private void ProjectDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Expander expander = sender as Expander;
@@ -9507,7 +9746,6 @@ namespace NatoliOrderInterface
             }
             Cursor = Cursors.Arrow;
         }
-
         private void ProjectDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -9538,7 +9776,6 @@ namespace NatoliOrderInterface
                 Cursor = Cursors.Arrow;
             }
         }
-
         private void ProjectDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
@@ -9550,7 +9787,6 @@ namespace NatoliOrderInterface
                 // (sender as DataGrid).SelectedItem = null;
             }
         }
-
         private void AllTabletProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -9608,6 +9844,9 @@ namespace NatoliOrderInterface
                 // Check the checkbox for the right-clicked expander
                 var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                 ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+                // Set the right click module variable
+                rClickModule = "AllTabletProjects";
 
                 _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                 _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
@@ -9687,7 +9926,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("AllTabletProjectsDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void AllToolProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -9739,6 +9977,9 @@ namespace NatoliOrderInterface
                 // Check the checkbox for the right-clicked expander
                 var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                 ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+                // Set the right click module variable
+                rClickModule = "AllToolProjects";
 
                 _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                 _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
@@ -9812,7 +10053,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("AllToolProjectsDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void TabletProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -9851,6 +10091,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "TabletProjectsNotStarted";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -9865,7 +10108,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("TabletProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void TabletProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -9904,6 +10146,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "TabletProjectsStarted";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -9918,7 +10163,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("TabletProjectStartedDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void TabletProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -9956,6 +10200,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "TabletProjectsDrawn";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -9970,7 +10217,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("TabletProjectDrawnDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void TabletProjectSubmittedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10009,6 +10255,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "TabletProjectsSubmitted";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10023,7 +10272,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("TabletProjectSubmittedDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void TabletProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10055,6 +10303,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "TabletProjectsOnHold";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10069,7 +10320,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("TabletProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void ToolProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10108,6 +10358,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "ToolProjectsNotStarted";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10122,7 +10375,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void ToolProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10162,6 +10414,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "ToolProjectsStarted";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10176,7 +10431,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void ToolProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10215,6 +10469,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "ToolProjectsDrawn";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10229,7 +10486,6 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("ToolProjectDrawnDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
         private void ToolProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
@@ -10262,6 +10518,9 @@ namespace NatoliOrderInterface
                     var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
                     ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
 
+                    // Set the right click module variable
+                    rClickModule = "ToolProjectsOnHold";
+
                     _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
                     _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
 
@@ -10276,8 +10535,7 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("ToolProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
-
-        private void QuoteDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void QuotesNotConverted_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -10300,6 +10558,13 @@ namespace NatoliOrderInterface
                     RightClickMenu.Items.Add(completedQuoteCheck);
                     RightClickMenu.Items.Add(submitQuote);
 
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+                    // Set the right click module variable
+                    rClickModule = "QuotesNotConverted";
+
                     expander.ContextMenu = RightClickMenu;
                     expander.ContextMenu.Tag = "RightClickMenu";
                     expander.ContextMenu.Closed += ContextMenu_Closed;
@@ -10313,7 +10578,43 @@ namespace NatoliOrderInterface
                 WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message);
             }
         }
+        private void QuotesToConvert_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (User.Department == "Customer Service" || User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+                {
+                    Expander expander = sender as Expander;
+                    ContextMenu RightClickMenu = new ContextMenu();
 
+                    MenuItem recallQuote = new MenuItem
+                    {
+                        Header = "Recall Quote"
+                    };
+                    recallQuote.Click += RecallQuote_Click;
+
+                    RightClickMenu.Items.Add(recallQuote);
+
+                    // Check the checkbox for the right-clicked expander
+                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+                    // Set the right click module variable
+                    rClickModule = "QuotesToConvert";
+
+                    expander.ContextMenu = RightClickMenu;
+                    expander.ContextMenu.Tag = "RightClickMenu";
+                    expander.ContextMenu.Closed += ContextMenu_Closed;
+                    _quoteNumber = double.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+                    _quoteRevNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                // MessageBox.Show(ex.Message);
+                WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message);
+            }
+        }
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
             foreach (StackPanel stackPanel in MainGrid.Children.OfType<StackPanel>())
@@ -10333,7 +10634,6 @@ namespace NatoliOrderInterface
                 }
             }
         }
-
         private void Checkbox_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
@@ -10349,15 +10649,15 @@ namespace NatoliOrderInterface
             string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
             if (quote)
             {
-                selectedQuotes.Add((col0val, col1val, checkBox));
+                selectedQuotes.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
             }
             else if (project)
             {
-                selectedProjects.Add((col0val, col1val, checkBox));
+                selectedProjects.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
             }
             else if (order)
             {
-                selectedOrders.Add((col0val, checkBox));
+                selectedOrders.Add((col0val, checkBox, headers.Single(h => h.Value == header).Key));
                 if (expander.IsExpanded)
                 {
                     foreach (Grid grid in (expander.Content as StackPanel).Children)
@@ -10367,7 +10667,6 @@ namespace NatoliOrderInterface
                 }
             }
         }
-
         private void Checkbox_Unchecked(object sender, RoutedEventArgs e)
         {
             try
@@ -10385,15 +10684,15 @@ namespace NatoliOrderInterface
                 string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
                 if (quote)
                 {
-                    selectedQuotes.Remove((col0val, col1val, checkBox));
+                    selectedQuotes.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
                 }
                 else if (project)
                 {
-                    selectedProjects.Remove((col0val, col1val, checkBox));
+                    selectedProjects.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
                 }
                 else if (order)
                 {
-                    selectedOrders.Remove((col0val, checkBox));
+                    selectedOrders.Remove((col0val, checkBox, headers.Single(h => h.Value == header).Key));
                     if (expander.IsExpanded)
                     {
                         foreach (Grid grid in (expander.Content as StackPanel).Children)
