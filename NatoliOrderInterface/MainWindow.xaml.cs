@@ -1175,7 +1175,7 @@ namespace NatoliOrderInterface
                     using var _driveworksContext = new DriveWorksContext();
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+                        IMethods.CancelProject(project.Item1, project.Item2, User);
                     }
                     else
                     {
@@ -1570,7 +1570,7 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+                        IMethods.CancelProject(project.Item1, project.Item2, User);
                     }
                     else
                     {
