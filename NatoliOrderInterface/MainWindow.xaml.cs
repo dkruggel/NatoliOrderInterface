@@ -7065,7 +7065,7 @@ namespace NatoliOrderInterface
                 expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
                 expander.MouseRightButtonUp += QuotesNotConverted_MouseRightButtonUp;
 
-                //expander.Expanded += QuotesNotConvertedExpander_Expanded;
+                expander.Expanded += QuotesNotConvertedExpander_Expanded;
                 return expander;
             }
             catch (Exception ex)
@@ -8204,32 +8204,42 @@ namespace NatoliOrderInterface
 
             // Get the quote date/revision date
             using var _nat01Context = new NAT01Context();
-
+            DateTime quoteDate = _nat01Context.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+            _nat01Context.Dispose();
 
             // Get the follow-up date(s)
+            using var _nat02Context = new NAT02Context();
+            List<DateTime?> followUps = _nat02Context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber)
+                                                                               .OrderBy(q => q.TimeSubmitted)
+                                                                               .Select(q => q.TimeSubmitted).ToList();
+            _nat02Context.Dispose();
 
-
-            _nat01context.Dispose();
-
-            StackPanel stagesStackPanel = new StackPanel()
+            StackPanel infoStackPanel = new StackPanel()
             {
                 Orientation = Orientation.Vertical
             };
 
-            //foreach ((string, string, DateTime?) stage in stages)
-            //{
-            //    Grid stagesGrid = new Grid();
-            //    stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Grid infoGrid = new Grid();
+            infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
-            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
-            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
-            //    AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
+            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("The last saved date of this quote is: " + quoteDate.ToShortDateString(), 0, 1, FontWeights.Normal));
+            infoStackPanel.Children.Add(infoGrid);
 
-            //    stagesStackPanel.Children.Add(stagesGrid);
-            //}
+            if (followUps.Any())
+            {
+                foreach (DateTime date in followUps)
+                {
+                    infoGrid = new Grid();
+                    infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-            expander.Content = stagesStackPanel;
+                    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
+                    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Follow-up was completed on: " + date.ToShortDateString(), 0, 1, FontWeights.Normal));
+                    infoStackPanel.Children.Add(infoGrid);
+                }
+            }
+
+            expander.Content = infoStackPanel;
         }
         #endregion
         #endregion
