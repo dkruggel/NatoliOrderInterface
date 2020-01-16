@@ -154,8 +154,9 @@ namespace NatoliOrderInterface
             UpdatedFromChild = MainRefresh;
             try
             {
-                User = new User(Environment.UserName);
+                // User = new User(Environment.UserName);
                 // User = new User("pturner");
+                User = new User("billt");
             }
             catch
             {
