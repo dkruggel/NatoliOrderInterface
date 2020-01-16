@@ -167,11 +167,12 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
             if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
+            
+            this.Show();
             if (User.Maximized == true)
             {
                 Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
             }
-            this.Show();
             originalProps = new List<string>();
             dictList = new List<object>();
             foreach (string s in User.VisiblePanels)
@@ -309,7 +310,10 @@ namespace NatoliOrderInterface
             }
             else if (WindowState != WindowState.Minimized)
             {
-                MainRefresh();
+                if (WindowState != WindowState.Maximized)
+                {
+                    MainRefresh();
+                }
                 mainTimer.Start();
                 quoteTimer.Start();
                 NatoliOrderListTimer.Start();
