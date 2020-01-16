@@ -120,7 +120,7 @@ namespace NatoliOrderInterface
         }
 
         #region View Dictionaries
-        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
+        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
         Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> ordersBeingEnteredDict;
         Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> ordersInTheOfficeDict;
@@ -4113,7 +4113,7 @@ namespace NatoliOrderInterface
                 }
                 List<EoiQuotesNotConvertedView> eoiQuotesNotConvertedView = _eoiQuotesNotConvertedView.OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
 
-                quotesNotConvertedDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string background, string foreground, string fontWeight)>();
+                quotesNotConvertedDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)>();
 
                 foreach (EoiQuotesNotConvertedView quote in eoiQuotesNotConvertedView)
                 {
@@ -4131,13 +4131,29 @@ namespace NatoliOrderInterface
                         weight = FontWeights.Normal;
                     }
 
+                    using var _ = new NAT01Context();
+                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).UserAcctNo;
+                    _.Dispose();
+                    using var __ = new NECContext();
+                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+                    __.Dispose();
+
                     int days = GetNumberOfDays(quote.Csr);
 
+                    bool needs_followup_4 = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
+                                            DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
+                                            GetNumberOfDays(quote.Csr) == 14;
                     bool needs_followup = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
-                                          DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days;
+                                          DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&
+                                          !needs_followup_4;
+
                     if (needs_followup)
                     {
                         back = new SolidColorBrush(Colors.Pink);
+                    }
+                    else if (needs_followup_4)
+                    {
+                        back = new SolidColorBrush(Colors.OrangeRed);
                     }
                     else
                     {
@@ -4145,7 +4161,7 @@ namespace NatoliOrderInterface
                     }
 
                     ExpanderAttributes expanderAttributes = new ExpanderAttributes(back, fore, weight);
-                    quotesNotConvertedDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+                    quotesNotConvertedDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, repId, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
                 }
                 eoiQuotesNotConvertedView.Clear();
                 _nat02context.Dispose();
@@ -5735,7 +5751,7 @@ namespace NatoliOrderInterface
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InTheOffice").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
         }
-        private void QuotesNotConvertedExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string background, string foreground, string fontWeight)> dict)
+        private void QuotesNotConvertedExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> dict)
         {
             int i = User.VisiblePanels.IndexOf("QuotesNotConverted");
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
@@ -7020,7 +7036,7 @@ namespace NatoliOrderInterface
             //expander.Expanded += PrintedInEngineeringExpander_Expanded;
             return expander;
         }
-        private Expander CreateQuotesNotConvertedExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, string background, string foreground, string fontWeight)> kvp)
+        private Expander CreateQuotesNotConvertedExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> kvp)
         {
             try
             {
@@ -7692,16 +7708,30 @@ namespace NatoliOrderInterface
             }
 
             // Filter data based on text entry
-            var _filtered =
-            quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
-                                              p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                              p.Value.customerName.ToLower().Contains(searchString) ||
-                                              p.Value.csr.ToLower().Contains(searchString))
-                                  .OrderByDescending(kvp => kvp.Key.quoteNumber)
-                                  .ToDictionary(x => x.Key, x => x.Value);
+             if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                quotesNotConvertedDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
 
-            // Remove/Add expanders based on filtering
-            QuotesNotConvertedExpanders(_filtered);
+                // Remove/Add expanders based on filtering
+                QuotesNotConvertedExpanders(_filtered);
+            }
+            else
+            {
+                var _filtered =
+                quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Value.customerName.ToLower().Contains(searchString) ||
+                                                  p.Value.csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
+                // Remove/Add expanders based on filtering
+                QuotesNotConvertedExpanders(_filtered);
+            }
         }
         private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
