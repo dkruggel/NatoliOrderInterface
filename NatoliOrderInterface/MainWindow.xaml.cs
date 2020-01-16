@@ -20,6 +20,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 // using WpfAnimatedGif;
 // using XamlAnimatedGif;
 using Colors = System.Windows.Media.Colors;
@@ -34,10 +35,6 @@ namespace NatoliOrderInterface
     public partial class MainWindow : Window, IDisposable , IMethods
     {
         #region Declarations
-        [DllImport("USER32.DLL")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-        public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
         public string connectionString;
         private bool _panelLoading;
         private string _panelMainMessage = "Main Loading Message";
@@ -149,6 +146,14 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
+            var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
+            if (currentlyRunningProcesses.Any())
+            {
+                BringToFront(currentlyRunningProcesses.First());
+                System.Windows.Application.Current.Shutdown();
+            }
+            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
+            splashScreen.Show(true);
             InitializeComponent();
             App.GetConnectionString();
             UpdatedFromChild = MainRefresh;
@@ -167,7 +172,6 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
             if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
-            
             this.Show();
             if (User.Maximized == true)
             {
@@ -196,6 +200,16 @@ namespace NatoliOrderInterface
             oqTimer.Elapsed += OQTimer_Elapsed;
             oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
             oqTimer.Enabled = true;
+        }
+
+        private void BringToFront(System.Diagnostics.Process process)
+        {
+            IntPtr handle = NativeMethods.FindWindow(null, process.MainWindowTitle);
+            if (handle == IntPtr.Zero)
+            {
+                return;
+            }
+            NativeMethods.SetForegroundWindow(handle);
         }
         private void MainRefresh()
         {
