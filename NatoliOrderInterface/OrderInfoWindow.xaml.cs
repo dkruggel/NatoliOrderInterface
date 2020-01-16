@@ -1028,7 +1028,14 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
             nat02context.Dispose();
-            quote.Dispose();
+            try
+            {
+                quote.Dispose();
+            }
+            catch
+            {
+                
+            }
             parent.BoolValue = true;
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
