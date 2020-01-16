@@ -1036,8 +1036,19 @@ namespace NatoliOrderInterface
             {
                 
             }
-            parent.BoolValue = true;
-            IMethods.BringProcessToFront(@"NatoliOrderInterface");
+            try
+            {
+                parent.BoolValue = true;
+            }
+            catch
+            { }
+            try
+            {
+                IMethods.BringProcessToFront(@"NatoliOrderInterface");
+            }
+            catch
+            { }
+            
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
