@@ -287,7 +287,7 @@ namespace NatoliOrderInterface
             qty = orderDetails.QuantityOrdered;
             title = titles[lineItemType];
             tipQTY = orderDetails.TipQty is null ? (short)1 : (short)orderDetails.TipQty;
-            boreCircle = boreCircle == null ? "" : Convert.ToDouble(orderDetails.BoreCircle) == 0 ? "" : String.Format("{0:0.0000}", orderDetails.BoreCircle);
+            boreCircle = orderDetails.BoreCircle == null ? "" : Convert.ToDouble(orderDetails.BoreCircle) == 0 ? "" : String.Format("{0:0.0000}", orderDetails.BoreCircle);
             stockSize = lineItemType == "U" ? machineList.UpperSize.Trim() : lineItemType == "L" ? machineList.LowerSize.Trim() : "";
             hobDescription1 = orderDetails.Desc1.ToString().Trim();
             hobDescription2 = String.Join(" ", orderDetails.Desc3.Trim(), orderDetails.Desc4.Trim()).Trim();
