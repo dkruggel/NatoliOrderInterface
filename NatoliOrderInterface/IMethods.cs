@@ -879,6 +879,7 @@ namespace NatoliOrderInterface
         public static List<string> QuoteErrors(string quoteNo, string quoteRevNo)
         {
             using var _nat01Context = new NAT01Context();
+            using var _nat02Context = new NAT02Context();
             using var _driveworksContext = new DriveWorksContext();
             Quote quote = new Quote(Convert.ToInt32(quoteNo), Convert.ToInt16(quoteRevNo));
             List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
@@ -891,21 +892,6 @@ namespace NatoliOrderInterface
 
             if (quoteLineItems.Length > 0)
             {
-                // Shape Descriptions
-                if (quoteLineItems.Length > 1)
-                {
-                    string shapeDescription = "";
-                    foreach (QuoteLineItem quoteLineItem in quoteLineItems)
-                    {
-                        if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
-                        {
-                            errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
-                            break;
-                        }
-                        shapeDescription = quoteLineItem.Desc2.Trim();
-                    }
-                }
-
                 // Machine Not Set Up For End User
                 if (!_nat01Context.CustomerMachines.Any(m => m.CustomerNo.Trim() == quote.UserAcctNo && m.CustAddressCode.Trim() == quote.UserLocNo && m.MachineNo == quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo))
                 {
@@ -957,14 +943,62 @@ namespace NatoliOrderInterface
                     }
                 }
 
+                // Carbide not Assigned
+                if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("491")) && !_nat02Context.PartAllocation.Any(pa => pa.QuoteNumber == quoteNo && pa.QuoteRevNo == Convert.ToInt32(quoteRevNo)))
+                {
+                    errors.Add("Carbide has not been assigned.");
+                }
 
                 string workingLengthTolerance = null;
                 bool varyingWLTolerances = false;
                 string machineDescription = null;
+                string shapeDescription = "";
+                short? machineNumber = null;
+                float? cupDepth = null;
+                float? land = null;
                 foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                 {
+                    // Shape Descriptions
+                    if (quoteLineItems.Length > 1)
+                    {
+                        if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
+                        {
+                            errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
+                        }
+                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                        {
+                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+                            if (cupDepth != null && hob.CupDepth != cupDepth)
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' Cup Depth does not match another line item's.");
+                            }
+                            cupDepth = hob.CupDepth;
+                            if (land != null && hob.Land != land)
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' Land does not match another line item's.");
+                            }
+                            land = hob.Land;
+                        }
+                        shapeDescription = quoteLineItem.Desc2 == null ? "" : quoteLineItem.Desc2.Trim();
+                    }
+
+                    // Machine #'s and Descriptions
                     if (quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0)
                     {
+                        
+                        if (machineNumber == null)
+                        {
+                            machineNumber = quoteLineItem.MachineNo;
+                        }
+                        else
+                        {
+                            // Machine Numbers are different
+                            if (machineNumber != quoteLineItem.MachineNo)
+                            {
+                                errors.Add("Machine numbers are different at least two items.");
+                            }
+                            machineNumber = quoteLineItem.MachineNo;
+                        }
                         // Machine description is NOT empty
                         if (!string.IsNullOrEmpty(quoteLineItem.MachineDescription))
                         {
@@ -988,6 +1022,7 @@ namespace NatoliOrderInterface
                             errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine description.");
                         }
                     }
+
                     // Upper, Lower, Reject
                     if (quoteLineItem.LineItemType == "U" ||
                         quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
@@ -1131,7 +1166,7 @@ namespace NatoliOrderInterface
                     }
 
                     // Die Segment
-                    if (quoteLineItem.LineItemType == "D")
+                    if (quoteLineItem.LineItemType == "DS")
                     {
                         // Has multi-bore
                         if (quoteLineItem.OptionNumbers.Contains("470"))
@@ -1183,6 +1218,43 @@ namespace NatoliOrderInterface
                     quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
                     quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
                     {
+                        // Uppper or Upper Holder
+                        if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH")
+                        {
+                            // Hob Exists
+                            if(_nat01Context.HobList.Any(h=> h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                            {
+                                HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+                                // Die Exists
+                                if (_nat01Context.DieList.Any(d => d.DieId == hob.DieId))
+                                {
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId == hob.DieId);
+                                    // Will require key on rotary press
+                                    if ((die.ShapeId ?? 99) > 1 || (quoteLineItem.TipQTY ?? 1) > 1)
+                                    {
+                                        // Not Single Station machine type
+                                        if (!(quoteLineItem.MachinePriceCode == "E/F" || quoteLineItem.MachinePriceCode == "R" || quoteLineItem.MachinePriceCode == "R4"))
+                                        {
+                                            // Machine Exists
+                                            if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                                            {
+                                                MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                                                // Not Single Station
+                                                if ((machine.Stations ?? 2) > 1)
+                                                {
+                                                    // Not keyed
+                                                    if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture))
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' Needs a key.");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         // Upper or Upper Assembly
                         if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UA")
                         {
@@ -1196,11 +1268,56 @@ namespace NatoliOrderInterface
                                 }
                             }
                         }
-                        // No Key Angle
+
+                        // Is Keyed & No Key Angle
                         if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture) &&
                             !ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
                         {
                             errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
+                        }
+
+                        // Has Key Angle
+                        if (quoteLineItem.OptionNumbers.Contains("155"))
+                        {
+                            QuoteOptionValueGDegrees quoteOptionValueG = _nat01Context.QuoteOptionValueGDegrees.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "155");
+                            short? angle = quoteOptionValueG.Degrees;
+                            string text = quoteOptionValueG.Text ?? "";
+                            // Customer Machine Exists
+                            if (_nat01Context.CustomerMachines.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(m.CustomerNo) && m.CustAddressCode != null && m.CustomerNo.Trim() == quote.UserAcctNo.Trim() && m.CustAddressCode.Trim() == quote.UserLocNo.Trim()))
+                            {
+                                CustomerMachines customerMachine = _nat01Context.CustomerMachines.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(m.CustomerNo) && m.CustAddressCode != null && m.CustomerNo.Trim() == quote.UserAcctNo.Trim() && m.CustAddressCode.Trim() == quote.UserLocNo.Trim());
+                                // Is Lower Type
+                                if (quoteLineItem.LineItemType.Contains(""))
+                                {
+                                    if (customerMachine.LowerKeyAngle == null)
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Angle in Customer Machines is blank");
+                                    }
+                                    if (customerMachine.LowerKeyAngle != 0 && string.IsNullOrEmpty(customerMachine.LowerKeyDirection))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Direction in Customer Machines is blank");
+                                    }
+                                    if (customerMachine.LowerKeyAngle != angle || (!string.IsNullOrEmpty(customerMachine.LowerKeyDirection) && customerMachine.LowerKeyDirection.Trim() != text))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Angle or Direction does not match Customer Machine.");
+                                    }
+                                }
+                                else
+                                {
+                                    if (customerMachine.KeyAngle == null)
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Angle in Customer Machines is blank");
+                                    }
+                                    if (customerMachine.KeyAngle != 0 && string.IsNullOrEmpty(customerMachine.KeyDirection))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Direction in Customer Machines is blank");
+                                    }
+                                    if (customerMachine.KeyAngle != angle || (!string.IsNullOrEmpty(customerMachine.KeyDirection) && customerMachine.KeyDirection.Trim() != text))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Key Angle or Direction does not match Customer Machine.");
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -1636,19 +1753,7 @@ namespace NatoliOrderInterface
 
             // ------------------------------------------------------------ Rules left to add ------------------------------------------------------------
 
-            //If(IfError(ShortRejectCapGenerationError = 37, 0), "[color red]Key angle on order does not match customer machines list.[/color]", "Key angle on order does not match customer machines list.") & NewLine() &
-
-            //If(IfError(UpperHeadGenerationError = 42, 0), "[color red]Machine Numbers do not match.[/color]", "Machine Numbers do not match.") & NewLine() &
-
-            //If(IfError(LowerHolderGenerationError = 43, 0), "[color red]Upper needs key[/color]", "Upper needs key.") & NewLine() &
-
             //If(IfError(LowerHeadGenerationError = 44, 0), "[color red]Key needs segment interchangeability options[/color]", "Key needs segment interchangeability options") & NewLine() &
-
-            //If(IfError(ShortRejectHolderGenerationError = 45, 0), "[color red]Cup depths differ[/color]", "Cup depths differ") & NewLine() &
-
-            //If(IfError(ShortRejectHeadGenerationError = 46, 0), "[color red]Land values differ.[/color]", "Land values differ.") & NewLine() &
-
-            //If(IfError(GrooveNumberError = 52, 0), "[color red]Carbide is not assigned[/color]", "Carbide is not assigned") & NewLine() &
 
             //If(IfError(AlignmentInchError = 58, 0), "[color red]Key Angles are not consistent.[/color]", "Key Angles are not consistent.") & NewLine() &
 

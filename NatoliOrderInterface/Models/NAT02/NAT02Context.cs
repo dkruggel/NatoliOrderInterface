@@ -49,6 +49,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiQuoteSMICheck> EoiQuoteSMICheck { get; set; }
         public virtual DbSet<EoiOrderEntryInstructions> EoiOrderEntryInstructions { get; set; }
         public virtual DbSet<MultiTipSketchInformation> MultiTipSketchInformation { get; set; }
+        public virtual DbSet<PartAllocation> PartAllocation { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -849,6 +850,11 @@ namespace NatoliOrderInterface.Models
             modelBuilder.Entity<MultiTipSketchInformation>(entity =>
             {
                 entity.HasKey(e => new { e.ID });
+            });
+
+            modelBuilder.Entity<PartAllocation>(entity =>
+            {
+                entity.HasKey(e => new { e.QuoteNumber, e.QuoteRevNo, });
             });
 
             OnModelCreatingPartial(modelBuilder);
