@@ -1114,7 +1114,6 @@ namespace NatoliOrderInterface
             if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
             
             Dispatcher.Invoke(() => { ButtonRefresh("Start"); });
-            parent.BoolValue = true;
         }
         private void SendToOfficeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1254,7 +1253,6 @@ namespace NatoliOrderInterface
                     workOrder.Finished = true;
                     Dispatcher.Invoke(() => { ButtonRefresh("Finish"); });
                 }
-                parent.BoolValue = true;
             }
         }
         private void NotFinishedButton_Click(object sender, RoutedEventArgs e)
@@ -1268,7 +1266,6 @@ namespace NatoliOrderInterface
 
             context.SaveChanges();
             workOrder.Finished = false;
-            parent.BoolValue = true;
             Close();
         }
         private void PrintOrderButton_Click(object sender, RoutedEventArgs e)
@@ -1341,7 +1338,6 @@ namespace NatoliOrderInterface
             }
             nat01Context.Dispose();
             nat02Context.Dispose();
-            parent.BoolValue = true;
             Close();
         }
         private void DoNotProcessOrderButton_Click(object sender, RoutedEventArgs e)
@@ -1362,7 +1358,6 @@ namespace NatoliOrderInterface
             context.SaveChanges();
             context.Dispose();
             doNotProc = !doNotProc;
-            parent.BoolValue = true;
             Close();
         }
         #endregion

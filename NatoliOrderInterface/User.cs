@@ -116,12 +116,21 @@ namespace NatoliOrderInterface
         private string SetUserName()
         {
             using var context = new NATBCContext();
-            var emp = context.MoeEmployees.Where(e => e.MoeLastName == DomainName.Substring(1) && (e.MoeDepartmentCode == "D1153" ||
+            MoeEmployees emp;
+            if (DomainName == "billt")
+            {
+                emp = context.MoeEmployees.Single(e => e.MoeFirstName == "Bill" && e.MoeLastName == "Turner");
+            }
+            else
+            {
+                emp = context.MoeEmployees.Where(e => e.MoeLastName == DomainName.Substring(1) && (e.MoeDepartmentCode == "D1153" ||
                                                                                                    e.MoeDepartmentCode == "D1151" ||
                                                                                                    e.MoeDepartmentCode == "D1149" ||
                                                                                                    e.MoeDepartmentCode == "D1147" ||
                                                                                                    e.MoeDepartmentCode == "D1143" ||
                                                                                                    e.MoeDepartmentCode == "D1133")).FirstOrDefault();
+            }
+            
             context.Dispose();
             return emp.MoeDepartmentCode.Trim();
         }
