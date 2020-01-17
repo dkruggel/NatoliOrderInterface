@@ -47,6 +47,7 @@ namespace NatoliOrderInterface
         public float SignatureBottom { get; set; }
         public string DepartmentCode { get; set; }
         public bool Maximized { get; set; }
+        public short QuoteDays { get; set; }
 
         public User()
         {
@@ -84,6 +85,7 @@ namespace NatoliOrderInterface
             Top = settings.Top;
             Left = settings.Left;
             Maximized = settings.Maximized;
+            QuoteDays = settings.QuoteDays;
             DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
             {
