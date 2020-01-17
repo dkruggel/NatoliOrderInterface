@@ -9,9 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Net.Mail;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -21,8 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
-// using WpfAnimatedGif;
-// using XamlAnimatedGif;
 using Colors = System.Windows.Media.Colors;
 
 namespace NatoliOrderInterface
@@ -161,9 +157,9 @@ namespace NatoliOrderInterface
             UpdatedFromChild = MainRefresh;
             try
             {
-                // User = new User(Environment.UserName);
+                User = new User(Environment.UserName);
                 // User = new User("pturner");
-                User = new User("billt");
+                // User = new User("billt");
             }
             catch
             {
@@ -265,9 +261,6 @@ namespace NatoliOrderInterface
                 QuotesAndOrders();
             }
         }
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-        }
         private void GridWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             using var context = new NAT02Context();
@@ -317,9 +310,6 @@ namespace NatoliOrderInterface
             if (mainTimer.Enabled == false) { mainTimer.Start(); }
             if (quoteTimer.Enabled == false) { quoteTimer.Start(); }
             if (NatoliOrderListTimer.Enabled == false) { NatoliOrderListTimer.Start(); }
-        }
-        private void GridWindow_Deactivated(object sender, EventArgs e)
-        {
         }
         private void GridWindow_StateChanged(object sender, EventArgs e)
         {
