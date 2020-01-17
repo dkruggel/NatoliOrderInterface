@@ -2048,7 +2048,8 @@ namespace NatoliOrderInterface
                     {
                         QuoteNo = double.Parse(quote.Item1),
                         QuoteRevNo = int.Parse(quote.Item2),
-                        TimeSubmitted = DateTime.Now
+                        TimeSubmitted = DateTime.Now,
+                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
                     };
                     _nat02context.Add(q);
                 }
@@ -2059,7 +2060,8 @@ namespace NatoliOrderInterface
                 {
                     QuoteNo = _quoteNumber,
                     QuoteRevNo = _quoteRevNumber,
-                    TimeSubmitted = DateTime.Now
+                    TimeSubmitted = DateTime.Now,
+                    FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
                 };
                 _nat02context.Add(q);
             }
@@ -4151,8 +4153,7 @@ namespace NatoliOrderInterface
 
                     int days = GetNumberOfDays(quote.Csr);
 
-                    bool needs_followup_4 = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
-                                            DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
+                    bool needs_followup_4 = DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
                                             GetNumberOfDays(quote.Csr) == 14;
                     bool needs_followup = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
                                           DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&

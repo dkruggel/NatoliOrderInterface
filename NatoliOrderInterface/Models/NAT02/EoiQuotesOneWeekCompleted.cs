@@ -9,5 +9,6 @@ namespace NatoliOrderInterface.Models
         public double QuoteNo { get; set; }
         public int? QuoteRevNo { get; set; }
         public DateTime? TimeSubmitted { get; set; }
+        public int FollowUpsCompleted { get; set; }
     }
 }
