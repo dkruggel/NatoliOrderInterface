@@ -11,8 +11,8 @@ namespace NatoliOrderInterface.Models
         public string WorkOrderNumber { get; set; }
         public string PartNumber { get; set; }
         public short? Quantity { get; set; }
-        public Date? EnteredDate { get; set; }
-        public Date? ShipDate { get; set; }
+        public DateTime? EnteredDate { get; set; }
+        public DateTime? ShipDate { get; set; }
         public decimal OD { get; set; }
         public decimal? ID { get; set; }
         public decimal OL { get; set; }

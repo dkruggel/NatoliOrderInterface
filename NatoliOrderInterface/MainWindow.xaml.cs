@@ -161,7 +161,7 @@ namespace NatoliOrderInterface
                 // User = new User("pturner");
                 // User = new User("billt");
             }
-            catch
+            catch (Exception ex)
             {
                 User = new User("");
             }
@@ -10133,6 +10133,7 @@ namespace NatoliOrderInterface
                     {
                         startTabletProject.IsEnabled = true;
                     }
+                    completedTabletProject.IsEnabled = false;
                     cancelTabletProject.IsEnabled = true;
                 }
                 else if (User.Department == "Customer Service")
@@ -10261,6 +10262,7 @@ namespace NatoliOrderInterface
                     {
                         startToolProject.IsEnabled = true;
                     }
+                    completedToolProject.IsEnabled = true;
                     cancelToolProject.IsEnabled = true;
                 }
                 else if (User.Department == "Customer Service")

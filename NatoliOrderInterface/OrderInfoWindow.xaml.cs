@@ -1788,62 +1788,69 @@ namespace NatoliOrderInterface
         }
         private void OrderPanel_Drop(object sender, DragEventArgs e)
         {
-            string tempFile;
-            string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
-            bool wrongWO = false;
-            foreach (string file in filePaths)
+            try
             {
-                string woFolderName = file.Remove(file.LastIndexOf('\\'));
-                woFolderName = woFolderName.Remove(0, woFolderName.LastIndexOf('\\') + 1);
-                if (woFolderName != workOrder.OrderNumber.ToString())
+                string tempFile;
+                string[] filePaths = (string[])(e.Data.GetData(DataFormats.FileDrop));
+                bool wrongWO = false;
+                foreach (string file in filePaths)
                 {
-                    wrongWO = true;
-                    break;
-                }
-                tempFile = file.Replace(".pdf", "_TEMP.pdf");
-                PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
-                int page_count = pdfDocument.GetNumberOfPages();
-                Document document = new Document(pdfDocument);
-                for (int i = 1; i <= page_count; i++)
-                {
-                    ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
-                    iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
-                                                                                                .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
-                    document.Add(image);
-                }
-                document.Close();
-                File.Move(tempFile, file, true);
+                    string woFolderName = file.Remove(file.LastIndexOf('\\'));
+                    woFolderName = woFolderName.Remove(0, woFolderName.LastIndexOf('\\') + 1);
+                    if (woFolderName != workOrder.OrderNumber.ToString())
+                    {
+                        wrongWO = true;
+                        break;
+                    }
+                    tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                    int page_count = pdfDocument.GetNumberOfPages();
+                    Document document = new Document(pdfDocument);
+                    for (int i = 1; i <= page_count; i++)
+                    {
+                        ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
+                        iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
+                                                                                                    .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
+                        document.Add(image);
+                    }
+                    document.Close();
+                    File.Move(tempFile, file, true);
 
-                int file_count;
-                string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
-                try
-                {
-                    int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
-                    file_count = lineItemName.EndsWith("_M") ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
-                }
-                catch
-                {
-                    string max = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\")
-                                          .Where(f => f.Contains(workOrder.OrderNumber.ToString()))
-                                          .OrderByDescending(f => f[(f.IndexOf("_") + 1)..(f.IndexOf(".pdf") - 1)])
-                                          .FirstOrDefault();
-                    int lineItemNumber = string.IsNullOrEmpty(max) ? 100 :
-                                                       int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) < 100 ? 100 :
-                                                                                       int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) + 1;
-                    file_count = lineItemNumber;
-                }
-                try
-                {
-                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
-                }
-                catch
-                {
+                    int file_count;
+                    string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                    try
+                    {
+                        int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
+                        file_count = lineItemName.EndsWith("_M") ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
+                    }
+                    catch
+                    {
+                        string max = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\")
+                                              .Where(f => f.Contains(workOrder.OrderNumber.ToString()))
+                                              .OrderByDescending(f => f[(f.IndexOf("_") + 1)..(f.IndexOf(".pdf") - 1)])
+                                              .FirstOrDefault();
+                        int lineItemNumber = string.IsNullOrEmpty(max) ? 100 :
+                                                           int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) < 100 ? 100 :
+                                                                                           int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) + 1;
+                        file_count = lineItemNumber;
+                    }
+                    try
+                    {
+                        File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
+                    }
+                    catch
+                    {
 
+                    }
+                }
+                if (wrongWO)
+                {
+                    MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the pdfs", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
-            if(wrongWO)
+            catch (Exception ex)
             {
-                MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the pdfs", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
             }
         }
         private void PdfSignature(string[] filePaths)
