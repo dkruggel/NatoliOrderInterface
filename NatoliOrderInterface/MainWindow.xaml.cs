@@ -849,6 +849,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("StartTabletProject_CLick", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -925,6 +937,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("FinishTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1013,6 +1037,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1132,6 +1168,17 @@ namespace NatoliOrderInterface
                     }
                 }
 
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 selectedProjects.Clear();
@@ -1190,18 +1237,6 @@ namespace NatoliOrderInterface
                             tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
                             _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
 
-                            // Insert into ProjectsFinished  (Now a Trigger)
-                            //if (!(bool)_tools)
-                            //{
-                            // using var _nat02Context = new NAT02Context();
-                            //    EoiProjectsFinished finished = new EoiProjectsFinished();
-                            //    finished.ProjectNumber = _projectNumber;
-                            //    finished.RevisionNumber = _revNumber;
-                            //    finished.Csr = _csr;
-                            //    _nat02Context.EoiProjectsFinished.Add(finished);
-                            //    _nat02Context.SaveChanges();
-                            //}
-
                             // Drive specification transition name to "Completed"
                             // Auto archive project specification
                             string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
@@ -1244,6 +1279,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CheckTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1318,6 +1365,18 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1403,6 +1462,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("StartToolProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1479,6 +1550,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("FinishToolProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1574,6 +1657,18 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1688,6 +1783,17 @@ namespace NatoliOrderInterface
                     }
                 }
 
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 selectedProjects.Clear();
@@ -1765,6 +1871,18 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1828,6 +1946,17 @@ namespace NatoliOrderInterface
                     order.Item2.IsChecked = false;
 
                     DeleteMachineVariables(workOrder.OrderNumber.ToString());
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
 
                 try
@@ -1918,6 +2047,17 @@ namespace NatoliOrderInterface
                     // Uncheck order expander
                     order.Item2.IsChecked = false;
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
             }
 
             MainRefresh();
@@ -1950,6 +2090,17 @@ namespace NatoliOrderInterface
 
                     // Uncheck order expander
                     order.Item2.IsChecked = false;
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
 
@@ -2053,6 +2204,17 @@ namespace NatoliOrderInterface
                     };
                     _nat02context.Add(q);
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
             }
             else
             {
@@ -2101,6 +2263,17 @@ namespace NatoliOrderInterface
                         Rush = r.RushYorN
                     };
                     nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
             else
@@ -2159,6 +2332,17 @@ namespace NatoliOrderInterface
                         Rush = r.RushYorN
                     };
                     nat02Context.EoiQuotesMarkedForConversion.Remove(q);
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
             else
