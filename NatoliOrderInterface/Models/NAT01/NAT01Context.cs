@@ -74,6 +74,7 @@ namespace NatoliOrderInterface.Models.NAT01
         public virtual DbSet<DieList> DieList { get; set; }
         public virtual DbSet<CupConfig> CupConfig { get; set; }
         public virtual DbSet<CustomerMachines> CustomerMachines { get; set; }
+        public virtual DbSet<Keys> Keys { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -4273,7 +4274,14 @@ namespace NatoliOrderInterface.Models.NAT01
                 {
                     entity.HasKey(e => e.CustomerMachineID);
                 });
+
+                modelBuilder.Entity<Keys>(entity =>
+                {
+                    entity.HasKey(e => e.DrawingNo);
+                });
+
                 OnModelCreatingPartial(modelBuilder);
+
             }
 
         }

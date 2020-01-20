@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
+using System.Diagnostics;
 
 namespace NatoliOrderInterface
 {
@@ -686,10 +687,10 @@ namespace NatoliOrderInterface
             mail.Dispose();
         }
         /// <summary>
-        /// Checks for processName in processes and brings to front.
+        /// Checks for 'processName' in processes and brings to front.
         /// </summary>
         /// <param name="processName"></param>
-        public static void BringProcessToFront(string processName)
+        public static void BringProcessToFrontByName(string processName)
         {
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             try
@@ -717,6 +718,19 @@ namespace NatoliOrderInterface
             // Make it the foreground application
             NativeMethods.SetForegroundWindow(handle);
             process.Dispose();
+        }
+        /// <summary>
+        /// Brings 'process' to front by process ID.
+        /// </summary>
+        /// <param name="process"></param>
+        public static void BringProcessToFront(Process process)
+        {
+            IntPtr handle = NativeMethods.FindWindow(null, process.MainWindowTitle);
+            if (handle == IntPtr.Zero)
+            {
+                return;
+            }
+            NativeMethods.SetForegroundWindow(handle);
         }
         /// <summary>
         /// Returns E-mail Address from Driveworks.SecurityUsers.DisplayName
@@ -883,14 +897,14 @@ namespace NatoliOrderInterface
             using var _driveworksContext = new DriveWorksContext();
             Quote quote = new Quote(Convert.ToInt32(quoteNo), Convert.ToInt16(quoteRevNo));
             List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
-            QuoteLineItem[] quoteLineItems = null;
+            List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
             foreach (QuoteDetails line in quoteDetails)
             {
                 quoteLineItems.Append(new QuoteLineItem(quote, line.LineNumber));
             }
             List<string> errors = new List<string>();
 
-            if (quoteLineItems.Length > 0)
+            if (quoteLineItems.Count > 0)
             {
                 // Machine Not Set Up For End User
                 if (!_nat01Context.CustomerMachines.Any(m => m.CustomerNo.Trim() == quote.UserAcctNo && m.CustAddressCode.Trim() == quote.UserLocNo && m.MachineNo == quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo))
@@ -956,11 +970,13 @@ namespace NatoliOrderInterface
                 short? machineNumber = null;
                 float? cupDepth = null;
                 float? land = null;
+                short? quoteKeyAngle = null;
                 foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                 {
-                    // Shape Descriptions
-                    if (quoteLineItems.Length > 1)
+                    // Comparisons
+                    if (quoteLineItems.Count > 1)
                     {
+                        // Shape Desctiption
                         if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
                         {
                             errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
@@ -968,11 +984,13 @@ namespace NatoliOrderInterface
                         if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                         {
                             HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+                            // Cup Depth
                             if (cupDepth != null && hob.CupDepth != cupDepth)
                             {
                                 errors.Add("'" + quoteLineItem.LineItemType + "' Cup Depth does not match another line item's.");
                             }
                             cupDepth = hob.CupDepth;
+                            // Land
                             if (land != null && hob.Land != land)
                             {
                                 errors.Add("'" + quoteLineItem.LineItemType + "' Land does not match another line item's.");
@@ -980,12 +998,42 @@ namespace NatoliOrderInterface
                             land = hob.Land;
                         }
                         shapeDescription = quoteLineItem.Desc2 == null ? "" : quoteLineItem.Desc2.Trim();
+
+                        // Has shortened lower tip || shallow fill cam || undercut die
+                        if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("222") || qli.OptionNumbers.Contains("226") || qli.OptionNumbers.Contains("460")))
+                        {
+                            // Has Die
+                            if (quoteLineItems.Any(qli => qli.LineItemType == "D" || qli.LineItemType == "DS"))
+                            {
+                                // No undercut
+                                if (!quoteLineItems.Any(qli => (qli.LineItemType == "D" || qli.LineItemType == "DS") && qli.OptionNumbers.Contains("460")))
+                                {
+                                    errors.Add("Die needs undercut option (460).");
+                                }
+                            }
+                            // Has Lower Assembly
+                            if (quoteLineItems.Any(qli => qli.LineItemType == "LA"))
+                            {
+                                if (!quoteLineItems.Any(qli => qli.LineItemType == "LA" && qli.OptionNumbers.Contains("222") && qli.OptionNumbers.Contains("226")))
+                                {
+                                    errors.Add("Lower Assembly needs Shortened Lower Tip (222) and/or Shallow Fill Cam (226).");
+                                }
+
+                            }
+                            else if (quoteLineItems.Any(qli => qli.LineItemType == "L"))
+                            {
+                                if (!quoteLineItems.Any(qli => qli.LineItemType == "L" && qli.OptionNumbers.Contains("222") && qli.OptionNumbers.Contains("226")))
+                                {
+                                    errors.Add("Lower needs Shortened Lower Tip (222) and/or Shallow Fill Cam (226).");
+                                }
+                            }
+                        }
                     }
 
                     // Machine #'s and Descriptions
                     if (quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0)
                     {
-                        
+
                         if (machineNumber == null)
                         {
                             machineNumber = quoteLineItem.MachineNo;
@@ -1029,7 +1077,7 @@ namespace NatoliOrderInterface
                         quoteLineItem.LineItemType == "R")
                     {
                         // Upper
-                        if (quoteLineItem.LineItemType == "U")
+                        if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "R")
                         {
                             // Machine Exists
                             if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
@@ -1052,8 +1100,16 @@ namespace NatoliOrderInterface
                                             // Does not have option 102
                                             if (!quoteLineItem.OptionNumbers.Contains("102"))
                                             {
-                                                errors.Add("'U' may require tip length for oil seals.");
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' may require tip length for oil seals.");
                                             }
+                                        }
+                                    }
+                                    // Machine Does Not require Tip Length for oil seals
+                                    if (!ContainsAny(machine.Description, new List<string> { "FETTE", "KILIAN", "KORSCH", "X-PRESS", "XS-PRESS" }, StringComparison.InvariantCultureIgnoreCase) && !(machine.Description.Contains("GENESIS", StringComparison.InvariantCultureIgnoreCase) && machine.Description.Contains("STOKES", StringComparison.InvariantCultureIgnoreCase)) && !machine.SpecialInfo.Contains("102"))
+                                    {
+                                        if (quoteLineItem.OptionNumbers.Contains("102"))
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' may NOT require tip length for oil seals.");
                                         }
                                     }
                                 }
@@ -1081,6 +1137,7 @@ namespace NatoliOrderInterface
                             }
                         }
                     }
+
                     // Die
                     if (quoteLineItem.LineItemType == "D")
                     {
@@ -1132,6 +1189,40 @@ namespace NatoliOrderInterface
                                         }
                                     }
                                 }
+                                // Is BBS
+                                if (machine.MachineTypePrCode == "BBS")
+                                {
+                                    float dieOD = (die.RefOutsideDiameter ?? 0);
+                                    float dieWidth = (die.WidthMinorAxis ?? 0);
+                                    // Korsch or Kilian
+                                    if (machine.Description.Contains("KORSCH") || machine.Description.Contains("KILIAN"))
+                                    {
+                                        // Too Large for press
+                                        if (dieOD > .4724 || dieWidth > .4331)
+                                        {
+                                            errors.Add("Tablet is too large for KORSCH/KILIAN BBS die.");
+                                        }
+                                    }
+                                    // Regular BBS
+                                    else
+                                    {
+                                        // Too Large for press
+                                        if (dieOD > .5 || dieWidth > .4724)
+                                        {
+                                            errors.Add("Tablet is too large for BBS die.");
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Exotic or Semi-exotic hob for this die number
+                            if (_nat01Context.HobList.Any(h => h.DieId == die.DieId && (h.Class == "EX" || h.Class == "SX")))
+                            {
+                                // Material is NOT A2 steel
+                                if (!quoteLineItem.Material.Contains("A2"))
+                                {
+                                    errors.Add("Dies are required to be A2 steel if the hob is exotic or semi-exotic.");
+                                }
                             }
                         }
                         else
@@ -1140,7 +1231,7 @@ namespace NatoliOrderInterface
                         }
 
                         // Has Inserts
-                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "491", "492", "493", "494", "495", "496" }, StringComparison.CurrentCulture))
+                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "491", "492", "493", "494", "495", "496", "497" }, StringComparison.CurrentCulture))
                         {
                             // Die Groove W/O Relief
                             if (quoteLineItem.OptionNumbers.Contains("437"))
@@ -1161,6 +1252,12 @@ namespace NatoliOrderInterface
                                     }
                                 }
 
+                            }
+
+                            // Material without insert
+                            if (!quoteLineItem.Material.Contains("INSERT", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                errors.Add("Please change material to include an insert.");
                             }
                         }
                     }
@@ -1192,7 +1289,7 @@ namespace NatoliOrderInterface
                                         {
                                             byte boresPerSegment = (byte)(stations / segmentQTY);
                                             // # of Multibores != boresPerSegment
-                                            if((_nat01Context.QuoteOptionValueOInteger.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == "DS" && qov.OptionCode=="470").Integer ?? 1) != boresPerSegment)
+                                            if ((_nat01Context.QuoteOptionValueOInteger.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == "DS" && qov.OptionCode == "470").Integer ?? 1) != boresPerSegment)
                                             {
                                                 errors.Add("'DS' has multi-bore option that does not equal (# of stations) / (# of segments).");
                                             }
@@ -1210,19 +1307,37 @@ namespace NatoliOrderInterface
                         {
                             errors.Add("Please check to see if 'DS' needs multi-bore (470).");
                         }
+                        // Carbide Lined and not A2
+                        if (quoteLineItem.OptionNumbers.Contains("491") && !quoteLineItem.Material.Contains("A2"))
+                        {
+                            errors.Add("Carbide lined segments should be made out of A2 steel.");
+                        }
                     }
 
+                    // Die and Die Segment
+                    if (quoteLineItem.LineItemType == "D" || quoteLineItem.LineItemType == "DS")
+                    {
+                        // W/ Insert
+                        if (quoteLineItem.Material.Contains("INSERT") || quoteLineItem.OptionNumbers.Contains("497"))
+                        {
+                            // No Insert Type
+                            if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "491", "492", "493", "494", "495", "496" }, StringComparison.CurrentCulture))
+                            {
+                                errors.Add("Please specify the insert type for '" + quoteLineItem.LineItemType + "'. (Carbide, Ceramic, etc.)");
+                            }
+                        }
+                    }
 
                     // Punches, Holders, and Assemblies
                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "UA" ||
-                    quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
-                    quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
+                        quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LA" ||
+                        quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RA")
                     {
                         // Uppper or Upper Holder
                         if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH")
                         {
                             // Hob Exists
-                            if(_nat01Context.HobList.Any(h=> h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                            if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                             {
                                 HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
                                 // Die Exists
@@ -1269,12 +1384,16 @@ namespace NatoliOrderInterface
                             }
                         }
 
-                        // Is Keyed & No Key Angle
-                        if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture) &&
-                            !ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
+                        // Reject Punch or Reject Assembly
+                        if (quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RA")
                         {
-                            errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
+                            // No Short or Long Reject Option
+                            if (!quoteLineItem.OptionNumbers.Contains("350") && !quoteLineItem.OptionNumbers.Contains("354"))
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "', line item number " + quoteLineItem.LineItemNumber + " needs short or long reject option.");
+                            }
                         }
+
 
                         // Has Key Angle
                         if (quoteLineItem.OptionNumbers.Contains("155"))
@@ -1282,12 +1401,28 @@ namespace NatoliOrderInterface
                             QuoteOptionValueGDegrees quoteOptionValueG = _nat01Context.QuoteOptionValueGDegrees.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "155");
                             short? angle = quoteOptionValueG.Degrees;
                             string text = quoteOptionValueG.Text ?? "";
+                            if (angle == null)
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' needs a key angle value.");
+                            }
+                            if (quoteKeyAngle == null)
+                            {
+                                quoteKeyAngle = angle;
+                            }
+                            else
+                            {
+                                // Key angles do not match
+                                if (quoteKeyAngle != angle)
+                                {
+                                    errors.Add("Key angles from different lines do not match.");
+                                }
+                            }
                             // Customer Machine Exists
                             if (_nat01Context.CustomerMachines.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(m.CustomerNo) && m.CustAddressCode != null && m.CustomerNo.Trim() == quote.UserAcctNo.Trim() && m.CustAddressCode.Trim() == quote.UserLocNo.Trim()))
                             {
                                 CustomerMachines customerMachine = _nat01Context.CustomerMachines.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(m.CustomerNo) && m.CustAddressCode != null && m.CustomerNo.Trim() == quote.UserAcctNo.Trim() && m.CustAddressCode.Trim() == quote.UserLocNo.Trim());
                                 // Is Lower Type
-                                if (quoteLineItem.LineItemType.Contains(""))
+                                if (quoteLineItem.LineItemType.Contains("L"))
                                 {
                                     if (customerMachine.LowerKeyAngle == null)
                                     {
@@ -1318,13 +1453,101 @@ namespace NatoliOrderInterface
                                     }
                                 }
                             }
+
+                        }
+
+                        // Machine Exists
+                        if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                        {
+                            MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                            // Not Standard
+                            if (!string.IsNullOrEmpty(machine.MachineTypePrCode) && machine.MachineTypePrCode.Trim() != "B" && machine.MachineTypePrCode.Trim() != "BB" && machine.MachineTypePrCode.Trim() != "BBS" && machine.MachineTypePrCode.Trim() != "D" && machine.MachineTypePrCode.Trim() != "D/B" && machine.MachineTypePrCode.Trim() != "B/D" && machine.MachineTypePrCode.Trim() != "FS12" && machine.MachineTypePrCode.Trim() != "DRY")
+                            {
+                                // Standard OL
+                                if (quoteLineItem.OptionNumbers.Contains("333") || quoteLineItem.OptionNumbers.Contains("332"))
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has TSM or EU length option and may not need it.");
+                                }
+                            }
+                            // Is Keyed
+                            if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133", "139", "140", "141", "144" }, StringComparison.CurrentCulture))
+                            {
+                                // No key line item
+                                if(!quoteLineItems.Any(qli=>qli.LineItemType=="K"))
+                                {
+                                    // Special key size
+                                    if (quoteLineItem.OptionNumbers.Contains("151"))
+                                    {
+                                        QuoteOptionValueBDoubleNum keySizeOptionValue = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "151");
+                                        double width = Math.Round(keySizeOptionValue.Number1 ?? 0,4);
+                                        double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4);
+                                        // Key exists in table
+                                        if (_nat01Context.Keys.Any(k=> Math.Round(k.Width,4) == width && Math.Round(k.Length,4) == length))
+                                        {
+                                            try
+                                            {
+                                                Keys key = _nat01Context.Keys.Single(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length);
+                                                // Key is not standard
+                                                if (!string.IsNullOrEmpty(key.DrawingNo) && !App.StandardKeys.Contains(key.DrawingNo.Trim()))
+                                                {
+                                                    errors.Add("Key (" + key.DrawingNo.Trim() + ") on '" + quoteLineItem.LineItemType + "' needs a key line item.");
+                                                }
+                                            }
+                                            catch (InvalidOperationException)
+                                            {
+                                                errors.Add("More than one key exist at that size. Make sure that your key number is correct and a Key Line Item is added if we do not keep it in stock.");
+                                            }
+                                            catch
+                                            {
+                                                
+                                            }
+                                        }
+                                        else
+                                        {
+                                            errors.Add("No keys with key size: " + width + " X " + length + " exist in the Keys table.");
+                                        }
+                                    }
+                                }
+                                // Is segmented machine
+                                if(machine.DieSegments == true && (machine.SegmentQty ?? 0) > 0)
+                                {
+                                    // Does not have 100% interx
+                                    if (!quoteLineItem.OptionNumbers.Contains("160"))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs KEY 100% INTERCHANGEABLE WITHIN SET (160) to be used on segment machine.");
+                                    }
+                                    // Does not have segment key option
+                                    if (!quoteLineItem.OptionNumbers.Contains("159"))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs KEY FOR USE ON SEGMENTED TURRET (159) to be used on segment machine.");
+                                    }
+                                }
+                                // No Key Angle
+                                if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
+                                }
+                                // Woodruff Key
+                                if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133" }, StringComparison.CurrentCulture))
+                                {
+                                    // PMM4 STEEL
+                                    if (quoteLineItem.Material.Contains("PM") && quoteLineItem.Material.Contains("M4"))
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' cannot have woodruff key and be PM M4 STEEL.");
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine that exists in the Machine List.");
                         }
                     }
 
                     // Punches, Holders, and Heads
                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "UHD" ||
-                        quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LHD" ||
-                        quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RHD")
+                    quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LHD" ||
+                    quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RHD")
                     {
                         // No Head Option
                         if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "014", "015", "016", "018", "019", "022", "024", "025" }, StringComparison.CurrentCulture))
@@ -1400,11 +1623,37 @@ namespace NatoliOrderInterface
 
                     }
 
+                    //Punches, Holders, and Caps
+                    if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "UC" ||
+                        quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LC" ||
+                        quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH" || quoteLineItem.LineItemType == "RC")
+                    {
+                        // Machine Exists
+                        if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                        {
+                            MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                            // Stokes machine
+                            if (machine.Description.Contains("STOKES"))
+                            {
+                                // Is Grooved
+                                if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "110", "111", "112", "113", "115", "116" }, StringComparison.CurrentCulture))
+                                {
+                                    errors.Add("Grooves on STOKES machines are not recommended.");
+                                }
+                            }
+                        }
+                    }
+
                     // Punches and Holders
                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" ||
                         quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "LCRP" ||
                         quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH")
                     {
+                        // Hold low barrel tol & not a Fette or Korsch
+                        if (!ContainsAny(quoteLineItem.MachineDescription, new List<string> { "FETTE", "KORSCH" }, StringComparison.InvariantCultureIgnoreCase) && quoteLineItem.OptionNumbers.Contains("123"))
+                        {
+                            errors.Add("Hold low barrel tolerance may not be required for this machine.");
+                        }
                         // Machine Exists
                         if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
                         {
@@ -1462,18 +1711,76 @@ namespace NatoliOrderInterface
                                     }
                                 }
                             }
+                            // Not B or D Machine
+                            else
+                            {
+                                // Micro-Mirror Finish Barrels
+                                if (quoteLineItem.OptionNumbers.Contains("099"))
+                                {
+                                    errors.Add("Cannot micro-mirror finish non B or D tools.");
+                                }
+                            }
                         }
                     }
+
                     // Punches and Tips
                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UT" ||
                         quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LT" ||
                         quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RT")
                     {
-
+                        // Has Special tip relief
+                        if (quoteLineItem.OptionNumbers.Contains("215"))
+                        {
+                            QuoteOptionValueASingleNum quoteOptionValueASingleNum = _nat01Context.QuoteOptionValueASingleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "215");
+                            // Relief is Diameter type callout
+                            if (quoteOptionValueASingleNum.Text.Contains("Diameter", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                // Diameter is extremely small
+                                if ((quoteOptionValueASingleNum.Number1 ?? 0) < .07)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter that seems too small. Perhaps you meant Per Side?");
+                                }
+                            }
+                            else
+                            {
+                                // Per Side is extremely large
+                                if ((quoteOptionValueASingleNum.Number1 ?? 100) > .07)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Per Side that seems too large. Perhaps you meant Diameter?");
+                                }
+                            }
+                        }
                         // Has HobNo in HobList
                         if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                         {
                             HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+
+                            // Flat Face
+                            if (hob.CupDepth == 0 || hob.CupCode == 1)
+                            {
+                                if (hob.CupDepth != 0)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a cup code for a flat face, but the cup depth is not zero.");
+                                }
+                                if (hob.CupCode != 1)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a cup depth of zero, but the cup code is not for a flat face.");
+                                }
+                                if (quoteLineItem.OptionNumbers.Contains("338") || (quoteLineItem.OptionNumbers.Contains("334") && quoteLineItem.OptionNumbers.Contains("336")))
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' is flat face but has options to tolerance the cup or both the overall length and working length.");
+                                }
+                            }
+
+                            // Hob not made
+                            if (!string.IsNullOrEmpty(hob.HobYorNorD) && hob.HobYorNorD.Trim() != "Y")
+                            {
+                                // No Hob Line Item Matching
+                                if (!quoteLineItems.Any(qli => qli.LineItemType == "H" && qli.HobNoShapeID == hob.HobNo && (qli.TipQTY ?? 1) == (hob.TipQty ?? 1) && (qli.BoreCircle ?? 0) == (hob.BoreCircle ?? 0)))
+                                {
+                                    errors.Add("Hob Line Item may be required for Hob#: " + hob.HobNo + ", Tips:" + (hob.TipQty ?? 1) + ", and Bore Circle: " + (hob.BoreCircle ?? 0) + ".");
+                                }
+                            }
 
                             // Has DieId in HobList
                             if (!string.IsNullOrEmpty(hob.DieId))
@@ -1488,85 +1795,149 @@ namespace NatoliOrderInterface
                                 if (_nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == hob.DieId.Trim()))
                                 {
                                     DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+
+                                    // Width is less than .25
+                                    if (!string.IsNullOrEmpty(die.ShapeCode) && die.ShapeCode.Trim() == "1" && die.WidthMinorAxis < .25)
+                                    {
+                                        if (!quoteLineItems.Any(qli => qli.OptionNumbers.Contains("222")))
+                                        {
+                                            errors.Add("Based on the tablet size, the tools may need shortened lower tips and undercut dies.");
+                                        }
+                                    }
+
                                     // Cup Depth Incorrect
                                     if (hob.CupDepth > ((die.WidthMinorAxis - (hob.Land * 2)) / 2))
                                     {
                                         errors.Add("'" + quoteLineItem.LineItemType + "' - " + hob.HobNo + " has incorrect cup depth in the database (Magic).");
                                     }
 
-                                    // Has Die
+                                    // Has Hob
+                                    if (quoteLineItems.Any(qli => qli.LineItemType == "H"))
+                                    {
+                                        // Too large to hob
+                                        if ((die.WidthMinorAxis ?? 0) > 1.125 || (die.LengthMajorAxis ?? 0) > 1.125 || (die.RefOutsideDiameter ?? 0) > 1.125)
+                                        {
+                                            errors.Add("Tablet size is too large to hob.");
+                                        }
+                                        // Machine Exists
+                                        if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
+                                        {
+                                            MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                                            // Not ZZZ
+                                            if (machine.MachineTypePrCode != "ZZZ")
+                                            {
+                                                if (machine.UpperSize.Contains("x"))
+                                                {
+                                                    string upperStockDiameter = machine.UpperSize.Remove('x');
+                                                    if (upperStockDiameter.Contains("-"))
+                                                    {
+                                                        string[] uSDSplit = upperStockDiameter.Split('-');
+                                                        double upperStockWholeNumber = Convert.ToDouble(uSDSplit[0]);
+                                                        if (uSDSplit[1].ToString().Contains("/"))
+                                                        {
+                                                            string[] fraction = uSDSplit[1].ToString().Split('/');
+                                                            double upperStockFraction = Convert.ToDouble(fraction[0]) / Convert.ToDouble(fraction[1]);
+                                                            if (upperStockWholeNumber + upperStockFraction > 2.125)
+                                                            {
+                                                                errors.Add("Tool is too large to hob.");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (machine.LowerSize.Contains("x"))
+                                                {
+                                                    string lowerStockDiameter = machine.LowerSize.Remove('x');
+                                                    if (lowerStockDiameter.Contains("-"))
+                                                    {
+                                                        string[] lSDSplit = lowerStockDiameter.Split('-');
+                                                        double lowerStockWholeNumber = Convert.ToDouble(lSDSplit[0]);
+                                                        if (lSDSplit[1].ToString().Contains("/"))
+                                                        {
+                                                            string[] fraction = lSDSplit[1].ToString().Split('/');
+                                                            double lowerStockFraction = Convert.ToDouble(fraction[0]) / Convert.ToDouble(fraction[1]);
+                                                            if (lowerStockWholeNumber + lowerStockFraction > 2.125)
+                                                            {
+                                                                errors.Add("Tool is too large to hob.");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    double? punchWidth = null;
+                                    double? punchLength = null;
+                                    // Special tip size
+                                    if (quoteLineItem.OptionNumbers.Contains("200"))
+                                    {
+                                        punchWidth = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number1;
+                                        punchLength = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number2;
+                                    }
+                                    else
+                                    {
+                                        // IsRound
+                                        if (die.ShapeCode == "1" || die.ShapeCode == "18" || die.ShapeCode == "93")
+                                        {
+                                            // Is Lower
+                                            if (quoteLineItem.LineItemType.Contains("L"))
+                                            {
+                                                punchWidth = (double)die.WidthMinorAxis - (double)_driveworksContext.TipClearancesRoundLower.Where(c => c.NominalDiameter < (decimal)die.WidthMinorAxis).Max(c => c.Clearance);
+                                            }
+                                            else
+                                            {
+                                                punchWidth = (double)die.WidthMinorAxis - (double)_driveworksContext.TipClearancesRoundUpper.Where(c => c.NominalDiameter < (decimal)die.WidthMinorAxis).Max(c => c.Clearance);
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            if (quoteLineItem.LineItemType.Contains("L"))
+                                            {
+                                                punchWidth = die.WidthMinorAxis - .0010;
+                                                punchLength = die.LengthMajorAxis - .0010;
+                                            }
+                                            else
+                                            {
+                                                punchWidth = die.WidthMinorAxis - .0015;
+                                                punchLength = die.LengthMajorAxis - .0015;
+                                            }
+                                        }
+                                        if (_nat01Context.MachineList.Any(m => m.MachineNo == quoteLineItem.MachineNo))
+                                        {
+                                            MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItem.MachineNo);
+                                            // Is B Machine
+                                            if ((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
+                                                               ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4"))
+                                                                )
+                                            {
+                                                if (die.LengthMajorAxis == .75 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
+                                                {
+                                                    punchWidth -= .0005;
+                                                    punchLength -= .0005;
+                                                }
+                                            }
+                                            // Is D Machine
+                                            if (machine.MachineTypePrCode.Trim() == "D" ||
+                                                ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1-1/4 x 5-3/4") ||
+                                                machine.MachineNo == 1015)
+                                            {
+                                                if (die.LengthMajorAxis == 1.0 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
+                                                {
+                                                    punchWidth -= .0005;
+                                                    punchLength -= .0005;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    double? dieWidth = null;
+                                    double? dieLength = null;
+                                    // Has Die/Die Segment Line Item
                                     if (quoteLineItems.Any(qli => qli.LineItemType == "D" || qli.LineItemType == "DS"))
                                     {
                                         QuoteLineItem dieQuoteLineItem = quoteLineItems.First(qli => qli.LineItemType == "D" || qli.LineItemType == "DS");
 
-                                        double? punchWidth = null;
-                                        double? punchLength = null;
-                                        // Special tip size
-                                        if (quoteLineItem.OptionNumbers.Contains("200"))
-                                        {
-                                            punchWidth = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number1;
-                                            punchLength = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number2;
-                                        }
-                                        else
-                                        {
-                                            // IsRound
-                                            if (die.ShapeCode == "1" || die.ShapeCode == "18" || die.ShapeCode == "93")
-                                            {
-                                                // Is Lower
-                                                if (quoteLineItem.LineItemType.Contains("L"))
-                                                {
-                                                    punchWidth = (double)die.WidthMinorAxis - (double)_driveworksContext.TipClearancesRoundLower.Where(c => c.NominalDiameter < (decimal)die.WidthMinorAxis).Max(c => c.Clearance);
-                                                }
-                                                else
-                                                {
-                                                    punchWidth = (double)die.WidthMinorAxis - (double)_driveworksContext.TipClearancesRoundUpper.Where(c => c.NominalDiameter < (decimal)die.WidthMinorAxis).Max(c => c.Clearance);
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                if (quoteLineItem.LineItemType.Contains("L"))
-                                                {
-                                                    punchWidth = die.WidthMinorAxis - .0010;
-                                                    punchLength = die.LengthMajorAxis - .0010;
-                                                }
-                                                else
-                                                {
-                                                    punchWidth = die.WidthMinorAxis - .0015;
-                                                    punchLength = die.LengthMajorAxis - .0015;
-                                                }
-                                            }
-                                            if (_nat01Context.MachineList.Any(m => m.MachineNo == quoteLineItem.MachineNo))
-                                            {
-                                                MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItem.MachineNo);
-                                                // Is B Machine
-                                                if ((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                                                   ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4"))
-                                                                    )
-                                                {
-                                                    if (die.LengthMajorAxis == .75 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
-                                                    {
-                                                        punchWidth -= .0005;
-                                                        punchLength -= .0005;
-                                                    }
-                                                }
-                                                // Is D Machine
-                                                if (machine.MachineTypePrCode.Trim() == "D" ||
-                                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1-1/4 x 5-3/4") ||
-                                                    machine.MachineNo == 1015)
-                                                {
-                                                    if (die.LengthMajorAxis == 1.0 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
-                                                    {
-                                                        punchWidth -= .0005;
-                                                        punchLength -= .0005;
-                                                    }
-                                                }
-                                            }
-
-                                        }
-
-                                        double? dieWidth = null;
-                                        double? dieLength = null;
                                         // Special bore size
                                         if (dieQuoteLineItem.OptionNumbers.Contains("425"))
                                         {
@@ -1614,7 +1985,38 @@ namespace NatoliOrderInterface
                                             errors.Add("Tip sizes seem too small compared to the die bore.");
                                         }
                                     }
+                                    dieWidth = dieWidth ?? die.WidthMinorAxis;
+                                    dieLength = dieLength ?? die.LengthMajorAxis;
+                                    // Less than .001" clearance
+                                    decimal clearance = Math.Round((decimal)dieWidth, 4) - Math.Round((decimal)punchWidth, 4);
+                                    if (clearance < (decimal).001)
+                                    {
+                                        // No hold low tip size toleracne
+                                        if (!quoteLineItem.OptionNumbers.Contains("207"))
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have HOLD LOW TIP SIZE TOLERANCE (207) because the clearance is " + clearance + "\"");
+                                        }
+                                        // No tip concentricity or 100% interx
+                                        if (!quoteLineItem.OptionNumbers.Contains("202") && !quoteLineItem.OptionNumbers.Contains("160"))
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                        }
+                                        // No tip concentricity, has 100% interx, but clearance is less than .0005"
+                                        if (!quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.OptionNumbers.Contains("160") && clearance < (decimal).0005)
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                        }
+                                        // Tip concentricity is not tight enough
+                                        if (quoteLineItem.OptionNumbers.Contains("202") && _nat01Context.QuoteOptionValueASingleNum.Any(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                        }
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' hob (" + hob.HobNo + ") is assigned a die number that does not exist in the Die List.");
                             }
 
                             // Lower Punch
@@ -1746,75 +2148,12 @@ namespace NatoliOrderInterface
                             errors.Add("'" + quoteLineItems.First(qli => (qli.LineItemType == "U" || qli.LineItemType == "UH") && !qli.OptionNumbers.Contains("160")).LineItemType + "' needs (422) SPECIAL BORE CONCENTRICITY for 100% interchangeability");
                         }
                     }
-
                 }
-
             }
-
-            // ------------------------------------------------------------ Rules left to add ------------------------------------------------------------
-
-            //If(IfError(LowerHeadGenerationError = 44, 0), "[color red]Key needs segment interchangeability options[/color]", "Key needs segment interchangeability options") & NewLine() &
-
-            //If(IfError(AlignmentInchError = 58, 0), "[color red]Key Angles are not consistent.[/color]", "Key Angles are not consistent.") & NewLine() &
-
-            //If(IfError(AlignmentMetricError = 59, 0), "[color red]Can only micro-mirror finish the barrel of B and D tooling.[/color]", "Can only micro-mirror finish the barrel of B and D tooling.") & NewLine() &
-
-            //If(IfError(AlignmentInch2Error = 60, 0), "[color red]Overall Length could be incorrect.[/color]", "Overall Length could be incorrect.") & NewLine() &
-
-            //If(IfError(AlignmentMetric2Error = 61, 0), "[color red]Reject needs correct overall length option.[/color]", "Reject needs correct overall length option.") & NewLine() &
-
-            //If(IfError(DieInchError = 62, 0), "[color red]Need appropriate undercut die options.[/color]", "Need appropriate undercut die options.") & NewLine() &
-
-            //If(IfError(RejectInchError = 63, 0), "[color red]No woodruff keys in PM steel.[/color]", "No woodruff keys in PM steel.") & NewLine() &
-
-            //If(IfError(LowerInch2Error = 64, 0), "[color red]Tip relief description is incorrect.[/color]", "Tip relief description is incorrect.") & NewLine() &
-
-            //If(IfError(DieMaterialError = 65, 0), "[color red]Please specify die insert material.[/color]", "Please specify die insert material.") & NewLine() &
-
-            //If(IfError(UpperPunchMaterialError = 66, 0), "[color red]Check tolerance, cup is flat face.[/color]", "Check tolerance, cup is flat face.") & NewLine() &
-
-            //If(IfError(LowerInchError = 67, 0), "[color red]Hold low barrel tolerance is not required for this machine.[/color]", "Hold low barrel tolerance is not required for this machine.") & NewLine() &
-
-            //If(IfError(LowerMetric2Error = 68, 0), "[color red]Tip length for oil seals may not be required for this machine.[/color]", "Tip length for oil seals may not be required for this machine.") & NewLine() &
-
-            //If(IfError(DieMetricError = 69, 0), "[color red]Check to see if A2 Steel (Die) is required for Exotic/Semi-Exotic Shape.[/color]", "Check to see if A2 Steel (Die) is required for Exotic/Semi-Exotic Shape.") & NewLine() &
-
-            //If(IfError(DieInch2Error = 70, 0), "[color red]Carbide lined segments should be A2 Steel.[/color]", "Carbide lined segments should be A2 Steel.") & NewLine() &
-
-            //If(IfError(DieMetric2Error = 71, 0), "[color red]Exceeded max size for BBS Die.[/color]", "Exceeded max size for BBS Die.") & NewLine() &
-
-            //If((DWVariableErrorMessageUpper & DWVariableErrorMessageLower & DWVariableErrorMessageLongReject & DWVariableErrorMessageShortReject) <> "", "[color red]Key angle not in Customer machine list. Please verify and enter key angle in Magic.[/color]", "Key angle not in Customer machine list. Please verify and enter key angle in Magic.") & NewLine() &
-
-            //If(ErrorLabel1Error, "[color red]Think about whether strengthened tips/undercut dies are necessary.[/color]", "Think about whether strengthened tips/undercut dies are necessary.") & NewLine() &
-
-            //If(DWVariableNewHobError, "[color red]New hob line item MAY be required and missing for one of the hobs on this quote/order.[/color]", "New hob line item MAY be required and missing for one of the hobs on this quote/order.") & NewLine() &
-
-            //If(IfError(UpperCapMaterialError = 72, 0), "[color red]Grooves on Stokes machines not recommended.[/color]", "Grooves on Stokes machines not recommended.") & NewLine() &
-
-            //If(IfError(FolderLocationError = 73, 0), "[color red]Order/quote does not contain any detail type ID's that can be run through this specification.[/color]", "Order/quote does not contain any detail type ID's that can be run through this specification.") & NewLine() &
-
-            //If(IfError(LongRejectCapMaterialError = 74, 0), "[color red]Please choose the other H13 from the steel list.[/color]", "Please choose the other H13 from the steel list.") & NewLine() &
-
-            //If(IfError(UpperTipMaterialError = 75, 0), "[color red]Special Upper Key requires line item.[/color]", "Special Upper Key requires line item.") & NewLine() &
-
-            //If(IfError(LowerTipMaterialError = 76, 0), "[color red]Special Lower Key requires line item.[/color]", "Special Lower Key requires line item.") & NewLine() &
-
-            //If(IfError(ShortRejectTipMaterialError = 77, 0), "[color red]Special ShortReject Key requires line item.[/color]", "Special ShortReject Key requires line item.") & NewLine() &
-
-            //If(IfError(LongRejectTipMaterialError = 78, 0), "[color red]Special LongReject Key requires line item.[/color]", "Special LongReject Key requires line item.") & NewLine() &
-
-            //If(IfError(Label1Error = 79, 0), "[color red]Too large to hob.[/color]", "Too large to hob.") & NewLine() &
-
-            //If(IfError(UpperNotFlushWLError = 80, 0), "[color red]Upper requires Tip Concentricity or Hold Low Tip Size Tolerance.[/color]", "Upper requires Tip Concentricity or Hold Low Tip Size Tolerance.") & NewLine() &
-
-            //If(IfError(LowerNotFlushWLError = 81, 0), "[color red]Lower requires Tip Concentricity or Hold Low Tip Size Tolerance.[/color]", "Lower requires Tip Concentricity or Hold Low Tip Size Tolerance.") & NewLine() &
-
-            //If(IfError(ShortRejectNotFlushWLError = 82, 0), "[color red]ShortReject requires Tip Concentricity or Hold Low Tip Size Tolerance.[/color]", "ShortReject requires Tip Concentricity or Hold Low Tip Size Tolerance.") & NewLine() &
-
-            //If(IfError(LongRejectNotFlushWLError = 83, 0), "[color red]LongReject requires Tip Concentricity or Hold Low Tip Size Tolerance.[/color]", "LongReject requires Tip Concentricity or Hold Low Tip Size Tolerance.")
 
             quote.Dispose();
             _nat01Context.Dispose();
+            _nat02Context.Dispose();
             _driveworksContext.Dispose();
             return errors;
         }

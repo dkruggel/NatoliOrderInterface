@@ -149,7 +149,7 @@ namespace NatoliOrderInterface
             {
                 var process =currentlyRunningProcesses.First();
                 var id = process.Id;
-                BringToFront(currentlyRunningProcesses.First());
+                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
                 Application.Current.Shutdown();
             }
             InitializeComponent();
@@ -205,15 +205,6 @@ namespace NatoliOrderInterface
             oqTimer.Enabled = true;
         }
 
-        private void BringToFront(Process process)
-        {
-            IntPtr handle = NativeMethods.FindWindow(null, process.MainWindowTitle);
-            if (handle == IntPtr.Zero)
-            {
-                return;
-            }
-            NativeMethods.SetForegroundWindow(handle);
-        }
         private void MainRefresh()
         {
             BindData("Main");

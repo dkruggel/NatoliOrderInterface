@@ -855,6 +855,8 @@ namespace NatoliOrderInterface.Models
             modelBuilder.Entity<PartAllocation>(entity =>
             {
                 entity.HasKey(e => new { e.QuoteNumber, e.QuoteRevNo, });
+                entity.Property(e => e.EnteredDate).HasColumnType("date");
+                entity.Property(e => e.ShipDate).HasColumnType("date");
             });
 
             OnModelCreatingPartial(modelBuilder);
