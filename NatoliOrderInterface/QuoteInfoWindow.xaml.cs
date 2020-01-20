@@ -455,6 +455,9 @@ namespace NatoliOrderInterface
         }
 
         #region Events
+        private void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
+        {
+        }
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             ChangeLineItemScrollerHeight();
