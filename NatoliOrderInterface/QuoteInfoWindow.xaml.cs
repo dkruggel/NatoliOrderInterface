@@ -140,6 +140,8 @@ namespace NatoliOrderInterface
                 }
             }
             Show();
+            //List<string> errors = IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString());
+            //int count = errors.Count;
         }
         
 
