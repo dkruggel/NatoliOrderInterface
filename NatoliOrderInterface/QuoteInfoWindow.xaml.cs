@@ -2818,16 +2818,16 @@ namespace NatoliOrderInterface
                 string folderName = @"\\engserver\workstations\tools\Customers\" + quote.CustomerNo + " - " + quote.BillToName.ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
                 else
                 {
                     folderName = @"\\engserver\workstations\tools\Customers\" + quote.CustomerNo + " - " + quote.BillToName.ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        IMethods.BringProcessToFront("explorer");
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                        IMethods.BringProcessToFront(process);
                     }
                     else
                     {
@@ -2851,16 +2851,16 @@ namespace NatoliOrderInterface
                 string folderName = @"\\engserver\workstations\tools\Customers\" + quote.ShipToAccountNo + " - " + quote.ShiptoName.ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                    IMethods.BringProcessToFront(process); 
                 }
                 else
                 {
                     folderName = @"\\engserver\workstations\tools\Customers\" + quote.ShipToAccountNo + " - " + quote.ShiptoName.ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        IMethods.BringProcessToFront("explorer");
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                        IMethods.BringProcessToFront(process);
                     }
                     else
                     {
@@ -2884,16 +2884,16 @@ namespace NatoliOrderInterface
                 string folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
                 else
                 {
                     folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        IMethods.BringProcessToFront("explorer");
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                        IMethods.BringProcessToFront(process);
                     }
                     else
                     {

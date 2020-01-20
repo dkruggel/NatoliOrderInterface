@@ -1044,7 +1044,7 @@ namespace NatoliOrderInterface
             { }
             try
             {
-                IMethods.BringProcessToFront(@"NatoliOrderInterface");
+                IMethods.BringProcessToFrontByName(@"NatoliOrderInterface");
             }
             catch
             { }
@@ -1372,8 +1372,8 @@ namespace NatoliOrderInterface
                 {
                     Directory.CreateDirectory(path);
                 }
-                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
-                IMethods.BringProcessToFront("explorer");
+                Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
+                IMethods.BringProcessToFront(process);
             }
             catch (Exception ex)
             {
@@ -1390,16 +1390,16 @@ namespace NatoliOrderInterface
                 string folderName = @"\\engserver\workstations\tools\Customers\" + workOrder.UserNumber + " - " + workOrder.EndUserName.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
                 else
                 {
                     folderName = @"\\engserver\workstations\tools\Customers\" + workOrder.UserNumber + " - " + workOrder.EndUserName.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
-                        IMethods.BringProcessToFront("explorer");
+                        Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
+                        IMethods.BringProcessToFront(process);
                     }
                     else
                     {
@@ -1473,8 +1473,8 @@ namespace NatoliOrderInterface
                 }
                 if (Directory.Exists(path))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + path + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
             }
             catch (Exception ex)
@@ -1490,13 +1490,13 @@ namespace NatoliOrderInterface
                 string orderPath = @"L:\WorkOrders\" + workOrder.OrderNumber + @"\";
                 if (Directory.Exists(projectPath))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + projectPath + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + projectPath + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
                 else if (Directory.Exists(orderPath))
                 {
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + orderPath + @"""");
-                    IMethods.BringProcessToFront("explorer");
+                    Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + orderPath + @"""");
+                    IMethods.BringProcessToFront(process);
                 }
             }
             catch (Exception ex)
