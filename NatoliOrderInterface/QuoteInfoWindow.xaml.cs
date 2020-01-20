@@ -63,6 +63,7 @@ namespace NatoliOrderInterface
             quoteNumber = quote.QuoteNumber;
             this.quote = quote;
             this.parent = parent;
+            
             if (quote.OrderNo != 0)
             {
                 OrderFolderButton1.IsEnabled = true;
@@ -142,8 +143,10 @@ namespace NatoliOrderInterface
                 }
             }
             Show();
+            //var errors = IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString());
+            //int COUNT = errors.Count;
         }
-        
+
 
         private string GetUserName()
         {

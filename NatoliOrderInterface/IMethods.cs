@@ -900,24 +900,28 @@ namespace NatoliOrderInterface
             List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
             foreach (QuoteDetails line in quoteDetails)
             {
-                quoteLineItems.Append(new QuoteLineItem(quote, line.LineNumber));
+                quoteLineItems.Add(new QuoteLineItem(quote, line.LineNumber));
             }
             List<string> errors = new List<string>();
 
             if (quoteLineItems.Count > 0)
             {
-                // Machine Not Set Up For End User
-                if (!_nat01Context.CustomerMachines.Any(m => m.CustomerNo.Trim() == quote.UserAcctNo && m.CustAddressCode.Trim() == quote.UserLocNo && m.MachineNo == quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo))
+                // Has a machine on the order
+                if (quoteLineItems.Any(ql => ql.MachineNo != null && ql.MachineNo > 0))
                 {
-                    errors.Add("Machine " + quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo + " not setup for " + quote.UserAcctNo + " - " + quote.UserLocNo + ".");
-                }
-
-                // Tablet is Too Large for press
-                if (quoteLineItems.Any(qli=>qli.MachineNo!= null && qli.MachineNo>0))
-                {
-                    if (_nat01Context.MachineList.Any(m => m.MachineNo == quoteLineItems.First(qli => qli.MachineNo != null && qli.MachineNo > 0).MachineNo))
+                    short _machineNo = quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo ?? -1;
+                    // Machine Not Set Up For End User
+                    if (!_nat01Context.CustomerMachines.Any(m => !string.IsNullOrEmpty(m.CustomerNo) && !string.IsNullOrEmpty(m.CustAddressCode) &&
+                    m.CustomerNo.Trim() == quote.UserAcctNo &&
+                    m.CustAddressCode.Trim() == quote.UserLocNo &&
+                    (m.MachineNo ?? -2) == _machineNo))
                     {
-                        MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItems.First(qli => qli.MachineNo != null && qli.MachineNo > 0).MachineNo);
+                        errors.Add("Machine " + quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo + " not setup for " + quote.UserAcctNo + " - " + quote.UserLocNo + ".");
+                    }
+                    // Tablet is Too Large for press
+                    if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                    {
+                        MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo);
                         // Is B Machine
                         if ((machine.UpperSize ?? machine.LowerSize) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
                                            ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize ?? machine.LowerSize) == @"1 x 5-3/4"))
@@ -925,7 +929,7 @@ namespace NatoliOrderInterface
                         {
                             // Has A Hob W/ a Die ID of width or length > .75
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75))))
+                             (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75)))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -943,7 +947,7 @@ namespace NatoliOrderInterface
                         {
                             // Has A Hob W/ a Die ID of width or length > 1.0
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0))))
+                             (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -971,33 +975,67 @@ namespace NatoliOrderInterface
                 float? cupDepth = null;
                 float? land = null;
                 short? quoteKeyAngle = null;
+                string dieNumber = null;
                 foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                 {
                     // Comparisons
                     if (quoteLineItems.Count > 1)
                     {
                         // Shape Desctiption
-                        if (!string.IsNullOrEmpty(shapeDescription) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
+                        if(!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)) || _nat01Context.DieList.Any(d => d.DieId == quoteLineItem.HobNoShapeID)))
                         {
-                            errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
-                        }
-                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
-                            // Cup Depth
-                            if (cupDepth != null && hob.CupDepth != cupDepth)
+                            if (!string.IsNullOrEmpty(shapeDescription) && (string.IsNullOrEmpty(quoteLineItem.Desc2) || string.IsNullOrWhiteSpace(quoteLineItem.Desc2) || quoteLineItem.Desc2.Trim() != shapeDescription.Trim()))
                             {
-                                errors.Add("'" + quoteLineItem.LineItemType + "' Cup Depth does not match another line item's.");
+                                errors.Add("Shape Descriptions '" + shapeDescription + "' and '" + (string.IsNullOrEmpty(quoteLineItem.Desc2) ? "NULL" : quoteLineItem.Desc2.Trim()) + "' do not match.");
                             }
-                            cupDepth = hob.CupDepth;
-                            // Land
-                            if (land != null && hob.Land != land)
+                            shapeDescription = quoteLineItem.Desc2 == null ? "" : quoteLineItem.Desc2.Trim();
+                            // Hob
+                            if (quoteLineItem.LineItemType != "D" && quoteLineItem.LineItemType != "DS" && !string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                             {
-                                errors.Add("'" + quoteLineItem.LineItemType + "' Land does not match another line item's.");
+                                HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+                                // Cup Depth
+                                if (cupDepth != null && hob.CupDepth != cupDepth)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' Cup Depth does not match another line item's.");
+                                }
+                                cupDepth = hob.CupDepth;
+                                // Land
+                                if (land != null && hob.Land != land)
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' Land does not match another line item's.");
+                                }
+                                land = hob.Land;
+                                if (dieNumber != null)
+                                {
+                                    // Dies do not match
+                                    if (dieNumber != hob.DieId)
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' Die Number does not match another line item's.");
+                                    }
+                                }
+
+                                dieNumber = hob.DieId ?? "None";
                             }
-                            land = hob.Land;
+                            // Die
+                            else
+                            {
+                                if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId == quoteLineItem.HobNoShapeID))
+                                {
+                                    DieList die = _nat01Context.DieList.First(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId == quoteLineItem.HobNoShapeID);
+                                    if (dieNumber != null)
+                                    {
+                                        // Dies do not match
+                                        if (dieNumber != die.DieId)
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' Die Number does not match another line item's.");
+                                        }
+                                    }
+                                    dieNumber = die.DieId;
+                                }
+                            }
+
                         }
-                        shapeDescription = quoteLineItem.Desc2 == null ? "" : quoteLineItem.Desc2.Trim();
+
 
                         // Has shortened lower tip || shallow fill cam || undercut die
                         if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("222") || qli.OptionNumbers.Contains("226") || qli.OptionNumbers.Contains("460")))
@@ -1160,9 +1198,9 @@ namespace NatoliOrderInterface
                         }
 
                         // Die Number Exists
-                        if (_nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == quoteLineItem.HobNoShapeID))
+                        if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && !string.IsNullOrWhiteSpace(d.DieId) && d.DieId == quoteLineItem.HobNoShapeID))
                         {
-                            DieList die = _nat01Context.DieList.First(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == quoteLineItem.HobNoShapeID);
+                            DieList die = _nat01Context.DieList.First(d => !string.IsNullOrEmpty(d.DieId) && !string.IsNullOrWhiteSpace(d.DieId) && d.DieId == quoteLineItem.HobNoShapeID);
                             // Machine Number Exists
                             if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
                             {
@@ -1312,6 +1350,15 @@ namespace NatoliOrderInterface
                         {
                             errors.Add("Carbide lined segments should be made out of A2 steel.");
                         }
+                        // Die Number Exists
+                        if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && !string.IsNullOrWhiteSpace(d.DieId) && d.DieId == quoteLineItem.HobNoShapeID))
+                        {
+
+                        }
+                        else
+                        {
+                            errors.Add("'DS' has incorrect Die Number");
+                        }
                     }
 
                     // Die and Die Segment
@@ -1337,7 +1384,7 @@ namespace NatoliOrderInterface
                         if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH")
                         {
                             // Hob Exists
-                            if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                            if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                             {
                                 HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
                                 // Die Exists
@@ -1652,7 +1699,7 @@ namespace NatoliOrderInterface
                         // Hold low barrel tol & not a Fette or Korsch
                         if (!ContainsAny(quoteLineItem.MachineDescription, new List<string> { "FETTE", "KORSCH" }, StringComparison.InvariantCultureIgnoreCase) && quoteLineItem.OptionNumbers.Contains("123"))
                         {
-                            errors.Add("Hold low barrel tolerance may not be required for this machine.");
+                            errors.Add("'" + quoteLineItem.LineItemType + "' has hold low barrel tolerance. Hold low barrel tolerance may not be required for this machine.");
                         }
                         // Machine Exists
                         if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
@@ -1751,7 +1798,7 @@ namespace NatoliOrderInterface
                             }
                         }
                         // Has HobNo in HobList
-                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                        if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                         {
                             HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
 
@@ -1785,12 +1832,6 @@ namespace NatoliOrderInterface
                             // Has DieId in HobList
                             if (!string.IsNullOrEmpty(hob.DieId))
                             {
-                                // Wrong Die Number
-                                if (quoteLineItem.DieShapeID.ToString() != hob.DieId.Trim())
-                                {
-                                    errors.Add("'" + quoteLineItem.LineItemType + "' has the wrong die number.");
-                                }
-
                                 // DieId in DieList
                                 if (_nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == hob.DieId.Trim()))
                                 {
@@ -2012,6 +2053,10 @@ namespace NatoliOrderInterface
                                             errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a die number that is not in the Die List.");
                                 }
                             }
                             else

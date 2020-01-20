@@ -2455,8 +2455,8 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                // MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteSearchButton_Click - After new window instance", ex.Message);
+                MessageBox.Show(ex.Message);
+                //WriteToErrorLog("QuoteSearchButton_Click - After new window instance", ex.Message);
             }
         AlreadyOpen:
             nat01context.Dispose();
