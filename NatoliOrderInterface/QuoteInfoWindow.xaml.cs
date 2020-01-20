@@ -14,6 +14,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using DocumentFormat.OpenXml;
 using System.Windows.Input;
 using NatoliOrderInterface.Models.NEC;
+using System.Threading.Tasks;
 
 namespace NatoliOrderInterface
 {
@@ -47,6 +48,7 @@ namespace NatoliOrderInterface
         private bool? isChecked = false;
         private bool validData;
         private WorkOrder workOrder;
+        private List<string> errors;
 
         public QuoteInfoWindow()
         {
@@ -58,6 +60,9 @@ namespace NatoliOrderInterface
             Owner = parent;
             InitializeComponent();
             this.user = user;
+            quoteNumber = quote.QuoteNumber;
+            this.quote = quote;
+            this.parent = parent;
             if (quote.OrderNo != 0)
             {
                 OrderFolderButton1.IsEnabled = true;
@@ -73,7 +78,7 @@ namespace NatoliOrderInterface
                 OrderFolderButton2.IsEnabled = false;
                 OrderFolderButton3.IsEnabled = false;
                 OrderFolderButton4.IsEnabled = false;
-                
+
                 if (user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754" || user.EmployeeCode == "E4509")
                 {
                     using var nat02Context = new NAT02Context();
@@ -108,10 +113,7 @@ namespace NatoliOrderInterface
                     RecallButton1.IsEnabled = false;
                 }
             }
-            quoteNumber = quote.QuoteNumber;
             Title = "Quote#: " + quoteNumber + " Rev#: " + quote.QuoteRevNo;
-            this.quote = quote;
-            this.parent = parent;
             if (parent.WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Maximized;
@@ -140,8 +142,6 @@ namespace NatoliOrderInterface
                 }
             }
             Show();
-            //List<string> errors = IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString());
-            //int count = errors.Count;
         }
         
 
@@ -171,7 +171,6 @@ namespace NatoliOrderInterface
                 return "";
             }
         }
-
         
 
         #region QuoteInfoPage
@@ -2932,5 +2931,7 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
+
+
     }
 }
