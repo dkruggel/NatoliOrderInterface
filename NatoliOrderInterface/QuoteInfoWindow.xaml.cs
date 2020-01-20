@@ -48,7 +48,7 @@ namespace NatoliOrderInterface
         private bool? isChecked = false;
         private bool validData;
         private WorkOrder workOrder;
-        private List<string> errors;
+        private List<string> errors = new List<string>();
 
         public QuoteInfoWindow()
         {
