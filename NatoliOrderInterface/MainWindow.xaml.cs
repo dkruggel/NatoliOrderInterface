@@ -161,7 +161,7 @@ namespace NatoliOrderInterface
                 // User = new User("pturner");
                 // User = new User("billt");
             }
-            catch
+            catch (Exception ex)
             {
                 User = new User("");
             }
@@ -840,6 +840,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("StartTabletProject_CLick", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -916,6 +928,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("FinishTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1004,6 +1028,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1123,6 +1159,17 @@ namespace NatoliOrderInterface
                     }
                 }
 
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 selectedProjects.Clear();
@@ -1181,18 +1228,6 @@ namespace NatoliOrderInterface
                             tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
                             _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
 
-                            // Insert into ProjectsFinished  (Now a Trigger)
-                            //if (!(bool)_tools)
-                            //{
-                            // using var _nat02Context = new NAT02Context();
-                            //    EoiProjectsFinished finished = new EoiProjectsFinished();
-                            //    finished.ProjectNumber = _projectNumber;
-                            //    finished.RevisionNumber = _revNumber;
-                            //    finished.Csr = _csr;
-                            //    _nat02Context.EoiProjectsFinished.Add(finished);
-                            //    _nat02Context.SaveChanges();
-                            //}
-
                             // Drive specification transition name to "Completed"
                             // Auto archive project specification
                             string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
@@ -1235,6 +1270,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("CheckTabletProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1309,6 +1356,18 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1394,6 +1453,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("StartToolProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1470,6 +1541,18 @@ namespace NatoliOrderInterface
                         WriteToErrorLog("FinishToolProject_Click", ex.Message);
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1565,6 +1648,18 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 selectedProjects.Clear();
                 MainRefresh();
             }
@@ -1679,6 +1774,17 @@ namespace NatoliOrderInterface
                     }
                 }
 
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 selectedProjects.Clear();
@@ -1756,6 +1862,18 @@ namespace NatoliOrderInterface
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
+
                 MainRefresh();
             }
         }
@@ -1819,6 +1937,17 @@ namespace NatoliOrderInterface
                     order.Item2.IsChecked = false;
 
                     DeleteMachineVariables(workOrder.OrderNumber.ToString());
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
 
                 try
@@ -1909,6 +2038,17 @@ namespace NatoliOrderInterface
                     // Uncheck order expander
                     order.Item2.IsChecked = false;
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
             }
 
             MainRefresh();
@@ -1941,6 +2081,17 @@ namespace NatoliOrderInterface
 
                     // Uncheck order expander
                     order.Item2.IsChecked = false;
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
 
@@ -2044,6 +2195,17 @@ namespace NatoliOrderInterface
                     };
                     _nat02context.Add(q);
                 }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
+                }
             }
             else
             {
@@ -2092,6 +2254,17 @@ namespace NatoliOrderInterface
                         Rush = r.RushYorN
                     };
                     nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
             else
@@ -2150,6 +2323,17 @@ namespace NatoliOrderInterface
                         Rush = r.RushYorN
                     };
                     nat02Context.EoiQuotesMarkedForConversion.Remove(q);
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
             else
@@ -2723,6 +2907,21 @@ namespace NatoliOrderInterface
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
+            TextBox daysTextBox = new TextBox()
+            {
+                Name = name + "DateTextBox",
+                VerticalAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(1, 2, 0, 2),
+                Text = "45",
+                Visibility = Visibility.Collapsed
+            };
+            daysTextBox.TextChanged += DaysTextBox_TextChanged;
+            daysTextBox.PreviewKeyUp += DaysTextBox_PreviewKeyUp;
+
+            if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower().Contains("notconverted"))
+                daysTextBox.Visibility = Visibility.Visible;
+
             // Header label
             Label headerLabel = new Label()
             {
@@ -2748,10 +2947,13 @@ namespace NatoliOrderInterface
             searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
             searchBox.TextChanged += SearchBox_TextChanged;
 
-            Grid.SetColumnSpan(headerLabel, 2);
-            Grid.SetColumn(searchBox, 1);
-
+            Grid.SetColumn(daysTextBox, 0);
+            Grid.SetColumn(headerLabel, 0);
+            Grid.SetColumnSpan(headerLabel, 3);
+            Grid.SetColumn(searchBox, 2);
+            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(30)));
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
+            headerLabelGrid.Children.Add(daysTextBox);
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(150)), searchBox);
 
             return headerLabelGrid;
@@ -2774,6 +2976,34 @@ namespace NatoliOrderInterface
                 image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
                 textBlock.Visibility = Visibility.Visible;
             }
+        }
+        private void DaysTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            using var _ = new NAT02Context();
+            try
+            {
+                EoiSettings eoiSettings = new EoiSettings()
+                {
+                    EmployeeId = User.EmployeeCode,
+                    QuoteDays = short.Parse(textBox.Text)
+                };
+                _.EoiSettings.Update(eoiSettings);
+                _.Dispose();
+                User.QuoteDays = eoiSettings.QuoteDays;
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                _.Dispose();
+            }
+        }
+        private void DaysTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            MainRefresh();
         }
 
         private void SearchBox_PreviewKeyUp(object sender, KeyEventArgs e)
@@ -2908,7 +3138,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += QuotesNotConvertedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesNotConvertedSearchBox_TextChanged;
 
                     break;
                 case "EnteredUnscanned":
@@ -3530,7 +3760,11 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().First();
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
 
                 RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
 
@@ -3619,7 +3853,11 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().First();
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
 
                 RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
 
@@ -3711,6 +3949,16 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+                textBox.TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -3805,6 +4053,16 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+                textBox.TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -3941,6 +4199,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -4076,6 +4338,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -4105,6 +4371,7 @@ namespace NatoliOrderInterface
                 string[] subs = subList.First().Split(',');
                 quotesCompletedChanged = (quotesCompletedCount != _nat02context.EoiQuotesOneWeekCompleted.Count());
                 quotesCompletedCount = _nat02context.EoiQuotesOneWeekCompleted.Count();
+                short quoteDays = User.QuoteDays;
                 List<EoiQuotesNotConvertedView> _eoiQuotesNotConvertedView = new List<EoiQuotesNotConvertedView>();
                 foreach (string sub in subs)
                 {
@@ -4113,9 +4380,9 @@ namespace NatoliOrderInterface
                     {
                         s = "Nick";
                     }
-                    _eoiQuotesNotConvertedView.AddRange(_nat02context.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s)).ToList());
+                    _eoiQuotesNotConvertedView.AddRange(_nat02context.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s) && q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).ToList());
                 }
-                List<EoiQuotesNotConvertedView> eoiQuotesNotConvertedView = _eoiQuotesNotConvertedView.OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
+                List<EoiQuotesNotConvertedView> eoiQuotesNotConvertedView = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
 
                 quotesNotConvertedDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)>();
 
@@ -4185,7 +4452,11 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().First();
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Visible;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
 
                 RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
 
@@ -4291,6 +4562,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -4423,7 +4698,11 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().First();
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
 
                 RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
 
@@ -4528,6 +4807,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -4627,6 +4910,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -4729,6 +5016,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -4829,6 +5120,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -4932,6 +5227,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -5073,6 +5372,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -5167,6 +5470,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -5263,6 +5570,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -5357,6 +5668,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -5455,6 +5770,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
                 (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
@@ -5504,6 +5823,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
 
                 dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
 
@@ -5590,7 +5913,11 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().First();
+                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+                textBox0.Visibility = Visibility.Collapsed;
+
+                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
 
                 RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
 
@@ -9981,6 +10308,7 @@ namespace NatoliOrderInterface
                     {
                         startTabletProject.IsEnabled = true;
                     }
+                    completedTabletProject.IsEnabled = false;
                     cancelTabletProject.IsEnabled = true;
                 }
                 else if (User.Department == "Customer Service")
@@ -10109,6 +10437,7 @@ namespace NatoliOrderInterface
                     {
                         startToolProject.IsEnabled = true;
                     }
+                    completedToolProject.IsEnabled = true;
                     cancelToolProject.IsEnabled = true;
                 }
                 else if (User.Department == "Customer Service")

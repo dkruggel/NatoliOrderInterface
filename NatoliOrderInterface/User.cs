@@ -47,6 +47,7 @@ namespace NatoliOrderInterface
         public float SignatureBottom { get; set; }
         public string DepartmentCode { get; set; }
         public bool Maximized { get; set; }
+        public short QuoteDays { get; set; }
 
         public User()
         {
@@ -60,7 +61,7 @@ namespace NatoliOrderInterface
         public User(string domainName)
         {
             using var _nat02context = new NAT02Context();
-            EoiSettings settings = _nat02context.EoiSettings.Where(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower()).FirstOrDefault();
+            EoiSettings settings = _nat02context.EoiSettings.SingleOrDefault(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower());
             _nat02context.Dispose();
             DomainName = domainName;
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();
@@ -84,6 +85,7 @@ namespace NatoliOrderInterface
             Top = settings.Top;
             Left = settings.Left;
             Maximized = settings.Maximized;
+            QuoteDays = settings.QuoteDays;
             DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
             {
