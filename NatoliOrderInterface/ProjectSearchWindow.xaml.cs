@@ -42,110 +42,60 @@ namespace NatoliOrderInterface
             Task.Run(() => GetProjectInfo(false)).ContinueWith(t => Dispatcher.Invoke(() => BindProjectInfo()), TaskScheduler.Current);
         }
 
-        private void GetProjectInfo(bool filter, string searchString = "")
+        private void GetProjectInfo(bool filter, string search = "")
         {
             try
             {
-                List<EngineeringArchivedProjects> engineeringArchivedProjects;
+                List<EngineeringArchivedProjects> engineeringArchivedProjects = new List<EngineeringArchivedProjects>();
 
-                using var _context = new ProjectsContext();
+                string[] searchStringsAnd = search.Split('&');
+                string[] searchStringsOr = search.Split('|');
+
+                if (searchStringsAnd.Length > 1)
+                {
+                    bool x = false;
+                    foreach (string searchPart in searchStringsAnd)
+                    {
+                        if (!x)
+                        {
+                            engineeringArchivedProjects = ProjectSearch(searchPart, 500);
+                            x = !x;
+                        }
+                        else
+                        {
+                            engineeringArchivedProjects = engineeringArchivedProjects.Intersect(ProjectSearch(searchPart)).ToList();
+                        }
+                    }
+                }
+                else if (searchStringsOr.Length > 1)
+                {
+                    bool x = false;
+                    foreach (string searchPart in searchStringsOr)
+                    {
+                        if (!x)
+                        {
+                            engineeringArchivedProjects = ProjectSearch(searchPart);
+                            x = !x;
+                        }
+                        else
+                        {
+                            engineeringArchivedProjects = engineeringArchivedProjects.Union(ProjectSearch(searchPart)).ToList();
+                        }
+                    }
+                }
+
                 if (filter)
                 {
-                    var regExp = new Regex(@"(<searchString>)[/]");
-                    if (searchString.Contains(":"))
-                    {
-                        var column = searchString.Split(':');
-                        string colSearch = column[1];
-                        // string remainder = column[1].Trim().Split(" ")[1] ?? "";
-                        switch (column[0])
-                        {
-                            case "csr":
-                                engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.CSR.ToLower().Contains(colSearch))
-                                                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                   .Take(150)
-                                                                                                   .ToList();
-                                break;
-                            case "customer name":
-                                engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.CustomerName.ToLower().Contains(colSearch) ||
-                                                                                                              o.EndUserName.ToLower().Contains(colSearch))
-                                                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                   .Take(150)
-                                                                                                   .ToList();
-                                break;
-                            case "product":
-                                engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.Product.ToLower().Contains(colSearch))
-                                                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                   .Take(150)
-                                                                                                   .ToList();
-                                break;
-                            case "due date":
-                                if (!searchString.Contains("/"))
-                                {
-                                    engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.DueDate.Day.ToString().Contains(colSearch) ||
-                                                                                                                  o.DueDate.Month.ToString().Contains(colSearch) ||
-                                                                                                                  o.DueDate.Year.ToString().Contains(colSearch))
-                                                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                   .Take(150)
-                                                                                                   .ToList();
-                                }
-                                else
-                                {
-                                    engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.DueDate.ToShortDateString().Contains(searchString))
-                                                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                   .Take(150)
-                                                                                                   .ToList();
-                                }
-                                break;
-                            default:
-                                engineeringArchivedProjects = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                                  .Take(150)
-                                                                                                  .ToList();
-                                break;
-                        }
-                        //engineeringArchivedProjects = engineeringArchivedProjects.Where(o => o.ArchivedBy.ToLower().Contains(remainder) ||
-                        //                                                                     o.Attention.ToLower().Contains(remainder) ||
-                        //                                                                     o.CSR.ToLower().Contains(remainder) ||
-                        //                                                                     o.CustomerName.ToLower().Contains(remainder) ||
-                        //                                                                     //o.CustomerNumber.ToString().Contains(remainder) ||
-                        //                                                                     //o.DieNumber.ToString().Contains(remainder) ||
-                        //                                                                     o.DieShape.Contains(remainder) ||
-                        //                                                                     //o.DueDate.ToString().Contains(remainder) ||
-                        //                                                                     o.EndUserName.Contains(remainder) ||
-                        //                                                                     o.UpperHobDescription.Contains(remainder) ||
-                        //                                                                     o.LowerHobDescription.Contains(remainder) ||
-                        //                                                                     o.Notes.Contains(remainder) ||
-                        //                                                                     o.Product.Contains(remainder))
-                        //                                                         .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                        //                                                         .Take(150)
-                        //                                                         .ToList();
-                    }
-                    else
-                    {
-                        engineeringArchivedProjects = _context.EngineeringArchivedProjects.Where(o => o.ArchivedBy.ToLower().Contains(searchString) ||
-                                                                                                      o.Attention.ToLower().Contains(searchString) ||
-                                                                                                      o.CSR.ToLower().Contains(searchString) ||
-                                                                                                      o.CustomerName.ToLower().Contains(searchString) ||
-                                                                                                      //o.CustomerNumber.ToString().Contains(searchString) ||
-                                                                                                      //o.DieNumber.ToString().Contains(searchString) ||
-                                                                                                      o.DieShape.Contains(searchString) ||
-                                                                                                      o.EndUserName.Contains(searchString) ||
-                                                                                                      o.UpperHobDescription.Contains(searchString) ||
-                                                                                                      o.LowerHobDescription.Contains(searchString) ||
-                                                                                                      o.Notes.Contains(searchString) ||
-                                                                                                      o.Product.Contains(searchString))
-                                                                                           .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                                           .Take(150)
-                                                                                           .ToList();
-                    }
+                    engineeringArchivedProjects = ProjectSearch(search);
                 }
                 else
                 {
+                    using var _context = new ProjectsContext();
                     engineeringArchivedProjects = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber))
                                                                                       .Take(150)
                                                                                       .ToList();
+                    _context.Dispose();
                 }
-                
-                _context.Dispose();
 
                 archivedProjectsDict = new Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)>();
 
@@ -176,6 +126,120 @@ namespace NatoliOrderInterface
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private static List<EngineeringArchivedProjects> ProjectSearch(string searchString, int length = 150)
+        {
+            List<EngineeringArchivedProjects> res = new List<EngineeringArchivedProjects>();
+            using var _context = new ProjectsContext();
+            
+            if (searchString.Contains(":"))
+            {
+                var column = searchString.Split(':');
+                string colSearch = column[1];
+
+                switch (column[0])
+                {
+                    case "attention":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.Attention.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "csr":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.CSR.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "customer name":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.CustomerName.ToLower().Contains(colSearch) ||
+                                                                               o.EndUserName.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "end user name":
+                        goto case "customer name";
+                    case "product":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.Product.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "Project #":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.ProjectNumber.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "Quote #":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.QuoteNumber.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "Machine":
+                        res = _context.EngineeringArchivedProjects.Where(o => o.MachineNumber.ToLower().Contains(colSearch))
+                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                    case "due date":
+                        if (!colSearch.Contains("/"))
+                        {
+                            res = _context.EngineeringArchivedProjects.Where(o => o.DueDate.Day.ToString().Contains(colSearch) ||
+                                                                                   o.DueDate.Month.ToString().Contains(colSearch) ||
+                                                                                   o.DueDate.Year.ToString().Contains(colSearch))
+                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                       .Take(length)
+                                                                       .ToList();
+                        }
+                        else if (colSearch.Count(x => x == '/') == 1)
+                        {
+                            string[] dateParts = colSearch.Split('/');
+                            res = _context.EngineeringArchivedProjects.Where(o => ((o.DueDate.Month.ToString() == dateParts[0]) && (o.DueDate.Day.ToString() == dateParts[1])) ||
+                                                                                   ((o.DueDate.Day.ToString() == dateParts[0]) && (o.DueDate.Year.ToString() == dateParts[1])))
+                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                       .Take(length)
+                                                                       .ToList();
+                        }
+                        else
+                        {
+                            res = _context.EngineeringArchivedProjects.Where(o => o.DueDate.ToShortDateString().Contains(colSearch))
+                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                       .Take(length)
+                                                                       .ToList();
+                        }
+                        break;
+                    default:
+                        res = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                                   .Take(length)
+                                                                   .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                res = _context.EngineeringArchivedProjects.Where(o => o.ArchivedBy.ToLower().Contains(searchString) ||
+                                                                       o.Attention.ToLower().Contains(searchString) ||
+                                                                       o.CSR.ToLower().Contains(searchString) ||
+                                                                       o.CustomerName.ToLower().Contains(searchString) ||
+                                                                       //o.CustomerNumber.ToString().Contains(searchString) ||
+                                                                       //o.DieNumber.ToString().Contains(searchString) ||
+                                                                       o.DieShape.Contains(searchString) ||
+                                                                       o.EndUserName.Contains(searchString) ||
+                                                                       o.UpperHobDescription.Contains(searchString) ||
+                                                                       o.LowerHobDescription.Contains(searchString) ||
+                                                                       o.Notes.Contains(searchString) ||
+                                                                       o.Product.Contains(searchString))
+                                                           .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
+                                                           .Take(length)
+                                                           .ToList();
+            }
+
+            _context.Dispose();
+
+            return res;
         }
         private void BindProjectInfo()
         {
@@ -403,5 +467,17 @@ namespace NatoliOrderInterface
             // GC.SuppressFinalize(this);
         }
         #endregion
+
+        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            string text = SearchBox.Text.Contains(':') ? SearchBox.Text.Split(':')[1] : SearchBox.Text ;
+            SearchBox.Text = (sender as Label).Content.ToString() + ':' + text;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            timer.Stop();
+            timer.Dispose();
+        }
     }
 }
