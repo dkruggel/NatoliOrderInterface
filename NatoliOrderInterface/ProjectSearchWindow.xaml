@@ -7,12 +7,13 @@
         xmlns:data="clr-namespace:NatoliOrderInterface.Models.Projects"
         mc:Ignorable="d"
         Title="Project Search"
-        Height="1000" Width="1800" Loaded="Window_Loaded">
+        Height="1000" Width="1800" Loaded="Window_Loaded" Closing="Window_Closing">
     <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Menu x:Name="MainMenu" Height="25" Grid.Column="0">
                 <MenuItem x:Name="FileMenu" Header="File" Margin="0,3">
@@ -48,17 +49,17 @@
                             <ColumnDefinition Width="75"/>
                             <ColumnDefinition Width="500"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Project #" HorizontalAlignment="Left" Grid.Column="1"/>
+                        <Label Content="Project #" HorizontalAlignment="Left" Grid.Column="1" MouseDoubleClick="Label_MouseDoubleClick"/>
                         <Label Content="Rev #" HorizontalAlignment="Left" Grid.Column="2"/>
-                        <Label Content="CSR" HorizontalAlignment="Left" Grid.Column="3"/>
-                        <Label Content="Customer Name" HorizontalAlignment="Left" Grid.Column="4"/>
-                        <Label Content="End User Name" HorizontalAlignment="Left" Grid.Column="5"/>
-                        <Label Content="Due Date" HorizontalAlignment="Left" Grid.Column="6"/>
-                        <Label Content="Quote #" HorizontalAlignment="Left" Grid.Column="7"/>
+                        <Label Content="CSR" HorizontalAlignment="Left" Grid.Column="3" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="Customer Name" HorizontalAlignment="Left" Grid.Column="4" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="End User Name" HorizontalAlignment="Left" Grid.Column="5" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="Due Date" HorizontalAlignment="Left" Grid.Column="6" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="Quote #" HorizontalAlignment="Left" Grid.Column="7" MouseDoubleClick="Label_MouseDoubleClick"/>
                         <Label Content="Quote Rev" HorizontalAlignment="Left" Grid.Column="8"/>
-                        <Label Content="Product" HorizontalAlignment="Left" Grid.Column="9"/>
-                        <Label Content="Attention" HorizontalAlignment="Left" Grid.Column="10"/>
-                        <Label Content="Machine" HorizontalAlignment="Left" Grid.Column="11"/>
+                        <Label Content="Product" HorizontalAlignment="Left" Grid.Column="9" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="Attention" HorizontalAlignment="Left" Grid.Column="10" MouseDoubleClick="Label_MouseDoubleClick"/>
+                        <Label Content="Machine" HorizontalAlignment="Left" Grid.Column="11" MouseDoubleClick="Label_MouseDoubleClick"/>
                         <Label Content="Upper Hob" HorizontalAlignment="Left" Grid.Column="12"/>
                         <Label Content="Upper Hob Description" HorizontalAlignment="Left" Grid.Column="13"/>
                         <Label Content="Lower Hob" HorizontalAlignment="Left" Grid.Column="14"/>

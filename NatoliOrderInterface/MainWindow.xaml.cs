@@ -3111,7 +3111,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
 
                     break;
                 case "InTheOffice":
@@ -3130,7 +3130,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
 
                     break;
                 case "QuotesNotConverted":
@@ -3163,7 +3163,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
 
                     break;
                 case "InEngineering":
@@ -3181,7 +3181,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
 
                     break;
                 case "QuotesToConvert":
@@ -3199,7 +3199,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += QuotesToConvertSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesToConvertSearchBox_TextChanged;
 
                     break;
                 case "ReadyToPrint":
@@ -3217,7 +3217,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersReadyToPrintSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersReadyToPrintSearchBox_TextChanged;
 
                     break;
                 case "PrintedInEngineering":
@@ -3235,7 +3235,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += OrdersPrintedInEngineeringSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersPrintedInEngineeringSearchBox_TextChanged;
 
                     break;
                 case "AllTabletProjects":
@@ -3254,7 +3254,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += AllTabletProjectsSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllTabletProjectsSearchBox_TextChanged;
 
                     break;
                 case "TabletProjectsNotStarted":
@@ -3272,7 +3272,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += TabletProjectsNotStartedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsNotStartedSearchBox_TextChanged;
 
                     break;
                 case "TabletProjectsStarted":
@@ -3291,7 +3291,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += TabletProjectsStartedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsStartedSearchBox_TextChanged;
 
                     break;
                 case "TabletProjectsDrawn":
@@ -3310,7 +3310,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += TabletProjectsDrawnSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsDrawnSearchBox_TextChanged;
 
                     break;
                 case "TabletProjectsSubmitted":
@@ -3329,7 +3329,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += TabletProjectsSubmittedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsSubmittedSearchBox_TextChanged;
 
                     break;
                 case "TabletProjectsOnHold":
@@ -3348,7 +3348,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += TabletProjectsOnHoldSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsOnHoldSearchBox_TextChanged;
 
                     break;
                 case "AllToolProjects":
@@ -3367,7 +3367,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += AllToolProjectsSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllToolProjectsSearchBox_TextChanged;
 
                     break;
                 case "ToolProjectsNotStarted":
@@ -3385,7 +3385,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += ToolProjectsNotStartedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsNotStartedSearchBox_TextChanged;
 
                     break;
                 case "ToolProjectsStarted":
@@ -3404,7 +3404,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += ToolProjectsStartedSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsStartedSearchBox_TextChanged;
 
                     break;
                 case "ToolProjectsDrawn":
@@ -3423,7 +3423,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += ToolProjectsDrawnSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsDrawnSearchBox_TextChanged;
 
                     break;
                 case "ToolProjectsOnHold":
@@ -3442,7 +3442,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += ToolProjectsOnHoldSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsOnHoldSearchBox_TextChanged;
 
                     break;
                 case "DriveWorksQueue":
@@ -3459,7 +3459,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += DriveWorksQueueSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += DriveWorksQueueSearchBox_TextChanged;
 
                     break;
                 case "NatoliOrderList":
@@ -3478,7 +3478,7 @@ namespace NatoliOrderInterface
                     DockPanel.SetDock(headerBorder, Dock.Top);
                     dockPanel.Children.Insert(1, headerBorder);
 
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().First().TextChanged += NatoliOrderListSearchBox_TextChanged;
+                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += NatoliOrderListSearchBox_TextChanged;
 
                     break;
                 default:
