@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace NatoliOrderInterface
 {
@@ -1170,7 +1171,7 @@ namespace NatoliOrderInterface
                                 {
                                     if (workingLengthTolerance == null)
                                     {
-                                        
+
                                         workingLengthTolerance = quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336");
                                     }
                                     else if (workingLengthTolerance.TopValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").TopValue || workingLengthTolerance.BottomValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").BottomValue)
@@ -1436,7 +1437,7 @@ namespace NatoliOrderInterface
                                 if (quoteLineItem.MachineDescription.Contains("DEEP") && quoteLineItem.MachineDescription.Contains("FILL") && quoteLineItem.MachineDescription.Contains("NATOLI"))
                                 {
                                     // Special tip straight is not .75"
-                                    if (!quoteLineItem.optionValuesA.Any(ov=> ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
+                                    if (!quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
                                     {
                                         errors.Add("Upper or Upper Assembly should have a tip straight of .75\"");
                                     }
@@ -1599,8 +1600,8 @@ namespace NatoliOrderInterface
                                                 }
                                             }
                                         }
-                                            
-                                        
+
+
                                     }
                                     // Woodruff Key
                                     if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133" }, StringComparison.CurrentCulture))
@@ -2076,7 +2077,7 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
                                             }
                                             // Tip concentricity is not tight enough
-                                            if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov=> qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                            if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov => qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
                                             }
@@ -2107,7 +2108,7 @@ namespace NatoliOrderInterface
                                         else
                                         {
                                             // Key Angle is 0°
-                                            if (quoteLineItem.OptionNumbers.Contains("156") || (quoteLineItem.OptionNumbers.Contains("155") && quoteLineItem.optionValuesG.Any(qov=>qov.Degrees==0)))
+                                            if (quoteLineItem.OptionNumbers.Contains("156") || (quoteLineItem.OptionNumbers.Contains("155") && quoteLineItem.optionValuesG.Any(qov => qov.Degrees == 0)))
                                             {
                                                 errors.Add("'L' is bisected. Please check that the key is oriented for proper take-off.");
                                             }
@@ -2115,7 +2116,7 @@ namespace NatoliOrderInterface
                                     }
 
                                     // Is Reduced Tip Width || Is Strengthened Tip || Is Solid MultiTip || Carbide Tipped
-                                    if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "204" && qo.Number1 < .1875) ||
+                                    if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875) ||
                                     quoteLineItem.OptionNumbers.Contains("222") ||
                                     quoteLineItem.TipQTY > 1 ||
                                     quoteLineItem.OptionNumbers.Contains("240"))
@@ -2172,13 +2173,13 @@ namespace NatoliOrderInterface
                                                 if (quoteLineItem.OptionNumbers.Contains("120"))
                                                 {
                                                     // Barrel Diameter less than .9975
-                                                    if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "120" && qo.Number1 < .9975))
+                                                    if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "120" && qo.Number1 < .9975))
                                                     {
                                                         errors.Add("'L' has reduced tip width, strengthened lower tip, multi-tipped, or carbide tipped. Check to see if increasing the barrel diameter is possible to improve stability.");
                                                     }
                                                 }
                                                 // Reduced tip width
-                                                else if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "204" && qo.Number1 < .1875))
+                                                else if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875))
                                                 {
                                                     bool eu = false;
                                                     if (quoteLineItem.OptionNumbers.Contains("116") && machine.Description.ToUpper().Contains("SYNTHESIS"))
