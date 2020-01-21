@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
         Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterOwner" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing" MouseWheel="Order_Info_Window_MouseWheel">
-    <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+    <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
         <StackPanel x:Name="ButtonPanel" DockPanel.Dock="Left" Width="170" Margin="10,0,10,0" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True">
             <Button x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
             <Button x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="SendToOfficeButton_Click" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True"/>
@@ -219,6 +219,354 @@
                 <StackPanel x:Name="OptionsStackTwo" Grid.Column="14" Grid.ColumnSpan="12" Margin="0,20,0,0">
                 </StackPanel>
             </Grid>
+            <Border BorderBrush="Gray" BorderThickness="0,1,0,0" Margin="0,10"/>
+            <ScrollViewer x:Name="Scroller"  VerticalScrollBarVisibility="Auto" CanContentScroll="True" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" Background="Transparent">
+                <DockPanel x:Name="Docker" LastChildFill="False">
+                    <Border  DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="Gray" Margin="0,0,10,0">
+                        <DockPanel LastChildFill="False">
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="ETCHING" FontSize="24" Style="{StaticResource BoldTextBlock}"/>
+                            <TabControl x:Name="OrderEtchingTabs" DockPanel.Dock="Top" Margin="0,0,10,0" MinWidth="346" BorderBrush="Black" BorderThickness="1">
+                                <TabItem x:Name="UpperEtchingTab" Style="{StaticResource TabItem}" Header="UPPERS">
+                                    <DockPanel LastChildFill="False">
+                                        <Grid DockPanel.Dock="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="UPPERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Top" Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="TESTING" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DockPanel>
+                                </TabItem>
+                                <TabItem x:Name="LowerEtchingTab" Style="{StaticResource TabItem}" Header="LOWERS">
+                                    <DockPanel LastChildFill="False">
+                                        <Grid DockPanel.Dock="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="LOWERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Top" Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DockPanel>
+                                </TabItem>
+                                <TabItem x:Name="DieEtchingTab" Style="{StaticResource TabItem}" Header="DIES">
+                                    <DockPanel LastChildFill="False">
+                                        <Grid DockPanel.Dock="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="DIES" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Top" Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DockPanel>
+                                </TabItem>
+                                <TabItem x:Name="RejectEtchingTab" Style="{StaticResource TabItem}" Header="REJECTS">
+                                    <DockPanel LastChildFill="False">
+                                        <Grid DockPanel.Dock="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="REJECTS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Top" Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DockPanel>
+                                </TabItem>
+                                <TabItem x:Name="AlignmentEtchingTab" Style="{StaticResource TabItem}" Header="ALIGNMENT">
+                                    <DockPanel LastChildFill="False">
+                                        <Grid DockPanel.Dock="Top">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="1 - 5" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="6 - 10" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="ALIGNMENT" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid DockPanel.Dock="Top" Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                                <RowDefinition Height="24"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </DockPanel>
+                                </TabItem>
+                            </TabControl>
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </ScrollViewer>
         </StackPanel>
     </DockPanel>
 </Window>

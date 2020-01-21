@@ -147,7 +147,10 @@ namespace NatoliOrderInterface
             
         }
 
-
+        /// <summary>
+        /// Gets the User Name of the quote
+        /// </summary>
+        /// <returns></returns>
         private string GetUserName()
         {
             using var _nat01Context = new NAT01Context();
@@ -175,7 +178,6 @@ namespace NatoliOrderInterface
             }
         }
         
-
         #region QuoteInfoPage
         private void FillQuoteInfoPage()
         {

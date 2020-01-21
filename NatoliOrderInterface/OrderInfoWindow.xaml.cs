@@ -117,6 +117,7 @@ namespace NatoliOrderInterface
             LineItemChange();
             if (user.Department == "Engineering") { CreateMachineVariablesDataGrid(); }
             CreateBarcodeDataGrid();
+
             Show();
         }
 
@@ -726,14 +727,88 @@ namespace NatoliOrderInterface
         }
         private void CreateMachineVariablesDataGrid()
         {
+            //NAT02Context nAT02Context = new NAT02Context();
+
+            //try
+            //{
+            //    DataGrid machineVariablesDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
+            //    Border machineVariablesBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
+            //    OrderPanel.Children.Remove(machineVariablesBorderOld);
+            //    OrderPanel.Children.Remove(machineVariablesDataGridOld);
+            //    List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
+            //    if (machineVariables.Count != 0 && workOrder.CanRunOnAutocell)
+            //    {
+            //        Border machineVariablesBorder = new Border
+            //        {
+            //            Name = "MachineVariablesBorder",
+            //            BorderBrush = System.Windows.Media.Brushes.Gray,
+            //            BorderThickness = new Thickness(0, 1, 0, 0),
+            //            Margin = new Thickness(0, 40, 0, 0)
+            //        };
+            //        TextBlock machineVariablesTitle = new TextBlock
+            //        {
+            //            Name = "MachineVariablesTitle",
+            //            Text = "Machine Variables",
+            //            FontSize = 20,
+            //            FontWeight = FontWeights.Bold,
+            //            VerticalAlignment = VerticalAlignment.Center,
+            //            HorizontalAlignment = HorizontalAlignment.Center,
+            //            Margin = new Thickness(0, 10, 0, 0)
+            //        };
+            //        machineVariablesBorder.Child = machineVariablesTitle;
+            //        OrderPanel.Children.Add(machineVariablesBorder);
+
+            //        DataGrid machineVariablesDataGrid = new DataGrid
+            //        {
+            //            Name = "MachineVariablesDataGrid",
+            //            ItemsSource = machineVariables,
+            //            IsReadOnly = true,
+            //            HeadersVisibility = DataGridHeadersVisibility.Column
+            //        };
+            //        OrderPanel.Children.Add(machineVariablesDataGrid);
+            //    }
+            //    else
+            //    {
+            //        if (workOrder.CanRunOnAutocell)
+            //        {
+            //            Border machineVariablesBorder = new Border
+            //            {
+            //                Name = "MachineVariablesBorder",
+            //                BorderBrush = System.Windows.Media.Brushes.Gray,
+            //                BorderThickness = new Thickness(0, 1, 0, 0),
+            //                Margin = new Thickness(0, 40, 0, 0)
+            //            };
+            //            TextBlock machineVariablesTitle = new TextBlock
+            //            {
+            //                Name = "MachineVariablesTitle",
+            //                Text = "No Autocell Data For This Order",
+            //                FontSize = 20,
+            //                FontWeight = FontWeights.Bold,
+            //                Foreground = System.Windows.Media.Brushes.Crimson,
+            //                VerticalAlignment = VerticalAlignment.Center,
+            //                HorizontalAlignment = HorizontalAlignment.Center,
+            //                Margin = new Thickness(0, 10, 0, 0)
+            //            };
+            //            machineVariablesBorder.Child = machineVariablesTitle;
+            //            OrderPanel.Children.Add(machineVariablesBorder);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
+            //nAT02Context.Dispose();
+
             NAT02Context nAT02Context = new NAT02Context();
 
             try
             {
-                DataGrid machineVariablesDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
-                Border machineVariablesBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
-                OrderPanel.Children.Remove(machineVariablesBorderOld);
-                OrderPanel.Children.Remove(machineVariablesDataGridOld);
+                DataGrid machineVariablesDataGridOld = Docker.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
+                Border machineVariablesBorderOld = Docker.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
+                Docker.Children.Remove(machineVariablesBorderOld);
+                Docker.Children.Remove(machineVariablesDataGridOld);
                 List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
                 if (machineVariables.Count != 0 && workOrder.CanRunOnAutocell)
                 {
@@ -741,8 +816,8 @@ namespace NatoliOrderInterface
                     {
                         Name = "MachineVariablesBorder",
                         BorderBrush = System.Windows.Media.Brushes.Gray,
-                        BorderThickness = new Thickness(0, 1, 0, 0),
-                        Margin = new Thickness(0, 40, 0, 0)
+                        BorderThickness = new Thickness(0, 0, 0, 0),
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
                     TextBlock machineVariablesTitle = new TextBlock
                     {
@@ -752,10 +827,12 @@ namespace NatoliOrderInterface
                         FontWeight = FontWeights.Bold,
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Margin = new Thickness(0, 10, 0, 0)
+                        Margin = new Thickness(0, 10, 0, 0),
+                        Style = (System.Windows.Style)Application.Current.Resources["BoldTextBlock"]
                     };
                     machineVariablesBorder.Child = machineVariablesTitle;
-                    OrderPanel.Children.Add(machineVariablesBorder);
+                    machineVariablesBorder.SetValue(DockPanel.DockProperty, Dock.Top);
+                    Docker.Children.Add(machineVariablesBorder);
 
                     DataGrid machineVariablesDataGrid = new DataGrid
                     {
@@ -764,7 +841,8 @@ namespace NatoliOrderInterface
                         IsReadOnly = true,
                         HeadersVisibility = DataGridHeadersVisibility.Column
                     };
-                    OrderPanel.Children.Add(machineVariablesDataGrid);
+                    machineVariablesDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
+                    Docker.Children.Add(machineVariablesDataGrid);
                 }
                 else
                 {
@@ -774,8 +852,8 @@ namespace NatoliOrderInterface
                         {
                             Name = "MachineVariablesBorder",
                             BorderBrush = System.Windows.Media.Brushes.Gray,
-                            BorderThickness = new Thickness(0, 1, 0, 0),
-                            Margin = new Thickness(0, 40, 0, 0)
+                            BorderThickness = new Thickness(0, 0, 0, 0),
+                            Margin = new Thickness(0, 0, 0, 0)
                         };
                         TextBlock machineVariablesTitle = new TextBlock
                         {
@@ -789,7 +867,8 @@ namespace NatoliOrderInterface
                             Margin = new Thickness(0, 10, 0, 0)
                         };
                         machineVariablesBorder.Child = machineVariablesTitle;
-                        OrderPanel.Children.Add(machineVariablesBorder);
+                        machineVariablesBorder.SetValue(DockPanel.DockProperty, Dock.Top);
+                        Docker.Children.Add(machineVariablesBorder);
                     }
                 }
             }
@@ -802,14 +881,61 @@ namespace NatoliOrderInterface
         }
         private void CreateBarcodeDataGrid()
         {
+            //using var _natbcContext = new NATBCContext();
+
+            //try
+            //{
+            //    DataGrid barcodeDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "BarcodeDataGrid").FirstOrDefault() as DataGrid;
+            //    Border barcodeBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "BarcodeBorder").FirstOrDefault() as Border;
+            //    OrderPanel.Children.Remove(barcodeBorderOld);
+            //    OrderPanel.Children.Remove(barcodeDataGridOld);
+            //    List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' ORDER BY OrderLineNumber", orderNumber * 100).ToList();
+            //    _natbcContext.Dispose();
+            //    if (lines.Count > 0)
+            //    {
+            //        Border barcodeBorder = new Border
+            //        {
+            //            Name = "BarcodeBorder",
+            //            BorderBrush = System.Windows.Media.Brushes.Gray,
+            //            BorderThickness = new Thickness(0, 1, 0, 0),
+            //            Margin = new Thickness(0, 40, 0, 0)
+            //        };
+            //        TextBlock barcodeTitle = new TextBlock
+            //        {
+            //            Name = "BarcodeTitle",
+            //            Text = "Last Barcode Scan",
+            //            FontSize = 20,
+            //            FontWeight = FontWeights.Bold,
+            //            VerticalAlignment = VerticalAlignment.Center,
+            //            HorizontalAlignment = HorizontalAlignment.Center,
+            //            Margin = new Thickness(0, 10, 0, 0)
+            //        };
+            //        barcodeBorder.Child = barcodeTitle;
+            //        OrderPanel.Children.Add(barcodeBorder);
+
+            //        DataGrid barcodeDataGrid = new DataGrid
+            //        {
+            //            Name = "BarcodeDataGrid",
+            //            ItemsSource = lines,
+            //            IsReadOnly = true,
+            //            HeadersVisibility = DataGridHeadersVisibility.Column
+            //        };
+            //        OrderPanel.Children.Add(barcodeDataGrid);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
             using var _natbcContext = new NATBCContext();
 
             try
             {
-                DataGrid barcodeDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "BarcodeDataGrid").FirstOrDefault() as DataGrid;
-                Border barcodeBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "BarcodeBorder").FirstOrDefault() as Border;
-                OrderPanel.Children.Remove(barcodeBorderOld);
-                OrderPanel.Children.Remove(barcodeDataGridOld);
+                DataGrid barcodeDataGridOld = Docker.Children.OfType<DataGrid>().Where(dg => dg.Name == "BarcodeDataGrid").FirstOrDefault() as DataGrid;
+                Border barcodeBorderOld = Docker.Children.OfType<Border>().Where(dg => dg.Name == "BarcodeBorder").FirstOrDefault() as Border;
+                Docker.Children.Remove(barcodeBorderOld);
+                Docker.Children.Remove(barcodeDataGridOld);
                 List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' ORDER BY OrderLineNumber", orderNumber * 100).ToList();
                 _natbcContext.Dispose();
                 if (lines.Count > 0)
@@ -818,8 +944,8 @@ namespace NatoliOrderInterface
                     {
                         Name = "BarcodeBorder",
                         BorderBrush = System.Windows.Media.Brushes.Gray,
-                        BorderThickness = new Thickness(0, 1, 0, 0),
-                        Margin = new Thickness(0, 40, 0, 0)
+                        BorderThickness = new Thickness(0, 0, 0, 0),
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
                     TextBlock barcodeTitle = new TextBlock
                     {
@@ -829,10 +955,12 @@ namespace NatoliOrderInterface
                         FontWeight = FontWeights.Bold,
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Margin = new Thickness(0, 10, 0, 0)
+                        Margin = new Thickness(0, 10, 0, 0),
+                        Style = (System.Windows.Style)Application.Current.Resources["BoldTextBlock"]
                     };
                     barcodeBorder.Child = barcodeTitle;
-                    OrderPanel.Children.Add(barcodeBorder);
+                    barcodeBorder.SetValue(DockPanel.DockProperty, Dock.Top);
+                    Docker.Children.Add(barcodeBorder);
 
                     DataGrid barcodeDataGrid = new DataGrid
                     {
@@ -841,7 +969,8 @@ namespace NatoliOrderInterface
                         IsReadOnly = true,
                         HeadersVisibility = DataGridHeadersVisibility.Column
                     };
-                    OrderPanel.Children.Add(barcodeDataGrid);
+                    barcodeDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
+                    Docker.Children.Add(barcodeDataGrid);
                 }
             }
             catch (Exception ex)
