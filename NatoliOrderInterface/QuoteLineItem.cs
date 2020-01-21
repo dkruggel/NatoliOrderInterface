@@ -106,26 +106,26 @@ namespace NatoliOrderInterface
         #region DataTables
         QuoteDetails quoteDetails;
         List<QuoteDetailOptions> quoteDetailOptions;
-        private List<QuoteOptionValueASingleNum> optionValuesA;
-        private List<QuoteOptionValueBDoubleNum> optionValuesB;
-        private List<QuoteOptionValueCTolerance> optionValuesC;
-        private List<QuoteOptionValueDDegreeVal> optionValuesD;
-        private List<QuoteOptionValueESmallText> optionValuesE;
-        private List<QuoteOptionValueFLargeText> optionValuesF;
-        private List<QuoteOptionValueGDegrees> optionValuesG;
-        private List<QuoteOptionValueHHardness> optionValuesH;
-        private List<QuoteOptionValueIHardness2> optionValuesI;
-        private List<QuoteOptionValueJOptionMult> optionValuesJ;
-        private List<QuoteOptionValueKVendor> optionValuesK;
-        private List<QuoteOptionValueLSurfaceTreat> optionValuesL;
-        private List<QuoteOptionValueMScrew> optionValuesM;
-        private List<QuoteOptionValueNColor> optionValuesN;
-        private List<QuoteOptionValueOInteger> optionValuesO;
-        private List<QuoteOptionValuePDegDec> optionValuesP;
-        private List<QuoteOptionValueQDimensions> optionValuesQ;
-        private List<QuoteOptionValueRIntegerTxt> optionValuesR;
-        private List<QuoteOptionValueSSmallText> optionValuesS;
-        private List<QuoteOptionValueTDecText> optionValuesT;
+        public List<QuoteOptionValueASingleNum> optionValuesA { get; set; } = null;
+        public List<QuoteOptionValueBDoubleNum> optionValuesB { get; set; } = null;
+        public List<QuoteOptionValueCTolerance> optionValuesC { get; set; } = null;
+        public List<QuoteOptionValueDDegreeVal> optionValuesD { get; set; } = null;
+        public List<QuoteOptionValueESmallText> optionValuesE { get; set; } = null;
+        public List<QuoteOptionValueFLargeText> optionValuesF { get; set; } = null;
+        public List<QuoteOptionValueGDegrees> optionValuesG { get; set; } = null;
+        public List<QuoteOptionValueHHardness> optionValuesH { get; set; } = null;
+        public List<QuoteOptionValueIHardness2> optionValuesI { get; set; } = null;
+        public List<QuoteOptionValueJOptionMult> optionValuesJ { get; set; } = null;
+        public List<QuoteOptionValueKVendor> optionValuesK { get; set; } = null;
+        public List<QuoteOptionValueLSurfaceTreat> optionValuesL { get; set; } = null;
+        public List<QuoteOptionValueMScrew> optionValuesM { get; set; } = null;
+        public List<QuoteOptionValueNColor> optionValuesN { get; set; } = null;
+        public List<QuoteOptionValueOInteger> optionValuesO { get; set; } = null;
+        public List<QuoteOptionValuePDegDec> optionValuesP { get; set; } = null;
+        public List<QuoteOptionValueQDimensions> optionValuesQ { get; set; } = null;
+        public List<QuoteOptionValueRIntegerTxt> optionValuesR { get; set; } = null;
+        public List<QuoteOptionValueSSmallText> optionValuesS { get; set; } = null;
+        public List<QuoteOptionValueTDecText> optionValuesT { get; set; } = null;
         private NAT01Context nat01context;
         #endregion
 
@@ -150,8 +150,14 @@ namespace NatoliOrderInterface
         {
             LineItemType = row.DetailTypeId.Trim();
             GetOptionValues(Quote.QuoteNumber, Quote.QuoteRevNo == null ? (short)0 : (short)Quote.QuoteRevNo, LineItemType);
-            short.TryParse(row.LineNumber.ToString(), out lineItemNumber);
-            short.TryParse(row.QuantityOrdered.ToString(), out qtyOrdered);
+            if(!short.TryParse(row.LineNumber.ToString(), out lineItemNumber))
+            {
+                lineItemNumber = -1;
+            }
+            if(!short.TryParse(row.QuantityOrdered.ToString(), out qtyOrdered))
+            {
+                qtyOrdered = 0;
+            }
             QtyShipped = row.QuantityShipped;
             Title = titles[LineItemType];
             HobNoShapeID = row.HobNoShapeId;

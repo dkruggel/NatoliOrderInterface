@@ -1334,7 +1334,7 @@ namespace NatoliOrderInterface
                                             {
                                                 byte boresPerSegment = (byte)(stations / segmentQTY);
                                                 // # of Multibores != boresPerSegment
-                                                if ((_nat01Context.QuoteOptionValueOInteger.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == "DS" && qov.OptionCode == "470").Integer ?? 1) != boresPerSegment)
+                                                if ((quoteLineItem.optionValuesO.First(qov => qov.OptionCode == "470").Integer ?? 1) != boresPerSegment)
                                                 {
                                                     errors.Add("'DS' has multi-bore option that does not equal (# of stations) / (# of segments).");
                                                 }
@@ -1431,7 +1431,7 @@ namespace NatoliOrderInterface
                                 if (quoteLineItem.MachineDescription.Contains("DEEP") && quoteLineItem.MachineDescription.Contains("FILL") && quoteLineItem.MachineDescription.Contains("NATOLI"))
                                 {
                                     // Special tip straight is not .75"
-                                    if (!_nat01Context.QuoteOptionValueASingleNum.Any(ov => ov.QuoteNo == Convert.ToInt32(quoteNo) && ov.RevNo == Convert.ToInt16(quoteRevNo) && (ov.QuoteDetailType == "U" || ov.QuoteDetailType == "UA") && ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
+                                    if (!quoteLineItem.optionValuesA.Any(ov=> ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
                                     {
                                         errors.Add("Upper or Upper Assembly should have a tip straight of .75\"");
                                     }
@@ -1452,7 +1452,7 @@ namespace NatoliOrderInterface
                             // Has Key Angle
                             if (quoteLineItem.OptionNumbers.Contains("155"))
                             {
-                                QuoteOptionValueGDegrees quoteOptionValueG = _nat01Context.QuoteOptionValueGDegrees.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "155");
+                                QuoteOptionValueGDegrees quoteOptionValueG = quoteLineItem.optionValuesG.First(qov => qov.OptionCode == "155");
                                 short? angle = quoteOptionValueG.Degrees;
                                 string text = quoteOptionValueG.Text ?? "";
                                 if (angle == null)
@@ -1532,7 +1532,7 @@ namespace NatoliOrderInterface
                                         // Special key size
                                         if (quoteLineItem.OptionNumbers.Contains("151"))
                                         {
-                                            QuoteOptionValueBDoubleNum keySizeOptionValue = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "151");
+                                            QuoteOptionValueBDoubleNum keySizeOptionValue = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "151");
                                             double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4);
                                             double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4);
                                             // Key exists in table
@@ -1785,7 +1785,7 @@ namespace NatoliOrderInterface
                             // Has Special tip relief
                             if (quoteLineItem.OptionNumbers.Contains("215"))
                             {
-                                QuoteOptionValueASingleNum quoteOptionValueASingleNum = _nat01Context.QuoteOptionValueASingleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "215");
+                                QuoteOptionValueASingleNum quoteOptionValueASingleNum = quoteLineItem.optionValuesA.First(qov => qov.OptionCode == "215");
                                 // Relief is Diameter type callout
                                 if (quoteOptionValueASingleNum.Text.Contains("Diameter", StringComparison.InvariantCultureIgnoreCase))
                                 {
@@ -1919,8 +1919,8 @@ namespace NatoliOrderInterface
                                         // Special tip size
                                         if (quoteLineItem.OptionNumbers.Contains("200"))
                                         {
-                                            punchWidth = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number1;
-                                            punchLength = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "200").Number2;
+                                            punchWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1;
+                                            punchLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2;
                                         }
                                         else
                                         {
@@ -1989,8 +1989,8 @@ namespace NatoliOrderInterface
                                             // Special bore size
                                             if (dieQuoteLineItem.OptionNumbers.Contains("425"))
                                             {
-                                                dieWidth = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == dieQuoteLineItem.LineItemType && qov.OptionCode == "425").Number1;
-                                                dieLength = _nat01Context.QuoteOptionValueBDoubleNum.First(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == dieQuoteLineItem.LineItemType && qov.OptionCode == "425").Number2;
+                                                dieWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
+                                                dieLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
                                             }
                                             else
                                             {
@@ -2055,7 +2055,7 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
                                             }
                                             // Tip concentricity is not tight enough
-                                            if (quoteLineItem.OptionNumbers.Contains("202") && _nat01Context.QuoteOptionValueASingleNum.Any(qov => qov.QuoteNo == Convert.ToInt32(quoteNo) && qov.RevNo == Convert.ToInt16(quoteRevNo) && !string.IsNullOrEmpty(qov.QuoteDetailType) && qov.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                            if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov=> qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
                                             }
@@ -2094,7 +2094,7 @@ namespace NatoliOrderInterface
                                     }
 
                                     // Is Reduced Tip Width || Is Strengthened Tip || Is Solid MultiTip || Carbide Tipped
-                                    if ((quoteLineItem.Options.ContainsKey(204) && _nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "204" && qo.Number1 < .1875)) ||
+                                    if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "204" && qo.Number1 < .1875) ||
                                     quoteLineItem.OptionNumbers.Contains("222") ||
                                     quoteLineItem.TipQTY > 1 ||
                                     quoteLineItem.OptionNumbers.Contains("240"))
@@ -2112,13 +2112,13 @@ namespace NatoliOrderInterface
                                                 if (quoteLineItem.OptionNumbers.Contains("120"))
                                                 {
                                                     // Barrel Diameter less than .7475
-                                                    if (_nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "120" && qo.Number1 < .7475))
+                                                    if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "120" && qo.Number1 < .7475))
                                                     {
                                                         errors.Add("'L' has reduced tip width, strengthened lower tip, multi-tipped, or carbide tipped. Check to see if increasing the barrel diameter is possible to improve stability.");
                                                     }
                                                 }
                                                 // Reduced tip width
-                                                else if (quoteLineItem.Options.ContainsKey(204) && _nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "204" && qo.Number1 < .1875))
+                                                else if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875))
                                                 {
                                                     bool eu = false;
                                                     if (quoteLineItem.OptionNumbers.Contains("116") && machine.Description.ToUpper().Contains("SYNTHESIS"))
@@ -2151,13 +2151,13 @@ namespace NatoliOrderInterface
                                                 if (quoteLineItem.OptionNumbers.Contains("120"))
                                                 {
                                                     // Barrel Diameter less than .9975
-                                                    if (_nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "120" && qo.Number1 < .9975))
+                                                    if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "120" && qo.Number1 < .9975))
                                                     {
                                                         errors.Add("'L' has reduced tip width, strengthened lower tip, multi-tipped, or carbide tipped. Check to see if increasing the barrel diameter is possible to improve stability.");
                                                     }
                                                 }
                                                 // Reduced tip width
-                                                else if (quoteLineItem.Options.ContainsKey(204) && _nat01Context.QuoteOptionValueASingleNum.Any(qo => qo.QuoteNo == Convert.ToInt32(quoteNo) && qo.RevNo == Convert.ToInt16(quoteRevNo) && qo.QuoteDetailType.Trim() == quoteLineItem.LineItemType && qo.OptionCode == "204" && qo.Number1 < .1875))
+                                                else if (quoteLineItem.optionValuesA.Any(qo=> qo.OptionCode == "204" && qo.Number1 < .1875))
                                                 {
                                                     bool eu = false;
                                                     if (quoteLineItem.OptionNumbers.Contains("116") && machine.Description.ToUpper().Contains("SYNTHESIS"))
