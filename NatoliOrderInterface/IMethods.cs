@@ -967,7 +967,7 @@ namespace NatoliOrderInterface
                     errors.Add("Carbide has not been assigned.");
                 }
 
-                string workingLengthTolerance = null;
+                QuoteOptionValueCTolerance workingLengthTolerance = null;
                 bool varyingWLTolerances = false;
                 string machineDescription = null;
                 string shapeDescription = "";
@@ -1142,10 +1142,14 @@ namespace NatoliOrderInterface
                                             // Machine requires tip length for oil seals
                                             if (ContainsAny(machine.Description, new List<string> { "FETTE", "KILIAN", "KORSCH", "X-PRESS", "XS-PRESS" }, StringComparison.InvariantCultureIgnoreCase) || (machine.Description.Contains("GENESIS", StringComparison.InvariantCultureIgnoreCase) && machine.Description.Contains("STOKES", StringComparison.InvariantCultureIgnoreCase)) || machine.SpecialInfo.Contains("102"))
                                             {
-                                                // Does not have option 102
-                                                if (!quoteLineItem.OptionNumbers.Contains("102"))
+                                                // Does not have option 102 or 103
+                                                if (!quoteLineItem.OptionNumbers.Contains("102") && !quoteLineItem.OptionNumbers.Contains("103"))
                                                 {
-                                                    errors.Add("'" + quoteLineItem.LineItemType + "' may require tip length for oil seals.");
+                                                    // Does not have grooves or reduced barrel
+                                                    if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "110", "111", "112", "115", "116", "117" }, StringComparison.CurrentCulture))
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' may require tip length for oil seals.");
+                                                    }
                                                 }
                                             }
                                         }
@@ -1166,9 +1170,10 @@ namespace NatoliOrderInterface
                                 {
                                     if (workingLengthTolerance == null)
                                     {
-                                        workingLengthTolerance = string.Join(string.Empty, quoteLineItem.Options[336]);
+                                        
+                                        workingLengthTolerance = quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336");
                                     }
-                                    else if (workingLengthTolerance != string.Join(string.Empty, quoteLineItem.Options[336]))
+                                    else if (workingLengthTolerance.TopValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").TopValue || workingLengthTolerance.BottomValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").BottomValue)
                                     {
                                         errors.Add("Working Length Tolerances vary. Check to make sure they contain correct values.");
                                     }
@@ -1579,7 +1584,23 @@ namespace NatoliOrderInterface
                                     // No Key Angle
                                     if (!ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "155", "156" }, StringComparison.CurrentCulture))
                                     {
-                                        errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
+                                        // Has Hob
+                                        if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                                        {
+                                            HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+                                            if (_nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == hob.DieId.Trim()))
+                                            {
+                                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+
+                                                // NOT round
+                                                if (die.ShapeId != 1)
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' is missing a key angle.");
+                                                }
+                                            }
+                                        }
+                                            
+                                        
                                     }
                                     // Woodruff Key
                                     if (ContainsAny(string.Join(string.Empty, quoteLineItem.OptionNumbers), new List<string> { "130", "131", "132", "133" }, StringComparison.CurrentCulture))
@@ -1876,7 +1897,7 @@ namespace NatoliOrderInterface
                                                 {
                                                     if (machine.UpperSize.Contains("x"))
                                                     {
-                                                        string upperStockDiameter = machine.UpperSize.Remove('x');
+                                                        string upperStockDiameter = machine.UpperSize.Remove(machine.UpperSize.IndexOf('x'));
                                                         if (upperStockDiameter.Contains("-"))
                                                         {
                                                             string[] uSDSplit = upperStockDiameter.Split('-');
@@ -1894,7 +1915,7 @@ namespace NatoliOrderInterface
                                                     }
                                                     if (machine.LowerSize.Contains("x"))
                                                     {
-                                                        string lowerStockDiameter = machine.LowerSize.Remove('x');
+                                                        string lowerStockDiameter = machine.LowerSize.Remove(machine.LowerSize.IndexOf('x'));
                                                         if (lowerStockDiameter.Contains("-"))
                                                         {
                                                             string[] lSDSplit = lowerStockDiameter.Split('-');
@@ -2086,7 +2107,7 @@ namespace NatoliOrderInterface
                                         else
                                         {
                                             // Key Angle is 0°
-                                            if (quoteLineItem.Options.ContainsKey(156) || (quoteLineItem.Options.ContainsKey(155) && quoteLineItem.Options[155].Contains(" 0° ")))
+                                            if (quoteLineItem.OptionNumbers.Contains("156") || (quoteLineItem.OptionNumbers.Contains("155") && quoteLineItem.optionValuesG.Any(qov=>qov.Degrees==0)))
                                             {
                                                 errors.Add("'L' is bisected. Please check that the key is oriented for proper take-off.");
                                             }

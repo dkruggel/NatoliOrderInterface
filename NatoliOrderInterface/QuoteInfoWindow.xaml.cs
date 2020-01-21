@@ -55,7 +55,7 @@ namespace NatoliOrderInterface
             this.InitializeComponent();
         }
 
-        public QuoteInfoWindow(Quote quote, MainWindow parent, string quote_location, User user)
+        public QuoteInfoWindow(Quote quote, MainWindow parent, User user)
         {
             Owner = parent;
             InitializeComponent();

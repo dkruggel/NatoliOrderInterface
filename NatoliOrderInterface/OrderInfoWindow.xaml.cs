@@ -1589,7 +1589,7 @@ namespace NatoliOrderInterface
             }
             try
             {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, parent, "", user)
+                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, parent, user)
                 {
                     Owner = this,
                     Left = Left,

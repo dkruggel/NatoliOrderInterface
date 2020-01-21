@@ -2445,7 +2445,7 @@ namespace NatoliOrderInterface
             }
             try
             {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
+                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
                     Owner = this,
                     Left = Left,
@@ -9868,7 +9868,7 @@ namespace NatoliOrderInterface
             }
             try
             {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
+                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
                     Owner = this,
                     Left = Left,
@@ -9917,7 +9917,7 @@ namespace NatoliOrderInterface
                 }
                 try
                 {
-                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, "", User)
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                     {
                         Owner = this,
                         Left = Left,
