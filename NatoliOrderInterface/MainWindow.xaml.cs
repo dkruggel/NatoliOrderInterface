@@ -131,7 +131,7 @@ namespace NatoliOrderInterface
         Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsOnHoldDict;
         Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> allToolProjectsDict;
         Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)> driveWorksQueueDict;
-        Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string background)> natoliOrderListDict;
+        Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> natoliOrderListDict;
         List<object> dictList;
         #endregion
 
@@ -2950,6 +2950,11 @@ namespace NatoliOrderInterface
                 csvCreationButton.Visibility = Visibility.Visible;
             }
 
+            if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower() == "natoliorderlist")
+            {
+                csvCreationButton.Visibility = Visibility.Visible;
+            }
+
             // Header label
             Label headerLabel = new Label()
             {
@@ -2992,25 +2997,62 @@ namespace NatoliOrderInterface
 
         private void CsvCreationButton_Click(object sender, RoutedEventArgs e)
         {
-            string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
-            using var stream = new System.IO.StreamWriter(filePath, false);
-
-            // Quote Number, Rev Number, Customer Name, Quote Date
-            // Get info from currently filtered list in QuotesNotConverted
-            var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
-            foreach (Expander expander in expanders)
+            if (((sender as Button).Parent as Grid).Children.OfType<Label>().First().Content.ToString().Contains("Quote"))
             {
-                int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-                short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-                string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
-                using var _ = new NAT01Context();
-                DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
-                _.Dispose();
-                stream.Write("{0},{1},{2},{3}\n", quoteNumber, revNumber, customerName, quoteDate);
-            }
+                string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
+                using var stream = new System.IO.StreamWriter(filePath, false);
 
-            stream.Flush();
-            stream.Dispose();
+                // Quote Number, Rev Number, Customer Name, Quote Date
+                // Get info from currently filtered list in QuotesNotConverted
+                var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+
+                // Write headers
+                stream.Write("Quote Number,Rev Number,Customer Name,Quote Date\n");
+
+                foreach (Expander expander in expanders)
+                {
+                    int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+                    short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+                    string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
+                    using var _ = new NAT01Context();
+                    DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+                    _.Dispose();
+                    stream.Write("{0},{1},{2},{3}\n", quoteNumber, revNumber, customerName, quoteDate.ToShortDateString());
+                }
+
+                stream.Flush();
+                stream.Dispose();
+            }
+            else
+            {
+                string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\OrderList.csv";
+                using var stream = new System.IO.StreamWriter(filePath, false);
+
+                // Order Number, Quote Number, Rev Number, Customer Name, Order Date, Ship Date, PO Number
+                // Get info from currently filtered list in NatoliOrderList
+                var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+
+                // Write headers
+                stream.Write("Order Number,Quote Number,Rev Number,Customer Name,Order Date,Ship Date,PO Number\n");
+
+                foreach (Expander expander in expanders)
+                {
+                    int orderNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+                    using var _ = new NAT01Context();
+                    OrderHeader orderHeader = _.OrderHeader.Single(q => q.OrderNo == orderNumber * 100);
+                    _.Dispose();
+                    double? quoteNumber = orderHeader.QuoteNumber;
+                    short? revNumber = orderHeader.QuoteRevNo;
+                    string customerName = (expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString().Replace(',', '\0');
+                    DateTime orderDate = (DateTime)orderHeader.OrderDate;
+                    string shipDate = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString();
+                    string poNumber = orderHeader.Ponumber.Trim() + (string.IsNullOrEmpty(orderHeader.Poextension.Trim()) ? "" : '-' + orderHeader.Poextension);
+                    stream.Write("{0},{1},{2},{3},{4},{5},{6}\n", orderNumber, quoteNumber, revNumber, customerName, orderDate.ToShortDateString(), shipDate, poNumber);
+                }
+
+                stream.Flush();
+                stream.Dispose();
+            }
 
             MessageBox.Show("Your file is ready.");
         }
@@ -6158,7 +6200,7 @@ namespace NatoliOrderInterface
                 }
                 else if (User.EmployeeCode == "E4408")
                 {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
+                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", @"NATOLI\dnelson").ToList();
                     natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
                 }
                 else
@@ -6168,7 +6210,7 @@ namespace NatoliOrderInterface
                 }
                 _natbcContext.Dispose();
 
-                natoliOrderListDict = new Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string background)>();
+                natoliOrderListDict = new Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)>();
 
                 foreach (NatoliOrderList order in natoliOrderList)
                 {
@@ -6191,7 +6233,17 @@ namespace NatoliOrderInterface
                     {
                         back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
                     }
-                    natoliOrderListDict.Add((order.OrderNo / 100).ToString(), (order.Customer, order.ShipDate, order.Rush, order.OnHold, order.RepInitials, back.Color.ToString()));
+
+                    // Get repId from quote header
+                    OrderHeader orderHeader = _nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNo);
+                    using var _ = new NAT01Context();
+                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).UserAcctNo;
+                    _.Dispose();
+                    using var __ = new NECContext();
+                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+                    __.Dispose();
+
+                    natoliOrderListDict.Add((order.OrderNo / 100).ToString(), (order.Customer, order.ShipDate, order.Rush, order.OnHold, order.RepInitials, repId, back.Color.ToString()));
                 }
                 natoliOrderList.Clear();
             }
@@ -6231,12 +6283,28 @@ namespace NatoliOrderInterface
             // Filter using search box so they don't lose a search just because of a refresh
             var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
             string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            natoliOrderListDict = natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                                 p.Value.customerName.ToLower().Contains(searchString))
-                                                     .OrderBy(kvp => kvp.Value.shipDate)
-                                                     .ToDictionary(x => x.Key, x => x.Value);
+            if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                natoliOrderListDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+                                   .OrderBy(kvp => kvp.Value.shipDate)
+                                   .ToDictionary(x => x.Key, x => x.Value);
 
-            NatoliOrderListExpanders(natoliOrderListDict);
+                // Remove/Add expanders based on filtering
+                NatoliOrderListExpanders(_filtered);
+            }
+            else
+            {
+                var _filtered =
+                natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                               p.Value.customerName.ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.Value.shipDate)
+                                   .ToDictionary(x => x.Key, x => x.Value);
+
+                // Remove/Add expanders based on filtering
+                NatoliOrderListExpanders(_filtered);
+            }
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
@@ -7435,7 +7503,7 @@ namespace NatoliOrderInterface
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "DriveWorksQueue").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
         }
-        private void NatoliOrderListExpanders(Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string background)> dict)
+        private void NatoliOrderListExpanders(Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> dict)
         {
             int i = User.VisiblePanels.IndexOf("NatoliOrderList");
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
@@ -8241,7 +8309,7 @@ namespace NatoliOrderInterface
             // expander.Expanded += DriveWorksQueueExpander_Expanded;
             return expander;
         }
-        private Expander CreateNatoliOrderListExpander(KeyValuePair<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string background)> kvp)
+        private Expander CreateNatoliOrderListExpander(KeyValuePair<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> kvp)
         {
             Grid grid = new Grid
             {
@@ -8670,14 +8738,28 @@ namespace NatoliOrderInterface
         {
             string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
             // Filter data based on text entry
-            var _filtered =
-            natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+            if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                natoliOrderListDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+                                      .OrderBy(kvp => kvp.Value.shipDate)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
+                // Remove/Add expanders based on filtering
+                NatoliOrderListExpanders(_filtered);
+            }
+            else
+            {
+                var _filtered =
+                natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
                                            p.Value.customerName.ToLower().Contains(searchString))
                                .OrderBy(kvp => kvp.Value.shipDate)
                                .ToDictionary(x => x.Key, x => x.Value);
 
-            // Remove/Add expanders based on filtering
-            NatoliOrderListExpanders(_filtered);
+                // Remove/Add expanders based on filtering
+                NatoliOrderListExpanders(_filtered);
+            }
         }
         #endregion
 
