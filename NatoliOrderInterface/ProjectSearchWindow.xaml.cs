@@ -22,7 +22,7 @@ namespace NatoliOrderInterface
     public partial class ProjectSearchWindow : Window, IDisposable
     {
         private Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> archivedProjectsDict;
-        private readonly Timer timer = new Timer(300);
+        private readonly Timer timer = new Timer(400);
         private string searchString;
         private string prevSearchString;
 
@@ -63,7 +63,9 @@ namespace NatoliOrderInterface
                         }
                         else
                         {
-                            engineeringArchivedProjects = engineeringArchivedProjects.Intersect(ProjectSearch(searchPart)).ToList();
+                            var temp = ProjectSearch(searchPart).Select(p => (p.ProjectNumber, p.RevNumber));
+                            var exist = engineeringArchivedProjects.Select(p => (p.ProjectNumber, p.RevNumber)).Intersect(temp);
+                            engineeringArchivedProjects.RemoveAll(p => !exist.Contains((p.ProjectNumber, p.RevNumber)));
                         }
                     }
                 }
@@ -74,27 +76,31 @@ namespace NatoliOrderInterface
                     {
                         if (!x)
                         {
-                            engineeringArchivedProjects = ProjectSearch(searchPart);
+                            engineeringArchivedProjects = ProjectSearch(searchPart, 1500);
                             x = !x;
                         }
                         else
                         {
-                            engineeringArchivedProjects = engineeringArchivedProjects.Union(ProjectSearch(searchPart)).ToList();
+                            // engineeringArchivedProjects = engineeringArchivedProjects.Union(ProjectSearch(searchPart)).ToList();
+                            var temp = ProjectSearch(searchPart);
+                            engineeringArchivedProjects.AddRange(temp);
                         }
                     }
                 }
-
-                if (filter)
-                {
-                    engineeringArchivedProjects = ProjectSearch(search);
-                }
                 else
                 {
-                    using var _context = new ProjectsContext();
-                    engineeringArchivedProjects = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber))
-                                                                                      .Take(150)
-                                                                                      .ToList();
-                    _context.Dispose();
+                    if (filter)
+                    {
+                        engineeringArchivedProjects = ProjectSearch(search);
+                    }
+                    else
+                    {
+                        using var _context = new ProjectsContext();
+                        engineeringArchivedProjects = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber))
+                                                                                          .Take(150)
+                                                                                          .ToList();
+                        _context.Dispose();
+                    }
                 }
 
                 archivedProjectsDict = new Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)>();
@@ -166,19 +172,19 @@ namespace NatoliOrderInterface
                                                                    .Take(length)
                                                                    .ToList();
                         break;
-                    case "Project #":
+                    case "project #":
                         res = _context.EngineeringArchivedProjects.Where(o => o.ProjectNumber.ToLower().Contains(colSearch))
                                                                    .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
                                                                    .Take(length)
                                                                    .ToList();
                         break;
-                    case "Quote #":
+                    case "quote #":
                         res = _context.EngineeringArchivedProjects.Where(o => o.QuoteNumber.ToLower().Contains(colSearch))
                                                                    .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
                                                                    .Take(length)
                                                                    .ToList();
                         break;
-                    case "Machine":
+                    case "machine":
                         res = _context.EngineeringArchivedProjects.Where(o => o.MachineNumber.ToLower().Contains(colSearch))
                                                                    .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
                                                                    .Take(length)
@@ -248,52 +254,40 @@ namespace NatoliOrderInterface
 
         private void ProjectExpanders(Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> dict)
         {
-            ProjectsStackPanel.Children.Clear();
-            IEnumerable<(int, int)> projects = ProjectsStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
-                                                                                                           int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Select(kvp => (Convert.ToInt32(kvp.Key.ProjectNumber), Convert.ToInt32(kvp.Key.RevNumber)))
-                                                      .Except(projects.Select(p => (p.Item1, p.Item2)));
-
-            foreach ((int, int) project in newProjects)
+            try
             {
-                int index = dict.Keys.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).ToList().IndexOf(dict.First(kvp => Convert.ToInt32(kvp.Key.ProjectNumber) == project.Item1).Key);
-                Expander expander = CreateProjectExpander(dict.First(x => Convert.ToInt32(x.Key.ProjectNumber) == project.Item1));
-                Dispatcher.Invoke(() => ProjectsStackPanel.Children.Insert(index, expander));
-            }
+                ProjectsStackPanel.Children.Clear();
+                IEnumerable<(int, int)> projects = ProjectsStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
+                                                                                                               int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in ProjectsStackPanel.Children.OfType<Expander>())
-            {
-                string _project = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key.ProjectNumber == _project))
+                IEnumerable<(int, int)> newProjects = dict.Select(kvp => (Convert.ToInt32(kvp.Key.ProjectNumber), Convert.ToInt32(kvp.Key.RevNumber)))
+                                                          .Except(projects.Select(p => (p.Item1, p.Item2)));
+
+                foreach ((int, int) project in newProjects)
                 {
-                    removeThese.Add(expander);
-                    continue;
+                    int index = dict.Keys.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).ToList().IndexOf(dict.First(kvp => Convert.ToInt32(kvp.Key.ProjectNumber) == project.Item1).Key);
+                    Expander expander = CreateProjectExpander(dict.First(x => Convert.ToInt32(x.Key.ProjectNumber) == project.Item1));
+                    Dispatcher.Invoke(() => ProjectsStackPanel.Children.Insert(index, expander));
                 }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key.ProjectNumber == _project).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese) { ProjectsStackPanel.Children.Remove(expander1); }
-            //if (dict.Keys.Count > 16)
-            //{
-            //    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-            //    {
-            //        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-            //        AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-            //    }
-            //}
-            //else
-            //{
-            //    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-            //    {
-            //        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-            //        headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-            //    }
-            //}
 
-            //dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "BeingEntered").First().Value;
-            //dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
+                List<Expander> removeThese = new List<Expander>();
+                foreach (Expander expander in ProjectsStackPanel.Children.OfType<Expander>())
+                {
+                    string _project = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+                    if (!dict.Any(kvp => kvp.Key.ProjectNumber == _project))
+                    {
+                        removeThese.Add(expander);
+                        continue;
+                    }
+                    Dispatcher.Invoke(() =>
+                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key.ProjectNumber == _project).Value.background)));
+                }
+                foreach (Expander expander1 in removeThese) { ProjectsStackPanel.Children.Remove(expander1); }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private Expander CreateProjectExpander(KeyValuePair<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> kvp)

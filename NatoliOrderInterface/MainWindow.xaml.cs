@@ -2176,47 +2176,54 @@ namespace NatoliOrderInterface
         {
             using var _nat02context = new NAT02Context();
 
-            // New list of projects that are in the same module that was right clicked inside of
-            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
-
-            if (validQuotes.Any())
+            try
             {
-                for (int i = 0; i < validQuotes.Count; i++)
-                {
-                    (string, string, CheckBox, string) quote = validQuotes[i];
-                    quote.Item3.IsChecked = false;
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
 
+                if (validQuotes.Any())
+                {
+                    for (int i = 0; i < validQuotes.Count; i++)
+                    {
+                        (string, string, CheckBox, string) quote = validQuotes[i];
+                        quote.Item3.IsChecked = false;
+
+                        EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
+                        {
+                            QuoteNo = double.Parse(quote.Item1),
+                            QuoteRevNo = int.Parse(quote.Item2),
+                            TimeSubmitted = DateTime.Now,
+                            FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
+                        };
+                        _nat02context.Add(q);
+                    }
+
+                    // Uncheck Check All CheckBox
+                    var x = MainGrid.Children;
+                    foreach (Border border in x.OfType<Border>())
+                    {
+                        string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                        if (headers.Single(h => h.Value == header).Key == rClickModule)
+                        {
+                            ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                        }
+                    }
+                }
+                else
+                {
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
                     {
-                        QuoteNo = double.Parse(quote.Item1),
-                        QuoteRevNo = int.Parse(quote.Item2),
+                        QuoteNo = _quoteNumber,
+                        QuoteRevNo = _quoteRevNumber,
                         TimeSubmitted = DateTime.Now,
-                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
+                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
                     };
                     _nat02context.Add(q);
                 }
-
-                // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
             }
-            else
+            catch
             {
-                EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
-                {
-                    QuoteNo = _quoteNumber,
-                    QuoteRevNo = _quoteRevNumber,
-                    TimeSubmitted = DateTime.Now,
-                    FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
-                };
-                _nat02context.Add(q);
+
             }
             _nat02context.SaveChanges();
             _nat02context.Dispose();
@@ -4487,38 +4494,21 @@ namespace NatoliOrderInterface
             {
                 using var _nat02context = new NAT02Context();
                 List<EoiQuotesMarkedForConversionView> eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
-                // Tiffany or James
-                if (User.EmployeeCode == "E4516" || User.EmployeeCode == "E4816" || User.EmployeeCode == "E4852") //Tiffany, Samantha, James
-                {
-                    IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
-                                                        .Select(e => e.Subscribed);
-                    string[] subs = subList.First().Split(',');
-                    List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
-                    foreach (string sub in subs)
-                    {
-                        string s = sub;
-                        if (sub == "Nicholas")
-                        {
-                            s = "Nick";
-                        }
-                        _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).ToList());
-                    }
-                    eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion.OrderBy(q => q.TimeSubmitted).ToList();
-                }
-                else if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    if (usrName == "Nicholas")
-                    {
-                        usrName = "NICK";
-                    }
-                    eoiQuotesMarkedForConversion = _nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(usrName)).OrderBy(q => q.TimeSubmitted).ToList();
-                }
-                else
-                {
-                    eoiQuotesMarkedForConversion = _nat02context.EoiQuotesMarkedForConversionView.OrderBy(q => q.TimeSubmitted).ToList();
-                }
 
+                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                                                        .Select(e => e.Subscribed);
+                string[] subs = subList.First().Split(',');
+                List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
+                foreach (string sub in subs)
+                {
+                    string s = sub;
+                    if (sub == "Nicholas")
+                    {
+                        s = "Nick";
+                    }
+                    _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
+                }
+                eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion;
 
                 quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
 
@@ -6258,15 +6248,27 @@ namespace NatoliOrderInterface
                 Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
                 StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                                   , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
+                                                                                                                  short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
-                IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
-                                                                  .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
-                foreach ((double, short?) quote in newQuotes)
+                Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> newQuotes = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
+
+                foreach (var quote in dict)
                 {
-                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
-                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    if (!quotes.Any(q => q.Item1 == quote.Key.quoteNumber && q.Item2 == (short)quote.Key.revNumber))
+                    {
+                        // Add to newQuotes
+                        newQuotes.Add(quote.Key, quote.Value);
+                    }
+                }
+
+                newQuotes = newQuotes.OrderBy(kvp => kvp.Value.timeSubmitted).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                //IEnumerable<(double, short)> newQuotes = dict.AsEnumerable().Select(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber)).Except(quotes)
+                //                                             .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
+                foreach (var quote in newQuotes)
+                {
+                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
+                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
                     Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
                 }
 
