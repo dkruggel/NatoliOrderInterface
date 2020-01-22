@@ -15,6 +15,8 @@ using DocumentFormat.OpenXml;
 using System.Windows.Input;
 using NatoliOrderInterface.Models.NEC;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
+using System.Windows.Shapes;
 
 namespace NatoliOrderInterface
 {
@@ -48,14 +50,13 @@ namespace NatoliOrderInterface
         private bool? isChecked = false;
         private bool validData;
         private WorkOrder workOrder;
-        private List<string> errors;
 
         public QuoteInfoWindow()
         {
             this.InitializeComponent();
         }
 
-        public QuoteInfoWindow(Quote quote, MainWindow parent, string quote_location, User user)
+        public QuoteInfoWindow(Quote quote, MainWindow parent, User user)
         {
             Owner = parent;
             InitializeComponent();
@@ -63,6 +64,7 @@ namespace NatoliOrderInterface
             quoteNumber = quote.QuoteNumber;
             this.quote = quote;
             this.parent = parent;
+            
             if (quote.OrderNo != 0)
             {
                 OrderFolderButton1.IsEnabled = true;
@@ -142,9 +144,13 @@ namespace NatoliOrderInterface
                 }
             }
             Show();
+            
         }
-        
 
+        /// <summary>
+        /// Gets the User Name of the quote
+        /// </summary>
+        /// <returns></returns>
         private string GetUserName()
         {
             using var _nat01Context = new NAT01Context();
@@ -172,7 +178,6 @@ namespace NatoliOrderInterface
             }
         }
         
-
         #region QuoteInfoPage
         private void FillQuoteInfoPage()
         {
@@ -455,8 +460,37 @@ namespace NatoliOrderInterface
         }
 
         #region Events
-        private void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
+        private async void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
         {
+            List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString())).ConfigureAwait(false);
+            if (errors.Count > 0)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    QuoteErrorsTabItem.Header = "Errors";
+                    QuoteErrorsTabItem.IsEnabled = true;
+                    ErrorsDockPanel.Children.Clear();
+                    foreach (string error in errors)
+                    {
+                        BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left};
+                        bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                        Ellipse ellipse = new Ellipse { Width = 8, Height = 8 , Margin = new Thickness(0,4,0,4) , Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
+                        TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                        bulletDecorator.Bullet = ellipse;
+                        bulletDecorator.Child = textBlock;
+                        ErrorsDockPanel.Children.Add(bulletDecorator);
+                    }
+                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                
+            }
+            else
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    QuoteErrorsTabItem.Header = "No Errors Found";
+                    QuoteErrorsTabItem.IsEnabled = false;
+                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }
         }
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
         {
