@@ -117,7 +117,7 @@ namespace NatoliOrderInterface
             LineItemChange();
             if (user.Department == "Engineering") { CreateMachineVariablesDataGrid(); }
             CreateBarcodeDataGrid();
-
+            FillEtchingInstructions();
             Show();
         }
 
@@ -643,6 +643,48 @@ namespace NatoliOrderInterface
             }
             ListHobDrawings();
             EnableOpenTabletButton();
+
+            // Etching
+            switch (orderLineItems[lineItemNumber - 1].LineItemType)
+            {
+                case "U":
+                case "UT":
+                case "UA":
+                case "UH":
+                case "UHD":
+                case "UC":
+                    OrderEtchingTabs.SelectedIndex = 0;
+                    break;
+                case "L":
+                case "LT":
+                case "LA":
+                case "LH":
+                case "LHD":
+                case "LC":
+                    OrderEtchingTabs.SelectedIndex = 1;
+                    break;
+                case "R":
+                case "RT":
+                case "RA":
+                case "RH":
+                case "RHD":
+                case "RC":
+                    OrderEtchingTabs.SelectedIndex = 3;
+                    break;
+                case "A":
+                    OrderEtchingTabs.SelectedIndex = 4;
+                    break;
+                case "D":
+                case "DS":
+                case "DI":
+                case "DA":
+                case "DC":
+                case "DH":
+                    break;
+                    OrderEtchingTabs.SelectedIndex = 2;
+                default:
+                    break;
+            }
         }
         private void ListHobDrawings()
         {
@@ -657,10 +699,11 @@ namespace NatoliOrderInterface
                 {
                     BorderBrush = System.Windows.Media.Brushes.Black,
                     BorderThickness = new Thickness(2, 2, 2, 2),
-                    Margin = new Thickness(0, 2, 0, 2),
+                    Margin = new Thickness(0, 2, 12, 2),
                     Name = "HobDrawingsBorder",
                     CornerRadius = new CornerRadius(2)
                 };
+                border.SetValue(DockPanel.DockProperty, Dock.Top);
                 StackPanel stackPanel = new StackPanel { Margin = new Thickness(0,0,0,4) };
                 string hobNo = orderLineItems[lineItemNumber - 1].HobNoShapeID;
                 while (hobNo.First() == '0')
@@ -727,80 +770,6 @@ namespace NatoliOrderInterface
         }
         private void CreateMachineVariablesDataGrid()
         {
-            //NAT02Context nAT02Context = new NAT02Context();
-
-            //try
-            //{
-            //    DataGrid machineVariablesDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
-            //    Border machineVariablesBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
-            //    OrderPanel.Children.Remove(machineVariablesBorderOld);
-            //    OrderPanel.Children.Remove(machineVariablesDataGridOld);
-            //    List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
-            //    if (machineVariables.Count != 0 && workOrder.CanRunOnAutocell)
-            //    {
-            //        Border machineVariablesBorder = new Border
-            //        {
-            //            Name = "MachineVariablesBorder",
-            //            BorderBrush = System.Windows.Media.Brushes.Gray,
-            //            BorderThickness = new Thickness(0, 1, 0, 0),
-            //            Margin = new Thickness(0, 40, 0, 0)
-            //        };
-            //        TextBlock machineVariablesTitle = new TextBlock
-            //        {
-            //            Name = "MachineVariablesTitle",
-            //            Text = "Machine Variables",
-            //            FontSize = 20,
-            //            FontWeight = FontWeights.Bold,
-            //            VerticalAlignment = VerticalAlignment.Center,
-            //            HorizontalAlignment = HorizontalAlignment.Center,
-            //            Margin = new Thickness(0, 10, 0, 0)
-            //        };
-            //        machineVariablesBorder.Child = machineVariablesTitle;
-            //        OrderPanel.Children.Add(machineVariablesBorder);
-
-            //        DataGrid machineVariablesDataGrid = new DataGrid
-            //        {
-            //            Name = "MachineVariablesDataGrid",
-            //            ItemsSource = machineVariables,
-            //            IsReadOnly = true,
-            //            HeadersVisibility = DataGridHeadersVisibility.Column
-            //        };
-            //        OrderPanel.Children.Add(machineVariablesDataGrid);
-            //    }
-            //    else
-            //    {
-            //        if (workOrder.CanRunOnAutocell)
-            //        {
-            //            Border machineVariablesBorder = new Border
-            //            {
-            //                Name = "MachineVariablesBorder",
-            //                BorderBrush = System.Windows.Media.Brushes.Gray,
-            //                BorderThickness = new Thickness(0, 1, 0, 0),
-            //                Margin = new Thickness(0, 40, 0, 0)
-            //            };
-            //            TextBlock machineVariablesTitle = new TextBlock
-            //            {
-            //                Name = "MachineVariablesTitle",
-            //                Text = "No Autocell Data For This Order",
-            //                FontSize = 20,
-            //                FontWeight = FontWeights.Bold,
-            //                Foreground = System.Windows.Media.Brushes.Crimson,
-            //                VerticalAlignment = VerticalAlignment.Center,
-            //                HorizontalAlignment = HorizontalAlignment.Center,
-            //                Margin = new Thickness(0, 10, 0, 0)
-            //            };
-            //            machineVariablesBorder.Child = machineVariablesTitle;
-            //            OrderPanel.Children.Add(machineVariablesBorder);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
-
-            //nAT02Context.Dispose();
-
             NAT02Context nAT02Context = new NAT02Context();
 
             try
@@ -839,7 +808,8 @@ namespace NatoliOrderInterface
                         Name = "MachineVariablesDataGrid",
                         ItemsSource = machineVariables,
                         IsReadOnly = true,
-                        HeadersVisibility = DataGridHeadersVisibility.Column
+                        HeadersVisibility = DataGridHeadersVisibility.Column,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Disabled
                     };
                     machineVariablesDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
                     Docker.Children.Add(machineVariablesDataGrid);
@@ -881,53 +851,6 @@ namespace NatoliOrderInterface
         }
         private void CreateBarcodeDataGrid()
         {
-            //using var _natbcContext = new NATBCContext();
-
-            //try
-            //{
-            //    DataGrid barcodeDataGridOld = OrderPanel.Children.OfType<DataGrid>().Where(dg => dg.Name == "BarcodeDataGrid").FirstOrDefault() as DataGrid;
-            //    Border barcodeBorderOld = OrderPanel.Children.OfType<Border>().Where(dg => dg.Name == "BarcodeBorder").FirstOrDefault() as Border;
-            //    OrderPanel.Children.Remove(barcodeBorderOld);
-            //    OrderPanel.Children.Remove(barcodeDataGridOld);
-            //    List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' ORDER BY OrderLineNumber", orderNumber * 100).ToList();
-            //    _natbcContext.Dispose();
-            //    if (lines.Count > 0)
-            //    {
-            //        Border barcodeBorder = new Border
-            //        {
-            //            Name = "BarcodeBorder",
-            //            BorderBrush = System.Windows.Media.Brushes.Gray,
-            //            BorderThickness = new Thickness(0, 1, 0, 0),
-            //            Margin = new Thickness(0, 40, 0, 0)
-            //        };
-            //        TextBlock barcodeTitle = new TextBlock
-            //        {
-            //            Name = "BarcodeTitle",
-            //            Text = "Last Barcode Scan",
-            //            FontSize = 20,
-            //            FontWeight = FontWeights.Bold,
-            //            VerticalAlignment = VerticalAlignment.Center,
-            //            HorizontalAlignment = HorizontalAlignment.Center,
-            //            Margin = new Thickness(0, 10, 0, 0)
-            //        };
-            //        barcodeBorder.Child = barcodeTitle;
-            //        OrderPanel.Children.Add(barcodeBorder);
-
-            //        DataGrid barcodeDataGrid = new DataGrid
-            //        {
-            //            Name = "BarcodeDataGrid",
-            //            ItemsSource = lines,
-            //            IsReadOnly = true,
-            //            HeadersVisibility = DataGridHeadersVisibility.Column
-            //        };
-            //        OrderPanel.Children.Add(barcodeDataGrid);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
-
             using var _natbcContext = new NATBCContext();
 
             try
@@ -976,6 +899,63 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+        private void FillEtchingInstructions()
+        {
+            int i = 1; // Tab
+            Dictionary<Tuple<int, int>, string> etchingDict = new Dictionary<Tuple<int, int>, string> {
+                { new Tuple<int, int> ( 1, 1 ), workOrder.UEtching1 }, { new Tuple<int, int> ( 8, 1 ), workOrder.UEtching1B },
+                { new Tuple<int, int> ( 2, 1 ), workOrder.UEtching2 }, { new Tuple<int, int> ( 9, 1 ), workOrder.UEtching2B },
+                { new Tuple<int, int> ( 3, 1 ), workOrder.UEtching3 }, { new Tuple<int, int> ( 10, 1 ), workOrder.UEtching3B },
+                { new Tuple<int, int> ( 4, 1 ), workOrder.UEtching4 }, { new Tuple<int, int> ( 11, 1 ), workOrder.UEtching4B },
+                { new Tuple<int, int> ( 5, 1 ), workOrder.UEtching5 }, { new Tuple<int, int> ( 12, 1 ), workOrder.UEtching5B },
+                { new Tuple<int, int> ( 6, 1 ), workOrder.UEtching6 }, { new Tuple<int, int> ( 13, 1 ), workOrder.UEtching6B },
+                { new Tuple<int, int> ( 7, 1 ), workOrder.UEtching7 }, { new Tuple<int, int> ( 14, 1 ), workOrder.UEtching7B },
+
+                { new Tuple<int, int> ( 1, 2 ), workOrder.LEtching1 }, { new Tuple<int, int> ( 8, 2 ), workOrder.LEtching1B },
+                { new Tuple<int, int> ( 2, 2 ), workOrder.LEtching2 }, { new Tuple<int, int> ( 9, 2 ), workOrder.LEtching2B },
+                { new Tuple<int, int> ( 3, 2 ), workOrder.LEtching3 }, { new Tuple<int, int> ( 10, 2 ), workOrder.LEtching3B },
+                { new Tuple<int, int> ( 4, 2 ), workOrder.LEtching4 }, { new Tuple<int, int> ( 11, 2 ), workOrder.LEtching4B },
+                { new Tuple<int, int> ( 5, 2 ), workOrder.LEtching5 }, { new Tuple<int, int> ( 12, 2 ), workOrder.LEtching5B },
+                { new Tuple<int, int> ( 6, 2 ), workOrder.LEtching6 }, { new Tuple<int, int> ( 13, 2 ), workOrder.LEtching6B },
+                { new Tuple<int, int> ( 7, 2 ), workOrder.LEtching7 }, { new Tuple<int, int> ( 14, 2 ), workOrder.LEtching7B },
+
+                { new Tuple<int, int> ( 1, 3 ), workOrder.DEtching1 }, { new Tuple<int, int> ( 8, 3 ), workOrder.DEtching1B },
+                { new Tuple<int, int> ( 2, 3 ), workOrder.DEtching2 }, { new Tuple<int, int> ( 9, 3 ), workOrder.DEtching2B },
+                { new Tuple<int, int> ( 3, 3 ), workOrder.DEtching3 }, { new Tuple<int, int> ( 10, 3 ), workOrder.DEtching3B },
+                { new Tuple<int, int> ( 4, 3 ), workOrder.DEtching4 }, { new Tuple<int, int> ( 11, 3 ), workOrder.DEtching4B },
+                { new Tuple<int, int> ( 5, 3 ), workOrder.DEtching5 }, { new Tuple<int, int> ( 12, 3 ), workOrder.DEtching5B },
+                { new Tuple<int, int> ( 6, 3 ), workOrder.DEtching6 }, { new Tuple<int, int> ( 13, 3 ), workOrder.DEtching6B },
+                { new Tuple<int, int> ( 7, 3 ), workOrder.DEtching7 }, { new Tuple<int, int> ( 14, 3 ), workOrder.DEtching7B },
+
+                { new Tuple<int, int> ( 1, 4 ), workOrder.REtching1 }, { new Tuple<int, int> ( 8, 4 ), workOrder.REtching1B },
+                { new Tuple<int, int> ( 2, 4 ), workOrder.REtching2 }, { new Tuple<int, int> ( 9, 4 ), workOrder.REtching2B },
+                { new Tuple<int, int> ( 3, 4 ), workOrder.REtching3 }, { new Tuple<int, int> ( 10, 4 ), workOrder.REtching3B },
+                { new Tuple<int, int> ( 4, 4 ), workOrder.REtching4 }, { new Tuple<int, int> ( 11, 4 ), workOrder.REtching4B },
+                { new Tuple<int, int> ( 5, 4 ), workOrder.REtching5 }, { new Tuple<int, int> ( 12, 4 ), workOrder.REtching5B },
+                { new Tuple<int, int> ( 6, 4 ), workOrder.REtching6 }, { new Tuple<int, int> ( 13, 4 ), workOrder.REtching6B },
+                { new Tuple<int, int> ( 7, 4 ), workOrder.REtching7 }, { new Tuple<int, int> ( 14, 4 ), workOrder.REtching7B },
+
+                { new Tuple<int, int> ( 1, 5 ), workOrder.AEtching1 }, { new Tuple<int, int> ( 6, 5 ), workOrder.AEtching6 },
+                { new Tuple<int, int> ( 2, 5 ), workOrder.AEtching2 }, { new Tuple<int, int> ( 7, 5 ), workOrder.AEtching7B },
+                { new Tuple<int, int> ( 3, 5 ), workOrder.AEtching3 }, { new Tuple<int, int> ( 8, 5 ), workOrder.AEtching8 },
+                { new Tuple<int, int> ( 4, 5 ), workOrder.AEtching4 }, { new Tuple<int, int> ( 9, 5 ), workOrder.AEtching9 },
+                { new Tuple<int, int> ( 5, 5 ), workOrder.AEtching5 }, { new Tuple<int, int> ( 10, 5 ), workOrder.AEtching10},
+
+            };
+            foreach (TabItem tab in OrderEtchingTabs.Items)
+            {
+                DockPanel dockPanel = (DockPanel)tab.Content;
+                Grid grid = dockPanel.Children.OfType<Grid>().First(g => g.Children.OfType<Border>().Any());
+                int j = 1;
+                foreach (Border border in grid.Children)
+                {
+                    TextBlock textBlock = (TextBlock)border.Child;
+                    textBlock.Text = etchingDict[new Tuple<int, int>(j, i)];
+                    j++;
+                }
+                i++;
             }
         }
         private void DeleteMachineVariables(string orderNo, int lineNumber)
@@ -1109,6 +1089,33 @@ namespace NatoliOrderInterface
         private void Window_Closed(object sender, EventArgs e)
         {
             parent.Show();
+        }
+        //private void Order_Info_Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        //{
+        //    int change = e.Delta;
+        //    short itemNo = lineItemNumber;
+        //    if (e.Delta > 0)
+        //        itemNo = (short)Math.Max(itemNo - e.Delta / 120, 1);
+        //    if (e.Delta < 0)
+        //        itemNo = (short)Math.Min(itemNo - e.Delta / 120, workOrder.LineItemCount);
+        //    lineItemNumber = itemNo;
+        //    LineItemsDataGrid.SelectedItem = LineItemsDataGrid.Items[itemNo - 1];
+        //}
+        private void Order_Info_Window_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            short itemNo = lineItemNumber;
+            if (e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.PageUp)
+            {
+                itemNo -= 1;
+                itemNo = (short)Math.Max((short)itemNo, (short)1);
+            }
+            if (e.Key == Key.Down || e.Key == Key.Right || e.Key == Key.PageDown)
+            {
+                itemNo += 1;
+                itemNo = (short)Math.Min((short)itemNo, (short)workOrder.LineItemCount);
+            }
+            lineItemNumber = itemNo;
+            LineItemsDataGrid.SelectedItem = LineItemsDataGrid.Items[itemNo - 1];
         }
         private void Order_Info_Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -1755,17 +1762,7 @@ namespace NatoliOrderInterface
             }
             LineItemChange();
         }
-        private void Order_Info_Window_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            int change = e.Delta;
-            short itemNo = lineItemNumber;
-            if (e.Delta > 0)
-                itemNo = (short)Math.Max(itemNo - e.Delta / 120, 1);
-            if (e.Delta < 0)
-                itemNo = (short)Math.Min(itemNo - e.Delta / 120, workOrder.LineItemCount);
-            lineItemNumber = itemNo;
-            LineItemsDataGrid.SelectedItem = LineItemsDataGrid.Items[itemNo - 1];
-        }
+        
         private void LineItemsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Dictionary<string, string> pdfDict = new Dictionary<string, string> {
@@ -2115,5 +2112,7 @@ namespace NatoliOrderInterface
             // GC.SuppressFinalize(this);
         }
         #endregion
+
+        
     }
 }
