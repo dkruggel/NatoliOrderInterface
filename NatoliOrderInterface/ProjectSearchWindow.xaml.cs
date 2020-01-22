@@ -412,9 +412,41 @@ namespace NatoliOrderInterface
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             timer.Stop();
-            TextBox textBox = sender as TextBox;
+            
+            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
+            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
             searchString = textBox.Text.ToLower();
+
+            if (textBox.Text.Length > 0)
+            {
+                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
+                textBlock.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                textBlock.Visibility = Visibility.Visible;
+            }
+
             timer.Start();
+        }
+
+        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Image image = sender as Image;
+            TextBox textBox = (image.Parent as Grid).Children.OfType<TextBox>().First();
+            textBox.Text = "";
+        }
+
+        private void SearchBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+                textBox.Text = "";
+            }
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)

@@ -255,7 +255,7 @@ namespace NatoliOrderInterface
             using var context = new NAT02Context();
             try
             {
-                EoiSettings eoiSettings = context.EoiSettings.Where(s => s.EmployeeId == User.EmployeeCode).First();
+                EoiSettings eoiSettings = context.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
                 eoiSettings.Maximized = WindowState == WindowState.Maximized;
                 eoiSettings.Width = (short?)Width;
                 eoiSettings.Height = (short?)Height;
@@ -2926,14 +2926,29 @@ namespace NatoliOrderInterface
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(1, 2, 0, 2),
-                Text = "45",
+                Text = User.QuoteDays.ToString(),
                 Visibility = Visibility.Collapsed
             };
             daysTextBox.TextChanged += DaysTextBox_TextChanged;
             daysTextBox.PreviewKeyUp += DaysTextBox_PreviewKeyUp;
 
+            Button csvCreationButton = new Button()
+            {
+                Name = name + "CSVButton",
+                Content = "Export to CSV",
+                VerticalAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(2, 0, 0, 0),
+                Visibility = Visibility.Collapsed,
+                Style = App.Current.Resources["Button"] as Style
+            };
+            csvCreationButton.Click += CsvCreationButton_Click;
+
             if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower().Contains("notconverted"))
+            {
                 daysTextBox.Visibility = Visibility.Visible;
+                csvCreationButton.Visibility = Visibility.Visible;
+            }
 
             // Header label
             Label headerLabel = new Label()
@@ -2961,15 +2976,43 @@ namespace NatoliOrderInterface
             searchBox.TextChanged += SearchBox_TextChanged;
 
             Grid.SetColumn(daysTextBox, 0);
+            Grid.SetColumn(csvCreationButton, 1);
             Grid.SetColumn(headerLabel, 0);
-            Grid.SetColumnSpan(headerLabel, 3);
-            Grid.SetColumn(searchBox, 2);
+            Grid.SetColumnSpan(headerLabel, 4);
+            Grid.SetColumn(searchBox, 3);
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(30)));
+            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(120)));
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
             headerLabelGrid.Children.Add(daysTextBox);
+            headerLabelGrid.Children.Add(csvCreationButton);
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(150)), searchBox);
 
             return headerLabelGrid;
+        }
+
+        private void CsvCreationButton_Click(object sender, RoutedEventArgs e)
+        {
+            string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
+            using var stream = new System.IO.StreamWriter(filePath, false);
+
+            // Quote Number, Rev Number, Customer Name, Quote Date
+            // Get info from currently filtered list in QuotesNotConverted
+            var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+            foreach (Expander expander in expanders)
+            {
+                int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+                short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+                string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
+                using var _ = new NAT01Context();
+                DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+                _.Dispose();
+                stream.Write("{0},{1},{2},{3}\n", quoteNumber, revNumber, customerName, quoteDate);
+            }
+
+            stream.Flush();
+            stream.Dispose();
+
+            MessageBox.Show("Your file is ready.");
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -2996,13 +3039,9 @@ namespace NatoliOrderInterface
             using var _ = new NAT02Context();
             try
             {
-                EoiSettings eoiSettings = new EoiSettings()
-                {
-                    EmployeeId = User.EmployeeCode,
-                    QuoteDays = short.Parse(textBox.Text)
-                };
+                EoiSettings eoiSettings = _.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
+                eoiSettings.QuoteDays = short.Parse(textBox.Text);
                 _.EoiSettings.Update(eoiSettings);
-                _.Dispose();
                 User.QuoteDays = eoiSettings.QuoteDays;
             }
             catch
@@ -3011,6 +3050,7 @@ namespace NatoliOrderInterface
             }
             finally
             {
+                _.SaveChanges();
                 _.Dispose();
             }
         }
@@ -6543,7 +6583,7 @@ namespace NatoliOrderInterface
                 //                                             .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
                 foreach (var quote in newQuotes)
                 {
-                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
+                    int index = dict.OrderBy(d => d.Value.timeSubmitted).ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
                     Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
                     Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
                 }
