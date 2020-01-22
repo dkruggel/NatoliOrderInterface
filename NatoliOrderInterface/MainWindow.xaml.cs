@@ -1179,7 +1179,7 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
+                // New list of projects that are in the same module that was right-clicked inside of
                 List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
 
                 for (int i = 0; i < validProjects.Count; i++)
@@ -1236,31 +1236,39 @@ namespace NatoliOrderInterface
                             _driveworksContext.Specifications.Update(spec);
 
 
-
-                            //Send Email To CSR
-                            if (!(bool)_tools)
+                            try
                             {
-                                List<string> _CSRs = new List<string>();
-                                
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
-                                { 
-                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
-                                }
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                //Send Email To CSR
+                                if (!(bool)_tools)
                                 {
-                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+                                    List<string> _CSRs = new List<string>();
+
+                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
+                                    {
+                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
+                                    }
+                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                    {
+                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+                                    }
+                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
                                 }
-                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
                             }
-                            // Save pending changes
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
+                            catch
+                            {
+
+                            }
+                            finally
+                            {
+                                // Save pending changes
+                                _projectsContext.SaveChanges();
+                                _driveworksContext.SaveChanges();
+                            }
                         }
                         // Dispose of contexts
                         _projectsContext.Dispose();
                         _driveworksContext.Dispose();
                         _nat02Context.Dispose();
-                        
                     }
                     catch (Exception ex)
                     {
