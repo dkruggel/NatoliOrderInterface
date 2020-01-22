@@ -1920,8 +1920,11 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this);
-                    int retVal = workOrder.TransferOrder(User, "D080");
+                    string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
+                    int retVal = workOrder.TransferOrder(User, "D080", module == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
                     if (workOrder.Finished)
@@ -3855,6 +3858,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -3957,6 +3964,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -4067,6 +4078,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -4180,6 +4195,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -4338,6 +4357,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -4488,6 +4511,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -4613,6 +4640,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Visible;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Visible;
@@ -4732,6 +4763,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -4879,6 +4914,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -5002,6 +5041,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -5118,6 +5161,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -5238,6 +5285,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -5356,6 +5407,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -5477,6 +5532,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -5635,6 +5694,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -5746,6 +5809,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -5859,6 +5926,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -5971,6 +6042,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -6087,6 +6162,10 @@ namespace NatoliOrderInterface
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
 
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
+
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
                 textBox0.Visibility = Visibility.Collapsed;
@@ -6153,6 +6232,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Collapsed;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
@@ -6262,6 +6345,10 @@ namespace NatoliOrderInterface
             if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
             {
                 moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+                Button button = moduleHeader.Children.OfType<Button>().First();
+
+                button.Visibility = Visibility.Visible;
 
                 TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
 
