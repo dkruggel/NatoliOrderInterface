@@ -17,6 +17,9 @@ using NatoliOrderInterface.Models.NEC;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Shapes;
+using System.IO;
+using System.Text;
+using System.Diagnostics;
 
 namespace NatoliOrderInterface
 {
@@ -2139,24 +2142,71 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    try
+                    if (e.Data.GetDataPresent("FileGroupDescriptor"))
                     {
-                        Outlook.Application OL = new Outlook.Application();
-                        for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                        Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
+                        byte[] fileGroupDescriptor = new byte[512];
+                        theStream.Read(fileGroupDescriptor, 0, 512);
+                        // used to build the filename from the FileGroupDescriptor block
+                        StringBuilder fileName = new StringBuilder("");
+                        // this trick gets the filename of the passed attached file
+                        for (int i = 76; fileGroupDescriptor[i] != 0; i++)
+                        { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
+                        theStream.Close();
+                        theStream.Dispose();
+                        string path = System.IO.Path.GetTempPath();
+                        // put the zip file into the temp directory
+                        filename = path + fileName.ToString();
+
+                        if (filename.EndsWith(".msg"))
                         {
-                            Object temp = OL.ActiveExplorer().Selection[i];
-                            if (temp is Outlook.MailItem)
+                            try
                             {
-                                Outlook.MailItem mailitem = (temp as Outlook.MailItem);
-                                Outlook.ItemProperties props = mailitem.ItemProperties;
-                                filename = ".msg";
+                                Outlook.Application OL = new Outlook.Application();
+                                for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                                {
+                                    Object temp = OL.ActiveExplorer().Selection[i];
+                                    if (temp is Outlook.MailItem)
+                                    {
+                                        Outlook.MailItem mailitem = (temp as Outlook.MailItem);
+                                        Outlook.ItemProperties props = mailitem.ItemProperties;
+                                        filename = ".msg";
+                                    }
+                                }
+                                ret = true;
+                            }
+                            catch
+                            {
+
                             }
                         }
-                        ret = true;
-                    }
-                    catch
-                    {
+                        else
+                        {
+                            // get the actual raw file into memory
+                            MemoryStream ms = (MemoryStream)e.Data.GetData(
+                                "FileContents", true);
+                            // allocate enough bytes to hold the raw data
+                            byte[] fileBytes = new byte[ms.Length];
+                            // set starting position at first byte and read in the raw data
+                            ms.Position = 0;
+                            ms.Read(fileBytes, 0, (int)ms.Length);
+                            // create a file and save the raw zip file to it
+                            FileStream fs = new FileStream(filename, FileMode.Create);
+                            fs.Write(fileBytes, 0, (int)fileBytes.Length);
 
+                            fs.Close();  // close the file
+
+                            FileInfo tempFile = new FileInfo(filename);
+
+                            // always good to make sure we actually created the file
+                            if (tempFile.Exists == true)
+                            {
+                                // for now, just delete what we created
+
+                            }
+                            else
+                            { Trace.WriteLine("File was not created!"); }
+                        }
                     }
                 }
             }
@@ -2226,6 +2276,7 @@ namespace NatoliOrderInterface
                     fp = path + nameOfFile + System.IO.Path.GetExtension(filename);
                 }
                 System.IO.File.Copy(filename, fp);
+                if (filename.Contains(@"\Local\Temp")) { File.Delete(filename); }
                 MessageBox.Show("Successful drop.");
             }
         }

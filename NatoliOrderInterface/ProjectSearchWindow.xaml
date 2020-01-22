@@ -20,7 +20,7 @@
                     <MenuItem x:Name="CloseMenuItem" Header="Close" Click="CloseMenuItem_Click"/>
                 </MenuItem>
             </Menu>
-            <TextBox x:Name="SearchBox" Grid.Column="1" Margin="2" TextChanged="SearchBox_TextChanged" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="SearchBox" Grid.Column="1" Margin="2" TextChanged="SearchBox_TextChanged" VerticalContentAlignment="Center" Style="{StaticResource SearchBox}" PreviewKeyUp="SearchBox_PreviewKeyUp"/>
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
             <DockPanel>

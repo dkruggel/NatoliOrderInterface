@@ -255,7 +255,7 @@ namespace NatoliOrderInterface
             using var context = new NAT02Context();
             try
             {
-                EoiSettings eoiSettings = context.EoiSettings.Where(s => s.EmployeeId == User.EmployeeCode).First();
+                EoiSettings eoiSettings = context.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
                 eoiSettings.Maximized = WindowState == WindowState.Maximized;
                 eoiSettings.Width = (short?)Width;
                 eoiSettings.Height = (short?)Height;
@@ -1179,7 +1179,7 @@ namespace NatoliOrderInterface
         {
             if (selectedProjects.Count > 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
+                // New list of projects that are in the same module that was right-clicked inside of
                 List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
 
                 for (int i = 0; i < validProjects.Count; i++)
@@ -1236,31 +1236,39 @@ namespace NatoliOrderInterface
                             _driveworksContext.Specifications.Update(spec);
 
 
-
-                            //Send Email To CSR
-                            if (!(bool)_tools)
+                            try
                             {
-                                List<string> _CSRs = new List<string>();
-                                
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
-                                { 
-                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
-                                }
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                //Send Email To CSR
+                                if (!(bool)_tools)
                                 {
-                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+                                    List<string> _CSRs = new List<string>();
+
+                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
+                                    {
+                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
+                                    }
+                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                    {
+                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+                                    }
+                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
                                 }
-                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
                             }
-                            // Save pending changes
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
+                            catch
+                            {
+
+                            }
+                            finally
+                            {
+                                // Save pending changes
+                                _projectsContext.SaveChanges();
+                                _driveworksContext.SaveChanges();
+                            }
                         }
                         // Dispose of contexts
                         _projectsContext.Dispose();
                         _driveworksContext.Dispose();
                         _nat02Context.Dispose();
-                        
                     }
                     catch (Exception ex)
                     {
@@ -2174,47 +2182,54 @@ namespace NatoliOrderInterface
         {
             using var _nat02context = new NAT02Context();
 
-            // New list of projects that are in the same module that was right clicked inside of
-            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
-
-            if (validQuotes.Any())
+            try
             {
-                for (int i = 0; i < validQuotes.Count; i++)
-                {
-                    (string, string, CheckBox, string) quote = validQuotes[i];
-                    quote.Item3.IsChecked = false;
+                // New list of projects that are in the same module that was right clicked inside of
+                List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
 
+                if (validQuotes.Any())
+                {
+                    for (int i = 0; i < validQuotes.Count; i++)
+                    {
+                        (string, string, CheckBox, string) quote = validQuotes[i];
+                        quote.Item3.IsChecked = false;
+
+                        EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
+                        {
+                            QuoteNo = double.Parse(quote.Item1),
+                            QuoteRevNo = int.Parse(quote.Item2),
+                            TimeSubmitted = DateTime.Now,
+                            FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
+                        };
+                        _nat02context.Add(q);
+                    }
+
+                    // Uncheck Check All CheckBox
+                    var x = MainGrid.Children;
+                    foreach (Border border in x.OfType<Border>())
+                    {
+                        string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                        if (headers.Single(h => h.Value == header).Key == rClickModule)
+                        {
+                            ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                        }
+                    }
+                }
+                else
+                {
                     EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
                     {
-                        QuoteNo = double.Parse(quote.Item1),
-                        QuoteRevNo = int.Parse(quote.Item2),
+                        QuoteNo = _quoteNumber,
+                        QuoteRevNo = _quoteRevNumber,
                         TimeSubmitted = DateTime.Now,
-                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
+                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
                     };
                     _nat02context.Add(q);
                 }
-
-                // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
             }
-            else
+            catch
             {
-                EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
-                {
-                    QuoteNo = _quoteNumber,
-                    QuoteRevNo = _quoteRevNumber,
-                    TimeSubmitted = DateTime.Now,
-                    FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
-                };
-                _nat02context.Add(q);
+
             }
             _nat02context.SaveChanges();
             _nat02context.Dispose();
@@ -2911,14 +2926,29 @@ namespace NatoliOrderInterface
                 VerticalAlignment = VerticalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(1, 2, 0, 2),
-                Text = "45",
+                Text = User.QuoteDays.ToString(),
                 Visibility = Visibility.Collapsed
             };
             daysTextBox.TextChanged += DaysTextBox_TextChanged;
             daysTextBox.PreviewKeyUp += DaysTextBox_PreviewKeyUp;
 
+            Button csvCreationButton = new Button()
+            {
+                Name = name + "CSVButton",
+                Content = "Export to CSV",
+                VerticalAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(2, 0, 0, 0),
+                Visibility = Visibility.Collapsed,
+                Style = App.Current.Resources["Button"] as Style
+            };
+            csvCreationButton.Click += CsvCreationButton_Click;
+
             if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower().Contains("notconverted"))
+            {
                 daysTextBox.Visibility = Visibility.Visible;
+                csvCreationButton.Visibility = Visibility.Visible;
+            }
 
             // Header label
             Label headerLabel = new Label()
@@ -2946,15 +2976,43 @@ namespace NatoliOrderInterface
             searchBox.TextChanged += SearchBox_TextChanged;
 
             Grid.SetColumn(daysTextBox, 0);
+            Grid.SetColumn(csvCreationButton, 1);
             Grid.SetColumn(headerLabel, 0);
-            Grid.SetColumnSpan(headerLabel, 3);
-            Grid.SetColumn(searchBox, 2);
+            Grid.SetColumnSpan(headerLabel, 4);
+            Grid.SetColumn(searchBox, 3);
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(30)));
+            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(120)));
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
             headerLabelGrid.Children.Add(daysTextBox);
+            headerLabelGrid.Children.Add(csvCreationButton);
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(150)), searchBox);
 
             return headerLabelGrid;
+        }
+
+        private void CsvCreationButton_Click(object sender, RoutedEventArgs e)
+        {
+            string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
+            using var stream = new System.IO.StreamWriter(filePath, false);
+
+            // Quote Number, Rev Number, Customer Name, Quote Date
+            // Get info from currently filtered list in QuotesNotConverted
+            var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+            foreach (Expander expander in expanders)
+            {
+                int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+                short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+                string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
+                using var _ = new NAT01Context();
+                DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+                _.Dispose();
+                stream.Write("{0},{1},{2},{3}\n", quoteNumber, revNumber, customerName, quoteDate);
+            }
+
+            stream.Flush();
+            stream.Dispose();
+
+            MessageBox.Show("Your file is ready.");
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -2981,13 +3039,9 @@ namespace NatoliOrderInterface
             using var _ = new NAT02Context();
             try
             {
-                EoiSettings eoiSettings = new EoiSettings()
-                {
-                    EmployeeId = User.EmployeeCode,
-                    QuoteDays = short.Parse(textBox.Text)
-                };
+                EoiSettings eoiSettings = _.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
+                eoiSettings.QuoteDays = short.Parse(textBox.Text);
                 _.EoiSettings.Update(eoiSettings);
-                _.Dispose();
                 User.QuoteDays = eoiSettings.QuoteDays;
             }
             catch
@@ -2996,6 +3050,7 @@ namespace NatoliOrderInterface
             }
             finally
             {
+                _.SaveChanges();
                 _.Dispose();
             }
         }
@@ -3775,6 +3830,16 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "BeingEntered");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            ordersBeingEnteredDict =
+                ordersBeingEnteredDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
+                                                  o.Value.quoteNumber.ToString().Contains(searchString) ||
+                                                  o.Value.customerName.ToLower().Contains(searchString))
+                                      .OrderBy(kvp => kvp.Key)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
             BeingEnteredExpanders(ordersBeingEnteredDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -3867,6 +3932,19 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "InTheOffice");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            ordersInTheOfficeDict =
+                ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
+                                                 o.Value.customerName.ToString().Contains(searchString) ||
+                                                 o.Value.employeeName.ToLower().Contains(searchString) ||
+                                                 o.Value.csr.ToLower().Contains(searchString))
+                                     .OrderBy(kvp => kvp.Value.daysToShip)
+                                     .ThenBy(kvp => kvp.Value.daysInOffice)
+                                     .ThenBy(kvp => kvp.Key)
+                                     .ToDictionary(x => x.Key, x => x.Value);
 
             InTheOfficeExpanders(ordersInTheOfficeDict);
 
@@ -3964,6 +4042,15 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "EnteredUnscanned");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            ordersEnteredUnscannedDict =
+                ordersEnteredUnscannedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                      p.Value.customerName.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.Key)
+                                          .ToDictionary(x => x.Key, x => x.Value);
 
             OrdersEnteredUnscannedExpanders(ordersEnteredUnscannedDict);
 
@@ -4068,6 +4155,18 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "InEngineering");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            ordersInEngineeringUnprintedDict =
+                ordersInEngineeringUnprintedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                            p.Value.customerName.ToLower().Contains(searchString) ||
+                                                            p.Value.employeeName.ToLower().Contains(searchString))
+                                                .OrderByDescending(kvp => kvp.Value.daysInEng)
+                                                .ThenBy(kvp => kvp.Value.daysToShip)
+                                                .ThenBy(kvp => kvp.Key)
+                                                .ToDictionary(x => x.Key, x => x.Value);
 
             OrdersInEngineeringUnprintedExpanders(ordersInEngineeringUnprintedDict);
 
@@ -4208,6 +4307,17 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "ReadyToPrint");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            ordersReadyToPrintDict =
+                ordersReadyToPrintDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                  p.Value.customerName.ToLower().Contains(searchString) ||
+                                                  p.Value.employeeName.ToLower().Contains(searchString) ||
+                                                  p.Value.checkedBy.ToLower().Contains(searchString))
+                                      .OrderBy(kvp => kvp.Key)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
             OrdersReadyToPrintExpanders(ordersReadyToPrintDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -4347,6 +4457,17 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "PrintedInEngineering");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            ordersPrintedInEngineeringDict =
+                ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                          p.Value.customerName.ToLower().Contains(searchString) ||
+                                                          p.Value.employeeName.ToLower().Contains(searchString) ||
+                                                          p.Value.checkedBy.ToLower().Contains(searchString))
+                                              .OrderByDescending(kvp => kvp.Key)
+                                              .ToDictionary(x => x.Key, x => x.Value);
+
             OrdersPrintedInEngineeringExpanders(ordersPrintedInEngineeringDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -4467,7 +4588,33 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "QuotesNotConverted");
             }
 
-            QuotesNotConvertedExpanders(quotesNotConvertedDict);
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                quotesNotConvertedDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
+                // Remove/Add expanders based on filtering
+                QuotesNotConvertedExpanders(_filtered);
+            }
+            else
+            {
+                var _filtered =
+                quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Value.customerName.ToLower().Contains(searchString) ||
+                                                  p.Value.csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
+                // Remove/Add expanders based on filtering
+                QuotesNotConvertedExpanders(_filtered);
+            }
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
@@ -4485,38 +4632,21 @@ namespace NatoliOrderInterface
             {
                 using var _nat02context = new NAT02Context();
                 List<EoiQuotesMarkedForConversionView> eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
-                // Tiffany or James
-                if (User.EmployeeCode == "E4516" || User.EmployeeCode == "E4816" || User.EmployeeCode == "E4852") //Tiffany, Samantha, James
-                {
-                    IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
-                                                        .Select(e => e.Subscribed);
-                    string[] subs = subList.First().Split(',');
-                    List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
-                    foreach (string sub in subs)
-                    {
-                        string s = sub;
-                        if (sub == "Nicholas")
-                        {
-                            s = "Nick";
-                        }
-                        _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).ToList());
-                    }
-                    eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion.OrderBy(q => q.TimeSubmitted).ToList();
-                }
-                else if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    if (usrName == "Nicholas")
-                    {
-                        usrName = "NICK";
-                    }
-                    eoiQuotesMarkedForConversion = _nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(usrName)).OrderBy(q => q.TimeSubmitted).ToList();
-                }
-                else
-                {
-                    eoiQuotesMarkedForConversion = _nat02context.EoiQuotesMarkedForConversionView.OrderBy(q => q.TimeSubmitted).ToList();
-                }
 
+                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                                                        .Select(e => e.Subscribed);
+                string[] subs = subList.First().Split(',');
+                List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
+                foreach (string sub in subs)
+                {
+                    string s = sub;
+                    if (sub == "Nicholas")
+                    {
+                        s = "Nick";
+                    }
+                    _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
+                }
+                eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion;
 
                 quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
 
@@ -4571,6 +4701,17 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "QuotesToConvert");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            quotesToConvertDict =
+                quotesToConvertDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
+                                               p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                               p.Value.customerName.ToLower().Contains(searchString) ||
+                                               p.Value.csr.ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.Key.quoteNumber)
+                                   .ToDictionary(x => x.Key, x => x.Value);
 
             QuotesToConvertExpanders(quotesToConvertDict);
 
@@ -4713,6 +4854,20 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "AllTabletProjects");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            allTabletProjectsDict =
+                allTabletProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                 p.Value.customerName.ToLower().Contains(searchString) ||
+                                                 p.Value.csr.ToLower().Contains(searchString) ||
+                                                 p.Value.drafter.ToLower().Contains(searchString))
+                                     .OrderByDescending(kvp => kvp.Value.priority)
+                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                     .ThenBy(kvp => kvp.Key.projectNumber)
+                                     .ToDictionary(x => x.Key, x => x.Value);
+
             AllTabletProjectsExpanders(allTabletProjectsDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -4815,6 +4970,19 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsNotStarted");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            tabletProjectsNotStartedDict =
+                tabletProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                        p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                        p.Value.customerName.ToLower().Contains(searchString) ||
+                                                        p.Value.csr.ToLower().Contains(searchString))
+                                            .OrderByDescending(kvp => kvp.Value.priority)
+                                            .ThenBy(kvp => kvp.Value.dueDate)
+                                            .ThenBy(kvp => kvp.Key.projectNumber)
+                                            .ToDictionary(x => x.Key, x => x.Value);
 
             TabletProjectsNotStartedExpanders(tabletProjectsNotStartedDict);
 
@@ -4919,6 +5087,20 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsStarted");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            tabletProjectsStartedDict =
+                tabletProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                     p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                     p.Value.customerName.ToLower().Contains(searchString) ||
+                                                     p.Value.csr.ToLower().Contains(searchString) ||
+                                                     p.Value.drafter.ToLower().Contains(searchString))
+                                         .OrderByDescending(kvp => kvp.Value.priority)
+                                         .ThenBy(kvp => kvp.Value.dueDate)
+                                         .ThenBy(kvp => kvp.Key.projectNumber)
+                                         .ToDictionary(x => x.Key, x => x.Value);
 
             TabletProjectsStartedExpanders(tabletProjectsStartedDict);
 
@@ -5025,6 +5207,20 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsDrawn");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            tabletProjectsDrawnDict =
+                tabletProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                   p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                   p.Value.customerName.ToLower().Contains(searchString) ||
+                                                   p.Value.csr.ToLower().Contains(searchString) ||
+                                                   p.Value.drafter.ToLower().Contains(searchString))
+                                       .OrderByDescending(kvp => kvp.Value.priority)
+                                       .ThenBy(kvp => kvp.Value.dueDate)
+                                       .ThenBy(kvp => kvp.Key.projectNumber)
+                                       .ToDictionary(x => x.Key, x => x.Value);
+
             TabletProjectsDrawnExpanders(tabletProjectsDrawnDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -5129,6 +5325,20 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsSubmitted");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            tabletProjectsSubmittedDict =
+                tabletProjectsSubmittedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                      p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                      p.Value.customerName.ToLower().Contains(searchString) ||
+                                                      p.Value.csr.ToLower().Contains(searchString) ||
+                                                      p.Value.drafter.ToLower().Contains(searchString))
+                                          .OrderByDescending(kvp => kvp.Value.priority)
+                                          .ThenBy(kvp => kvp.Value.dueDate)
+                                          .ThenBy(kvp => kvp.Key.projectNumber)
+                                          .ToDictionary(x => x.Key, x => x.Value);
 
             TabletProjectsSubmittedExpanders(tabletProjectsSubmittedDict);
 
@@ -5236,6 +5446,19 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsOnHold");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            tabletProjectsOnHoldDict =
+                tabletProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Value.customerName.ToLower().Contains(searchString) ||
+                                                  p.Value.csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => kvp.Value.priority)
+                                      .ThenBy(kvp => kvp.Value.dueDate)
+                                      .ThenBy(kvp => kvp.Key.projectNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
 
             TabletProjectsOnHoldExpanders(tabletProjectsOnHoldDict);
 
@@ -5354,7 +5577,7 @@ namespace NatoliOrderInterface
                 }
                 eoiAllToolProjects.Clear();
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
 
             }
@@ -5380,6 +5603,19 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "AllToolProjects");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            allToolProjectsDict = allToolProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                                 p.Value.customerName.ToLower().Contains(searchString) ||
+                                                                 p.Value.csr.ToLower().Contains(searchString) ||
+                                                                 p.Value.drafter.ToLower().Contains(searchString))
+                                                     .OrderByDescending(kvp => kvp.Value.priority)
+                                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                                     .ThenBy(kvp => kvp.Key.projectNumber)
+                                                     .ToDictionary(x => x.Key, x => x.Value);
 
             AllToolProjectsExpanders(allToolProjectsDict);
 
@@ -5480,6 +5716,19 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsNotStarted");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            toolProjectsNotStartedDict =
+                toolProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                      p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                      p.Value.customerName.ToLower().Contains(searchString) ||
+                                                      p.Value.csr.ToLower().Contains(searchString))
+                                          .OrderByDescending(kvp => kvp.Value.priority)
+                                          .ThenBy(kvp => kvp.Value.dueDate)
+                                          .ThenBy(kvp => kvp.Key.projectNumber)
+                                          .ToDictionary(x => x.Key, x => x.Value);
+
             ToolProjectsNotStartedExpanders(toolProjectsNotStartedDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -5579,6 +5828,20 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsStarted");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            toolProjectsStartedDict =
+                toolProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                   p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                   p.Value.customerName.ToLower().Contains(searchString) ||
+                                                   p.Value.csr.ToLower().Contains(searchString) ||
+                                                   p.Value.drafter.ToLower().Contains(searchString))
+                                       .OrderByDescending(kvp => kvp.Value.priority)
+                                       .ThenBy(kvp => kvp.Value.dueDate)
+                                       .ThenBy(kvp => kvp.Key.projectNumber)
+                                       .ToDictionary(x => x.Key, x => x.Value);
+
             ToolProjectsStartedExpanders(toolProjectsStartedDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -5677,6 +5940,20 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsDrawn");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            toolProjectsDrawnDict =
+                toolProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                 p.Value.customerName.ToLower().Contains(searchString) ||
+                                                 p.Value.csr.ToLower().Contains(searchString) ||
+                                                 p.Value.drafter.ToLower().Contains(searchString))
+                                     .OrderByDescending(kvp => kvp.Value.priority)
+                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                     .ThenBy(kvp => kvp.Key.projectNumber)
+                                     .ToDictionary(x => x.Key, x => x.Value);
 
             ToolProjectsDrawnExpanders(toolProjectsDrawnDict);
 
@@ -5779,6 +6056,19 @@ namespace NatoliOrderInterface
                 BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsOnHold");
             }
 
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            toolProjectsOnHoldDict =
+                toolProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.Value.customerName.ToLower().Contains(searchString) ||
+                                                  p.Value.csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => kvp.Value.priority)
+                                      .ThenBy(kvp => kvp.Value.dueDate)
+                                      .ThenBy(kvp => kvp.Key.projectNumber)
+                                      .ToDictionary(x => x.Key, x => x.Value);
+
             ToolProjectsOnHoldExpanders(toolProjectsOnHoldDict);
 
             StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -5832,6 +6122,16 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "DriveWorksQueue");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+            driveWorksQueueDict = driveWorksQueueDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                                 p.Value.releasedBy.ToLower().Contains(searchString) ||
+                                                                 p.Value.tag.ToLower().Contains(searchString))
+                                                     .OrderBy(kvp => kvp.Value.priority)
+                                                     .ThenBy(kvp => kvp.Value.releaseTime)
+                                                     .ToDictionary(x => x.Key, x => x.Value);
 
             DriveWorksQueueExpanders(driveWorksQueueDict);
 
@@ -5927,6 +6227,14 @@ namespace NatoliOrderInterface
 
                 BuildPanel(dockPanel, interiorStackPanel, "NatoliOrderList");
             }
+
+            // Filter using search box so they don't lose a search just because of a refresh
+            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            natoliOrderListDict = natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                                 p.Value.customerName.ToLower().Contains(searchString))
+                                                     .OrderBy(kvp => kvp.Value.shipDate)
+                                                     .ToDictionary(x => x.Key, x => x.Value);
 
             NatoliOrderListExpanders(natoliOrderListDict);
 
@@ -6256,15 +6564,27 @@ namespace NatoliOrderInterface
                 Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
                 StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                                   , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
+                                                                                                                  short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
 
-                IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(o => (o.quoteNumber, (short)o.revNumber)).Except(quotes)
-                                                                  .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
-                foreach ((double, short?) quote in newQuotes)
+                Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> newQuotes = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
+
+                foreach (var quote in dict)
                 {
-                    int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
-                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Item1, quote.Item2)));
+                    if (!quotes.Any(q => q.Item1 == quote.Key.quoteNumber && q.Item2 == (short)quote.Key.revNumber))
+                    {
+                        // Add to newQuotes
+                        newQuotes.Add(quote.Key, quote.Value);
+                    }
+                }
+
+                newQuotes = newQuotes.OrderBy(kvp => kvp.Value.timeSubmitted).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                //IEnumerable<(double, short)> newQuotes = dict.AsEnumerable().Select(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber)).Except(quotes)
+                //                                             .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
+                foreach (var quote in newQuotes)
+                {
+                    int index = dict.OrderBy(d => d.Value.timeSubmitted).ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
+                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
                     Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
                 }
 
@@ -8036,7 +8356,7 @@ namespace NatoliOrderInterface
             }
 
             // Filter data based on text entry
-             if (searchString.ToLower().StartsWith("rep:"))
+            if (searchString.ToLower().StartsWith("rep:"))
             {
                 searchString = searchString.Substring(4);
                 var _filtered =
@@ -8572,940 +8892,940 @@ namespace NatoliOrderInterface
         #endregion
         #endregion
 
-        #region DataGridLoadingRow
-        private void InEngineeringDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersInEngineeringUnprintedView rowView = dataGrid.Items[index] as EoiOrdersInEngineeringUnprintedView;
-                bool rush = rowView.RushYorN.ToString().Trim() == "Y" || rowView.PaidRushFee.ToString().Trim() == "Y";
-                bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
-                bool beingChecked = Convert.ToBoolean(rowView.BeingChecked);
-                bool markedForChecking = Convert.ToBoolean(rowView.MarkedForChecking);
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (doNotProcess)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Pink);
-                }
-                else
-                {
-                    if (beingChecked && User.Department == "Engineering")
-                    {
-                        e.Row.Background = new SolidColorBrush(Colors.DodgerBlue);
-                    }
-                    //else if (count == 0 && (machineType == "BB" || machineType == "B" || machineType == "D") && lineType.Count != 0)
-                    //{
-                    //    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    //}
-                    else if (markedForChecking)
-                    {
-                        e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
-                    }
-                    else
-                    {
-                        e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                }
-            }
-            catch //(Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                // WriteToErrorLog("InEngineeringDataGrid_LoadingRow", ex.Message);
-            }
-        }
+        //#region DataGridLoadingRow
+        //private void InEngineeringDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersInEngineeringUnprintedView rowView = dataGrid.Items[index] as EoiOrdersInEngineeringUnprintedView;
+        //        bool rush = rowView.RushYorN.ToString().Trim() == "Y" || rowView.PaidRushFee.ToString().Trim() == "Y";
+        //        bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
+        //        bool beingChecked = Convert.ToBoolean(rowView.BeingChecked);
+        //        bool markedForChecking = Convert.ToBoolean(rowView.MarkedForChecking);
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (doNotProcess)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Pink);
+        //        }
+        //        else
+        //        {
+        //            if (beingChecked && User.Department == "Engineering")
+        //            {
+        //                e.Row.Background = new SolidColorBrush(Colors.DodgerBlue);
+        //            }
+        //            //else if (count == 0 && (machineType == "BB" || machineType == "B" || machineType == "D") && lineType.Count != 0)
+        //            //{
+        //            //    e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            //}
+        //            else if (markedForChecking)
+        //            {
+        //                e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
+        //            }
+        //            else
+        //            {
+        //                e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //        }
+        //    }
+        //    catch //(Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        // WriteToErrorLog("InEngineeringDataGrid_LoadingRow", ex.Message);
+        //    }
+        //}
 
-        private void ReadyToPrintDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersReadyToPrintView rowView = dataGrid.Items[index] as EoiOrdersReadyToPrintView;
-                double orderNumber = rowView.OrderNo;
-                bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
-                bool tm2 = Convert.ToBoolean(rowView.TM2);
-                bool tabletPrints = Convert.ToBoolean(rowView.Tablet);
-                bool toolPrints = Convert.ToBoolean(rowView.Tool);
-                List<OrderDetails> orderDetails;
-                List<OrderHeader> orderHeader;
-                orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == orderNumber * 100).ToList();
-                orderHeader = _nat01context.OrderHeader.Where(o => o.OrderNo == orderNumber * 100).ToList();
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
+        //private void ReadyToPrintDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersReadyToPrintView rowView = dataGrid.Items[index] as EoiOrdersReadyToPrintView;
+        //        double orderNumber = rowView.OrderNo;
+        //        bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
+        //        bool tm2 = Convert.ToBoolean(rowView.TM2);
+        //        bool tabletPrints = Convert.ToBoolean(rowView.Tablet);
+        //        bool toolPrints = Convert.ToBoolean(rowView.Tool);
+        //        List<OrderDetails> orderDetails;
+        //        List<OrderHeader> orderHeader;
+        //        orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == orderNumber * 100).ToList();
+        //        orderHeader = _nat01context.OrderHeader.Where(o => o.OrderNo == orderNumber * 100).ToList();
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
 
-                if (tm2 || tabletPrints)
-                {
-                    foreach (OrderDetails od in orderDetails)
-                    {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
-                        {
-                            string path = @"\\engserver\workstations\tool_drawings\" + orderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                            if (!System.IO.File.Exists(path))
-                            {
-                                goto Missing;
-                            }
-                        }
-                    }
-                }
+        //        if (tm2 || tabletPrints)
+        //        {
+        //            foreach (OrderDetails od in orderDetails)
+        //            {
+        //                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+        //                {
+        //                    string path = @"\\engserver\workstations\tool_drawings\" + orderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+        //                    if (!System.IO.File.Exists(path))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                if (tm2 || toolPrints)
-                {
-                    foreach (OrderDetails od in orderDetails)
-                    {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                        {
-                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                            detailType = detailType == "MISC" ? "REJECT" : detailType;
-                            string international = orderHeader.FirstOrDefault().UnitOfMeasure;
-                            string path = @"\\engserver\workstations\tool_drawings\" + orderNumber + @"\" + detailType + ".pdf";
-                            if (!System.IO.File.Exists(path))
-                            {
-                                goto Missing;
-                            }
-                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                            {
-                                goto Missing;
-                            }
-                        }
-                    }
-                }
+        //        if (tm2 || toolPrints)
+        //        {
+        //            foreach (OrderDetails od in orderDetails)
+        //            {
+        //                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+        //                {
+        //                    string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+        //                    detailType = detailType == "MISC" ? "REJECT" : detailType;
+        //                    string international = orderHeader.FirstOrDefault().UnitOfMeasure;
+        //                    string path = @"\\engserver\workstations\tool_drawings\" + orderNumber + @"\" + detailType + ".pdf";
+        //                    if (!System.IO.File.Exists(path))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                    if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                goto NotMissing;
+        //        goto NotMissing;
 
-            Missing:;
-                if (User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-                goto Finished;
+        //    Missing:;
+        //        if (User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //        goto Finished;
 
-            NotMissing:;
-                e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //    NotMissing:;
+        //        e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
 
-            Finished:;
-            }
-            catch
-            {
+        //    Finished:;
+        //    }
+        //    catch
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
-        private void InTheOfficeDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersInOfficeView rowView = dataGrid.Items[index] as EoiOrdersInOfficeView;
-                int? orderNumber = rowView.OrderNo;
-                bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
-                bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (doNotProcess)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Pink);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            {
+        //private void InTheOfficeDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersInOfficeView rowView = dataGrid.Items[index] as EoiOrdersInOfficeView;
+        //        int? orderNumber = rowView.OrderNo;
+        //        bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
+        //        bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (doNotProcess)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Pink);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
-        private void EnteredUnscannedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersEnteredAndUnscannedView rowView = dataGrid.Items[index] as EoiOrdersEnteredAndUnscannedView;
-                bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
-                bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
-                string[] errRes;
-                errRes = new string[2] { rowView.ProcessState,
-                          rowView.TransitionName };
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.White);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (doNotProcess)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Pink);
-                }
-                else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Black);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            {
-            }
-        }
+        //private void EnteredUnscannedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersEnteredAndUnscannedView rowView = dataGrid.Items[index] as EoiOrdersEnteredAndUnscannedView;
+        //        bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
+        //        bool doNotProcess = Convert.ToBoolean(rowView.DoNotProcess);
+        //        string[] errRes;
+        //        errRes = new string[2] { rowView.ProcessState,
+        //                  rowView.TransitionName };
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.White);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (doNotProcess)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Pink);
+        //        }
+        //        else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Black);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
 
-        private void BeingEnteredDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersBeingEnteredView rowView = dataGrid.Items[index] as EoiOrdersBeingEnteredView;
-                bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-            }
-            catch
-            {
-            }
-        }
+        //private void BeingEnteredDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersBeingEnteredView rowView = dataGrid.Items[index] as EoiOrdersBeingEnteredView;
+        //        bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
 
-        private void QuotesNotConvertedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiQuotesNotConvertedView rowView = dataGrid.Items[index] as EoiQuotesNotConvertedView;
-                int daysOld = (DateTime.Now - _nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).Select(q => q.QuoteDate).First()).Days;
-                string rush = rowView.RushYorN;
-                if (rush == "Y")
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (daysOld > 6)
-                {
-                    using var _nat02context = new NAT02Context();
-                    if (!_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).Any())
-                    {
-                        e.Row.Background = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    _nat02context.Dispose();
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            {
-            }
-        }
+        //private void QuotesNotConvertedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiQuotesNotConvertedView rowView = dataGrid.Items[index] as EoiQuotesNotConvertedView;
+        //        int daysOld = (DateTime.Now - _nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).Select(q => q.QuoteDate).First()).Days;
+        //        string rush = rowView.RushYorN;
+        //        if (rush == "Y")
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (daysOld > 6)
+        //        {
+        //            using var _nat02context = new NAT02Context();
+        //            if (!_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).Any())
+        //            {
+        //                e.Row.Background = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            _nat02context.Dispose();
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
 
-        private void QuotesToConvertDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiQuotesMarkedForConversionView rowView = dataGrid.Items[index] as EoiQuotesMarkedForConversionView;
-                string rush = rowView.Rush.Trim();
-                e.Row.ToolTip = null;
-                if (rush == "Y")
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                using var _nat01context = new NAT01Context();
-                e.Row.ToolTip = string.IsNullOrEmpty(_nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim()) ? "No Comment" : _nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim();
-            }
-            catch
-            {
-            }
-        }
+        //private void QuotesToConvertDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiQuotesMarkedForConversionView rowView = dataGrid.Items[index] as EoiQuotesMarkedForConversionView;
+        //        string rush = rowView.Rush.Trim();
+        //        e.Row.ToolTip = null;
+        //        if (rush == "Y")
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        using var _nat01context = new NAT01Context();
+        //        e.Row.ToolTip = string.IsNullOrEmpty(_nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim()) ? "No Comment" : _nat01context.QuoteHeader.Where(q => q.QuoteNo == rowView.QuoteNo && q.QuoteRevNo == rowView.QuoteRevNo).First().Shipment.Trim();
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
 
-        private void PrintedInEngineeringDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiOrdersPrintedInEngineeringView rowView = dataGrid.Items[index] as EoiOrdersPrintedInEngineeringView;
-                bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
-                bool tm2 = Convert.ToBoolean(rowView.TM2);
-                bool tabletPrints = Convert.ToBoolean(rowView.Tablet);
-                bool toolPrints = Convert.ToBoolean(rowView.Tool);
-                List<OrderDetails> orderDetails;
-                List<OrderHeader> orderHeader;
-                orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == rowView.OrderNo * 100).ToList();
-                orderHeader = _nat01context.OrderHeader.Where(o => o.OrderNo == rowView.OrderNo * 100).ToList();
-                if (rush)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
+        //private void PrintedInEngineeringDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiOrdersPrintedInEngineeringView rowView = dataGrid.Items[index] as EoiOrdersPrintedInEngineeringView;
+        //        bool rush = rowView.RushYorN == "Y" || rowView.PaidRushFee == "Y";
+        //        bool tm2 = Convert.ToBoolean(rowView.TM2);
+        //        bool tabletPrints = Convert.ToBoolean(rowView.Tablet);
+        //        bool toolPrints = Convert.ToBoolean(rowView.Tool);
+        //        List<OrderDetails> orderDetails;
+        //        List<OrderHeader> orderHeader;
+        //        orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == rowView.OrderNo * 100).ToList();
+        //        orderHeader = _nat01context.OrderHeader.Where(o => o.OrderNo == rowView.OrderNo * 100).ToList();
+        //        if (rush)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
 
-                if (tm2 || tabletPrints)
-                {
-                    foreach (OrderDetails od in orderDetails)
-                    {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
-                        {
-                            string path = @"\\engserver\workstations\tool_drawings\" + rowView.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                            if (!System.IO.File.Exists(path))
-                            {
-                                goto Missing;
-                            }
-                        }
-                    }
-                }
+        //        if (tm2 || tabletPrints)
+        //        {
+        //            foreach (OrderDetails od in orderDetails)
+        //            {
+        //                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+        //                {
+        //                    string path = @"\\engserver\workstations\tool_drawings\" + rowView.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+        //                    if (!System.IO.File.Exists(path))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                if (tm2 || toolPrints)
-                {
-                    foreach (OrderDetails od in orderDetails)
-                    {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                        {
-                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                            detailType = detailType == "MISC" ? "REJECT" : detailType;
-                            string international = orderHeader.FirstOrDefault().UnitOfMeasure;
-                            string path = @"\\engserver\workstations\tool_drawings\" + rowView.OrderNo + @"\" + detailType + ".pdf";
-                            if (!System.IO.File.Exists(path))
-                            {
-                                goto Missing;
-                            }
-                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                            {
-                                goto Missing;
-                            }
-                        }
-                    }
-                }
+        //        if (tm2 || toolPrints)
+        //        {
+        //            foreach (OrderDetails od in orderDetails)
+        //            {
+        //                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+        //                {
+        //                    string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+        //                    detailType = detailType == "MISC" ? "REJECT" : detailType;
+        //                    string international = orderHeader.FirstOrDefault().UnitOfMeasure;
+        //                    string path = @"\\engserver\workstations\tool_drawings\" + rowView.OrderNo + @"\" + detailType + ".pdf";
+        //                    if (!System.IO.File.Exists(path))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                    if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+        //                    {
+        //                        goto Missing;
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                goto NotMissing;
+        //        goto NotMissing;
 
-            Missing:;
-                if (User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-                goto Finished;
+        //    Missing:;
+        //        if (User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //        goto Finished;
 
-            NotMissing:;
-                e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //    NotMissing:;
+        //        e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
 
-            Finished:;
-            }
-            catch
-            {
+        //    Finished:;
+        //    }
+        //    catch
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
-        private void AllTabletProjectsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiAllTabletProjectsView rowView = dataGrid.Items[index] as EoiAllTabletProjectsView;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                using var _nat02context = new NAT02Context();
-                bool finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).Any();
-                _nat02context.Dispose();
-                bool onHold = rowView.HoldStatus == "On Hold";
-                bool submitted = rowView.TabletSubmittedBy is null ? false : rowView.TabletSubmittedBy.Length > 0;
-                bool drawn = rowView.TabletDrawnBy.Length > 0;
-                bool started = rowView.ProjectStartedTablet.Length > 0;
-                e.Row.ToolTip = null;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                else
-                {
-                    e.Row.FontWeight = FontWeights.Normal;
-                    e.Row.FontStyle = FontStyles.Normal;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (onHold)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
-                    using var __nat02context = new NAT02Context();
-                    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber))
-                    {
-                        e.Row.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim();
-                    }
-                    __nat02context.Dispose();
-                }
-                else if (finished)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
-                }
-                else if (submitted)
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF"));
-                }
-                else if (drawn)
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF"));
-                }
-                else if (started)
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            {
-            }
-        }
+        //private void AllTabletProjectsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiAllTabletProjectsView rowView = dataGrid.Items[index] as EoiAllTabletProjectsView;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        using var _nat02context = new NAT02Context();
+        //        bool finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).Any();
+        //        _nat02context.Dispose();
+        //        bool onHold = rowView.HoldStatus == "On Hold";
+        //        bool submitted = rowView.TabletSubmittedBy is null ? false : rowView.TabletSubmittedBy.Length > 0;
+        //        bool drawn = rowView.TabletDrawnBy.Length > 0;
+        //        bool started = rowView.ProjectStartedTablet.Length > 0;
+        //        e.Row.ToolTip = null;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        else
+        //        {
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //            e.Row.FontStyle = FontStyles.Normal;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (onHold)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
+        //            using var __nat02context = new NAT02Context();
+        //            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber))
+        //            {
+        //                e.Row.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim();
+        //            }
+        //            __nat02context.Dispose();
+        //        }
+        //        else if (finished)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
+        //        }
+        //        else if (submitted)
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF"));
+        //        }
+        //        else if (drawn)
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF"));
+        //        }
+        //        else if (started)
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
 
-        private void TabletProjectsNotStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiTabletProjectsNotStarted rowView = dataGrid.Items[index] as EoiTabletProjectsNotStarted;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                else
-                {
-                    e.Row.FontWeight = FontWeights.Normal;
-                    e.Row.FontStyle = FontStyles.Normal;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void TabletProjectsNotStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiTabletProjectsNotStarted rowView = dataGrid.Items[index] as EoiTabletProjectsNotStarted;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        else
+        //        {
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //            e.Row.FontStyle = FontStyles.Normal;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void TabletProjectsStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiTabletProjectsStarted rowView = dataGrid.Items[index] as EoiTabletProjectsStarted;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                else
-                {
-                    e.Row.FontWeight = FontWeights.Normal;
-                    e.Row.FontStyle = FontStyles.Normal;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void TabletProjectsStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiTabletProjectsStarted rowView = dataGrid.Items[index] as EoiTabletProjectsStarted;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        else
+        //        {
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //            e.Row.FontStyle = FontStyles.Normal;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void TabletProjectsDrawnDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiTabletProjectsDrawn rowView = dataGrid.Items[index] as EoiTabletProjectsDrawn;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                else
-                {
-                    e.Row.FontWeight = FontWeights.Normal;
-                    e.Row.FontStyle = FontStyles.Normal;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void TabletProjectsDrawnDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiTabletProjectsDrawn rowView = dataGrid.Items[index] as EoiTabletProjectsDrawn;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        else
+        //        {
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //            e.Row.FontStyle = FontStyles.Normal;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void TabletProjectsSubmittedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiTabletProjectsSubmitted rowView = dataGrid.Items[index] as EoiTabletProjectsSubmitted;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                else
-                {
-                    e.Row.FontWeight = FontWeights.Normal;
-                    e.Row.FontStyle = FontStyles.Normal;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void TabletProjectsSubmittedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiTabletProjectsSubmitted rowView = dataGrid.Items[index] as EoiTabletProjectsSubmitted;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        else
+        //        {
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //            e.Row.FontStyle = FontStyles.Normal;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void TabletProjectsOnHoldDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiProjectsOnHold rowView = dataGrid.Items[index] as EoiProjectsOnHold;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if ((bool)rowView.Tools)
-                {
-                    e.Row.FontWeight = FontWeights.Bold;
-                    e.Row.FontStyle = FontStyles.Oblique;
-                }
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-                e.Row.ToolTip = string.IsNullOrEmpty(rowView.OnHoldComment.Trim()) ? "No Comment" : rowView.OnHoldComment.Trim();
-            }
-            catch
-            { }
-        }
+        //private void TabletProjectsOnHoldDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiProjectsOnHold rowView = dataGrid.Items[index] as EoiProjectsOnHold;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if ((bool)rowView.Tools)
+        //        {
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //            e.Row.FontStyle = FontStyles.Oblique;
+        //        }
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //        e.Row.ToolTip = string.IsNullOrEmpty(rowView.OnHoldComment.Trim()) ? "No Comment" : rowView.OnHoldComment.Trim();
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void AllToolProjectsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiAllToolProjectsView rowView = dataGrid.Items[index] as EoiAllToolProjectsView;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                using var _nat02context = new NAT02Context();
-                bool finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).Any();
-                _nat02context.Dispose();
-                using var _projectscontext = new ProjectsContext();
-                bool tablet = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().Tablet &&
-                              _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().TabletCheckedBy.Trim().Length == 0;
-                bool multi_tip = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().MultiTipSketch;
-                _projectscontext.Dispose();
-                bool onHold = rowView.HoldStatus == "On Hold";
-                bool drawn = rowView.ToolDrawnBy.Trim().Length > 0;
-                bool started = rowView.ProjectStartedTool.Trim().Length > 0;
-                e.Row.ToolTip = null;
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (onHold)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
-                    using var __nat02context = new NAT02Context();
-                    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber))
-                    {
-                        e.Row.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim();
-                    }
-                    __nat02context.Dispose();
-                }
-                else if (finished)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
-                }
-                else if (drawn)
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3594FF"));
-                }
-                else if (started)
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
-                }
-                else if (multi_tip)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Gray);
-                }
-                else if (tablet)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Yellow);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void AllToolProjectsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiAllToolProjectsView rowView = dataGrid.Items[index] as EoiAllToolProjectsView;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        using var _nat02context = new NAT02Context();
+        //        bool finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).Any();
+        //        _nat02context.Dispose();
+        //        using var _projectscontext = new ProjectsContext();
+        //        bool tablet = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().Tablet &&
+        //                      _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().TabletCheckedBy.Trim().Length == 0;
+        //        bool multi_tip = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().MultiTipSketch;
+        //        _projectscontext.Dispose();
+        //        bool onHold = rowView.HoldStatus == "On Hold";
+        //        bool drawn = rowView.ToolDrawnBy.Trim().Length > 0;
+        //        bool started = rowView.ProjectStartedTool.Trim().Length > 0;
+        //        e.Row.ToolTip = null;
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (onHold)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.MediumPurple);
+        //            using var __nat02context = new NAT02Context();
+        //            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber))
+        //            {
+        //                e.Row.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).OnHoldComment.Trim();
+        //            }
+        //            __nat02context.Dispose();
+        //        }
+        //        else if (finished)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.GreenYellow);
+        //        }
+        //        else if (drawn)
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3594FF"));
+        //        }
+        //        else if (started)
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
+        //        }
+        //        else if (multi_tip)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Gray);
+        //        }
+        //        else if (tablet)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Yellow);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void ToolProjectsNotStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiToolProjectsNotStarted rowView = dataGrid.Items[index] as EoiToolProjectsNotStarted;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                using var _projectscontext = new ProjectsContext();
-                bool multi_tip = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().MultiTipSketch;
-                _projectscontext.Dispose();
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (multi_tip)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Gray);
-                }
-                else if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void ToolProjectsNotStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiToolProjectsNotStarted rowView = dataGrid.Items[index] as EoiToolProjectsNotStarted;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        using var _projectscontext = new ProjectsContext();
+        //        bool multi_tip = (bool)_projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == rowView.ProjectNumber && p.RevisionNumber == rowView.RevisionNumber).First().MultiTipSketch;
+        //        _projectscontext.Dispose();
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (multi_tip)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Gray);
+        //        }
+        //        else if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void ToolProjectsStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiToolProjectsStarted rowView = dataGrid.Items[index] as EoiToolProjectsStarted;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void ToolProjectsStartedDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiToolProjectsStarted rowView = dataGrid.Items[index] as EoiToolProjectsStarted;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void ToolProjectsDrawnDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiToolProjectsDrawn rowView = dataGrid.Items[index] as EoiToolProjectsDrawn;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
+        //private void ToolProjectsDrawnDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiToolProjectsDrawn rowView = dataGrid.Items[index] as EoiToolProjectsDrawn;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void ToolProjectsOnHoldDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                EoiProjectsOnHold rowView = dataGrid.Items[index] as EoiProjectsOnHold;
-                bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
-                bool late = rowView.DueDate < DateTime.Now.Date;
-                if (priority)
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                    e.Row.FontWeight = FontWeights.Normal;
-                }
-                if (late && User.Department == "Engineering")
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
-                    e.Row.FontWeight = FontWeights.Bold;
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-                e.Row.ToolTip = string.IsNullOrEmpty(rowView.OnHoldComment.Trim()) ? "No Comment" : rowView.OnHoldComment.Trim();
-            }
-            catch
-            { }
-        }
+        //private void ToolProjectsOnHoldDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        EoiProjectsOnHold rowView = dataGrid.Items[index] as EoiProjectsOnHold;
+        //        bool priority = rowView.MarkedPriority is null ? false : rowView.MarkedPriority == "PRIORITY";
+        //        bool late = rowView.DueDate < DateTime.Now.Date;
+        //        if (priority)
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //            e.Row.FontWeight = FontWeights.Normal;
+        //        }
+        //        if (late && User.Department == "Engineering")
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.DarkRed);
+        //            e.Row.FontWeight = FontWeights.Bold;
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //        e.Row.ToolTip = string.IsNullOrEmpty(rowView.OnHoldComment.Trim()) ? "No Comment" : rowView.OnHoldComment.Trim();
+        //    }
+        //    catch
+        //    { }
+        //}
 
-        private void NatoliOrderListDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            try
-            {
-                DataGrid dataGrid = sender as DataGrid;
-                int index = e.Row.GetIndex();
-                NatoliOrderList rowView = dataGrid.Items[index] as NatoliOrderList;
-                int daysToShip = (rowView.ShipDate.Date - DateTime.Now.Date).Days;
-                if (daysToShip < 0)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Red);
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                }
-                else if (daysToShip == 0)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Orange);
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                }
-                else if (daysToShip > 0 && daysToShip < 4)
-                {
-                    e.Row.Background = new SolidColorBrush(Colors.Yellow);
-                    e.Row.Foreground = new SolidColorBrush(Colors.Black);
-                }
-                else
-                {
-                    e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                }
-            }
-            catch
-            { }
-        }
-        #endregion
+        //private void NatoliOrderListDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        //{
+        //    try
+        //    {
+        //        DataGrid dataGrid = sender as DataGrid;
+        //        int index = e.Row.GetIndex();
+        //        NatoliOrderList rowView = dataGrid.Items[index] as NatoliOrderList;
+        //        int daysToShip = (rowView.ShipDate.Date - DateTime.Now.Date).Days;
+        //        if (daysToShip < 0)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Red);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //        }
+        //        else if (daysToShip == 0)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Orange);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //        }
+        //        else if (daysToShip > 0 && daysToShip < 4)
+        //        {
+        //            e.Row.Background = new SolidColorBrush(Colors.Yellow);
+        //            e.Row.Foreground = new SolidColorBrush(Colors.Black);
+        //        }
+        //        else
+        //        {
+        //            e.Row.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //        }
+        //    }
+        //    catch
+        //    { }
+        //}
+        //#endregion
 
         #region Folder Management
         private void QuotesAndOrders()
