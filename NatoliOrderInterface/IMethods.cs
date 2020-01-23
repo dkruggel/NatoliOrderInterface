@@ -925,18 +925,18 @@ namespace NatoliOrderInterface
                         MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo);
                         // Is B Machine
                         if ((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                           ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
+                                            ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
                                             )
                         {
                             // Has A Hob W/ a Die ID of width or length > .75
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75)))))
+                                (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > .75 || d.WidthMinorAxis > .75)))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
                             // Has a Die W/ Die ID of width or length > .75
                             else if (quoteLineItems.Any(qli => qli.LineItemType == "D" && qli.LineItemType == "DS" && qli.LineItemType == "DA" && qli.LineItemType == "DC" && qli.LineItemType == "DI" && qli.LineItemType == "DP" &&
-                             _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > .75 || d.LengthMajorAxis > .75))))
+                                _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > .75 || d.LengthMajorAxis > .75))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -948,13 +948,13 @@ namespace NatoliOrderInterface
                         {
                             // Has A Hob W/ a Die ID of width or length > 1.0
                             if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                             (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
+                                (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
                             // Has a Die W/ Die ID of width or length > 1.0
                             else if (quoteLineItems.Any(qli => qli.LineItemType == "D" && qli.LineItemType == "DS" && qli.LineItemType == "DA" && qli.LineItemType == "DC" && qli.LineItemType == "DI" && qli.LineItemType == "DP" &&
-                             _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
+                                _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
                             {
                                 errors.Add("Tablet is too large for press.");
                             }
@@ -1156,13 +1156,13 @@ namespace NatoliOrderInterface
 
                         // Not Tip or Punch or Hob or D or DS OR M OR MS
                         if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "UA" || quoteLineItem.LineItemType == "UC" || quoteLineItem.LineItemType == "UH" ||
-                             quoteLineItem.LineItemType == "LHD" || quoteLineItem.LineItemType == "LA" || quoteLineItem.LineItemType == "LC" || quoteLineItem.LineItemType == "LH" ||
-                             quoteLineItem.LineItemType == "RHD" || quoteLineItem.LineItemType == "RA" || quoteLineItem.LineItemType == "RC" || quoteLineItem.LineItemType == "RH")
+                                quoteLineItem.LineItemType == "LHD" || quoteLineItem.LineItemType == "LA" || quoteLineItem.LineItemType == "LC" || quoteLineItem.LineItemType == "LH" ||
+                                quoteLineItem.LineItemType == "RHD" || quoteLineItem.LineItemType == "RA" || quoteLineItem.LineItemType == "RC" || quoteLineItem.LineItemType == "RH")
                         {
                             // Has hob #
                             if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && !string.IsNullOrEmpty(quoteLineItem.HobNoShapeID))
                             {
-                                errors.Add("'" + quoteLineItem.LineItemType + "' has a hob number '"+ quoteLineItem.HobNoShapeID + "' on its line.");
+                                errors.Add("'" + quoteLineItem.LineItemType + "' has a hob number '" + quoteLineItem.HobNoShapeID + "' on its line.");
                             }
                         }
 
@@ -1370,9 +1370,9 @@ namespace NatoliOrderInterface
                             {
                                 // Not Assembled
                                 if (!quoteLineItems.Any(qli =>
-                                 qli.LineItemType == "UA" || qli.LineItemType == "UT" ||
-                                 qli.LineItemType == "LA" || qli.LineItemType == "LT" ||
-                                 qli.LineItemType == "LA" || qli.LineItemType == "LT"
+                                    qli.LineItemType == "UA" || qli.LineItemType == "UT" ||
+                                    qli.LineItemType == "LA" || qli.LineItemType == "LT" ||
+                                    qli.LineItemType == "LA" || qli.LineItemType == "LT"
                                 ))
                                 {
                                     // Not Solid Multi-Tip
@@ -2041,7 +2041,7 @@ namespace NatoliOrderInterface
                                                 MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItem.MachineNo);
                                                 // Is B Machine
                                                 if ((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                                                   ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
+                                                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
                                                                     )
                                                 {
                                                     if (die.LengthMajorAxis == .75 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
@@ -2086,7 +2086,7 @@ namespace NatoliOrderInterface
                                                     MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItem.MachineNo);
                                                     // Is B Machine
                                                     if ((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                                                       ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
+                                                                        ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
                                                                         )
                                                     {
                                                         if (die.LengthMajorAxis == .75 && !(quote.UserAcctNo == "1023804" && quote.UserLocNo == "02"))
@@ -2199,7 +2199,7 @@ namespace NatoliOrderInterface
                                             MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
                                             // Is B Machine
                                             if ((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
-                                               ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
+                                                ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
                                                 )
                                             {
                                                 // Has Special Barrel Diameter
@@ -2297,6 +2297,7 @@ namespace NatoliOrderInterface
                     }
                 }
             }
+            
 
             quote.Dispose();
             _nat01Context.Dispose();

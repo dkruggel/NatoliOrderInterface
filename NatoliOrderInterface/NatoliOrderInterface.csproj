@@ -121,6 +121,15 @@
     <Content Include="NatoliOrderInterface.config.example">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
+    <Reference Include="System.Runtime.WindowsRuntime">
+      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\Framework\v4.0.30319\System.Runtime.WindowsRuntime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Windows">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0\Windows.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+      <Private>false</Private>
+    </Reference>
     <Resource Include="NATOLI_ANIMATION.gif" />
     <Resource Include="Natoli_Logo.gif" />
     <Resource Include="Natoli_Logo_Color.png" />
