@@ -790,7 +790,7 @@ namespace NatoliOrderInterface
                     basePriceGrid.ColumnDefinitions.Add(columnBase45);
                     basePriceGrid.ColumnDefinitions.Add(columnBase_);
 
-                    TextBlock dollarSignBase = new TextBlock();
+                    TextBlock dollarSignBase = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     dollarSignBase.Text = "$";
                     dollarSignBase.SetValue(Grid.ColumnProperty, 0);
                     dollarSignBase.SetValue(Grid.ColumnSpanProperty, 1);
@@ -852,7 +852,7 @@ namespace NatoliOrderInterface
                     priceBase.SetValue(Grid.ColumnProperty, 1);
                     priceBase.SetValue(Grid.ColumnSpanProperty, 1);
                     priceBase.TextChanged += BasePriceChanged;
-                    TextBlock basePriceTextBlock = new TextBlock();
+                    TextBlock basePriceTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     basePriceTextBlock.Text = "BASE PRICE";
                     if (priceChanged)
                     {
@@ -879,7 +879,7 @@ namespace NatoliOrderInterface
                     optionsStackPanel.SetValue(Grid.RowProperty, 1);
                     optionsStackPanel.SetValue(Grid.RowSpanProperty, 1);
                     //--------------------------------------------------------------------------------------------
-                    TextBlock commentHeader = new TextBlock();
+                    TextBlock commentHeader = new TextBlock { Style = (Style)Application.Current.Resources["BoldTextBlock"] };
                     commentHeader.Text = "Line Item Comment";
                     commentHeader.FontWeight = FontWeights.Bold;
                     commentHeader.HorizontalAlignment = HorizontalAlignment.Center;
@@ -964,7 +964,7 @@ namespace NatoliOrderInterface
                         if (printables[0].Trim().Length != 0)
                         {
                             string optionType = quoteLineItem.OptionType[optionCode] == "P" ? "%" : "$";
-                            TextBlock dollarSign = new TextBlock();
+                            TextBlock dollarSign = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                             dollarSign.Text = optionType;
                             dollarSign.Tag = optionType + lineItem.Key + lineItem.Value;
                             dollarSign.SetValue(Grid.ColumnProperty, 0);
@@ -982,7 +982,7 @@ namespace NatoliOrderInterface
                             price.SetValue(Grid.ColumnSpanProperty, 1);
                             price.TextChanged += OptionPriceChanged;
 
-                            TextBlock optionCodeTextBlock = new TextBlock();
+                            TextBlock optionCodeTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                             optionCodeTextBlock.Name = lineItem.Value.ToString().ToUpper() + "_" + lineItem.Key.ToString() + "_" + optionCode;
                             optionCodeTextBlock.Tag = optionCode;
                             optionCodeTextBlock.Text = "(" + optionCode + ")";
@@ -990,7 +990,7 @@ namespace NatoliOrderInterface
                             optionCodeTextBlock.SetValue(Grid.ColumnProperty, 2);
                             optionCodeTextBlock.SetValue(Grid.ColumnSpanProperty, 1);
 
-                            TextBlock optionText = new TextBlock();
+                            TextBlock optionText = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                             optionText.Text = String.Concat(printables);
                             optionText.SetValue(Grid.ColumnProperty, 3);
                             optionText.SetValue(Grid.ColumnSpanProperty, 1);
@@ -1022,7 +1022,7 @@ namespace NatoliOrderInterface
                     gridPercentMark.SetValue(Grid.RowProperty, 3);
                     gridPercentMark.SetValue(Grid.RowSpanProperty, 1);
 
-                    TextBlock percentSignPM = new TextBlock();
+                    TextBlock percentSignPM = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     percentSignPM.Text = "%";
                     percentSignPM.VerticalAlignment = VerticalAlignment.Bottom;
                     percentSignPM.SetValue(Grid.ColumnProperty, 0);
@@ -1040,7 +1040,7 @@ namespace NatoliOrderInterface
                     pricePM.SetValue(Grid.ColumnProperty, 1);
                     pricePM.SetValue(Grid.ColumnSpanProperty, 1);
 
-                    TextBlock PMTextBlock = new TextBlock();
+                    TextBlock PMTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     PMTextBlock.Text = "PERCENT MARK";
                     PMTextBlock.ToolTip = "Positive for markup" + Environment.NewLine + "Negative for discount";
                     PMTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
@@ -1071,7 +1071,7 @@ namespace NatoliOrderInterface
                     unitPriceGrid.SetValue(Grid.RowProperty, 4);
                     unitPriceGrid.SetValue(Grid.RowSpanProperty, 1);
 
-                    TextBlock dollarSignUnitPrice = new TextBlock();
+                    TextBlock dollarSignUnitPrice = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     dollarSignUnitPrice.Text = "$";
                     dollarSignUnitPrice.VerticalAlignment = VerticalAlignment.Bottom;
                     dollarSignUnitPrice.SetValue(Grid.ColumnProperty, 0);
@@ -1088,7 +1088,7 @@ namespace NatoliOrderInterface
                     unitPriceTextBox.SetValue(Grid.ColumnProperty, 1);
                     unitPriceTextBox.SetValue(Grid.ColumnSpanProperty, 1);
 
-                    TextBlock unitPriceTextBlock = new TextBlock();
+                    TextBlock unitPriceTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     unitPriceTextBlock.Text = "UNIT PRICE";
                     unitPriceTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                     unitPriceTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
@@ -1125,7 +1125,7 @@ namespace NatoliOrderInterface
                     actualQTY.SetValue(Grid.ColumnProperty, 1);
                     actualQTY.SetValue(Grid.ColumnSpanProperty, 1);
 
-                    TextBlock QTYTextBlock = new TextBlock();
+                    TextBlock QTYTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     QTYTextBlock.Text = "QTY";
                     QTYTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                     QTYTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
@@ -1153,7 +1153,7 @@ namespace NatoliOrderInterface
                     extendedPriceGrid.SetValue(Grid.RowProperty, 6);
                     extendedPriceGrid.SetValue(Grid.RowSpanProperty, 1);
 
-                    TextBlock dollarSignExtendedPrice = new TextBlock();
+                    TextBlock dollarSignExtendedPrice = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     dollarSignExtendedPrice.Text = "$";
                     dollarSignExtendedPrice.VerticalAlignment = VerticalAlignment.Bottom;
                     dollarSignExtendedPrice.SetValue(Grid.ColumnProperty, 0);
@@ -1172,7 +1172,7 @@ namespace NatoliOrderInterface
                     extendedPriceTextBox.SetValue(Grid.ColumnProperty, 1);
                     extendedPriceTextBox.SetValue(Grid.ColumnSpanProperty, 1);
 
-                    TextBlock extendedPriceTextBlock = new TextBlock();
+                    TextBlock extendedPriceTextBlock = new TextBlock { Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                     extendedPriceTextBlock.Text = "EXTENDED PRICE";
                     extendedPriceTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
                     extendedPriceTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
@@ -2404,7 +2404,8 @@ namespace NatoliOrderInterface
                         {
                             Margin = new Thickness(2, 0, 0, 0),
                             TextWrapping = TextWrapping.Wrap,
-                            Text = eoiOrderEntryInstruction.Instruction
+                            Text = eoiOrderEntryInstruction.Instruction,
+                            Style = (Style)Application.Current.Resources["NormalTextBlock"]
                         };
                         CheckBox checkBox = new CheckBox
                         {
@@ -2418,19 +2419,22 @@ namespace NatoliOrderInterface
                         {
                             VerticalAlignment = VerticalAlignment.Center,
                             HorizontalAlignment = HorizontalAlignment.Center,
-                            Text = eoiOrderEntryInstruction.User
+                            Text = eoiOrderEntryInstruction.User,
+                            Style = (Style)Application.Current.Resources["NormalTextBlock"]
                         };
                         TextBlock enteredTextBlock = new TextBlock
                         {
                             VerticalAlignment = VerticalAlignment.Center,
                             HorizontalAlignment = HorizontalAlignment.Center,
-                            Text = eoiOrderEntryInstruction.TimeEntered.ToString()
+                            Text = eoiOrderEntryInstruction.TimeEntered.ToString(),
+                            Style = (Style)Application.Current.Resources["NormalTextBlock"]
                         };
                         TextBlock checkedTextBlock = new TextBlock
                         {
                             VerticalAlignment = VerticalAlignment.Center,
                             HorizontalAlignment = HorizontalAlignment.Center,
-                            Text = eoiOrderEntryInstruction.TimeChecked is null ? "" : eoiOrderEntryInstruction.TimeChecked.ToString()
+                            Text = eoiOrderEntryInstruction.TimeChecked is null ? "" : eoiOrderEntryInstruction.TimeChecked.ToString(),
+                            Style = (Style)Application.Current.Resources["NormalTextBlock"]
                         };
 
                         Border border1 = new Border
@@ -2526,19 +2530,22 @@ namespace NatoliOrderInterface
                     {
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Text = Environment.UserName
+                        Text = Environment.UserName,
+                        Style = (Style)Application.Current.Resources["NormalTextBlock"]
                     };
                     TextBlock enteredTextBlock = new TextBlock
                     {
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Text = timeEntered.ToString()
+                        Text = timeEntered.ToString(),
+                        Style = (Style)Application.Current.Resources["NormalTextBlock"]
                     };
                     TextBlock checkedTextBlock = new TextBlock
                     {
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Text = ""
+                        Text = "",
+                        Style = (Style)Application.Current.Resources["NormalTextBlock"]
                     };
 
                     Border border1 = new Border
