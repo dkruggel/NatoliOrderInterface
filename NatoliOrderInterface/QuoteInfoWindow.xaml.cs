@@ -51,6 +51,7 @@ namespace NatoliOrderInterface
         private List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
         private readonly User user;
         private bool? isChecked = false;
+        private bool errorNotificationPopped = false;
         private bool validData;
         private WorkOrder workOrder;
 
@@ -2699,37 +2700,48 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
             try
             {
-                SubmitButton1.IsEnabled = false;
-                RecallButton1.IsEnabled = true;
-                using var context = new NAT01Context();
-                using var nat02Context = new NAT02Context();
-                using var necContext = new NECContext();
-                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                if (QuoteErrorsTabItem.Header.ToString() == "Errors" && errorNotificationPopped == false)
                 {
-                    QuoteNo = quote.QuoteNumber,
-                    QuoteRevNo = quote.QuoteRevNo,
-                    CustomerName = customerName,
-                    Csr = csr,
-                    CsrMarked = user.GetUserName(),
-                    TimeSubmitted = DateTime.Now,
-                    Rush = r.RushYorN
-                };
-                nat02Context.EoiQuotesMarkedForConversion.Add(q);
-                nat02Context.SaveChanges();
-                nat02Context.Dispose();
-                necContext.Dispose();
-                context.Dispose();
-                parent.BoolValue = true;
+                    tabControl.SelectedIndex = 4;
+                    Cursor = Cursors.Arrow;
+                    MessageBox.Show("This quote has errors, please ensure that they have been reviewed.", "ERRORS", MessageBoxButton.OK, MessageBoxImage.Information);
+                    errorNotificationPopped = true;
+                }
+                else
+                {
+                    SubmitButton1.IsEnabled = false;
+                    RecallButton1.IsEnabled = true;
+                    using var context = new NAT01Context();
+                    using var nat02Context = new NAT02Context();
+                    using var necContext = new NECContext();
+                    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                    {
+                        QuoteNo = quote.QuoteNumber,
+                        QuoteRevNo = quote.QuoteRevNo,
+                        CustomerName = customerName,
+                        Csr = csr,
+                        CsrMarked = user.GetUserName(),
+                        TimeSubmitted = DateTime.Now,
+                        Rush = r.RushYorN
+                    };
+                    nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                    nat02Context.SaveChanges();
+                    nat02Context.Dispose();
+                    necContext.Dispose();
+                    context.Dispose();
+                    parent.BoolValue = true;
+                    Cursor = Cursors.Arrow;
+                    Close();
+                }
             }
             catch
             {
                 
             }
             Cursor = Cursors.Arrow;
-            Close();
         }
         private void RecallButton_Click(object sender, RoutedEventArgs e)
         {
