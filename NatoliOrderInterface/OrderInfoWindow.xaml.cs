@@ -680,8 +680,8 @@ namespace NatoliOrderInterface
                 case "DA":
                 case "DC":
                 case "DH":
-                    break;
                     OrderEtchingTabs.SelectedIndex = 2;
+                    break;
                 default:
                     break;
             }
