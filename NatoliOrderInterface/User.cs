@@ -48,6 +48,7 @@ namespace NatoliOrderInterface
         public string DepartmentCode { get; set; }
         public bool Maximized { get; set; }
         public short QuoteDays { get; set; }
+        public bool FilterActiveProjects { get; set; }
 
         public User()
         {
@@ -86,6 +87,7 @@ namespace NatoliOrderInterface
             Left = settings.Left;
             Maximized = settings.Maximized;
             QuoteDays = settings.QuoteDays;
+            FilterActiveProjects = settings.FilterActiveProjects;
             DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
             {

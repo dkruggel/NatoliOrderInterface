@@ -168,6 +168,7 @@ namespace NatoliOrderInterface
             Top = (double)User.Top;
             Left = (double)User.Left;
             Title = "Natoli Order Interface";
+            _filterProjects = User.FilterActiveProjects;
             if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
             using var _nat02Context = new NAT02Context();
             _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()));
@@ -261,6 +262,7 @@ namespace NatoliOrderInterface
                 eoiSettings.Height = (short?)Height;
                 eoiSettings.Top = (short?)Top;
                 eoiSettings.Left = (short?)Left;
+                eoiSettings.FilterActiveProjects = _filterProjects;
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }
@@ -354,7 +356,8 @@ namespace NatoliOrderInterface
             };
             MenuItem filterProjects = new MenuItem
             {
-                Header = "Filter Projects"
+                Header = "Filter Active Projects",
+                IsChecked = User.FilterActiveProjects
             };
             MenuItem printDrawings = new MenuItem
             {
@@ -372,7 +375,8 @@ namespace NatoliOrderInterface
             fileMenu.Items.Add(forceRefresh);
             fileMenu.Items.Add(editLayout);
             if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
+            //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
+            fileMenu.Items.Add(filterProjects);
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             MainMenu.Items.Add(fileMenu);
             #endregion
