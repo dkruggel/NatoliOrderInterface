@@ -893,6 +893,7 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         public static List<string> QuoteErrors(string quoteNo, string quoteRevNo)
         {
+            // When querying option values be sure to check if it exists in QuoteLineItem.OptionNumber before directly querying the optionvalue table to avoid orphan data.
             using var _nat01Context = new NAT01Context();
             using var _nat02Context = new NAT02Context();
             using var _driveworksContext = new DriveWorksContext();
@@ -1021,11 +1022,11 @@ namespace NatoliOrderInterface
                     {
                         // OL
                         {
-                            if (quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2598))
+                            if (quoteLineItem.OptionNumbers.Contains("330") && quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2598))
                             {
                                 errors.Add("'" + quoteLineItem.LineItemType + "' has (330) SPECIAL OVERALL LENGTH 5.2598\". This option should be removed and (333) 133.6mm (5.2598\") OVERALL LENGTH should be added.");
                             }
-                            if (quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2500))
+                            if (quoteLineItem.OptionNumbers.Contains("330") && quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2500))
                             {
                                 errors.Add("'" + quoteLineItem.LineItemType + "' has (330) SPECIAL OVERALL LENGTH 5.2500\". This option should be removed and (332) 133.35mm (5.2500\") OVERALL LENGTH should be added.");
                             }
@@ -1316,7 +1317,8 @@ namespace NatoliOrderInterface
                                 }
 
                                 // Exotic or Semi-exotic hob for this die number
-                                if (_nat01Context.HobList.Any(h => h.DieId == die.DieId && (h.Class == "EX" || h.Class == "SX")))
+                                if (_nat01Context.HobList.Any(h => h.DieId == die.DieId && die.ShapeId!=1 && die.ShapeId != 2 && die.ShapeId != 3 && die.ShapeId != 4 && die.ShapeId != 5
+                                && (h.Class == "EX" || h.Class == "SX")))
                                 {
                                     // Material is NOT A2 steel
                                     if (!quoteLineItem.Material.Contains("A2"))
@@ -1486,7 +1488,7 @@ namespace NatoliOrderInterface
                                 if (quoteLineItem.MachineDescription.Contains("DEEP") && quoteLineItem.MachineDescription.Contains("FILL") && quoteLineItem.MachineDescription.Contains("NATOLI"))
                                 {
                                     // Special tip straight is not .75"
-                                    if (!quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
+                                    if (!quoteLineItem.OptionNumbers.Contains("217") && !quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "217" && Math.Round((decimal)ov.Number1, 3) == (decimal).750))
                                     {
                                         errors.Add("Upper or Upper Assembly should have a tip straight of .75\"");
                                     }
@@ -2188,7 +2190,7 @@ namespace NatoliOrderInterface
                                     }
 
                                     // Is Reduced Tip Width || Is Strengthened Tip || Is Solid MultiTip || Carbide Tipped
-                                    if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875) ||
+                                    if ((quoteLineItem.OptionNumbers.Contains("204") && quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875)) ||
                                     quoteLineItem.OptionNumbers.Contains("222") ||
                                     quoteLineItem.TipQTY > 1 ||
                                     quoteLineItem.OptionNumbers.Contains("240"))
@@ -2251,7 +2253,7 @@ namespace NatoliOrderInterface
                                                     }
                                                 }
                                                 // Reduced tip width
-                                                else if (quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875))
+                                                else if (quoteLineItem.OptionNumbers.Contains("204") && quoteLineItem.optionValuesA.Any(qo => qo.OptionCode == "204" && qo.Number1 < .1875))
                                                 {
                                                     bool eu = false;
                                                     if (quoteLineItem.OptionNumbers.Contains("116") && machine.Description.ToUpper().Contains("SYNTHESIS"))
