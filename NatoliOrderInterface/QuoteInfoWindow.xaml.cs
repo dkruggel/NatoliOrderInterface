@@ -1078,7 +1078,7 @@ namespace NatoliOrderInterface
                     dollarSignUnitPrice.SetValue(Grid.ColumnSpanProperty, 1);
 
                     TextBox unitPriceTextBox = new TextBox();
-                    unitPriceTextBox.IsEnabled = quoteDetails.UnitPriceOverride == true ? true : false;
+                    unitPriceTextBox.IsEnabled = !(quote.OrderNo > 0) && quoteDetails.UnitPriceOverride == true ? true : false;
                     unitPriceTextBox.Text = string.Format("{0:0.00}", quoteLineItem.UnitPrice);
                     unitPriceTextBox.TextChanged += UnitPriceTextBox_TextChanged;
                     unitPriceTextBox.Name = "UnitPrice" + lineItem.Key + lineItem.Value;

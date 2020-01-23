@@ -1012,12 +1012,41 @@ namespace NatoliOrderInterface
                 string dieNumber = null;
                 foreach (QuoteLineItem quoteLineItem in quoteLineItems)
                 {
+                    // Check valid line item
                     if (string.IsNullOrEmpty(quoteLineItem.LineItemType) || string.IsNullOrWhiteSpace(quoteLineItem.LineItemType) || !_nat01Context.OedetailType.Any(o => !string.IsNullOrWhiteSpace(o.TypeId) && o.TypeId.Trim() == quoteLineItem.LineItemType))
                     {
                         errors.Add("Line Item Number '" + quoteLineItem.LineItemNumber + "' does not have a valid Line Item Type.");
                     }
                     else
                     {
+                        // OL
+                        {
+                            if (quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2598))
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' has (330) SPECIAL OVERALL LENGTH 5.2598\". This option should be removed and (333) 133.6mm (5.2598\") OVERALL LENGTH should be added.");
+                            }
+                            if (quoteLineItem.optionValuesA.Any(ov => ov.OptionCode == "330" && ov.Number1 == 5.2500))
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' has (330) SPECIAL OVERALL LENGTH 5.2500\". This option should be removed and (332) 133.35mm (5.2500\") OVERALL LENGTH should be added.");
+                            }
+                            int olOptionsCount = 0;
+                            foreach (string optionNumber in quoteLineItem.OptionNumbers)
+                            {
+                                if (optionNumber == "330" || optionNumber == "332" || optionNumber == "333" || optionNumber == "350" || optionNumber == "354")
+                                {
+                                    olOptionsCount++;
+                                }
+                            }
+                            if (olOptionsCount > 1)
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' has at least two overall length options added. Please remove until one is left.");
+                            }
+                            if (olOptionsCount > 0 && quoteLineItem.OptionNumbers.Contains("328"))
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' has special overall length and special working length. Please remove one.");
+                            }
+                        }
+
 
                         // Comparisons
                         if (quoteLineItems.Count > 1)
