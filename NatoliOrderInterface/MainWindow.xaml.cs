@@ -2248,7 +2248,6 @@ namespace NatoliOrderInterface
             using var context = new NAT01Context();
             using var nat02Context = new NAT02Context();
             using var necContext = new NECContext();
-
             // New list of projects that are in the same module that was right clicked inside of
             List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
 
@@ -2260,20 +2259,29 @@ namespace NatoliOrderInterface
                     selectedQuote.Item3.IsChecked = false;
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
-                    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+
+                    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString()).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
                     {
-                        QuoteNo = quote.QuoteNumber,
-                        QuoteRevNo = quote.QuoteRevNo,
-                        CustomerName = customerName,
-                        Csr = csr,
-                        CsrMarked = User.GetUserName(),
-                        TimeSubmitted = DateTime.Now,
-                        Rush = r.RushYorN
-                    };
-                    nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                        // Do nothing
+                    }
+                    else
+                    {
+                        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                        {
+                            QuoteNo = quote.QuoteNumber,
+                            QuoteRevNo = quote.QuoteRevNo,
+                            CustomerName = customerName,
+                            Csr = csr,
+                            CsrMarked = User.GetUserName(),
+                            TimeSubmitted = DateTime.Now,
+                            Rush = r.RushYorN
+                        };
+                        nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                    }
+
                 }
 
                 // Uncheck Check All CheckBox
@@ -2287,24 +2295,25 @@ namespace NatoliOrderInterface
                     }
                 }
             }
-            else
-            {
-                quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
-                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                {
-                    QuoteNo = quote.QuoteNumber,
-                    QuoteRevNo = quote.QuoteRevNo,
-                    CustomerName = customerName,
-                    Csr = csr,
-                    CsrMarked = User.GetUserName(),
-                    TimeSubmitted = DateTime.Now,
-                    Rush = r.RushYorN
-                };
-                nat02Context.EoiQuotesMarkedForConversion.Add(q);
-            }
+            //else
+            //{
+            //    quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
+            //    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+            //    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+            //    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+            //    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+            //    {
+            //        QuoteNo = quote.QuoteNumber,
+            //        QuoteRevNo = quote.QuoteRevNo,
+            //        CustomerName = customerName,
+            //        Csr = csr,
+            //        CsrMarked = User.GetUserName(),
+            //        TimeSubmitted = DateTime.Now,
+            //        Rush = r.RushYorN
+            //    };
+            //    nat02Context.EoiQuotesMarkedForConversion.Add(q);
+            //}
+
             nat02Context.SaveChanges();
             nat02Context.Dispose();
             necContext.Dispose();
