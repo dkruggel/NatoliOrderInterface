@@ -4158,14 +4158,18 @@ namespace NatoliOrderInterface
                     else
                     {
                         int count = _nat02context.MaMachineVariables.Where(o => o.WorkOrderNumber == order.OrderNo.ToString()).Count();
-                        string machineType;
-                        machineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).FirstOrDefault().MachinePriceCode.Trim();
+                        string machineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).FirstOrDefault().MachinePriceCode.Trim();
+                        short machineNo = (short)nat01context.OrderDetails.First(o => o.OrderNo == order.OrderNo * 100).MachineNo;
+                        string stockSize = nat01context.MachineList.Single(m => m.MachineNo == machineNo).UpperSize;
+                        bool rework = nat01context.OrderDetails.Any(o => o.Desc1.Contains("<REWORK>"));
                         var lineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100 && (o.DetailTypeId == "U" || o.DetailTypeId == "L" || o.DetailTypeId == "R")).ToList();
                         if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
                         {
                             back = new SolidColorBrush(Colors.DodgerBlue);
                         }
-                        else if (count == 0 && (machineType == "BB" || machineType == "B" || machineType == "D") && lineType.Count != 0)
+                        else if (count == 0 && (machineType == "BB" ||
+                                               (machineType == "B" && !stockSize.StartsWith("3/4") && !stockSize.StartsWith("1-1/4")) ||
+                                                machineType == "D" && !stockSize.StartsWith("1-1/2")) && lineType.Count != 0)
                         {
                             back = new SolidColorBrush(Colors.Red);
                         }
