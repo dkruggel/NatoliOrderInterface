@@ -815,6 +815,24 @@ namespace NatoliOrderInterface
             aEtching9 = string.IsNullOrEmpty(orderHeader.Aetching9) ? "" : orderHeader.Aetching9.Trim();
             aEtching10 = string.IsNullOrEmpty(orderHeader.Aetching10) ? "" : orderHeader.Aetching10.Trim();
         }
+        public void GenerateTravellerNumbers()
+        {
+            using var _nat01context = new NAT01Context();
+            IQueryable<OrderDetails> orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber);
+            try
+            {
+                foreach (OrderDetails order in orderDetails)
+                {
+                    order.TravellerNo = "1" + order.LineNumber.ToString("00") + OrderNumber + "00";
+                    _nat01context.Update(order);
+                }
+                _nat01context.SaveChanges();
+            }
+            finally
+            {
+                _nat01context.Dispose();
+            }
+        }
         /// <summary>
         /// Transfer orders using given user object and department to transfer to as a string.
         /// Department MUST be in the format "D000[0]". First scan refers to whether the order
@@ -836,6 +854,8 @@ namespace NatoliOrderInterface
 
             if (transToDept.EndsWith("080")) { GetLineItemsToScan(parent); }
 
+            if (firstScan) { GenerateTravellerNumbers(); }
+
             if (lineItemsToScan.Any())
             {
                 foreach (KeyValuePair<int, string> kvp in lineItems)
@@ -847,7 +867,7 @@ namespace NatoliOrderInterface
                         if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
                         {
                             string travellerNumber = "1" + kvp.Key.ToString("00") + OrderNumber + "00";
-                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber, firstScan);
+                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber);
                         }
                     }
                     catch
@@ -863,10 +883,15 @@ namespace NatoliOrderInterface
                     try
                     {
                         string lineType = kvp.Value.Trim();
-                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
+                        if (firstScan)
                         {
                             string travellerNumber = "1" + kvp.Key.ToString("00") + OrderNumber + "00";
-                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber, firstScan);
+                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber);
+                        }
+                        else if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
+                        {
+                            string travellerNumber = "1" + kvp.Key.ToString("00") + OrderNumber + "00";
+                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber);
                         }
                     }
                     catch
@@ -879,40 +904,8 @@ namespace NatoliOrderInterface
             return 0;
         }
 
-        private void BarcodeTransfer(string employeeCode, string departmentCode, string travellerNumber, bool firstScan)
+        private void BarcodeTransfer(string employeeCode, string departmentCode, string travellerNumber)
         {
-            if (firstScan)
-            {
-                string lineNumber = travellerNumber.Substring(1, 2);
-                string strSQL = "Update [NAT01].[dbo].[OrderDetails] set [TravellerNo] = '" + travellerNumber + "' where [OrderNo] = '" + OrderNumber.ToString() + "00' and [LineNumber] = '" + lineNumber + "'";
-                SqlConnection updateConnection = new SqlConnection();
-                SqlCommand updateCommand = new SqlCommand();
-                try
-                {
-                    updateCommand.Connection = updateConnection;
-                    updateCommand.CommandText = strSQL;
-                    updateCommand.CommandType = CommandType.Text;
-                    using (updateConnection)
-                    {
-                        updateConnection.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)";
-                        updateConnection.Open();
-                        DataTable TransferBatch = new DataTable();
-                        TransferBatch.Load(updateCommand.ExecuteReader());
-                        TransferBatch.Dispose();
-                    }
-                    updateCommand.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    updateCommand.Dispose();
-                    updateConnection.Close();
-                }
-            }
-
             SqlConnection con = new SqlConnection();
             SqlCommand cmd = new SqlCommand();
             try
