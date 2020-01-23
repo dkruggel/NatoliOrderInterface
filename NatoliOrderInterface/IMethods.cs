@@ -1570,7 +1570,10 @@ namespace NatoliOrderInterface
                                                     // Key is not standard
                                                     if (!string.IsNullOrEmpty(key.DrawingNo) && !App.StandardKeys.Contains(key.DrawingNo.Trim()))
                                                     {
-                                                        errors.Add("Key (" + key.DrawingNo.Trim() + ") on '" + quoteLineItem.LineItemType + "' needs a key line item.");
+                                                        if (!quoteLineItems.Any(qli => qli.LineItemType == "K"))
+                                                        {
+                                                            errors.Add("Key (" + key.DrawingNo.Trim() + ") on '" + quoteLineItem.LineItemType + "' needs a key line item.");
+                                                        }
                                                     }
                                                 }
                                                 catch (InvalidOperationException)
