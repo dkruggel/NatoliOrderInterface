@@ -1208,7 +1208,7 @@ namespace NatoliOrderInterface.Models.NAT01
 
                 modelBuilder.Entity<OrderDetails>(entity =>
                 {
-                    entity.HasNoKey();
+                    entity.HasKey(e => new { e.OrderNo, e.LineNumber, e.RecordId});
 
                     entity.HasIndex(e => e.HobNoShapeId)
                         .HasName("ByHobNoShapeID");

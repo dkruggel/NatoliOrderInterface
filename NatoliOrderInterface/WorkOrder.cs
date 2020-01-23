@@ -818,15 +818,19 @@ namespace NatoliOrderInterface
         public void GenerateTravellerNumbers()
         {
             using var _nat01context = new NAT01Context();
-            IQueryable<OrderDetails> orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber);
+            IQueryable<OrderDetails> orderDetails = _nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100);
             try
             {
-                foreach (OrderDetails order in orderDetails)
+                foreach (OrderDetails lineItem in orderDetails)
                 {
-                    order.TravellerNo = "1" + order.LineNumber.ToString("00") + OrderNumber + "00";
-                    _nat01context.Update(order);
+                    lineItem.TravellerNo = "1" + lineItem.LineNumber.ToString("00") + OrderNumber + "00";
+                    _nat01context.OrderDetails.Update(lineItem);
                 }
                 _nat01context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
             }
             finally
             {
@@ -883,12 +887,7 @@ namespace NatoliOrderInterface
                     try
                     {
                         string lineType = kvp.Value.Trim();
-                        if (firstScan)
-                        {
-                            string travellerNumber = "1" + kvp.Key.ToString("00") + OrderNumber + "00";
-                            BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber);
-                        }
-                        else if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
+                        if (lineType != "E" && lineType != "H" && lineType != "MC" && lineType != "RET" && lineType != "T" && lineType != "TM" && lineType != "Z")
                         {
                             string travellerNumber = "1" + kvp.Key.ToString("00") + OrderNumber + "00";
                             BarcodeTransfer(user.EmployeeCode, transToDept, travellerNumber);
