@@ -461,8 +461,8 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
-                                    <TextBox x:Name="QuoteSubTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
-                                    <TextBlock Text=" QUOTE SUBTOTAL" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                                    <TextBox x:Name="QuoteSubTotal"  Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
+                                    <TextBlock Text=" QUOTE SUBTOTAL" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
                                 </Grid>
                                 <Grid x:Name="QuoteFlatMarkGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
@@ -474,7 +474,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
                                     <TextBox x:Name="FlatMark" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
-                                    <TextBlock Text=" FLAT MARK" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2">
+                                    <TextBlock Text=" FLAT MARK" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2">
                                         <TextBlock.ToolTip>
                                             <TextBlock>
                                     Positive to increase the price
@@ -482,7 +482,7 @@
                                     Negative to decrease the price
                                             </TextBlock>
                                         </TextBlock.ToolTip>
-                        </TextBlock>
+                                    </TextBlock>
                                 </Grid>
                                 <Grid x:Name="QuoteFreightTotalGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
@@ -494,7 +494,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
                                     <TextBox x:Name="FreightTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
-                                    <TextBlock Text=" FREIGHT" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                                    <TextBlock Text=" FREIGHT" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
                                 </Grid>
                                 <Grid x:Name="QuoteTotalGrid" Margin="2,0,0,0" HorizontalAlignment="Left">
                                     <Grid.ColumnDefinitions>
@@ -506,7 +506,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Stretch" Text="$" Grid.Column="0" Grid.ColumnSpan="1"></TextBlock>
                                     <TextBox x:Name="QuoteTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
-                                    <TextBlock Text=" QUOTE TOTAL" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
+                                    <TextBlock Text=" QUOTE TOTAL" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
                                 </Grid>
                                 <Grid HorizontalAlignment="Right" Margin="0,-100,80,0">
                                     <Grid.ColumnDefinitions>
@@ -563,15 +563,15 @@
                                 <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
                                 <Grid VerticalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition MaxWidth="300"/>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition MaxWidth="300"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <DockPanel>
-                                        <Label  Content="Reference Project:" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                                        <TextBox x:Name="ProjectNumberTextBox" Margin="0,0,0,0" VerticalAlignment="Center" Height="22"/>
+                                        <TextBlock  Text="Reference Project:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                        <TextBox x:Name="ProjectNumberTextBox" Style="{StaticResource TextBox}" Margin="0,0,0,0" VerticalAlignment="Center" Height="22"/>
                                     </DockPanel>
                                     <Grid Grid.Column="1" Width="100">
                                         <Button x:Name="LinkProjectButton" Style="{StaticResource Button}" MinHeight="24"  Content="Link Project" Margin="0,0,0,0" HorizontalAlignment="Center" Click="LinkProjectButton_Click" VerticalAlignment="Center"/>
@@ -580,8 +580,8 @@
                                         <Button  x:Name="EuropeanTolerancesButton" Style="{StaticResource Button}" Content="European Tolerances" Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" MinHeight="24" Click="EuropeanTolerancesButton_Click"/>
                                     </Grid>
                                     <DockPanel Grid.Column="3" >
-                                        <Label Content="Reference Order:"  VerticalAlignment="Center" Margin="0,0,0,0"/>
-                                        <TextBox x:Name="OrderNumberTextBox" VerticalAlignment="Center" Height="22" Margin="0,0,0,0"/>
+                                        <TextBlock Text="Reference Order:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                        <TextBox x:Name="OrderNumberTextBox" Style="{StaticResource TextBox}" VerticalAlignment="Center" Height="22" Margin="0,0,0,0"/>
                                     </DockPanel>
                                     <Grid Grid.Column="4" Width="90" Margin="2,0">
                                         <Button x:Name="LinkOrderButton" Style="{StaticResource Button}" Content="Link Order" HorizontalAlignment="Center" Margin="0,0,0,0" MinHeight="24" Click="LinkOrderButton_Click" VerticalAlignment="Center"/>
@@ -640,10 +640,10 @@
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="INSTRUCTION" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock Text="ENTERED BY" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock Text="TIME ENTERED" Grid.Column="2" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock Text="TIME CHECKED" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Text="INSTRUCTION" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Text="ENTERED BY" Style="{StaticResource BoldTextBlock}" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Text="TIME ENTERED" Style="{StaticResource BoldTextBlock}" Grid.Column="2" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Text="TIME CHECKED" Style="{StaticResource BoldTextBlock}" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <Border BorderBrush="Black" BorderThickness="0,0,0,2" Grid.ColumnSpan="5"/>
                             </Grid>
                             <Grid>
@@ -654,9 +654,9 @@
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="InstructionEnteringTextBox" Height="40" HorizontalAlignment="Stretch" Margin="2,0,0,0" TextWrapping="Wrap" MaxLength="1000"/>
+                                <TextBox x:Name="InstructionEnteringTextBox" Height="40" HorizontalAlignment="Stretch" Margin="2" TextWrapping="Wrap" MaxLength="1000"/>
                                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0">
-                                    <TextBlock x:Name="InstructionEnteringUserTextBlock" Text="jwillis" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="InstructionEnteringUserTextBlock" Style="{StaticResource NormalTextBlock}" Text="jwillis" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <Border Grid.Column="2" BorderBrush="Black" BorderThickness="1,0,0,0">
                                     <TextBlock x:Name="InstructionEnteringEnteredTimeBlock" Text="" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
