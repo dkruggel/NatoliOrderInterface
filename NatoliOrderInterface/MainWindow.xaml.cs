@@ -4534,7 +4534,7 @@ namespace NatoliOrderInterface
                                                           p.Value.customerName.ToLower().Contains(searchString) ||
                                                           p.Value.employeeName.ToLower().Contains(searchString) ||
                                                           p.Value.checkedBy.ToLower().Contains(searchString))
-                                              .OrderByDescending(kvp => kvp.Key)
+                                              .OrderBy(kvp => kvp.Key)
                                               .ToDictionary(x => x.Key, x => x.Value);
 
             OrdersPrintedInEngineeringExpanders(ordersPrintedInEngineeringDict);
