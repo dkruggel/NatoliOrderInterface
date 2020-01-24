@@ -2109,7 +2109,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (in the foreach)", ex.Message, user);
-                        MessageBox.Show("Prices Failed to Update for '"+tab.Header.ToString()+"'.", "Oops!", MessageBoxButton.OK);
+                        MessageBox.Show("Prices Failed to Update for '" + tab.Header.ToString() + "'.", "Oops!", MessageBoxButton.OK);
                         return;
                     }
                 }
