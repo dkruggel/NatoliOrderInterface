@@ -145,7 +145,8 @@ namespace NatoliOrderInterface
         {
             try
             {
-                CheckForAvailableUpdatesAndLaunchAsync();
+                // Waiting for everyone to be updated to Windows 10 version 1903
+                // CheckForAvailableUpdatesAndLaunchAsync();
             }
             catch (Exception ex)
             {
