@@ -1923,185 +1923,194 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("QuoteInfoWindow => SaveLineItemButton_Click", ex.Message, user);
+                MessageBox.Show("Prices Failed to Update.", "Oops!", MessageBoxButton.OK);
             }
         }
         private void SaveAllLineItemsButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                
                 foreach (TabItem tab in ScratchPadTabs.Items)
                 {
-                    string tabLineItemType = tab.Name.ToString().Remove(tab.Name.ToString().IndexOf('_'));
-                    short tabLineItemNumber = Convert.ToInt16(tab.Name.ToString().Remove(0, tab.Name.ToString().IndexOf('_') + 1));
-                    Dictionary<string, Tuple<bool, decimal>> optionPrices = new Dictionary<string, Tuple<bool, decimal>>();
-                    decimal basePrice = 0;
-                    decimal percentMark = 0;
-                    decimal unitPrice = 0;
-                    // bool unitPriceOverride = false;
-                    decimal extendedPrice = 0;
-                    string comment = "";
-                    decimal optionsIncrements = 0;
-                    decimal optionsPercentage = 0;
-                    ScrollViewer scroll = tab.Content as ScrollViewer;
-                    Grid lineItemMasterGrid = scroll.Content as Grid;
-
-                    //BasePrice
-                    //PercentMark
-                    //UnitPrice
-                    //ExtendedPrice
-                    foreach (Grid grid in lineItemMasterGrid.Children.OfType<Grid>())
-                    {
-                        if (grid.Tag.ToString() == "BasePriceGrid")
-                        {
-                            try
-                            {
-                                basePrice = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
-                            }
-                        }
-                        if (grid.Tag.ToString() == "PercentMark")
-                        {
-
-                            try
-                            {
-                                percentMark = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Percent Mark is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
-                            }
-                        }
-                        if (grid.Tag.ToString() == "UnitPrice")
-                        {
-                            TextBox unitPriceTextBox = grid.Children.OfType<TextBox>().First();
-                            try
-                            {
-                                unitPrice = Convert.ToDecimal(unitPriceTextBox.Text);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Unit Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
-                            }
-                            // unitPriceOverride = unitPriceTextBox.IsEnabled;
-                        }
-                        if (grid.Tag.ToString() == "ExtendedPrice")
-                        {
-                            try
-                            {
-                                extendedPrice = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
-                            }
-                            catch
-                            {
-                                MessageBox.Show("Extended Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
-                            }
-
-                        }
-                    }
-
-                    //Comment
                     try
                     {
-                        comment = lineItemMasterGrid.Children.OfType<TextBox>().Where(t => t.Tag.ToString() == "CommentBox").First().Text.ToString();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Could not convert comment to string in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString(), "Error Converting To String", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
+                        string tabLineItemType = tab.Name.ToString().Remove(tab.Name.ToString().IndexOf('_'));
+                        short tabLineItemNumber = Convert.ToInt16(tab.Name.ToString().Remove(0, tab.Name.ToString().IndexOf('_') + 1));
+                        Dictionary<string, Tuple<bool, decimal>> optionPrices = new Dictionary<string, Tuple<bool, decimal>>();
+                        decimal basePrice = 0;
+                        decimal percentMark = 0;
+                        decimal unitPrice = 0;
+                        // bool unitPriceOverride = false;
+                        decimal extendedPrice = 0;
+                        string comment = "";
+                        decimal optionsIncrements = 0;
+                        decimal optionsPercentage = 0;
+                        ScrollViewer scroll = tab.Content as ScrollViewer;
+                        Grid lineItemMasterGrid = scroll.Content as Grid;
 
-                    //Options
-                    StackPanel stack = lineItemMasterGrid.Children.OfType<StackPanel>().First();
-                    foreach (Grid grid in stack.Children.OfType<Grid>())
-                    {
-                        string option = grid.Children.OfType<TextBlock>().Where(t => t.Text.First() == '(').First().Tag.ToString();
-                        bool additive = grid.Children.OfType<TextBlock>().Any(t => t.Text == "$");
-                        decimal price = 0;
+                        //BasePrice
+                        //PercentMark
+                        //UnitPrice
+                        //ExtendedPrice
+                        foreach (Grid grid in lineItemMasterGrid.Children.OfType<Grid>())
+                        {
+                            if (grid.Tag.ToString() == "BasePriceGrid")
+                            {
+                                try
+                                {
+                                    basePrice = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
+                                }
+                            }
+                            if (grid.Tag.ToString() == "PercentMark")
+                            {
+
+                                try
+                                {
+                                    percentMark = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Percent Mark is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
+                                }
+                            }
+                            if (grid.Tag.ToString() == "UnitPrice")
+                            {
+                                TextBox unitPriceTextBox = grid.Children.OfType<TextBox>().First();
+                                try
+                                {
+                                    unitPrice = Convert.ToDecimal(unitPriceTextBox.Text);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Unit Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
+                                }
+                                // unitPriceOverride = unitPriceTextBox.IsEnabled;
+                            }
+                            if (grid.Tag.ToString() == "ExtendedPrice")
+                            {
+                                try
+                                {
+                                    extendedPrice = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
+                                }
+                                catch
+                                {
+                                    MessageBox.Show("Extended Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
+                                }
+
+                            }
+                        }
+
+                        //Comment
                         try
                         {
-                            price = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
+                            comment = lineItemMasterGrid.Children.OfType<TextBox>().Where(t => t.Tag.ToString() == "CommentBox").First().Text.ToString();
                         }
                         catch
                         {
-                            MessageBox.Show("Price/Percent for option " + option + " is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Could not convert comment to string in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString(), "Error Converting To String", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
 
-                        optionPrices.Add(option, new Tuple<bool, decimal>(additive, price));
-                        if (additive)
+                        //Options
+                        StackPanel stack = lineItemMasterGrid.Children.OfType<StackPanel>().First();
+                        foreach (Grid grid in stack.Children.OfType<Grid>())
                         {
-                            optionsIncrements += price;
-                        }
-                        else
-                        {
-                            optionsPercentage += price;
-                        }
-                    }
-
-                    // Enter Data into NAT01
-                    using (NAT01Context _nat01Context = new NAT01Context())
-                    {
-                        List<QuoteDetailOptions> quoteDetailOptions = _nat01Context.QuoteDetailOptions.Where(q => q.QuoteNumber == quote.QuoteNumber && q.RevisionNo == quote.QuoteRevNo && q.QuoteDetailLineNo == tabLineItemNumber).ToList();
-                        foreach (QuoteDetailOptions quoteDetailOption in quoteDetailOptions)
-                        {
-                            string optionCode = quoteDetailOption.OptionCode.ToString();
-                            if (optionPrices[optionCode].Item1)
+                            string option = grid.Children.OfType<TextBlock>().Where(t => t.Text.First() == '(').First().Tag.ToString();
+                            bool additive = grid.Children.OfType<TextBlock>().Any(t => t.Text == "$");
+                            decimal price = 0;
+                            try
                             {
-                                quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                                price = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Price/Percent for option " + option + " is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+
+                            optionPrices.Add(option, new Tuple<bool, decimal>(additive, price));
+                            if (additive)
+                            {
+                                optionsIncrements += price;
                             }
                             else
                             {
-                                quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                                optionsPercentage += price;
                             }
                         }
-                        QuoteDetails quoteDetails = _nat01Context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == tabLineItemNumber).First();
-                        quoteDetails.UnitPrice = (double)unitPrice;
-                        quoteDetails.UnitPriceOverride = true;
-                        quoteDetails.ExtendedPrice = (double)extendedPrice;
-                        quoteDetails.OptionsIncrements = (float)optionsIncrements;
-                        quoteDetails.OptionsPercentage = (float)optionsPercentage;
-                        _nat01Context.Update(quoteDetails);
-                        _nat01Context.SaveChanges();
-                        _nat01Context.Dispose();
-                    }
 
-                    // Enter Data into NAT02
-                    using (NAT02Context _nat02Context = new NAT02Context())
-                    {
-                        if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == quote.QuoteRevNo && q.LineNo == tabLineItemNumber))
+                        // Enter Data into NAT01
+                        using (NAT01Context _nat01Context = new NAT01Context())
                         {
-                            EoiQuoteScratchPad quoteScratchPad = _nat02Context.EoiQuoteScratchPad.Where(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == quote.QuoteRevNo && q.LineNo == tabLineItemNumber && q.LineType.Trim() == tabLineItemType).First();
-                            quoteScratchPad.BasePrice = basePrice;
-                            quoteScratchPad.PercentMark = percentMark;
-                            quoteScratchPad.Comment = comment;
-                            quoteScratchPad.User = Environment.UserName;
-                            quoteScratchPad.DateTimeStamp = DateTime.Now;
-                        }
-                        else
-                        {
-                            EoiQuoteScratchPad quoteScratchPad = new EoiQuoteScratchPad
+                            List<QuoteDetailOptions> quoteDetailOptions = _nat01Context.QuoteDetailOptions.Where(q => q.QuoteNumber == quote.QuoteNumber && q.RevisionNo == quote.QuoteRevNo && q.QuoteDetailLineNo == tabLineItemNumber).ToList();
+                            foreach (QuoteDetailOptions quoteDetailOption in quoteDetailOptions)
                             {
-                                QuoteNo = quote.QuoteNumber,
-                                RevNo = Convert.ToByte(quote.QuoteRevNo),
-                                LineNo = tabLineItemNumber,
-                                LineType = tabLineItemType,
-                                BasePrice = basePrice,
-                                PercentMark = percentMark,
-                                Comment = comment,
-                                User = Environment.UserName,
-                                DateTimeStamp = DateTime.Now
-                            };
-                            _nat02Context.EoiQuoteScratchPad.Add(quoteScratchPad);
+                                string optionCode = quoteDetailOption.OptionCode.ToString();
+                                if (optionPrices[optionCode].Item1)
+                                {
+                                    quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                                }
+                                else
+                                {
+                                    quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                                }
+                            }
+                            QuoteDetails quoteDetails = _nat01Context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == tabLineItemNumber).First();
+                            quoteDetails.UnitPrice = (double)unitPrice;
+                            quoteDetails.UnitPriceOverride = true;
+                            quoteDetails.ExtendedPrice = (double)extendedPrice;
+                            quoteDetails.OptionsIncrements = (float)optionsIncrements;
+                            quoteDetails.OptionsPercentage = (float)optionsPercentage;
+                            _nat01Context.Update(quoteDetails);
+                            _nat01Context.SaveChanges();
+                            _nat01Context.Dispose();
                         }
-                        _nat02Context.SaveChanges();
-                        _nat02Context.Dispose();
+
+                        // Enter Data into NAT02
+                        using (NAT02Context _nat02Context = new NAT02Context())
+                        {
+                            if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == quote.QuoteRevNo && q.LineNo == tabLineItemNumber))
+                            {
+                                EoiQuoteScratchPad quoteScratchPad = _nat02Context.EoiQuoteScratchPad.Where(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == quote.QuoteRevNo && q.LineNo == tabLineItemNumber && q.LineType.Trim() == tabLineItemType).First();
+                                quoteScratchPad.BasePrice = basePrice;
+                                quoteScratchPad.PercentMark = percentMark;
+                                quoteScratchPad.Comment = comment;
+                                quoteScratchPad.User = Environment.UserName;
+                                quoteScratchPad.DateTimeStamp = DateTime.Now;
+                            }
+                            else
+                            {
+                                EoiQuoteScratchPad quoteScratchPad = new EoiQuoteScratchPad
+                                {
+                                    QuoteNo = quote.QuoteNumber,
+                                    RevNo = Convert.ToByte(quote.QuoteRevNo),
+                                    LineNo = tabLineItemNumber,
+                                    LineType = tabLineItemType,
+                                    BasePrice = basePrice,
+                                    PercentMark = percentMark,
+                                    Comment = comment,
+                                    User = Environment.UserName,
+                                    DateTimeStamp = DateTime.Now
+                                };
+                                _nat02Context.EoiQuoteScratchPad.Add(quoteScratchPad);
+                            }
+                            _nat02Context.SaveChanges();
+                            _nat02Context.Dispose();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (in the foreach)", ex.Message, user);
+                        MessageBox.Show("Prices Failed to Update for '"+tab.Header.ToString()+"'.", "Oops!", MessageBoxButton.OK);
+                        return;
                     }
                 }
                 // Enter Data into NAT01 Quote Header for subtotal and total.
@@ -2114,11 +2123,12 @@ namespace NatoliOrderInterface
                     _nat01Context.SaveChanges();
                     _nat01Context.Dispose();
                 }
-                MessageBox.Show("Prices Updated Successfully", "Success!", MessageBoxButton.OK);
+                MessageBox.Show("Prices Updated Successfully.", "Success!", MessageBoxButton.OK);
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (outside the foreach)", ex.Message, user);
+                MessageBox.Show("Prices Failed to Update.", "Oops!", MessageBoxButton.OK);
             }
         }
         #endregion
