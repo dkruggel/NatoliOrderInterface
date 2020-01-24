@@ -69,7 +69,7 @@ namespace NatoliOrderInterface
                 string packageVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
                 if (settings.PackageVersion != packageVersion)
                 {
-                    settings.PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version.ToString();
+                    settings.PackageVersion = packageVersion;
                     _nat02context.EoiSettings.Update(settings);
                     _nat02context.SaveChanges();
                 }
