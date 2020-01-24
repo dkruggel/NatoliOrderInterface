@@ -1325,23 +1325,30 @@ namespace NatoliOrderInterface
         /// <param name="quoteRevNo"></param>
         public Quote(int quoteNumber, short quoteRevNo)
         {
-            this.quoteNumber = quoteNumber;
-            this.quoteRevNo = quoteRevNo;
-            nat01Context = new NAT01Context();
-            quoteHeader = nat01Context.QuoteHeader.Where(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == quoteRevNo).FirstOrDefault();
-            quoteDetails = nat01Context.QuoteDetails.Where(q => q.QuoteNo == quoteNumber && q.Revision == quoteRevNo).ToList();
-
-
-            LineItemCount = quoteDetails.Count;
-            foreach (QuoteDetails row in quoteDetails)
+            try
             {
-                if (row.DetailTypeId.Trim() != "")
+                this.quoteNumber = quoteNumber;
+                this.quoteRevNo = quoteRevNo;
+                nat01Context = new NAT01Context();
+                quoteHeader = nat01Context.QuoteHeader.Where(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == quoteRevNo).FirstOrDefault();
+                quoteDetails = nat01Context.QuoteDetails.Where(q => q.QuoteNo == quoteNumber && q.Revision == quoteRevNo).ToList();
+
+
+                LineItemCount = quoteDetails.Count;
+                foreach (QuoteDetails row in quoteDetails)
                 {
-                   lineItems.Add(row.LineNumber, row.DetailTypeId.Trim());
+                    if (row.DetailTypeId.Trim() != "")
+                    {
+                        lineItems.Add(row.LineNumber, row.DetailTypeId.Trim());
+                    }
+
                 }
-                
+                SetInfo(quoteHeader);
             }
-            SetInfo(quoteHeader);
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("Quote.cs -> QuoteNo: " + quoteNumber + "-" + quoteRevNo, ex.Message, null);
+            }
         }
 
         public void SetInfo(QuoteHeader quoteHeader)

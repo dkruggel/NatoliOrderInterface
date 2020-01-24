@@ -448,10 +448,14 @@ namespace NatoliOrderInterface
         private void ChangeLineItemScrollerHeight()
         {
             QuoteTabItem.UpdateLayout();
-            double expanderHeight = QuoteTopHeaderExpander.IsExpanded ? 473 : 23;
             try 
-            { 
-                LineItemScroller.Height = Math.Max(Quote_Info_Window.ActualHeight - expanderHeight - ButtonBorder1.ActualHeight - QuoteTabItem.ActualHeight - 60, 30); 
+            {
+                double expanderHeight = QuoteTopHeaderExpander.IsExpanded ? 473 : 23;
+                if (LineItemScroller != null)
+                { 
+                    LineItemScroller.Height = Math.Max((Quote_Info_Window == null ? Quote_Info_Window.Height : Quote_Info_Window.ActualHeight) - expanderHeight - (Quote_Info_Window == null ? ButtonBorder1.Height : ButtonBorder1.ActualHeight) - (Quote_Info_Window == null ? QuoteTabItem.Height : QuoteTabItem.ActualHeight) - 60, 30); 
+                }
+
             }
             catch (Exception ex) 
             {
@@ -811,17 +815,30 @@ namespace NatoliOrderInterface
                         bool international = _natbcContext.MoeEmployees.Where(e => e.MoeEmployeeName == repName).First().MoeDepartmentCode == "D1149";
                         if (exists)
                         {
-                            basePrice = (double)_nat02Context.EoiQuoteScratchPad.Where(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).First().BasePrice;
-                            if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
-                                                                            x.MachineType == quoteLineItem.MachinePriceCode &&
-                                                                            x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
-                                                                            x.Shape == quoteLineItem.ShapePriceCode &&
-                                                                            x.PunchType == lineItem.Value &&
-                                                                            x.QuantityOrdered >= x.OrderQty &&
-                                                                            x.QuoteNo == quote.QuoteNumber &&
-                                                                            x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2))
+                            if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))
                             {
-                                priceChanged = true;
+                                basePrice = (double)_nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).BasePrice;
+                                if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
+                                                                                 x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                                 x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                                 x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                                 x.PunchType == lineItem.Value &&
+                                                                                 x.QuantityOrdered >= x.OrderQty &&
+                                                                                 x.QuoteNo == quote.QuoteNumber &&
+                                                                                 x.Revision == quote.QuoteRevNo))
+                                {
+                                    if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                                                                    x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                                    x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                                    x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                                    x.PunchType == lineItem.Value &&
+                                                                                    x.QuantityOrdered >= x.OrderQty &&
+                                                                                    x.QuoteNo == quote.QuoteNumber &&
+                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2))
+                                    {
+                                        priceChanged = true;
+                                    }
+                                }
                             }
                         }
                         else
@@ -833,14 +850,24 @@ namespace NatoliOrderInterface
                             }
                             else
                             {
-                                basePrice = _nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
-                                                                        x.MachineType == quoteLineItem.MachinePriceCode &&
-                                                                        x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
-                                                                        x.Shape == quoteLineItem.ShapePriceCode &&
-                                                                        x.PunchType == lineItem.Value &&
-                                                                        x.QuantityOrdered >= x.OrderQty &&
-                                                                        x.QuoteNo == quote.QuoteNumber &&
-                                                                        x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice;
+                                if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
+                                                                         x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                         x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                         x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                         x.PunchType == lineItem.Value &&
+                                                                         x.QuantityOrdered >= x.OrderQty &&
+                                                                         x.QuoteNo == quote.QuoteNumber &&
+                                                                         x.Revision == quote.QuoteRevNo))
+                                {
+                                    basePrice = _nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                                                            x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                            x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                            x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                            x.PunchType == lineItem.Value &&
+                                                                            x.QuantityOrdered >= x.OrderQty &&
+                                                                            x.QuoteNo == quote.QuoteNumber &&
+                                                                            x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice;
+                                }
                             }
                         }
                     }
@@ -1868,13 +1895,22 @@ namespace NatoliOrderInterface
                     foreach (QuoteDetailOptions quoteDetailOption in quoteDetailOptions)
                     {
                         string optionCode = quoteDetailOption.OptionCode.ToString();
-                        if (optionPrices[optionCode].Item1)
+                        if (optionPrices.ContainsKey(optionCode))
                         {
-                            quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                            if (optionPrices[optionCode].Item1)
+                            {
+                                quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                            }
+                            else
+                            {
+                                quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                            }
                         }
                         else
                         {
-                            quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                            IMethods.WriteToErrorLog("SaveAllLineItemsButton_Click => Enter Data into NAT01 => { option is not listed on scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions] }", "", user);
+                            MessageBox.Show("Failed on Line Item '" + tab.Header.ToString() + "'. Option (" + optionCode + ") is not found on the scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions].", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                     }
                     QuoteDetails quoteDetails = _nat01Context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == tabLineItemNumber).First();
@@ -2053,14 +2089,24 @@ namespace NatoliOrderInterface
                             List<QuoteDetailOptions> quoteDetailOptions = _nat01Context.QuoteDetailOptions.Where(q => q.QuoteNumber == quote.QuoteNumber && q.RevisionNo == quote.QuoteRevNo && q.QuoteDetailLineNo == tabLineItemNumber).ToList();
                             foreach (QuoteDetailOptions quoteDetailOption in quoteDetailOptions)
                             {
+                                
                                 string optionCode = quoteDetailOption.OptionCode.ToString();
-                                if (optionPrices[optionCode].Item1)
+                                if (optionPrices.ContainsKey(optionCode))
                                 {
-                                    quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                                    if (optionPrices[optionCode].Item1)
+                                    {
+                                        quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                                    }
+                                    else
+                                    {
+                                        quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                                    }
                                 }
                                 else
                                 {
-                                    quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                                    IMethods.WriteToErrorLog("SaveAllLineItemsButton_Click => Enter Data into NAT01 => { option is not listed on scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions] }", "", user);
+                                    MessageBox.Show("Failed on Line Item '" + tab.Header.ToString() + "'. Option ("+ optionCode + ") is not found on the scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions].", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    return;
                                 }
                             }
                             QuoteDetails quoteDetails = _nat01Context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == tabLineItemNumber).First();
@@ -2228,7 +2274,6 @@ namespace NatoliOrderInterface
         }
 
         #region Events
-        
         private void Grid_Drop(object sender, DragEventArgs e)
         {
             string filename;

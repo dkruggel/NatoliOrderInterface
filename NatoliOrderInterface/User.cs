@@ -63,6 +63,19 @@ namespace NatoliOrderInterface
         {
             using var _nat02context = new NAT02Context();
             EoiSettings settings = _nat02context.EoiSettings.SingleOrDefault(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower());
+            try
+            {
+                if (settings.PackageVersion != Windows.ApplicationModel.Package.Current.Id.Version.ToString())
+                {
+                    settings.PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version.ToString();
+                    _nat02context.EoiSettings.Update(settings);
+                    _nat02context.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("User.cs -> Export applications version.", ex.Message, null);
+            }
             _nat02context.Dispose();
             DomainName = domainName;
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();

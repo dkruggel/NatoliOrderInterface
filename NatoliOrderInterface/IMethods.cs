@@ -19,6 +19,12 @@ namespace NatoliOrderInterface
     
     public interface IMethods
     {
+        /// <summary>
+        /// Writes to error log file at @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt". 'errorLoc' should describe the location in the code. 'errorMessage' should be the Exception.Message. 'user' can be null if it has not been given a value yet.
+        /// </summary>
+        /// <param name="errorLoc"></param>
+        /// <param name="errorMessage"></param>
+        /// <param name="user"></param>
         public static void WriteToErrorLog(string errorLoc, string errorMessage, User user)
         {
             try
@@ -29,7 +35,12 @@ namespace NatoliOrderInterface
                 existing = existing.TrimEnd();
                 sr.Close();
                 System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-                sw.Write(DateTime.Now + "  " + (user == null ? "'Null User'" : user.GetUserName()) + "  " + errorLoc + "\r\n" + (errorMessage == null? "".PadLeft(20) : errorMessage.PadLeft(20)) + "\r\n" + existing);
+                sw.Write(
+                    "DateTime: " + DateTime.Now + "\r\n\t" +
+                    "User: " + (user == null ? "null" : user.GetUserName()) + "\r\n\t" +
+                    "Location: " + errorLoc + "\r\n\t" +
+                    "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
+                    existing);
                 sw.Flush();
                 sw.Close();
             }

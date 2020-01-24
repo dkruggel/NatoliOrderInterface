@@ -133,17 +133,24 @@ namespace NatoliOrderInterface
 
         public QuoteLineItem(Quote quote, short lineItemNumber = 1)
         {
-            this.Quote = quote;
-            this.lineItemNumber = lineItemNumber;
-            nat01context = quote.Nat01Context;
-            quoteDetails = nat01context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo).FirstOrDefault();
-            quoteDetailOptions = nat01context.QuoteDetailOptions.Where(q => q.QuoteNumber == quote.QuoteNumber && q.RevisionNo == quote.QuoteRevNo && q.QuoteDetailLineNo == lineItemNumber).ToList();
-            optionsList = nat01context.OptionsList.ToList();
-            QuoteDetails quoteDetailsRow = nat01context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == lineItemNumber).FirstOrDefault();
-            if (quoteDetailsRow != null)
-                SetInfo(quoteDetailsRow, quoteDetailOptions, optionsList);
-            else
-                this.lineItemNumber = -1;
+            try
+            {
+                this.Quote = quote;
+                this.lineItemNumber = lineItemNumber;
+                nat01context = quote.Nat01Context;
+                quoteDetails = nat01context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo).FirstOrDefault();
+                quoteDetailOptions = nat01context.QuoteDetailOptions.Where(q => q.QuoteNumber == quote.QuoteNumber && q.RevisionNo == quote.QuoteRevNo && q.QuoteDetailLineNo == lineItemNumber).ToList();
+                optionsList = nat01context.OptionsList.ToList();
+                QuoteDetails quoteDetailsRow = nat01context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == lineItemNumber).FirstOrDefault();
+                if (quoteDetailsRow != null)
+                    SetInfo(quoteDetailsRow, quoteDetailOptions, optionsList);
+                else
+                    this.lineItemNumber = -1;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("QuoteLineItem.cs -> QuoteNo: " + Quote.QuoteNumber + "-" + quote.QuoteRevNo + " LineNumber: "+ lineItemNumber, ex.Message, null);
+            }
         }
 
         public void SetInfo(QuoteDetails row, List<QuoteDetailOptions> quoteDetailOptions, List<OptionsList> optionsList)
