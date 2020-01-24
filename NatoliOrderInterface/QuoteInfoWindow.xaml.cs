@@ -1868,13 +1868,22 @@ namespace NatoliOrderInterface
                     foreach (QuoteDetailOptions quoteDetailOption in quoteDetailOptions)
                     {
                         string optionCode = quoteDetailOption.OptionCode.ToString();
-                        if (optionPrices[optionCode].Item1)
+                        if (optionPrices.ContainsKey(optionCode))
                         {
-                            quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                            if (optionPrices[optionCode].Item1)
+                            {
+                                quoteDetailOption.OrdDetOptPrice = (float)optionPrices[optionCode].Item2;
+                            }
+                            else
+                            {
+                                quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                            }
                         }
                         else
                         {
-                            quoteDetailOption.OrdDetOptPercnt = (float)optionPrices[optionCode].Item2;
+                            IMethods.WriteToErrorLog("SaveAllLineItemsButton_Click => Enter Data into NAT01 => { option is not listed on scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions] }", "", user);
+                            MessageBox.Show("Failed on Line Item '" + tab.Header.ToString() + "'. Option (" + optionCode + ") is not found on the scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions].", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                     }
                     QuoteDetails quoteDetails = _nat01Context.QuoteDetails.Where(q => q.QuoteNo == quote.QuoteNumber && q.Revision == quote.QuoteRevNo && q.LineNumber == tabLineItemNumber).First();
