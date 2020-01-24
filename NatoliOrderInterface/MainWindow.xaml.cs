@@ -143,7 +143,14 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            CheckForAvailableUpdatesAndLaunchAsync();
+            try
+            {
+                CheckForAvailableUpdatesAndLaunchAsync();
+            }
+            catch (Exception ex)
+            {
+                WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message);
+            }
             SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
             splashScreen.Show(true);
             var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
