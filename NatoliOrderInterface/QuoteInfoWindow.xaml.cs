@@ -527,39 +527,37 @@ namespace NatoliOrderInterface
             using NATBCContext _natbcContext = new NATBCContext();
             bool isConvertedToOrder = quote.ConvertedToOrder == 'Y';
             #region SMIs
+            Dictionary<short, IQueryable<CustomerInstructionTable>> smiDict = new Dictionary<short, IQueryable<CustomerInstructionTable>>();
+            Dictionary<short, string> custNamesDict = new Dictionary<short, string>();
             IQueryable<CustomerInstructionTable> userSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.UserAcctNo && q.Inactive == false).OrderBy(q => q.Sequence);
+            string userName = GetUserName();
+            smiDict.Add(0, userSMI);
+            custNamesDict.Add(0, userName);
+            string shipToName = null;
             IQueryable<CustomerInstructionTable> shipToSMI = null;
-            IQueryable<CustomerInstructionTable> customerSMI = null;
-            short match = 0;
             if (quote.UserAcctNo != quote.ShipToAccountNo)
             {
-                match = 1;
-                shipToSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.CustomerNo && q.Inactive == false).OrderBy(q => q.Sequence);
+                shipToName = quote.ShiptoName;
+                shipToSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.ShipToAccountNo && q.Inactive == false).OrderBy(q => q.Sequence);
+                smiDict.Add(1, shipToSMI);
+                custNamesDict.Add(1, shipToName);
             }
+            IQueryable<CustomerInstructionTable> customerSMI = null;
+            string customerName = null;
             if (quote.UserAcctNo != quote.CustomerNo && quote.ShipToAccountNo != quote.CustomerNo)
             {
-                match = 2;
-                customerSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.ShipToAccountNo && q.Inactive == false).OrderBy(q => q.Sequence);
+                customerName = quote.BillToName;
+                customerSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.CustomerNo && q.Inactive == false).OrderBy(q => q.Sequence);
+                smiDict.Add(2, customerSMI);
+                custNamesDict.Add(2, customerName);
             }
-
-            Dictionary<short, IQueryable<CustomerInstructionTable>> smiDict = new Dictionary<short, IQueryable<CustomerInstructionTable>>
-            {
-                { 0, userSMI },
-                { 1, shipToSMI },
-                { 2, customerSMI }
-            };
-            Dictionary<short, string> custNamesDict = new Dictionary<short, string>
-            {
-                { 0, GetUserName() },
-                { 1, quote.ShiptoName },
-                { 2, quote.BillToName }
-            };
 
             SMIStackPanel.Children.Clear();
 
 
-            for (short i = 0; i <= match; i++)
+            foreach(KeyValuePair<short,string> custNameKVP in custNamesDict)
             {
+                short i = custNameKVP.Key;
                 try
                 {
                     if (smiDict.ContainsKey(i) && smiDict[i] != null && smiDict[i].Any())

@@ -738,7 +738,6 @@ namespace NatoliOrderInterface
             // Get the current app's package for the current user.
             //PackageManager pm = new PackageManager();
             // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
-            
             PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
             switch (result.Availability)
             {
