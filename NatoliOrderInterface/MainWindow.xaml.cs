@@ -280,7 +280,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("GridWindow_Closing - Save Settings", ex.Message);
+                IMethods.WriteToErrorLog("GridWindow_Closing - Save Settings", ex.Message, User);
             }
             context.Dispose();
 
@@ -299,7 +299,7 @@ namespace NatoliOrderInterface
                 catch (Exception ex)
                 {
                     // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("GridWindow_Closing - Remove from OrdersBeingChecked", ex.Message);
+                    IMethods.WriteToErrorLog("GridWindow_Closing - Remove from OrdersBeingChecked", ex.Message, User);
                 }
                 nat02context.Dispose();
             }
@@ -745,7 +745,6 @@ namespace NatoliOrderInterface
             // Get the current app's package for the current user.
             //PackageManager pm = new PackageManager();
             // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
-            
             PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
             switch (result.Availability)
             {
@@ -885,7 +884,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("StartTabletProject_CLick", ex.Message);
+                        IMethods.WriteToErrorLog("StartTabletProject_CLick", ex.Message, User);
                     }
                 }
 
@@ -973,7 +972,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("FinishTabletProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("FinishTabletProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1073,7 +1072,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         //MessageBox.Show(ex.Message);
-                        WriteToErrorLog("SubmitTabletProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("SubmitTabletProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1109,7 +1108,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("OnHoldTabletProject_Click", ex.Message);
+                IMethods.WriteToErrorLog("OnHoldTabletProject_Click", ex.Message, User);
             }
         }
         private void OffHoldTabletProject_Click(object sender, RoutedEventArgs e)
@@ -1162,7 +1161,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("OffHoldTabletProject_Click", ex.Message);
+                IMethods.WriteToErrorLog("OffHoldTabletProject_Click", ex.Message, User);
             }
         }
         private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
@@ -1203,7 +1202,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("CompleteTabletProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("CompleteTabletProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1323,7 +1322,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("CheckTabletProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("CheckTabletProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1405,7 +1404,7 @@ namespace NatoliOrderInterface
                             catch (Exception ex)
                             {
                                 // MessageBox.Show(ex.Message);
-                                WriteToErrorLog("SetOnHold", ex.Message);
+                                IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
                             }
                         }
                     }
@@ -1506,7 +1505,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("StartToolProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("StartToolProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1594,7 +1593,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("FinishToolProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("FinishToolProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1700,7 +1699,7 @@ namespace NatoliOrderInterface
                         catch (Exception ex)
                         {
                             // MessageBox.Show(ex.Message);
-                            WriteToErrorLog("CheckToolProject_Click", ex.Message);
+                            IMethods.WriteToErrorLog("CheckToolProject_Click", ex.Message, User);
                         }
                     }
                 }
@@ -1734,7 +1733,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("OnHoldToolProject_Click", ex.Message);
+                IMethods.WriteToErrorLog("OnHoldToolProject_Click", ex.Message, User);
             }
         }
         private void OffHoldToolProject_Click(object sender, RoutedEventArgs e)
@@ -1786,7 +1785,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("OffHoldToolProject_Click", ex.Message);
+                IMethods.WriteToErrorLog("OffHoldToolProject_Click", ex.Message, User);
             }
         }
         private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
@@ -1826,7 +1825,7 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         // MessageBox.Show(ex.Message);
-                        WriteToErrorLog("CompleteToolProject_Click", ex.Message);
+                        IMethods.WriteToErrorLog("CompleteToolProject_Click", ex.Message, User);
                     }
                 }
 
@@ -1911,7 +1910,7 @@ namespace NatoliOrderInterface
                             catch (Exception ex)
                             {
                                 // MessageBox.Show(ex.Message);
-                                WriteToErrorLog("SetOnHold", ex.Message);
+                                IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
                             }
                         }
                     }
@@ -2306,7 +2305,7 @@ namespace NatoliOrderInterface
 
                     quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
 
-                    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString()).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), User).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
                     {
                         // Do nothing
                     }
@@ -2516,7 +2515,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteSearchButton_Click - Before new window instance", ex.Message);
+                IMethods.WriteToErrorLog("QuoteSearchButton_Click - Before new window instance", ex.Message, User);
             }
             try
             {
@@ -2531,7 +2530,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteSearchButton_Click - After new window instance", ex.Message);
+                IMethods.WriteToErrorLog("QuoteSearchButton_Click - After new window instance", ex.Message, User);
             }
         AlreadyOpen:
             nat01context.Dispose();
@@ -2589,7 +2588,7 @@ namespace NatoliOrderInterface
                 //catch (Exception ex)
                 //{
                 //    // MessageBox.Show(ex.Message);
-                //    WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message);
+                //    IMethods.WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message, User);
                 //}
                 string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
                 try
@@ -2617,13 +2616,13 @@ namespace NatoliOrderInterface
                 catch (Exception ex)
                 {
                     // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message);
+                    IMethods.WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message, User);
                 }
             }
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message);
+                IMethods.WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message, User);
             }
             Cursor = Cursors.Arrow;
             ProjectSearchTextBlock.Text = "";
@@ -2685,7 +2684,7 @@ namespace NatoliOrderInterface
                 catch (Exception ex)
                 {
                     // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("OrderSearchButton_Click - Before new window instance", ex.Message);
+                    IMethods.WriteToErrorLog("OrderSearchButton_Click - Before new window instance", ex.Message, User);
                 }
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, "", User)
                 {
@@ -9173,7 +9172,7 @@ namespace NatoliOrderInterface
         //    catch //(Exception ex)
         //    {
         //        // MessageBox.Show(ex.Message);
-        //        // WriteToErrorLog("InEngineeringDataGrid_LoadingRow", ex.Message);
+        //        // IMethods.WriteToErrorLog("InEngineeringDataGrid_LoadingRow", ex.Message, User);
         //    }
         //}
 
@@ -10883,7 +10882,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("AllTabletProjectsDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("AllTabletProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void AllToolProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11011,7 +11010,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("AllToolProjectsDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("AllToolProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void TabletProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11066,7 +11065,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("TabletProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("TabletProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void TabletProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11121,7 +11120,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("TabletProjectStartedDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("TabletProjectStartedDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void TabletProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11175,7 +11174,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("TabletProjectDrawnDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("TabletProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void TabletProjectSubmittedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11230,7 +11229,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("TabletProjectSubmittedDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("TabletProjectSubmittedDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void TabletProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11278,7 +11277,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("TabletProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("TabletProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void ToolProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11333,7 +11332,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void ToolProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11389,7 +11388,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void ToolProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11444,7 +11443,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("ToolProjectDrawnDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("ToolProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void ToolProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11493,7 +11492,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("ToolProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("ToolProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void QuotesNotConverted_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11536,7 +11535,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void QuotesToConvert_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -11573,7 +11572,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message);
+                IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
             }
         }
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
@@ -11591,7 +11590,7 @@ namespace NatoliOrderInterface
                 catch (Exception ex)
                 {
                     // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("ContextMenu_Closed", ex.Message);
+                    IMethods.WriteToErrorLog("ContextMenu_Closed", ex.Message, User);
                 }
             }
         }
@@ -11666,28 +11665,6 @@ namespace NatoliOrderInterface
             catch
             {
 
-            }
-        }
-        #endregion
-
-        #region ErrorHandling
-        private void WriteToErrorLog(string errorLoc, string errorMessage)
-        {
-            try
-            {
-                string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt";
-                System.IO.StreamReader sr = new System.IO.StreamReader(path);
-                string existing = sr.ReadToEnd();
-                existing = existing.TrimEnd();
-                sr.Close();
-                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-                sw.Write(DateTime.Now + "  " + User.GetUserName() + "  " + errorLoc + "\r\n" + errorMessage.PadLeft(20) + "\r\n" + existing);
-                sw.Flush();
-                sw.Close();
-            }
-            catch
-            {
-                MessageBox.Show("Error in the Error Handling of Errors");
             }
         }
         #endregion
