@@ -1252,14 +1252,27 @@ namespace NatoliOrderInterface
                                     {
                                         if (quoteLineItem.OptionNumbers.Contains("336"))
                                         {
-                                            if (workingLengthTolerance == null)
+                                            try
                                             {
-
-                                                workingLengthTolerance = quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336");
+                                                if (workingLengthTolerance == null)
+                                                {
+                                                    try
+                                                    {
+                                                        workingLengthTolerance = quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336");
+                                                    }
+                                                    catch
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has option (336) without a value.");
+                                                    }
+                                                }
+                                                else if (workingLengthTolerance.TopValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").TopValue || workingLengthTolerance.BottomValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").BottomValue)
+                                                {
+                                                    errors.Add("Working Length Tolerances vary. Check to make sure they contain correct values.");
+                                                }
                                             }
-                                            else if (workingLengthTolerance.TopValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").TopValue || workingLengthTolerance.BottomValue != quoteLineItem.optionValuesC.First(qov => qov.OptionCode == "336").BottomValue)
+                                            catch
                                             {
-                                                errors.Add("Working Length Tolerances vary. Check to make sure they contain correct values.");
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' has option (336) without a value.");
                                             }
                                         }
                                         else
@@ -1440,9 +1453,16 @@ namespace NatoliOrderInterface
                                                     {
                                                         byte boresPerSegment = (byte)(stations / segmentQTY);
                                                         // # of Multibores != boresPerSegment
-                                                        if ((quoteLineItem.optionValuesO.First(qov => qov.OptionCode == "470").Integer ?? 1) != boresPerSegment)
+                                                        try
                                                         {
-                                                            errors.Add("'DS' has multi-bore option that does not equal (# of stations) / (# of segments).");
+                                                            if ((quoteLineItem.optionValuesO.First(qov => qov.OptionCode == "470").Integer ?? 1) != boresPerSegment)
+                                                            {
+                                                                errors.Add("'DS' has multi-bore option that does not equal (# of stations) / (# of segments).");
+                                                            }
+                                                        }
+                                                        catch
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (470) without a value.");
                                                         }
                                                     }
                                                     else
@@ -1575,8 +1595,16 @@ namespace NatoliOrderInterface
                                     // Has Key Angle
                                     if (quoteLineItem.OptionNumbers.Contains("155"))
                                     {
-                                        QuoteOptionValueGDegrees quoteOptionValueG = quoteLineItem.optionValuesG.First(qov => qov.OptionCode == "155");
-                                        short? angle = quoteOptionValueG.Degrees;
+                                        QuoteOptionValueGDegrees quoteOptionValueG = null;
+                                        try
+                                        {
+                                            quoteOptionValueG = quoteLineItem.optionValuesG.First(qov => qov.OptionCode == "155");
+                                        }
+                                        catch
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (155) without a value.");
+                                        }
+                                short? angle = quoteOptionValueG.Degrees;
                                         string text = (quoteOptionValueG.Text ?? "").Trim();
                                         if (angle == null)
                                         {
@@ -1655,7 +1683,15 @@ namespace NatoliOrderInterface
                                                 // Special key size
                                                 if (quoteLineItem.OptionNumbers.Contains("151"))
                                                 {
-                                                    QuoteOptionValueBDoubleNum keySizeOptionValue = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "151");
+                                                    QuoteOptionValueBDoubleNum keySizeOptionValue = null;
+                                                    try
+                                                    {
+                                                        keySizeOptionValue = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "151");
+                                                    }
+                                                    catch
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has option (215) without a value.");
+                                                    }
                                                     double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4);
                                                     double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4);
                                                     // Key exists in table
@@ -2110,8 +2146,15 @@ namespace NatoliOrderInterface
                                                 // Special tip size
                                                 if (quoteLineItem.OptionNumbers.Contains("200"))
                                                 {
-                                                    punchWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1;
-                                                    punchLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2;
+                                                    try
+                                                    {
+                                                        punchWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1;
+                                                        punchLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2;
+                                                    }
+                                                    catch
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has option (200) without a value.");
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -2180,8 +2223,15 @@ namespace NatoliOrderInterface
                                                     // Special bore size
                                                     if (dieQuoteLineItem.OptionNumbers.Contains("425"))
                                                     {
-                                                        dieWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
-                                                        dieLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
+                                                        try
+                                                        {
+                                                            dieWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
+                                                            dieLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
+                                                        }
+                                                        catch
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (425) without a value.");
+                                                        }
                                                     }
                                                     else
                                                     {
