@@ -21,6 +21,8 @@ using System.Windows.Media.Imaging;
 using WpfAnimatedGif;
 using System.Diagnostics;
 using Colors = System.Windows.Media.Colors;
+using Windows.Management.Deployment;
+using Windows.ApplicationModel;
 
 namespace NatoliOrderInterface
 {
@@ -141,6 +143,7 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
+            CheckForAvailableUpdatesAndLaunchAsync();
             SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
             splashScreen.Show(true);
             var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
@@ -364,6 +367,10 @@ namespace NatoliOrderInterface
             {
                 Header = "Print Drawings"
             };
+            MenuItem updateApp = new MenuItem
+            {
+                Header = "Update App"
+            };
             createProject.Click += CreateProject_Click;
             projectSearch.Click += ProjectSearch_Click;
             forceRefresh.Click += ForceRefresh_Click;
@@ -371,6 +378,7 @@ namespace NatoliOrderInterface
             checkMissingVariables.Click += CheckMissingVariables_Click;
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
+            updateApp.Click += UpdateApp_Click;
             // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
             fileMenu.Items.Add(projectSearch);
             fileMenu.Items.Add(forceRefresh);
@@ -379,6 +387,7 @@ namespace NatoliOrderInterface
             //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
             fileMenu.Items.Add(filterProjects);
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
+            //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
             #endregion
             #region SubsMenuRegion
@@ -716,6 +725,35 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void UpdateApp_Click(object sender, RoutedEventArgs e)
+        {
+            // CheckForAvailableUpdatesAndLaunchAsync()
+            // Process.Start(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
+            // System.IO.File.Open(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller", System.IO.FileMode.Open);
+        }
+        public async void CheckForAvailableUpdatesAndLaunchAsync()
+        {
+            // Get the current app's package for the current user.
+            //PackageManager pm = new PackageManager();
+            // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
+            
+            PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
+            switch (result.Availability)
+            {
+                case PackageUpdateAvailability.Available:
+                    //MessageBox.Show("There is a new update available.");
+                    Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
+                    break;
+                case PackageUpdateAvailability.Required:
+                    break;
+                case PackageUpdateAvailability.NoUpdates:
+                    break;
+                case PackageUpdateAvailability.Unknown:
+                default:
+                    break;
+            }
         }
 
         private void PrintDrawings_Click(object sender, RoutedEventArgs e)
