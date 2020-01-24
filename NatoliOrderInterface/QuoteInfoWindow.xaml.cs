@@ -815,17 +815,31 @@ namespace NatoliOrderInterface
                         bool international = _natbcContext.MoeEmployees.Where(e => e.MoeEmployeeName == repName).First().MoeDepartmentCode == "D1149";
                         if (exists)
                         {
-                            basePrice = (double)_nat02Context.EoiQuoteScratchPad.Where(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).First().BasePrice;
-                            if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
-                                                                            x.MachineType == quoteLineItem.MachinePriceCode &&
-                                                                            x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
-                                                                            x.Shape == quoteLineItem.ShapePriceCode &&
-                                                                            x.PunchType == lineItem.Value &&
-                                                                            x.QuantityOrdered >= x.OrderQty &&
-                                                                            x.QuoteNo == quote.QuoteNumber &&
-                                                                            x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2))
+                            if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))
                             {
-                                priceChanged = true;
+                                basePrice = (double)_nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).BasePrice;
+                                //if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
+                                //                                                 x.MachineType == quoteLineItem.MachinePriceCode &&
+                                //                                                 x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                //                                                 x.Shape == quoteLineItem.ShapePriceCode &&
+                                //                                                 x.PunchType == lineItem.Value &&
+                                //                                                 x.QuantityOrdered >= x.OrderQty &&
+                                //                                                 x.QuoteNo == quote.QuoteNumber &&
+                                //                                                 x.Revision == quote.QuoteRevNo))
+                                if (true)
+                                {
+                                    if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                                                                    x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                                    x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                                    x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                                    x.PunchType == lineItem.Value &&
+                                                                                    x.QuantityOrdered >= x.OrderQty &&
+                                                                                    x.QuoteNo == quote.QuoteNumber &&
+                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2))
+                                    {
+                                        priceChanged = true;
+                                    }
+                                }
                             }
                         }
                         else
@@ -837,14 +851,24 @@ namespace NatoliOrderInterface
                             }
                             else
                             {
-                                basePrice = _nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
-                                                                        x.MachineType == quoteLineItem.MachinePriceCode &&
-                                                                        x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
-                                                                        x.Shape == quoteLineItem.ShapePriceCode &&
-                                                                        x.PunchType == lineItem.Value &&
-                                                                        x.QuantityOrdered >= x.OrderQty &&
-                                                                        x.QuoteNo == quote.QuoteNumber &&
-                                                                        x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice;
+                                if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
+                                                                         x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                         x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                         x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                         x.PunchType == lineItem.Value &&
+                                                                         x.QuantityOrdered >= x.OrderQty &&
+                                                                         x.QuoteNo == quote.QuoteNumber &&
+                                                                         x.Revision == quote.QuoteRevNo))
+                                {
+                                    basePrice = _nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                                                            x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                            x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                            x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                            x.PunchType == lineItem.Value &&
+                                                                            x.QuantityOrdered >= x.OrderQty &&
+                                                                            x.QuoteNo == quote.QuoteNumber &&
+                                                                            x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice;
+                                }
                             }
                         }
                     }

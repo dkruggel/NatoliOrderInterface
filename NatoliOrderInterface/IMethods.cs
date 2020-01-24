@@ -35,7 +35,12 @@ namespace NatoliOrderInterface
                 existing = existing.TrimEnd();
                 sr.Close();
                 System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-                sw.Write("DateTime: "+DateTime.Now + "\r\n User: " + (user == null ? "null" : user.GetUserName()) + "\r\n Location: " + errorLoc + "\r\n ErrorMessage: " + (errorMessage == null ? "".PadLeft(20) : errorMessage.PadLeft(20)) + "\r\n" + existing + "\r\n" + new string('+', 50) + "\r\n");
+                sw.Write(
+                    "DateTime: " + DateTime.Now + "\r\n\t" +
+                    "User: " + (user == null ? "null" : user.GetUserName()) + "\r\n\t" +
+                    "Location: " + errorLoc + "\r\n\t" +
+                    "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
+                    existing);
                 sw.Flush();
                 sw.Close();
             }
