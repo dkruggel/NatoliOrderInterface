@@ -818,15 +818,14 @@ namespace NatoliOrderInterface
                             if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))
                             {
                                 basePrice = (double)_nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).BasePrice;
-                                //if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
-                                //                                                 x.MachineType == quoteLineItem.MachinePriceCode &&
-                                //                                                 x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
-                                //                                                 x.Shape == quoteLineItem.ShapePriceCode &&
-                                //                                                 x.PunchType == lineItem.Value &&
-                                //                                                 x.QuantityOrdered >= x.OrderQty &&
-                                //                                                 x.QuoteNo == quote.QuoteNumber &&
-                                //                                                 x.Revision == quote.QuoteRevNo))
-                                if (true)
+                                if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
+                                                                                 x.MachineType == quoteLineItem.MachinePriceCode &&
+                                                                                 x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
+                                                                                 x.Shape == quoteLineItem.ShapePriceCode &&
+                                                                                 x.PunchType == lineItem.Value &&
+                                                                                 x.QuantityOrdered >= x.OrderQty &&
+                                                                                 x.QuoteNo == quote.QuoteNumber &&
+                                                                                 x.Revision == quote.QuoteRevNo))
                                 {
                                     if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
                                                                                     x.MachineType == quoteLineItem.MachinePriceCode &&
