@@ -11,7 +11,7 @@ namespace NatoliOrderInterface
     /// <summary>
     /// Interaction logic for SMI.xaml
     /// </summary>
-    public partial class SMI : Window
+    public partial class SMI : Window , IMethods
     {
         
         private List<CustomerInstructionTable> SMIs = new List<CustomerInstructionTable>();
@@ -19,14 +19,21 @@ namespace NatoliOrderInterface
         private string customerNumber;
         public SMI(string custName, string custNumber)
         {
-            InitializeComponent();
-            customerName = custName;
-            customerNumber = custNumber;
-            SMIUserSpecificHeader.Text = customerName + " SMI's";
-            NAT01Context nat01Context = new NAT01Context();
-            SMIs = nat01Context.CustomerInstructionTable.Where(i => i.CustomerId == customerNumber).OrderBy(i => i.Inactive).ThenBy(i => i.Sequence).ToList();
-            nat01Context.Dispose();
-            FillInfo();
+            try
+            {
+                InitializeComponent();
+                customerName = custName;
+                customerNumber = custNumber;
+                SMIUserSpecificHeader.Text = customerName + " SMI's";
+                NAT01Context nat01Context = new NAT01Context();
+                SMIs = nat01Context.CustomerInstructionTable.Where(i => i.CustomerId == customerNumber).OrderBy(i => i.Inactive).ThenBy(i => i.Sequence).ToList();
+                nat01Context.Dispose();
+                FillInfo();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("SMI.cs -> CustomerName: " + custName + " CustomerNumber: " + custNumber, ex.Message, null);
+            }
         }
         public void FillInfo()
         {

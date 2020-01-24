@@ -232,23 +232,30 @@ namespace NatoliOrderInterface
 
         public OrderLineItem(WorkOrder workOrder, short lineNumber = 1)
         {
-            this.order = workOrder;
-            this.lineItemNumber = lineNumber;
-            using (NAT01Context nat01Context = new NAT01Context())
+            try
             {
-                orderDetails = nat01Context.OrderDetails.FirstOrDefault(x => x.OrderNo == order.OrderNumber * 100 && x.LineNumber == lineItemNumber);
-                lineItemType = orderDetails.DetailTypeId.ToString().Trim();
-                orderDetailOptions = nat01Context.OrderDetailOptions.Where(x => x.OrderNumber == order.OrderNumber * 100 && x.OrderDetailLineNo == lineItemNumber && !string.IsNullOrEmpty(x.OptionCode.Trim())).ToList();
-                machineNo = orderDetails.MachineNo.GetValueOrDefault();
-                machineList = nat01Context.MachineList.Where(m => m.MachineNo == machineNo).FirstOrDefault();
-                steelType = nat01Context.SteelType.Where(s => s.TypeId == orderDetails.SteelId).FirstOrDefault();
-                optionsList = nat01Context.OptionsList.ToList();
-                nat01Context.Dispose();
-                if (MachineNo != 0 && (lineItemType == "U" || lineItemType == "L" || lineItemType == "R" || lineItemType == "UH" || lineItemType == "LH" || lineItemType == "RH") && (machineList.MachineTypePrCode.Trim() == "B" || machineList.MachineTypePrCode.Trim() == "D"))
+                this.order = workOrder;
+                this.lineItemNumber = lineNumber;
+                using (NAT01Context nat01Context = new NAT01Context())
                 {
-                    order.CanRunOnAutocell = true;
+                    orderDetails = nat01Context.OrderDetails.FirstOrDefault(x => x.OrderNo == order.OrderNumber * 100 && x.LineNumber == lineItemNumber);
+                    lineItemType = orderDetails.DetailTypeId.ToString().Trim();
+                    orderDetailOptions = nat01Context.OrderDetailOptions.Where(x => x.OrderNumber == order.OrderNumber * 100 && x.OrderDetailLineNo == lineItemNumber && !string.IsNullOrEmpty(x.OptionCode.Trim())).ToList();
+                    machineNo = orderDetails.MachineNo.GetValueOrDefault();
+                    machineList = nat01Context.MachineList.Where(m => m.MachineNo == machineNo).FirstOrDefault();
+                    steelType = nat01Context.SteelType.Where(s => s.TypeId == orderDetails.SteelId).FirstOrDefault();
+                    optionsList = nat01Context.OptionsList.ToList();
+                    nat01Context.Dispose();
+                    if (MachineNo != 0 && (lineItemType == "U" || lineItemType == "L" || lineItemType == "R" || lineItemType == "UH" || lineItemType == "LH" || lineItemType == "RH") && (machineList.MachineTypePrCode.Trim() == "B" || machineList.MachineTypePrCode.Trim() == "D"))
+                    {
+                        order.CanRunOnAutocell = true;
+                    }
+                    SetInfo(orderDetails, orderDetailOptions, optionsList);
                 }
-                SetInfo(orderDetails, orderDetailOptions, optionsList);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("WorkOrder.cs -> OrderNumber: " + order.OrderNumber + "LineNumber: " + lineNumber, ex.Message, null);
             }
         }
         public void SetInfo(OrderDetails orderDetails, List<OrderDetailOptions> orderDetailOptions, List<OptionsList> optionsList)

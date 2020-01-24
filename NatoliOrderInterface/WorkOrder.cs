@@ -678,42 +678,49 @@ namespace NatoliOrderInterface
         /// <param name="orderNumber"></param>
         public WorkOrder(int orderNumber, Window parent)
         {
-            OrderNumber = orderNumber;
-            Finished = false;
-            CanRunOnAutocell = false;
-            this.parent = parent;
+            try
+            {
+                OrderNumber = orderNumber;
+                Finished = false;
+                CanRunOnAutocell = false;
+                this.parent = parent;
 
-            // nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber).Load();
-            using (var context = new NAT02Context())
-            {
-                Finished = context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == OrderNumber);
-                context.Dispose();
-            }
-            using (var nat01context = new NAT01Context())
-            {
-                LineItemCount = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).Count();
-                lineItems = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).ToDictionary(kvp => (int)kvp.LineNumber, kvp => kvp.DetailTypeId.Trim());
-                OrderHeader orderHeader = nat01context.OrderHeader.Where(o => o.OrderNo == OrderNumber * 100).FirstOrDefault();
-                List<OrderDetails> orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).ToList();
-                string repId = "";
-                string csr = "*NO CSR*";
-                if (nat01context.QuoteHeader.Any(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo))
+                // nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber).Load();
+                using (var context = new NAT02Context())
                 {
-                    repId = string.IsNullOrEmpty(nat01context.QuoteHeader.Where(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).First().QuoteRepId) ? "" : nat01context.QuoteHeader.Where(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).First().QuoteRepId.Trim();
-                    if (nat01context.QuoteRepresentative.Any(qr => qr.RepId == repId))
+                    Finished = context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == OrderNumber);
+                    context.Dispose();
+                }
+                using (var nat01context = new NAT01Context())
+                {
+                    LineItemCount = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).Count();
+                    lineItems = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).ToDictionary(kvp => (int)kvp.LineNumber, kvp => kvp.DetailTypeId.Trim());
+                    OrderHeader orderHeader = nat01context.OrderHeader.Where(o => o.OrderNo == OrderNumber * 100).FirstOrDefault();
+                    List<OrderDetails> orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == OrderNumber * 100).ToList();
+                    string repId = "";
+                    string csr = "*NO CSR*";
+                    if (nat01context.QuoteHeader.Any(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo))
                     {
-                        csr = string.IsNullOrEmpty(nat01context.QuoteRepresentative.Where(qr => qr.RepId == repId).First().Name) ? "*NO CSR*" : nat01context.QuoteRepresentative.Where(qr => qr.RepId == repId).First().Name.Trim();
+                        repId = string.IsNullOrEmpty(nat01context.QuoteHeader.Where(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).First().QuoteRepId) ? "" : nat01context.QuoteHeader.Where(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).First().QuoteRepId.Trim();
+                        if (nat01context.QuoteRepresentative.Any(qr => qr.RepId == repId))
+                        {
+                            csr = string.IsNullOrEmpty(nat01context.QuoteRepresentative.Where(qr => qr.RepId == repId).First().Name) ? "*NO CSR*" : nat01context.QuoteRepresentative.Where(qr => qr.RepId == repId).First().Name.Trim();
+                        }
                     }
+                    string customerName; string endUserName;
+                    using (var ctx = new NECContext())
+                    {
+                        customerName = ctx.Rm00101.Where(c => c.Custnmbr == orderHeader.CustomerNo).FirstOrDefault().Custname;
+                        endUserName = ctx.Rm00101.Where(c => c.Custnmbr == orderHeader.UserAcctNo).FirstOrDefault().Custname;
+                        ctx.Dispose();
+                    }
+                    nat01context.Dispose();
+                    SetInfo(orderHeader, csr, customerName, endUserName);
                 }
-                string customerName; string endUserName;
-                using (var ctx = new NECContext())
-                {
-                    customerName = ctx.Rm00101.Where(c => c.Custnmbr == orderHeader.CustomerNo).FirstOrDefault().Custname;
-                    endUserName = ctx.Rm00101.Where(c => c.Custnmbr == orderHeader.UserAcctNo).FirstOrDefault().Custname;
-                    ctx.Dispose();
-                }
-                nat01context.Dispose();
-                SetInfo(orderHeader, csr, customerName, endUserName);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("WorkOrder.cs -> OrderNumber: " + OrderNumber , ex.Message, null);
             }
         }
 
