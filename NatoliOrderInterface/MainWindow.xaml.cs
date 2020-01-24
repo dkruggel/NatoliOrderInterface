@@ -179,7 +179,7 @@ namespace NatoliOrderInterface
             Height = (double)User.Height;
             Top = (double)User.Top;
             Left = (double)User.Left;
-            Title = "Natoli Order Interface";
+            Title = "Natoli Order Interface " + "v" + User.PackageVersion;
             _filterProjects = User.FilterActiveProjects;
             if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
             using var _nat02Context = new NAT02Context();

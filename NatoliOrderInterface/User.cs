@@ -49,6 +49,7 @@ namespace NatoliOrderInterface
         public bool Maximized { get; set; }
         public short QuoteDays { get; set; }
         public bool FilterActiveProjects { get; set; }
+        public string PackageVersion { get; }
 
         public User()
         {
@@ -83,6 +84,7 @@ namespace NatoliOrderInterface
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();
             EmployeeCode = settings.EmployeeId;
             userName = settings.FullName;
+            PackageVersion = settings.PackageVersion;
             using var _driveworksContext = new DriveWorksContext();
             dwDisplayName = userName == "Gregory Lyle" ? "Greg Lyle" : userName == "Nicholas Tarte" ? "Nick Tarte" : userName == "Floyd Smith" ? "Joe Smith" : userName == "Ronald Faltus" ? "Ron Faltus" : userName;
             if (_driveworksContext.SecurityUsers.Any(su => su.DisplayName == dwDisplayName))
