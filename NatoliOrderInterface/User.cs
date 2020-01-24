@@ -72,9 +72,9 @@ namespace NatoliOrderInterface
                     _nat02context.SaveChanges();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                
+                IMethods.WriteToErrorLog("User.cs -> Export applications version.", ex.Message, null);
             }
             _nat02context.Dispose();
             DomainName = domainName;
