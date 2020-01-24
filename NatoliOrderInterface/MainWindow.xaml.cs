@@ -149,7 +149,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message);
+                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
             }
             SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
             splashScreen.Show(true);
