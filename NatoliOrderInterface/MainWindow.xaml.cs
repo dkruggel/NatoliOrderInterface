@@ -181,7 +181,7 @@ namespace NatoliOrderInterface
             Left = (double)User.Left;
             Title = "Natoli Order Interface " + "v" + User.PackageVersion;
             _filterProjects = User.FilterActiveProjects;
-            if (User.EmployeeCode == "E4408" ) { GetPercentages(); } //|| User.EmployeeCode == "E4754"
+            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
             using var _nat02Context = new NAT02Context();
             _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()));
             _nat02Context.SaveChanges();
@@ -10258,7 +10258,7 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
-                Title = Title + string.Format("{0:P2}", (double)devs[1] / devs[0] - 1);
+                Title += " " + string.Format("{0:P2}", (double)devs[1] / devs[0] - 1);
             }
             catch (Exception eSql)
             {
