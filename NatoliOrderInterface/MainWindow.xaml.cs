@@ -10258,7 +10258,7 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
-                Title = "Natoli Order Interface      " + string.Format("{0:P2}", (double)devs[1] / devs[0] - 1);
+                Title = Title + string.Format("{0:P2}", (double)devs[1] / devs[0] - 1);
             }
             catch (Exception eSql)
             {
