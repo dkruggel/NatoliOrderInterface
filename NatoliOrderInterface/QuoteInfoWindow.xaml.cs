@@ -448,10 +448,14 @@ namespace NatoliOrderInterface
         private void ChangeLineItemScrollerHeight()
         {
             QuoteTabItem.UpdateLayout();
-            double expanderHeight = QuoteTopHeaderExpander.IsExpanded ? 473 : 23;
             try 
-            { 
-                LineItemScroller.Height = Math.Max(Quote_Info_Window.ActualHeight - expanderHeight - ButtonBorder1.ActualHeight - QuoteTabItem.ActualHeight - 60, 30); 
+            {
+                double expanderHeight = QuoteTopHeaderExpander.IsExpanded ? 473 : 23;
+                if (LineItemScroller != null)
+                { 
+                    LineItemScroller.Height = Math.Max((Quote_Info_Window == null ? Quote_Info_Window.Height : Quote_Info_Window.ActualHeight) - expanderHeight - (Quote_Info_Window == null ? ButtonBorder1.Height : ButtonBorder1.ActualHeight) - (Quote_Info_Window == null ? QuoteTabItem.Height : QuoteTabItem.ActualHeight) - 60, 30); 
+                }
+
             }
             catch (Exception ex) 
             {
