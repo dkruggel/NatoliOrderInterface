@@ -618,25 +618,26 @@ namespace NatoliOrderInterface
                 string[] printables = option.Value;
                 if (printables[0].Trim().Length != 0)
                 {
-                    Label label = new Label
+                    TextBlock textBlock = new TextBlock
                     {
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
-                        VerticalContentAlignment = VerticalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
                         FontWeight = FontWeights.Bold,
                         HorizontalAlignment = HorizontalAlignment.Left,
-                        Content = String.Concat(printables),
+                        Text = String.Concat(printables),
                         ToolTip = orderLineItems[lineItemNumber - 1].OptionNumbers[option.Key],
                         Height = 20
                     };
+                    textBlock.MouseUp += OrderOptions_MouseUp;
                     bool even = i % 2 == 0;
                     if (even)
                     {
-                        OptionsStackOne.Children.Add(label);
+                        OptionsStackOne.Children.Add(textBlock);
                     }
                     else
                     {
-                        OptionsStackTwo.Children.Add(label);
+                        OptionsStackTwo.Children.Add(textBlock);
                     }
                     i++;
                 }
@@ -686,6 +687,7 @@ namespace NatoliOrderInterface
                     break;
             }
         }
+
         private void ListHobDrawings()
         {
             Border borderOld = OrderPanel.Children.OfType<Border>().Where(sp => sp.Name == "HobDrawingsBorder").FirstOrDefault() as Border;
@@ -1240,6 +1242,30 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
                 Cursor = Cursors.Arrow;
             }
+        }
+        /// <summary>
+        /// Changes to and from Strikethrough font on click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OrderOptions_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            
+            Dispatcher.Invoke(() =>
+            {
+                if (textBlock.TextDecorations == TextDecorations.Strikethrough)
+                {
+                    textBlock.TextDecorations = new TextDecorationCollection();
+                    textBlock.Foreground = Brushes.Black;
+                }
+                else
+                {
+                    textBlock.TextDecorations = TextDecorations.Strikethrough;
+                    textBlock.Foreground = Brushes.Gray;
+                }
+            });
+            
         }
         #region Button Clicks
 
