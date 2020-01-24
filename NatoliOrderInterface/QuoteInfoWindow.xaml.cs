@@ -144,7 +144,7 @@ namespace NatoliOrderInterface
                 {
                     // var X = 0;
                     // MessageBox.Show(ex.Message);
-                    WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message, user);
                 }
             }
             Show();
@@ -449,8 +449,14 @@ namespace NatoliOrderInterface
         {
             QuoteTabItem.UpdateLayout();
             double expanderHeight = QuoteTopHeaderExpander.IsExpanded ? 473 : 23;
-            try { LineItemScroller.Height = Math.Max(Quote_Info_Window.ActualHeight - expanderHeight - ButtonBorder1.ActualHeight - QuoteTabItem.ActualHeight - 60, 30); }
-            catch { }
+            try 
+            { 
+                LineItemScroller.Height = Math.Max(Quote_Info_Window.ActualHeight - expanderHeight - ButtonBorder1.ActualHeight - QuoteTabItem.ActualHeight - 60, 30); 
+            }
+            catch (Exception ex) 
+            {
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChangeLineItemScrollerHeight", ex.Message, user);
+            }
         }
         static void AddBlankTextBlocks(StackPanel stackPanel, StackPanel bigStackPanel)
         {
@@ -466,7 +472,7 @@ namespace NatoliOrderInterface
         #region Events
         private async void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
         {
-            List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString())).ConfigureAwait(false);
+            List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user)).ConfigureAwait(false);
             if (errors.Count > 0)
             {
                 Dispatcher.Invoke(() =>
@@ -714,7 +720,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillSMIAndScratchPadPage", ex.Message, user);
                 }
             }
             Button saveSMIButton = new Button
@@ -840,9 +846,9 @@ namespace NatoliOrderInterface
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
+                        IMethods.WriteToErrorLog("QuoteInfoWindow => ScratchPad Base Price / Price Changed", ex.Message, user);
                     }
                     priceBase.Text = string.Format("{0:0.00}", basePrice);
                     priceBase.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -1334,7 +1340,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveSMIButton_Click", ex.Message, user);
             }
 
         }
@@ -1353,9 +1359,9 @@ namespace NatoliOrderInterface
                 {
                     unitPrice = Convert.ToDouble(box.Text);
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged => unitPrice Conversion", ex.Message, user);
                 }
                 double unitPercent = 0;
                 int QTY = 0;
@@ -1430,7 +1436,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged", ex.Message, user);
             }
         }
         private void OptionPriceChanged(object sender, RoutedEventArgs e)
@@ -1457,9 +1463,9 @@ namespace NatoliOrderInterface
                             {
                                 unitPrice += Convert.ToDouble(textBox.Text);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion", ex.Message, user);
                             }
                         }
                         if (textBox.Tag.ToString().Contains("%"))
@@ -1468,9 +1474,9 @@ namespace NatoliOrderInterface
                             {
                                 unitPercent += Convert.ToDouble(textBox.Text);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion", ex.Message, user);
                             }
                         }
                         if (textBox.Tag.ToString() == "QTY")
@@ -1479,9 +1485,9 @@ namespace NatoliOrderInterface
                             {
                                 QTY = Convert.ToInt32(textBox.Text);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion", ex.Message, user);
                             }
                         }
                     }
@@ -1494,9 +1500,9 @@ namespace NatoliOrderInterface
                         {
                             QTY = Convert.ToInt32(textBlock.Text);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-
+                            IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion", ex.Message, user);
                         }
                     }
                     foreach (TextBox textBox in grid.Children.OfType<TextBox>())
@@ -1507,9 +1513,9 @@ namespace NatoliOrderInterface
                             {
                                 unitPrice += Convert.ToDouble(textBox.Text);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion", ex.Message, user);
                             }
                         }
                         if (textBox.Name == "PercentMark" + keyValue)
@@ -1518,9 +1524,9 @@ namespace NatoliOrderInterface
                             {
                                 unitPercent += Convert.ToDouble(textBox.Text);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion", ex.Message, user);
                             }
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
@@ -1553,7 +1559,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged", ex.Message, user);
             }
         }
         private void UnitPercentMarkChanged(object sender, RoutedEventArgs e)
@@ -1569,9 +1575,9 @@ namespace NatoliOrderInterface
                 {
                     unitPercent = Convert.ToDouble(box.Text);
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion", ex.Message, user);
                 }
 
                 int QTY = 0;
@@ -1588,9 +1594,9 @@ namespace NatoliOrderInterface
                                 {
                                     unitPrice += Convert.ToDouble(textBox.Text);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-
+                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPrice conversion", ex.Message, user);
                                 }
                             }
                             if (textBox.Tag.ToString().Contains("%"))
@@ -1599,9 +1605,9 @@ namespace NatoliOrderInterface
                                 {
                                     unitPercent += Convert.ToDouble(textBox.Text);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-
+                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion", ex.Message, user);
                                 }
                             }
                         }
@@ -1646,7 +1652,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged", ex.Message, user);
             }
         }
         private void UnitPriceTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1675,7 +1681,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPriceTextBox_TextChanged", ex.Message, user);
             }
         }
         private void ExtendedPriceTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1701,7 +1707,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ExtendedPriceTextBox_TextChanged", ex.Message, user);
             }
 
         }
@@ -1721,7 +1727,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Unchecked", ex.Message, user);
             }
         }
         private void OverrideUnitPriceCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -1736,7 +1742,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Checked", ex.Message, user);
             }
         }
         private void SaveLineItemButton_Click(object sender, RoutedEventArgs e)
@@ -1770,9 +1776,9 @@ namespace NatoliOrderInterface
                         {
                             basePrice = Convert.ToDecimal(grid.Children.OfType<TextBox>().First().Text);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Base Price is not a number." + "\n" + "Prices were not saved.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -1918,7 +1924,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveLineItemButton_Click", ex.Message, user);
             }
         }
         private void SaveAllLineItemsButton_Click(object sender, RoutedEventArgs e)
@@ -2114,7 +2120,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click", ex.Message, user);
             }
         }
         #endregion
@@ -2125,7 +2131,6 @@ namespace NatoliOrderInterface
         {
             bool ret = false;
             filename = String.Empty;
-
             if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
             {
                 Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
@@ -2330,7 +2335,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkProjectButton_Click", ex.Message, user);
             }
             MessageBox.Show("Successful link.");
         }
@@ -2359,7 +2364,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkOrderButton_Click", ex.Message, user);
             }
             MessageBox.Show("Successful link.");
         }
@@ -2376,7 +2381,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ResetInstructionEntering", ex.Message, user);
             }
         }
         private void FillOrderEntryInstructions(bool isAdding=false, string instruction = null, DateTime? timeEntered = null)
@@ -2492,7 +2497,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions", ex.Message, user);
                 }
                 _nat02Context.Dispose();
             }
@@ -2610,7 +2615,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions", ex.Message, user);
                 }
             }
         }
@@ -2639,9 +2644,9 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => AddOrderEntryInstructionImage_MouseUp", ex.Message, user);
             }
-            
+
         }
         private void RemoveOrderEntryInstructionImage_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -2661,7 +2666,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => RemoveOrderEntryInstructionImage_MouseUp", ex.Message, user);
             }
         }
         private void CheckOrderEntryInstruction(object sender, RoutedEventArgs e)
@@ -2737,9 +2742,9 @@ namespace NatoliOrderInterface
                     Close();
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SubmitButton_Click", ex.Message, user);
             }
             Cursor = Cursors.Arrow;
         }
@@ -2827,7 +2832,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click", ex.Message, user);
             }
             try
             {
@@ -2839,7 +2844,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click => OrderInfoWindow", ex.Message, user);
             }
 
         AlreadyOpen:
@@ -2866,7 +2871,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistCustomerServiceButton_Click", ex.Message, user);
             }
         }
         private void ChecklistOrderEntryButton_Click(object sender, RoutedEventArgs e)
@@ -2888,7 +2893,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistOrderEntryButton_Click", ex.Message, user);
             }
         }
         private void MasterGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -2944,9 +2949,9 @@ namespace NatoliOrderInterface
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                IMethods.WriteToErrorLog("QuoteInfoWindow => BillToButton_Click", ex.Message, user);
             }
         }
         private void ShipToButton_Click(object sender, RoutedEventArgs e)
@@ -2977,9 +2982,9 @@ namespace NatoliOrderInterface
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ShipToButton_Click", ex.Message, user);
             }
         }
         private void UserButton_Click(object sender, RoutedEventArgs e)
@@ -3010,35 +3015,11 @@ namespace NatoliOrderInterface
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UserButton_Click", ex.Message, user);
             }
         }
         #endregion
-
-        #region ErrorHandling
-        private void WriteToErrorLog(string errorLoc, string errorMessage)
-        {
-            try
-            {
-                string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt";
-                System.IO.StreamReader sr = new System.IO.StreamReader(path);
-                string existing = sr.ReadToEnd();
-                existing = existing.TrimEnd();
-                sr.Close();
-                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-                sw.Write(DateTime.Now + "  " + user.GetUserName() + "  " + errorLoc + "\r\n" + errorMessage.PadLeft(20) + "\r\n" + existing);
-                sw.Flush();
-                sw.Close();
-            }
-            catch
-            {
-                MessageBox.Show("Error in the Error Handling of Errors");
-            }
-        }
-        #endregion
-
-
     }
 }
