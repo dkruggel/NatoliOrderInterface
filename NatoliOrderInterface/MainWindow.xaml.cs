@@ -742,23 +742,30 @@ namespace NatoliOrderInterface
         }
         public async void CheckForAvailableUpdatesAndLaunchAsync()
         {
-            // Get the current app's package for the current user.
-            //PackageManager pm = new PackageManager();
-            // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
-            PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
-            switch (result.Availability)
+            try
             {
-                case PackageUpdateAvailability.Available:
-                    //MessageBox.Show("There is a new update available.");
-                    Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
-                    break;
-                case PackageUpdateAvailability.Required:
-                    break;
-                case PackageUpdateAvailability.NoUpdates:
-                    break;
-                case PackageUpdateAvailability.Unknown:
-                default:
-                    break;
+                // Get the current app's package for the current user.
+                //PackageManager pm = new PackageManager();
+                // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
+                PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
+                switch (result.Availability)
+                {
+                    case PackageUpdateAvailability.Available:
+                        //MessageBox.Show("There is a new update available.");
+                        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
+                        break;
+                    case PackageUpdateAvailability.Required:
+                        break;
+                    case PackageUpdateAvailability.NoUpdates:
+                        break;
+                    case PackageUpdateAvailability.Unknown:
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
             }
         }
 
