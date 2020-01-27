@@ -1382,7 +1382,10 @@ namespace NatoliOrderInterface
                 double unitPrice = 0;
                 try
                 {
-                    unitPrice = Convert.ToDouble(box.Text);
+                    if (double.TryParse(box.Text, out double p1))
+                    {
+                        unitPrice = p1;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1486,7 +1489,10 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPrice += Convert.ToDouble(textBox.Text);
+                                if (double.TryParse(textBox.Text, out double p1))
+                                {
+                                    unitPrice += p1;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1497,7 +1503,10 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPercent += Convert.ToDouble(textBox.Text);
+                                if (double.TryParse(textBox.Text, out double p1))
+                                {
+                                    unitPercent += p1;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1508,7 +1517,10 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                QTY = Convert.ToInt32(textBox.Text);
+                                if (int.TryParse(textBox.Text, out int p1))
+                                {
+                                    QTY = p1;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1523,7 +1535,10 @@ namespace NatoliOrderInterface
                     {
                         try
                         {
-                            QTY = Convert.ToInt32(textBlock.Text);
+                            if (int.TryParse(textBlock.Text, out int p1))
+                            {
+                                QTY = p1;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -1536,7 +1551,10 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPrice += Convert.ToDouble(textBox.Text);
+                                if (double.TryParse(textBox.Text, out double p1))
+                                {
+                                    unitPrice += p1;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1547,7 +1565,10 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPercent += Convert.ToDouble(textBox.Text);
+                                if (double.TryParse(textBox.Text, out double p1))
+                                {
+                                    unitPercent += p1;
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1598,7 +1619,10 @@ namespace NatoliOrderInterface
                 double unitPercent = 0;
                 try
                 {
-                    unitPercent = Convert.ToDouble(box.Text);
+                    if (double.TryParse(box.Text, out double p1))
+                    {
+                        unitPercent += p1;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1617,7 +1641,10 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    unitPrice += Convert.ToDouble(textBox.Text);
+                                    if (double.TryParse(textBox.Text, out double p1))
+                                    {
+                                        unitPrice += p1;
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
@@ -1628,7 +1655,10 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    unitPercent += Convert.ToDouble(textBox.Text);
+                                    if (double.TryParse(textBox.Text, out double p1))
+                                    {
+                                        unitPercent += p1;
+                                    }
                                 }
                                 catch (Exception ex)
                                 {
