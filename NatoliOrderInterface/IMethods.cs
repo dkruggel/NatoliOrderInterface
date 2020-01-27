@@ -1021,11 +1021,21 @@ namespace NatoliOrderInterface
                                 // Has Lower Assembly
                                 if (quoteLineItems.Any(qli => qli.LineItemType == "LA"))
                                 {
-                                    if (!quoteLineItems.Any(qli => qli.LineItemType == "LA" && qli.OptionNumbers.Contains("222") && qli.OptionNumbers.Contains("226")))
+                                    // Has Lower Tip
+                                    if (quoteLineItems.Any(qli => qli.LineItemType == "LT"))
                                     {
-                                        errors.Add("Lower Assembly needs Shortened Lower Tip (222) and/or Shallow Fill Cam (226).");
+                                        if (!(quoteLineItems.Any(qli => (qli.LineItemType == "LT" || qli.LineItemType == "LA") && qli.OptionNumbers.Contains("222")) && quoteLineItems.Any(qli => qli.LineItemType == "LA" && qli.OptionNumbers.Contains("226"))))
+                                        {
+                                            errors.Add("Lower Tip or Lower Assembly needs Shortened Lower Tip (222) or Lower Assembly needs Shallow Fill Cam (226).");
+                                        }
                                     }
-
+                                    else
+                                    {
+                                        if (!quoteLineItems.Any(qli => qli.LineItemType == "LA" && qli.OptionNumbers.Contains("222") && qli.OptionNumbers.Contains("226")))
+                                        {
+                                            errors.Add("Lower Assembly needs Shortened Lower Tip (222) and/or Shallow Fill Cam (226).");
+                                        }
+                                    }
                                 }
                                 else if (quoteLineItems.Any(qli => qli.LineItemType == "L"))
                                 {
