@@ -459,7 +459,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex) 
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ChangeLineItemScrollerHeight", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChangeLineItemScrollerHeight; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         static void AddBlankTextBlocks(StackPanel stackPanel, StackPanel bigStackPanel)
@@ -722,7 +722,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillSMIAndScratchPadPage", ex.Message, user);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillSMIAndScratchPadPage; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
             }
             Button saveSMIButton = new Button
@@ -873,7 +873,7 @@ namespace NatoliOrderInterface
                     }
                     catch (Exception ex)
                     {
-                        IMethods.WriteToErrorLog("QuoteInfoWindow => ScratchPad Base Price / Price Changed", ex.Message, user);
+                        IMethods.WriteToErrorLog("QuoteInfoWindow => ScratchPad Base Price / Price Changed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                     }
                     priceBase.Text = string.Format("{0:0.00}", basePrice);
                     priceBase.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -1365,7 +1365,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveSMIButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveSMIButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
 
         }
@@ -1386,7 +1386,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged => unitPrice Conversion", ex.Message, user);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged => unitPrice Conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
                 double unitPercent = 0;
                 int QTY = 0;
@@ -1461,7 +1461,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void OptionPriceChanged(object sender, RoutedEventArgs e)
@@ -1490,7 +1490,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion", ex.Message, user);
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                             }
                         }
                         if (textBox.Tag.ToString().Contains("%"))
@@ -1501,7 +1501,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion", ex.Message, user);
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                             }
                         }
                         if (textBox.Tag.ToString() == "QTY")
@@ -1512,7 +1512,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion", ex.Message, user);
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                             }
                         }
                     }
@@ -1527,7 +1527,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion", ex.Message, user);
+                            IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => QTY conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                         }
                     }
                     foreach (TextBox textBox in grid.Children.OfType<TextBox>())
@@ -1540,7 +1540,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion", ex.Message, user);
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPrice conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                             }
                         }
                         if (textBox.Name == "PercentMark" + keyValue)
@@ -1551,7 +1551,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion", ex.Message, user);
+                                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged => unitPercent conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                             }
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
@@ -1584,7 +1584,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OptionPriceChanged; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void UnitPercentMarkChanged(object sender, RoutedEventArgs e)
@@ -1602,7 +1602,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion", ex.Message, user);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
 
                 int QTY = 0;
@@ -1621,7 +1621,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch (Exception ex)
                                 {
-                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPrice conversion", ex.Message, user);
+                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPrice conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                                 }
                             }
                             if (textBox.Tag.ToString().Contains("%"))
@@ -1632,7 +1632,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch (Exception ex)
                                 {
-                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion", ex.Message, user);
+                                    IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged => unitPercent conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                                 }
                             }
                         }
@@ -1677,7 +1677,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPercentMarkChanged; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void UnitPriceTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1706,7 +1706,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPriceTextBox_TextChanged", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UnitPriceTextBox_TextChanged; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void ExtendedPriceTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1732,7 +1732,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ExtendedPriceTextBox_TextChanged", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ExtendedPriceTextBox_TextChanged; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
 
         }
@@ -1752,7 +1752,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Unchecked", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Unchecked; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void OverrideUnitPriceCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -1767,7 +1767,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Checked", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => OverrideUnitPriceCheckBox_Checked; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void SaveLineItemButton_Click(object sender, RoutedEventArgs e)
@@ -1958,7 +1958,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveLineItemButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveLineItemButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 MessageBox.Show("Prices Failed to Update.", "Oops!", MessageBoxButton.OK);
             }
         }
@@ -2154,7 +2154,7 @@ namespace NatoliOrderInterface
                     }
                     catch (Exception ex)
                     {
-                        IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (in the foreach)", ex.Message, user);
+                        IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (in the foreach); Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                         MessageBox.Show("Prices Failed to Update for '" + tab.Header.ToString() + "'.", "Oops!", MessageBoxButton.OK);
                         return;
                     }
@@ -2173,7 +2173,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (outside the foreach)", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SaveAllLineItemsButton_Click (outside the foreach); Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 MessageBox.Show("Prices Failed to Update.", "Oops!", MessageBoxButton.OK);
             }
         }
@@ -2388,7 +2388,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkProjectButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkProjectButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
             MessageBox.Show("Successful link.");
         }
@@ -2417,7 +2417,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkOrderButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => LinkOrderButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
             MessageBox.Show("Successful link.");
         }
@@ -2434,7 +2434,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ResetInstructionEntering", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ResetInstructionEntering; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void FillOrderEntryInstructions(bool isAdding=false, string instruction = null, DateTime? timeEntered = null)
@@ -2550,7 +2550,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions", ex.Message, user);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
                 _nat02Context.Dispose();
             }
@@ -2668,7 +2668,7 @@ namespace NatoliOrderInterface
                 }
                 catch (Exception ex)
                 {
-                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions", ex.Message, user);
+                    IMethods.WriteToErrorLog("QuoteInfoWindow => FillOrderEntryInstructions; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
             }
         }
@@ -2697,7 +2697,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => AddOrderEntryInstructionImage_MouseUp", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => AddOrderEntryInstructionImage_MouseUp; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
 
         }
@@ -2719,7 +2719,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => RemoveOrderEntryInstructionImage_MouseUp", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => RemoveOrderEntryInstructionImage_MouseUp; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void CheckOrderEntryInstruction(object sender, RoutedEventArgs e)
@@ -2797,7 +2797,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => SubmitButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => SubmitButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
             Cursor = Cursors.Arrow;
         }
@@ -2885,7 +2885,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
             try
             {
@@ -2897,7 +2897,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click => OrderInfoWindow", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => WorkOrderButton_Click => OrderInfoWindow; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
 
         AlreadyOpen:
@@ -2924,7 +2924,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistCustomerServiceButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistCustomerServiceButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void ChecklistOrderEntryButton_Click(object sender, RoutedEventArgs e)
@@ -2946,7 +2946,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistOrderEntryButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ChecklistOrderEntryButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void MasterGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -3004,7 +3004,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => BillToButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => BillToButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void ShipToButton_Click(object sender, RoutedEventArgs e)
@@ -3037,7 +3037,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => ShipToButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => ShipToButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         private void UserButton_Click(object sender, RoutedEventArgs e)
@@ -3070,7 +3070,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("QuoteInfoWindow => UserButton_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("QuoteInfoWindow => UserButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
         #endregion
