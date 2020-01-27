@@ -2538,7 +2538,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteSearchButton_Click - After new window instance", ex.Message, User);
+                IMethods.WriteToErrorLog("QuoteSearchButton_Click - After new window instance, quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, User);
             }
         AlreadyOpen:
             nat01context.Dispose();

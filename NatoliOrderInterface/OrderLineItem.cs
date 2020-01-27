@@ -163,6 +163,7 @@ namespace NatoliOrderInterface
             { "A","ALIGNMENT TOOL" },
             { "CT","COPPER TABLETS" },
             { "D","DIE" },
+            { "DA","DIE ASSEMBLY" },
             { "DH","DIE HOLDER" },
             { "DI","DIE INSERT" },
             { "DP","DIE PLATE" },
@@ -255,7 +256,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("WorkOrder.cs -> OrderNumber: " + order.OrderNumber + "LineNumber: " + lineNumber, ex.Message, null);
+                IMethods.WriteToErrorLog("OrderLineItem.cs -> OrderNumber: " + order.OrderNumber + " LineNumber: " + lineNumber, ex.Message, null);
             }
         }
         public void SetInfo(OrderDetails orderDetails, List<OrderDetailOptions> orderDetailOptions, List<OptionsList> optionsList)

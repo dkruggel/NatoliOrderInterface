@@ -1809,16 +1809,28 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    // No Head Option
-                                    if (!ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "022", "024", "025" }, StringComparison.CurrentCulture))
-                                    {
-                                        errors.Add("'" + quoteLineItem.LineItemType + "' is missing a head type option.");
-                                    }
-
                                     // Machine Exists
                                     if (_nat01Context.MachineList.Any(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo))
                                     {
                                         MachineList machine = _nat01Context.MachineList.First(m => quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0 && m.MachineNo == quoteLineItem.MachineNo);
+                                        // NOT Single Station or B or D
+                                        if (machine.Stations != 1 ||
+                                            (((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
+                                            ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4")))
+                                            ||
+                                            (machine.MachineTypePrCode.Trim() == "D" ||
+                                                ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") ||
+                                                machine.MachineNo == 1015))
+                                            )
+                                        {
+                                            // No Head Option
+                                            if (!ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "022", "024", "025" }, StringComparison.CurrentCulture))
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' is missing a head type option.");
+                                            }
+                                        }
+
+
                                         // Machine is D and NOT EU1-441
                                         if ((machine.MachineTypePrCode.Trim() == "D" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") || machine.MachineNo == 1015) &&
                                             (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"1-1/2 x 5-3/4")
