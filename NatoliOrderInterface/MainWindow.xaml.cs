@@ -143,15 +143,6 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            try
-            {
-                // Waiting for everyone to be updated to Windows 10 version 1903
-                // CheckForAvailableUpdatesAndLaunchAsync();
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
-            }
             SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
             splashScreen.Show(true);
             var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
@@ -174,6 +165,15 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 User = new User("");
+            }
+            try
+            {
+                // Waiting for everyone to be updated to Windows 10 version 1903
+                CheckForAvailableUpdatesAndLaunch(User);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
             }
             Width = (double)User.Width;
             Height = (double)User.Height;
@@ -741,28 +741,44 @@ namespace NatoliOrderInterface
             // Process.Start(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
             // System.IO.File.Open(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller", System.IO.FileMode.Open);
         }
-        public async void CheckForAvailableUpdatesAndLaunchAsync()
+        public void CheckForAvailableUpdatesAndLaunch(User user)
         {
             try
             {
                 // Get the current app's package for the current user.
                 //PackageManager pm = new PackageManager();
                 // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
-                PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
-                switch (result.Availability)
+                //PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
+                //switch (result.Availability)
+                //{
+                //    case PackageUpdateAvailability.Available:
+                //        //MessageBox.Show("There is a new update available.");
+                //        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
+                //        break;
+                //    case PackageUpdateAvailability.Required:
+                //        break;
+                //    case PackageUpdateAvailability.NoUpdates:
+                //        break;
+                //    case PackageUpdateAvailability.Unknown:
+                //    default:
+                //        break;
+                //}
+                
+                string currentVersion = user.PackageVersion;
+                using var _nat02Context = new NAT02Context();
+                string minimumVersion = _nat02Context.EoiSettings.First(s => s.EmployeeId == "EPACKG").PackageVersion;
+                _nat02Context.Dispose();
+                string[] currentVersionNumbers = currentVersion.Split('.');
+                string[] minimumVersionNumbers = minimumVersion.Split('.');
+                for (int i = 0; i < 4; i++)
                 {
-                    case PackageUpdateAvailability.Available:
-                        //MessageBox.Show("There is a new update available.");
+                    if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
+                    {
                         Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
                         break;
-                    case PackageUpdateAvailability.Required:
-                        break;
-                    case PackageUpdateAvailability.NoUpdates:
-                        break;
-                    case PackageUpdateAvailability.Unknown:
-                    default:
-                        break;
+                    }
                 }
+                
             }
             catch (Exception ex)
             {
