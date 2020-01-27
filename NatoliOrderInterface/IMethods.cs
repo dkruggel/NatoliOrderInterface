@@ -36,6 +36,7 @@ namespace NatoliOrderInterface
                 sr.Close();
                 System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
                 sw.Write(
+                    "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
                     "DateTime: " + DateTime.Now + "\r\n\t" +
                     "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
                     "Location: " + errorLoc + "\r\n\t" +
