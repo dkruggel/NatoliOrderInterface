@@ -1230,7 +1230,7 @@ namespace NatoliOrderInterface
                 Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
                 Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                     app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceLow;
@@ -1308,7 +1308,7 @@ namespace NatoliOrderInterface
                 Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                     app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
                 mailItem.Subject = "REQUEST FOR CHANGES WO# " + workOrder.OrderNumber.ToString();
-                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;

@@ -765,7 +765,7 @@ namespace NatoliOrderInterface
             NativeMethods.SetForegroundWindow(handle);
         }
         /// <summary>
-        /// Returns E-mail Address from Driveworks.SecurityUsers.DisplayName
+        /// Returns E-mail Address from Driveworks.SecurityUsers.DisplayName (First and Last
         /// </summary>
         /// <param name="displayName"></param>
         /// <returns></returns>
@@ -775,17 +775,26 @@ namespace NatoliOrderInterface
             {
                 switch (displayName)
                 {
-                    case "GREGORY":
-                        displayName = "Greg";
+                    case "GREGORY LYLE":
+                        displayName = "Greg Lyle";
                         return "intlcs1@natoli.com";
-                    case "NICHOLAS":
-                        displayName = "Nick";
+                    case "NICHOLAS TARTE":
+                        displayName = "Nick Tarte";
                         return "intlcs1@natoli.com";
+                    case "FLOYD SMITH":
+                        displayName = "Joe Smith";
+                        return "eng4@natoli.com";
+                    case "RONALD FALTUS":
+                        displayName = "Ron Faltus";
+                        return "eng20@natoli.com";
+                    case "ANTHONY MOUSER":
+                        displayName = "Tony Mouser";
+                        break;
                     default:
                         break;
                 }
                 using var _driveworksContext = new DriveWorksContext();
-                return _driveworksContext.SecurityUsers.Where(u => u.DisplayName.Contains(displayName)).FirstOrDefault().EmailAddress;
+                return _driveworksContext.SecurityUsers.Where(u => u.DisplayName.EqualsWithIgnoreCase(displayName)).FirstOrDefault().EmailAddress;
             }
             catch (Exception eSql)
             {

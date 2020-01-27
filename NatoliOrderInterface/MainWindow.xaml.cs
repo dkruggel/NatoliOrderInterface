@@ -920,68 +920,6 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < validProjects.Count; i++)
                 {
                     (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.DrawProject(project.Item1, project.Item2, "TABLETS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                            // Insert into CheckedBy
-                            TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
-                            tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
-                            tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
-                            tabletDrawnBy.TimeSubmitted = DateTime.Now;
-                            tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                           User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                            _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
-
-                            // Drive specification transition name to "Drawn - Tablets"
-                            // Auto archive project specification
-                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Drawn - Tablets";
-                            _driveworksContext.Specifications.Update(spec);
-                        }
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-
-                        // Email CSR
-                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("FinishTabletProject_Click", ex.Message, User);
-                    }
                 }
 
                 // Uncheck Check All CheckBox
@@ -2064,7 +2002,7 @@ namespace NatoliOrderInterface
                     Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                         app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
                     mailItem.Subject = "REQUEST FOR CHANGES WO# " + ((int)_orderNumber).ToString();
-                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr.Split(' ')[0]);
+                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
                     mailItem.Body = "";
                     mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                     mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
