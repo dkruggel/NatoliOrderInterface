@@ -24,15 +24,15 @@ using System.Diagnostics;
 namespace NatoliOrderInterface
 {
 
-    public class SymbolicLink
-    {
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern bool CreateSymbolicLink(
-            string lpSymlinkFileName,
-            string lpTargetFileName,
-            uint dwFlags
-        );
-    }
+    //public class SymbolicLink
+    //{
+    //    [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+    //    static extern bool CreateSymbolicLink(
+    //        string lpSymlinkFileName,
+    //        string lpTargetFileName,
+    //        uint dwFlags
+    //    );
+    //}
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
@@ -64,10 +64,10 @@ namespace NatoliOrderInterface
         {
             Owner = parent;
             InitializeComponent();
-            this.user = user;
-            quoteNumber = quote.QuoteNumber;
-            this.quote = quote;
-            this.parent = parent;
+            this.user = user ?? new User("");
+            this.quote = quote ?? new Quote(0,0);
+            quoteNumber = this.quote.QuoteNumber;
+            this.parent = parent ?? new MainWindow();
 
             if (quote.OrderNo != 0)
             {
@@ -120,7 +120,7 @@ namespace NatoliOrderInterface
                 }
             }
             Title = "Quote#: " + quoteNumber + " Rev#: " + quote.QuoteRevNo;
-            if (parent.WindowState == WindowState.Maximized)
+            if (this.parent.WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Maximized;
             }
@@ -1387,7 +1387,7 @@ namespace NatoliOrderInterface
                     {
                         if (radioButton.IsChecked == true)
                         {
-                            if (radioButton.Tag == "Y")
+                            if (radioButton.Tag.ToString() == "Y")
                             {
                                 applies = true;
                             }
@@ -1785,17 +1785,17 @@ namespace NatoliOrderInterface
                 TextBox textBox = sender as TextBox;
                 Grid unitPriceGrid = (Grid)textBox.Parent as Grid;
                 Grid grid = unitPriceGrid.Parent as Grid;
-                foreach (Grid subGrid in grid.Children.OfType<Grid>().Where(g => g.Tag == "QTY"))
+                foreach (Grid subGrid in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "QTY"))
                 {
-                    TextBlock qtyTextBlock = subGrid.Children.OfType<TextBlock>().First(t => t.Tag == "QTY");
+                    TextBlock qtyTextBlock = subGrid.Children.OfType<TextBlock>().First(t => t.Tag.ToString() == "QTY");
                     if (int.TryParse(qtyTextBlock.Text == null ? "0" : qtyTextBlock.Text.ToString(), out int qty))
                     {
                         if (double.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out double unitPrice))
                         {
                             double extendedPrice = Math.Round(unitPrice * (double)qty, 2);
-                            foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag == "ExtendedPrice"))
+                            foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "ExtendedPrice"))
                             {
-                                TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag == "ExtendedPrice");
+                                TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag.ToString() == "ExtendedPrice");
                                 Dispatcher.Invoke(new Action(() => extendedPriceTextBox.Text = string.Format("{0:0.00}", extendedPrice)));
                             }
                         }
@@ -1842,9 +1842,9 @@ namespace NatoliOrderInterface
                 string keyValue = checkBox.Name.Remove(0, 25);
                 DockPanel dockPanel = checkBox.Parent as DockPanel;
                 Grid grid = dockPanel.Parent as Grid;
-                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag == "UnitPrice").First().Children.OfType<TextBox>().First();
+                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "UnitPrice").First().Children.OfType<TextBox>().First();
                 unitPrice.IsEnabled = false;
-                Grid basePriceGrid = grid.Children.OfType<Grid>().Where(g => g.Tag == "BasePriceGrid").First();
+                Grid basePriceGrid = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "BasePriceGrid").First();
                 TextBox basePriceTextBox = basePriceGrid.Children.OfType<TextBox>().First();
                 BasePriceChanged(basePriceTextBox, new RoutedEventArgs());
             }
@@ -1860,7 +1860,7 @@ namespace NatoliOrderInterface
                 CheckBox checkBox = sender as CheckBox;
                 DockPanel dockPanel = checkBox.Parent as DockPanel;
                 Grid grid = dockPanel.Parent as Grid;
-                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag == "UnitPrice").First().Children.OfType<TextBox>().First();
+                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "UnitPrice").First().Children.OfType<TextBox>().First();
                 unitPrice.IsEnabled = true;
             }
             catch (Exception ex)
@@ -1901,7 +1901,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal\n"+ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -2283,87 +2283,90 @@ namespace NatoliOrderInterface
         {
             bool ret = false;
             filename = String.Empty;
-            if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
+            if (e != null)
             {
-                Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
-                if (data != null)
+                if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
                 {
-                    if ((data.Length == 1) && (data.GetValue(0) is String))
+                    Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
+                    if (data != null)
                     {
-                        filename = ((string[])data)[0];
-                        string ext = System.IO.Path.GetExtension(filename).ToLower();
-                        if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
+                        if ((data.Length == 1) && (data.GetValue(0) is String))
                         {
-                            ret = true;
-                        }
-                    }
-                }
-                else
-                {
-                    if (e.Data.GetDataPresent("FileGroupDescriptor"))
-                    {
-                        Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
-                        byte[] fileGroupDescriptor = new byte[512];
-                        theStream.Read(fileGroupDescriptor, 0, 512);
-                        // used to build the filename from the FileGroupDescriptor block
-                        StringBuilder fileName = new StringBuilder("");
-                        // this trick gets the filename of the passed attached file
-                        for (int i = 76; fileGroupDescriptor[i] != 0; i++)
-                        { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
-                        theStream.Close();
-                        theStream.Dispose();
-                        string path = System.IO.Path.GetTempPath();
-                        // put the zip file into the temp directory
-                        filename = path + fileName.ToString();
-
-                        if (filename.EndsWith(".msg"))
-                        {
-                            try
+                            filename = ((string[])data)[0];
+                            string ext = System.IO.Path.GetExtension(filename).ToLower();
+                            if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
                             {
-                                Outlook.Application OL = new Outlook.Application();
-                                for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
-                                {
-                                    Object temp = OL.ActiveExplorer().Selection[i];
-                                    if (temp is Outlook.MailItem)
-                                    {
-                                        Outlook.MailItem mailitem = (temp as Outlook.MailItem);
-                                        Outlook.ItemProperties props = mailitem.ItemProperties;
-                                        filename = ".msg";
-                                    }
-                                }
                                 ret = true;
                             }
-                            catch
-                            {
-
-                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (e.Data.GetDataPresent("FileGroupDescriptor"))
                         {
-                            // get the actual raw file into memory
-                            MemoryStream ms = (MemoryStream)e.Data.GetData(
-                                "FileContents", true);
-                            // allocate enough bytes to hold the raw data
-                            byte[] fileBytes = new byte[ms.Length];
-                            // set starting position at first byte and read in the raw data
-                            ms.Position = 0;
-                            ms.Read(fileBytes, 0, (int)ms.Length);
-                            // create a file and save the raw zip file to it
-                            FileStream fs = new FileStream(filename, FileMode.Create);
-                            fs.Write(fileBytes, 0, (int)fileBytes.Length);
+                            Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
+                            byte[] fileGroupDescriptor = new byte[512];
+                            theStream.Read(fileGroupDescriptor, 0, 512);
+                            // used to build the filename from the FileGroupDescriptor block
+                            StringBuilder fileName = new StringBuilder("");
+                            // this trick gets the filename of the passed attached file
+                            for (int i = 76; fileGroupDescriptor[i] != 0; i++)
+                            { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
+                            theStream.Close();
+                            theStream.Dispose();
+                            string path = System.IO.Path.GetTempPath();
+                            // put the zip file into the temp directory
+                            filename = path + fileName.ToString();
 
-                            fs.Close();  // close the file
-
-                            FileInfo tempFile = new FileInfo(filename);
-
-                            // always good to make sure we actually created the file
-                            if (tempFile.Exists == true)
+                            if (filename.EndsWith(".msg"))
                             {
-                                // for now, just delete what we created
+                                try
+                                {
+                                    Outlook.Application OL = new Outlook.Application();
+                                    for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                                    {
+                                        Object temp = OL.ActiveExplorer().Selection[i];
+                                        if (temp is Outlook.MailItem)
+                                        {
+                                            Outlook.MailItem mailitem = (temp as Outlook.MailItem);
+                                            Outlook.ItemProperties props = mailitem.ItemProperties;
+                                            filename = ".msg";
+                                        }
+                                    }
+                                    ret = true;
+                                }
+                                catch
+                                {
 
+                                }
                             }
                             else
-                            { Trace.WriteLine("File was not created!"); }
+                            {
+                                // get the actual raw file into memory
+                                MemoryStream ms = (MemoryStream)e.Data.GetData(
+                                    "FileContents", true);
+                                // allocate enough bytes to hold the raw data
+                                byte[] fileBytes = new byte[ms.Length];
+                                // set starting position at first byte and read in the raw data
+                                ms.Position = 0;
+                                ms.Read(fileBytes, 0, (int)ms.Length);
+                                // create a file and save the raw zip file to it
+                                FileStream fs = new FileStream(filename, FileMode.Create);
+                                fs.Write(fileBytes, 0, (int)fileBytes.Length);
+
+                                fs.Close();  // close the file
+
+                                FileInfo tempFile = new FileInfo(filename);
+
+                                // always good to make sure we actually created the file
+                                if (tempFile.Exists == true)
+                                {
+                                    // for now, just delete what we created
+
+                                }
+                                else
+                                { Trace.WriteLine("File was not created!"); }
+                            }
                         }
                     }
                 }
@@ -2992,6 +2995,7 @@ namespace NatoliOrderInterface
                     Left = Left,
                     Top = Top
                 };
+                orderInfoWindow.Dispose();
             }
             catch (Exception ex)
             {
