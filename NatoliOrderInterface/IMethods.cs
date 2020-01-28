@@ -2607,7 +2607,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
                 WriteToErrorLog("QuoteLineItemOptionSuggestions", ex.Message, user);
                 return (lineItemTypeToDescription[lineItemType], recommendations);
             }
