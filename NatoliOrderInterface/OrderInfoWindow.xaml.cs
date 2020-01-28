@@ -895,6 +895,7 @@ namespace NatoliOrderInterface
                         HeadersVisibility = DataGridHeadersVisibility.Column
                     };
                     barcodeDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
+                    barcodeDataGrid.MouseDoubleClick += BarcodeDataGrid_MouseDoubleClick;
                     Docker.Children.Add(barcodeDataGrid);
                 }
             }
@@ -903,6 +904,27 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void BarcodeDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var lineNumber = ((sender as DataGrid).SelectedItem as LineItemLastScan).OrderLineNumber;
+                using var _ = new NATBCContext();
+                TravellerScansAudit travellerScansAudit = _.TravellerScansAudit.Where(l => l.OrderNumber == workOrder.OrderNumber * 100 && l.OrderLineNumber == lineNumber && l.OperationDesc != "FPI")
+                                                                               .OrderByDescending(l => l.TsaId)
+                                                                               .First();
+                _.Dispose();
+
+                BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit, this);
+                barcodeLocationWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("BarcodeDataGrid_MouseDoubleClick", ex.Message, user);
+            }
+        }
+
         private void FillEtchingInstructions()
         {
             int i = 1; // Tab
@@ -1709,7 +1731,7 @@ namespace NatoliOrderInterface
                                                                            .First();
             _.Dispose();
 
-            BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit);
+            BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit, this);
             barcodeLocationWindow.Show();
         }
         private void ReferenceOrderButton_Click(object sender, RoutedEventArgs e)

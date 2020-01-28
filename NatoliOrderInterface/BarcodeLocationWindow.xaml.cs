@@ -11,9 +11,22 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class BarcodeLocationWindow : Window
     {
-        public BarcodeLocationWindow(TravellerScansAudit travellerScansAudit)
+        public BarcodeLocationWindow(TravellerScansAudit travellerScansAudit, Window _parent)
         {
+            Owner = _parent;
+
             InitializeComponent();
+
+            if (_parent.WindowState == WindowState.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                Width = _parent.Width;
+                Height = _parent.Height;
+            }
+
             BitmapImage image;
             string machine = travellerScansAudit.MachineCode.Trim();
             List<string> depts = new List<string>() { "D040", "D080", "D921", "D0043", "D006", "D011", "D1117", "D1151", "D990" };
@@ -51,7 +64,7 @@ namespace NatoliOrderInterface
                         image = new BitmapImage(new Uri(@"Barcode Locations\D1151_Order_Entry.png", UriKind.Relative));
                         break;
                     case "D990":
-                        image = new BitmapImage(new Uri(@"Barcode Locations\D990_Shipping.png", UriKind.Relative));
+                        image = new BitmapImage(new Uri(@"Barcode Locations\D990_Shipped.png", UriKind.Relative));
                         break;
                     default:
                         image = new BitmapImage(new Uri(@"Barcode Locations\No_Department.png", UriKind.Relative));
