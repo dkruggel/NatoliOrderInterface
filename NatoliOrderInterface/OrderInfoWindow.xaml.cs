@@ -1701,6 +1701,17 @@ namespace NatoliOrderInterface
         }
         #endregion
 
+        private void OpenBarcodeLocation_Click(object sender, RoutedEventArgs e)
+        {
+            using var _ = new NATBCContext();
+            TravellerScansAudit travellerScansAudit = _.TravellerScansAudit.Where(l => l.OrderNumber == workOrder.OrderNumber * 100 && l.OrderLineNumber == lineItemNumber && l.OperationDesc != "FPI")
+                                                                           .OrderByDescending(l => l.TsaId)
+                                                                           .First();
+            _.Dispose();
+
+            BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit);
+            barcodeLocationWindow.Show();
+        }
         private void ReferenceOrderButton_Click(object sender, RoutedEventArgs e)
         {
             using var _nat01context = new NAT01Context();
@@ -1788,7 +1799,6 @@ namespace NatoliOrderInterface
             }
             LineItemChange();
         }
-        
         private void LineItemsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Dictionary<string, string> pdfDict = new Dictionary<string, string> {
