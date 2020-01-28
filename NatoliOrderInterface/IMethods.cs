@@ -2414,7 +2414,7 @@ namespace NatoliOrderInterface
                                                         // Is Round
                                                         if (die.ShapeId == 1)
                                                         {
-                                                            errors.Add("'L' is bisected. Please add key at appropriate take-off angle.");
+                                                            errors.Add("'L' is bisected. If aligning with upper bisect/embossing, please add key at appropriate take-off angle.");
                                                         }
                                                     }
                                                 }

@@ -324,7 +324,7 @@ namespace NatoliOrderInterface
                     desc5.Text = lineItem.Desc5;
                     desc5.Height = 16;
                     TextBlock desc6 = new TextBlock();
-                    desc6.Text = lineItem.Desc5;
+                    desc6.Text = lineItem.Desc6;
                     desc6.Height = 16;
                     TextBlock desc7 = new TextBlock();
                     desc7.Text = lineItem.Desc7;

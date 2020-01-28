@@ -761,6 +761,10 @@
                     </Border>
                     <DockPanel x:Name="OptionSuggestionsDockPanel" DockPanel.Dock="Top" LastChildFill="False">
                     </DockPanel>
+                    <TextBlock HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                        This is only meant to remind you of options that may be needed and is not to be 
+                        This will suggest 5 more options regardless of whether the tooling actually needs it.
+                    </TextBlock>
                 </DockPanel>
             </TabItem>
         </TabControl>
