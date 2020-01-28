@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Name="Quote_Info_Window"
-        Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855" ContentRendered="Quote_Info_Window_ContentRendered">
+        Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855" ContentRendered="Quote_Info_Window_ContentRendered_Async">
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
     </Window.Background>
@@ -402,7 +402,7 @@
                 </Border>
             </TabItem>
 
-            <TabItem Style="{StaticResource NormalTabItem}" x:Name="SMITabItem" Header="Price/SMI Check" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="SMITabItem" Header="Loading Price/SMI Check" Height="22" IsEnabled="False">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
                 <Border Padding="0,0,0,0">
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="0,0,0,0">
@@ -609,7 +609,7 @@
                     </Border>
             </TabItem>
 
-            <TabItem Style="{StaticResource NormalTabItem}" x:Name="OrderEntryTabItem" Header="Order Entry Instructions" Height="22">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="OrderEntryTabItem" Header="Loading Order Entry Instructions" Height="22">
                 <Border Padding="0,0,0,0">
                     <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}"-->
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
@@ -697,7 +697,7 @@
                 </Border>
             </TabItem>
             
-            <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteErrorsTabItem" Header="LoadingErrors" Height="22" IsEnabled="False">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteErrorsTabItem" Header="Loading Errors" Height="22" IsEnabled="False">
                 <DockPanel LastChildFill="False" Margin="0,0,15,0">
                     <Border DockPanel.Dock="Top" x:Name="ButtonBorder5" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" >
                         <Grid Margin="0,2,0,4">
@@ -757,7 +757,7 @@
                         </Grid>
                     </Border>
                     <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,3" Margin="0,10">
-                        <TextBlock Text="OPTION SUGGESTIONS" Style="{StaticResource BoldTextBlock}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                        <TextBlock Text="SUGGESTED OPTIONS" Style="{StaticResource BoldTextBlock}" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,10"/>
                     </Border>
                     <DockPanel x:Name="OptionSuggestionsDockPanel" DockPanel.Dock="Top" LastChildFill="False">
                     </DockPanel>

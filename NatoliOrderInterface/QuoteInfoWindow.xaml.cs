@@ -24,15 +24,15 @@ using System.Diagnostics;
 namespace NatoliOrderInterface
 {
 
-    public class SymbolicLink
-    {
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern bool CreateSymbolicLink(
-            string lpSymlinkFileName,
-            string lpTargetFileName,
-            uint dwFlags
-        );
-    }
+    //public class SymbolicLink
+    //{
+    //    [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+    //    static extern bool CreateSymbolicLink(
+    //        string lpSymlinkFileName,
+    //        string lpTargetFileName,
+    //        uint dwFlags
+    //    );
+    //}
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
@@ -64,10 +64,10 @@ namespace NatoliOrderInterface
         {
             Owner = parent;
             InitializeComponent();
-            this.user = user;
-            quoteNumber = quote.QuoteNumber;
-            this.quote = quote;
-            this.parent = parent;
+            this.user = user ?? new User("");
+            this.quote = quote ?? new Quote(0,0);
+            quoteNumber = this.quote.QuoteNumber;
+            this.parent = parent ?? new MainWindow();
 
             if (quote.OrderNo != 0)
             {
@@ -120,7 +120,7 @@ namespace NatoliOrderInterface
                 }
             }
             Title = "Quote#: " + quoteNumber + " Rev#: " + quote.QuoteRevNo;
-            if (parent.WindowState == WindowState.Maximized)
+            if (this.parent.WindowState == WindowState.Maximized)
             {
                 WindowState = WindowState.Maximized;
             }
@@ -151,10 +151,10 @@ namespace NatoliOrderInterface
         }
 
         /// <summary>
-        /// Gets the User Name of the quote
+        /// Gets the End User Name of the quote
         /// </summary>
         /// <returns></returns>
-        private string GetUserName()
+        private string GetEndUserName()
         {
             using var _nat01Context = new NAT01Context();
             using var _necContext = new NECContext();
@@ -236,8 +236,8 @@ namespace NatoliOrderInterface
                 }
             }
             #endregion
-            if (GetUserName().Length == 0) { UserButton.Visibility = Visibility.Collapsed; } else { UserButton.Visibility = Visibility.Visible; }
-            UserButton.Content = GetUserName();
+            if (GetEndUserName().Length == 0) { UserButton.Visibility = Visibility.Collapsed; } else { UserButton.Visibility = Visibility.Visible; }
+            UserButton.Content = GetEndUserName();
             ProductName.Text = quote.ProductName;
             Reference.Text = quote.Reference;
             PaymentTerms.Text = quote.TermsID;
@@ -473,11 +473,32 @@ namespace NatoliOrderInterface
         }
 
         #region Events
-        private async void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
+        private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
         {
             try
             {
-                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user)).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        FillSMIAndScratchPadPage();
+                        ChangeSMIScrollHeights();
+                        SMITabItem.Header = "Price/SMI Check";
+                        SMITabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ResetInstructionEntering();
+                        FillOrderEntryInstructions();
+                        OrderEntryTabItem.Header = "Order Entry Instructions";
+                        OrderEntryTabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+
+                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                 if (errors.Count > 0)
                 {
                     Dispatcher.Invoke(() =>
@@ -512,7 +533,7 @@ namespace NatoliOrderInterface
                 foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
                 {
                     percent = (i * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Run(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)).ConfigureAwait(false);
+                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                     Dispatcher.Invoke(() =>
                     {
                         if (first)
@@ -547,55 +568,12 @@ namespace NatoliOrderInterface
                     }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
                 Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-
-
-                //List<Task<(string, List<string>)>> tasks = new List<Task<(string, List<string>)>>();
-                //for (int i = 1; i <= quote.LineItemCount; i++)
-                //{
-                //    tasks.Add(new Task<(string, List<string>)>(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)));
-                //}
-                //bool first = true;
-                //while (tasks.Count > 0)
-                //{
-                //    Task<(string, List<string>)> firstFinishedTask = await Task.WhenAny(tasks).ConfigureAwait(false);
-                //    tasks.Remove(firstFinishedTask);
-                //    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await firstFinishedTask.ConfigureAwait(false);
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        if (first)
-                //        {
-                //            QuoteOptionSuggestions.IsEnabled = true;
-                //            QuoteOptionSuggestions.Header = "Suggested Options - Loading";
-                //            first = !first;
-                //        }
-                //        DockPanel dockPanel = new DockPanel ();
-                //        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-                //        TextBlock headerTextBlock = new TextBlock {
-                //            Text = firstOptionRecommendations.LineItemDescription,
-                //            Style = (Style)Application.Current.Resources["BoldTextBlock"],
-                //            HorizontalAlignment = HorizontalAlignment.Center
-                //        };
-                //        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-                //        dockPanel.Children.Add(headerTextBlock);
-                //        foreach (string suggestion in firstOptionRecommendations.Suggestions)
-                //        {
-                //            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                //            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                //            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-                //            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                //            bulletDecorator.Bullet = ellipse;
-                //            bulletDecorator.Child = textBlock;
-                //        }
-                //        OptionSuggestionsDockPanel.Children.Add(dockPanel);
-                //    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                //}
             }
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
-
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             ChangeLineItemScrollerHeight();
@@ -608,7 +586,7 @@ namespace NatoliOrderInterface
         }
         private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            //Dispatcher.BeginInvoke(new ThreadStart(() => MessageBox.Show("Could not load signature", "Image Failed", MessageBoxButton.OK, MessageBoxImage.Error)));
+            IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
         }
         #endregion
         #endregion
@@ -624,7 +602,7 @@ namespace NatoliOrderInterface
             Dictionary<short, IQueryable<CustomerInstructionTable>> smiDict = new Dictionary<short, IQueryable<CustomerInstructionTable>>();
             Dictionary<short, string> custNamesDict = new Dictionary<short, string>();
             IQueryable<CustomerInstructionTable> userSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.UserAcctNo && q.Inactive == false).OrderBy(q => q.Sequence);
-            string userName = GetUserName();
+            string userName = GetEndUserName();
             smiDict.Add(0, userSMI);
             custNamesDict.Add(0, userName);
             string shipToName = null;
@@ -1409,7 +1387,7 @@ namespace NatoliOrderInterface
                     {
                         if (radioButton.IsChecked == true)
                         {
-                            if (radioButton.Tag == "Y")
+                            if (radioButton.Tag.ToString() == "Y")
                             {
                                 applies = true;
                             }
@@ -1807,17 +1785,17 @@ namespace NatoliOrderInterface
                 TextBox textBox = sender as TextBox;
                 Grid unitPriceGrid = (Grid)textBox.Parent as Grid;
                 Grid grid = unitPriceGrid.Parent as Grid;
-                foreach (Grid subGrid in grid.Children.OfType<Grid>().Where(g => g.Tag == "QTY"))
+                foreach (Grid subGrid in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "QTY"))
                 {
-                    TextBlock qtyTextBlock = subGrid.Children.OfType<TextBlock>().First(t => t.Tag == "QTY");
+                    TextBlock qtyTextBlock = subGrid.Children.OfType<TextBlock>().First(t => t.Tag.ToString() == "QTY");
                     if (int.TryParse(qtyTextBlock.Text == null ? "0" : qtyTextBlock.Text.ToString(), out int qty))
                     {
                         if (double.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out double unitPrice))
                         {
                             double extendedPrice = Math.Round(unitPrice * (double)qty, 2);
-                            foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag == "ExtendedPrice"))
+                            foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "ExtendedPrice"))
                             {
-                                TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag == "ExtendedPrice");
+                                TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag.ToString() == "ExtendedPrice");
                                 Dispatcher.Invoke(new Action(() => extendedPriceTextBox.Text = string.Format("{0:0.00}", extendedPrice)));
                             }
                         }
@@ -1864,9 +1842,9 @@ namespace NatoliOrderInterface
                 string keyValue = checkBox.Name.Remove(0, 25);
                 DockPanel dockPanel = checkBox.Parent as DockPanel;
                 Grid grid = dockPanel.Parent as Grid;
-                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag == "UnitPrice").First().Children.OfType<TextBox>().First();
+                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "UnitPrice").First().Children.OfType<TextBox>().First();
                 unitPrice.IsEnabled = false;
-                Grid basePriceGrid = grid.Children.OfType<Grid>().Where(g => g.Tag == "BasePriceGrid").First();
+                Grid basePriceGrid = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "BasePriceGrid").First();
                 TextBox basePriceTextBox = basePriceGrid.Children.OfType<TextBox>().First();
                 BasePriceChanged(basePriceTextBox, new RoutedEventArgs());
             }
@@ -1882,7 +1860,7 @@ namespace NatoliOrderInterface
                 CheckBox checkBox = sender as CheckBox;
                 DockPanel dockPanel = checkBox.Parent as DockPanel;
                 Grid grid = dockPanel.Parent as Grid;
-                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag == "UnitPrice").First().Children.OfType<TextBox>().First();
+                TextBox unitPrice = grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "UnitPrice").First().Children.OfType<TextBox>().First();
                 unitPrice.IsEnabled = true;
             }
             catch (Exception ex)
@@ -1923,7 +1901,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal\n"+ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -2305,87 +2283,90 @@ namespace NatoliOrderInterface
         {
             bool ret = false;
             filename = String.Empty;
-            if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
+            if (e != null)
             {
-                Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
-                if (data != null)
+                if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
                 {
-                    if ((data.Length == 1) && (data.GetValue(0) is String))
+                    Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
+                    if (data != null)
                     {
-                        filename = ((string[])data)[0];
-                        string ext = System.IO.Path.GetExtension(filename).ToLower();
-                        if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
+                        if ((data.Length == 1) && (data.GetValue(0) is String))
                         {
-                            ret = true;
-                        }
-                    }
-                }
-                else
-                {
-                    if (e.Data.GetDataPresent("FileGroupDescriptor"))
-                    {
-                        Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
-                        byte[] fileGroupDescriptor = new byte[512];
-                        theStream.Read(fileGroupDescriptor, 0, 512);
-                        // used to build the filename from the FileGroupDescriptor block
-                        StringBuilder fileName = new StringBuilder("");
-                        // this trick gets the filename of the passed attached file
-                        for (int i = 76; fileGroupDescriptor[i] != 0; i++)
-                        { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
-                        theStream.Close();
-                        theStream.Dispose();
-                        string path = System.IO.Path.GetTempPath();
-                        // put the zip file into the temp directory
-                        filename = path + fileName.ToString();
-
-                        if (filename.EndsWith(".msg"))
-                        {
-                            try
+                            filename = ((string[])data)[0];
+                            string ext = System.IO.Path.GetExtension(filename).ToLower();
+                            if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
                             {
-                                Outlook.Application OL = new Outlook.Application();
-                                for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
-                                {
-                                    Object temp = OL.ActiveExplorer().Selection[i];
-                                    if (temp is Outlook.MailItem)
-                                    {
-                                        Outlook.MailItem mailitem = (temp as Outlook.MailItem);
-                                        Outlook.ItemProperties props = mailitem.ItemProperties;
-                                        filename = ".msg";
-                                    }
-                                }
                                 ret = true;
                             }
-                            catch
-                            {
-
-                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        if (e.Data.GetDataPresent("FileGroupDescriptor"))
                         {
-                            // get the actual raw file into memory
-                            MemoryStream ms = (MemoryStream)e.Data.GetData(
-                                "FileContents", true);
-                            // allocate enough bytes to hold the raw data
-                            byte[] fileBytes = new byte[ms.Length];
-                            // set starting position at first byte and read in the raw data
-                            ms.Position = 0;
-                            ms.Read(fileBytes, 0, (int)ms.Length);
-                            // create a file and save the raw zip file to it
-                            FileStream fs = new FileStream(filename, FileMode.Create);
-                            fs.Write(fileBytes, 0, (int)fileBytes.Length);
+                            Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
+                            byte[] fileGroupDescriptor = new byte[512];
+                            theStream.Read(fileGroupDescriptor, 0, 512);
+                            // used to build the filename from the FileGroupDescriptor block
+                            StringBuilder fileName = new StringBuilder("");
+                            // this trick gets the filename of the passed attached file
+                            for (int i = 76; fileGroupDescriptor[i] != 0; i++)
+                            { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
+                            theStream.Close();
+                            theStream.Dispose();
+                            string path = System.IO.Path.GetTempPath();
+                            // put the zip file into the temp directory
+                            filename = path + fileName.ToString();
 
-                            fs.Close();  // close the file
-
-                            FileInfo tempFile = new FileInfo(filename);
-
-                            // always good to make sure we actually created the file
-                            if (tempFile.Exists == true)
+                            if (filename.EndsWith(".msg"))
                             {
-                                // for now, just delete what we created
+                                try
+                                {
+                                    Outlook.Application OL = new Outlook.Application();
+                                    for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                                    {
+                                        Object temp = OL.ActiveExplorer().Selection[i];
+                                        if (temp is Outlook.MailItem)
+                                        {
+                                            Outlook.MailItem mailitem = (temp as Outlook.MailItem);
+                                            Outlook.ItemProperties props = mailitem.ItemProperties;
+                                            filename = ".msg";
+                                        }
+                                    }
+                                    ret = true;
+                                }
+                                catch
+                                {
 
+                                }
                             }
                             else
-                            { Trace.WriteLine("File was not created!"); }
+                            {
+                                // get the actual raw file into memory
+                                MemoryStream ms = (MemoryStream)e.Data.GetData(
+                                    "FileContents", true);
+                                // allocate enough bytes to hold the raw data
+                                byte[] fileBytes = new byte[ms.Length];
+                                // set starting position at first byte and read in the raw data
+                                ms.Position = 0;
+                                ms.Read(fileBytes, 0, (int)ms.Length);
+                                // create a file and save the raw zip file to it
+                                FileStream fs = new FileStream(filename, FileMode.Create);
+                                fs.Write(fileBytes, 0, (int)fileBytes.Length);
+
+                                fs.Close();  // close the file
+
+                                FileInfo tempFile = new FileInfo(filename);
+
+                                // always good to make sure we actually created the file
+                                if (tempFile.Exists == true)
+                                {
+                                    // for now, just delete what we created
+
+                                }
+                                else
+                                { Trace.WriteLine("File was not created!"); }
+                            }
                         }
                     }
                 }
@@ -2880,7 +2861,7 @@ namespace NatoliOrderInterface
             {
                 if (QuoteErrorsTabItem.Header.ToString() == "Errors" && errorNotificationPopped == false)
                 {
-                    tabControl.SelectedIndex = 4;
+                    QuoteErrorsTabItem.IsSelected = true;
                     Cursor = Cursors.Arrow;
                     MessageBox.Show("This quote has errors, please ensure that they have been reviewed.", "ERRORS", MessageBoxButton.OK, MessageBoxImage.Information);
                     errorNotificationPopped = true;
@@ -3014,6 +2995,7 @@ namespace NatoliOrderInterface
                     Left = Left,
                     Top = Top
                 };
+                orderInfoWindow.Dispose();
             }
             catch (Exception ex)
             {
@@ -3085,13 +3067,13 @@ namespace NatoliOrderInterface
             }
             if (header == "Price/SMI Check")
             {
-                FillSMIAndScratchPadPage();
-                ChangeSMIScrollHeights();
+                //FillSMIAndScratchPadPage();
+                //ChangeSMIScrollHeights();
             }
             if (header == "Order Entry Instructions")
             {
-                ResetInstructionEntering();
-                FillOrderEntryInstructions();
+                //ResetInstructionEntering();
+                //FillOrderEntryInstructions();
             }
         }
         private void BillToButton_Click(object sender, RoutedEventArgs e)
@@ -3167,7 +3149,7 @@ namespace NatoliOrderInterface
                 using var nat01context = new NAT01Context();
                 string mach = nat01context.MachineList.Where(m => m.MachineNo == quoteLineItems[0].MachineNo).Select(m => m.MachineNo.ToString().Trim() + "-" + m.Description.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim()).FirstOrDefault();
                 nat01context.Dispose();
-                string folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                string folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -3175,7 +3157,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                    folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -3183,7 +3165,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\";
+                        folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\";
                         System.IO.Directory.CreateDirectory(folderName);
                     }
                 }
