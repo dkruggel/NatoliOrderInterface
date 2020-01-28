@@ -151,10 +151,10 @@ namespace NatoliOrderInterface
         }
 
         /// <summary>
-        /// Gets the User Name of the quote
+        /// Gets the End User Name of the quote
         /// </summary>
         /// <returns></returns>
-        private string GetUserName()
+        private string GetEndUserName()
         {
             using var _nat01Context = new NAT01Context();
             using var _necContext = new NECContext();
@@ -236,8 +236,8 @@ namespace NatoliOrderInterface
                 }
             }
             #endregion
-            if (GetUserName().Length == 0) { UserButton.Visibility = Visibility.Collapsed; } else { UserButton.Visibility = Visibility.Visible; }
-            UserButton.Content = GetUserName();
+            if (GetEndUserName().Length == 0) { UserButton.Visibility = Visibility.Collapsed; } else { UserButton.Visibility = Visibility.Visible; }
+            UserButton.Content = GetEndUserName();
             ProductName.Text = quote.ProductName;
             Reference.Text = quote.Reference;
             PaymentTerms.Text = quote.TermsID;
@@ -602,7 +602,7 @@ namespace NatoliOrderInterface
             Dictionary<short, IQueryable<CustomerInstructionTable>> smiDict = new Dictionary<short, IQueryable<CustomerInstructionTable>>();
             Dictionary<short, string> custNamesDict = new Dictionary<short, string>();
             IQueryable<CustomerInstructionTable> userSMI = _nat01Context.CustomerInstructionTable.Where(q => q.CustomerId == quote.UserAcctNo && q.Inactive == false).OrderBy(q => q.Sequence);
-            string userName = GetUserName();
+            string userName = GetEndUserName();
             smiDict.Add(0, userSMI);
             custNamesDict.Add(0, userName);
             string shipToName = null;
@@ -3145,7 +3145,7 @@ namespace NatoliOrderInterface
                 using var nat01context = new NAT01Context();
                 string mach = nat01context.MachineList.Where(m => m.MachineNo == quoteLineItems[0].MachineNo).Select(m => m.MachineNo.ToString().Trim() + "-" + m.Description.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim()).FirstOrDefault();
                 nat01context.Dispose();
-                string folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                string folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                 if (System.IO.Directory.Exists(folderName))
                 {
                     System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -3153,7 +3153,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                    folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
                     if (System.IO.Directory.Exists(folderName))
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -3161,7 +3161,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\";
+                        folderName = @"\\engserver\workstations\tools\Customers\" + quote.UserAcctNo + " - " + GetEndUserName().ToString().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\";
                         System.IO.Directory.CreateDirectory(folderName);
                     }
                 }
