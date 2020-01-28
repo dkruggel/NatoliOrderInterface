@@ -477,7 +477,28 @@ namespace NatoliOrderInterface
         {
             try
             {
-                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user)).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        FillSMIAndScratchPadPage();
+                        ChangeSMIScrollHeights();
+                        SMITabItem.Header = "Price/SMI Check";
+                        SMITabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ResetInstructionEntering();
+                        FillOrderEntryInstructions();
+                        OrderEntryTabItem.Header = "Order Entry Instructions";
+                        OrderEntryTabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+
+                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                 if (errors.Count > 0)
                 {
                     Dispatcher.Invoke(() =>
@@ -512,7 +533,7 @@ namespace NatoliOrderInterface
                 foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
                 {
                     percent = (i * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Run(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)).ConfigureAwait(false);
+                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                     Dispatcher.Invoke(() =>
                     {
                         if (first)
@@ -547,48 +568,6 @@ namespace NatoliOrderInterface
                     }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
                 Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-
-
-                //List<Task<(string, List<string>)>> tasks = new List<Task<(string, List<string>)>>();
-                //for (int i = 1; i <= quote.LineItemCount; i++)
-                //{
-                //    tasks.Add(new Task<(string, List<string>)>(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)));
-                //}
-                //bool first = true;
-                //while (tasks.Count > 0)
-                //{
-                //    Task<(string, List<string>)> firstFinishedTask = await Task.WhenAny(tasks).ConfigureAwait(false);
-                //    tasks.Remove(firstFinishedTask);
-                //    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await firstFinishedTask.ConfigureAwait(false);
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        if (first)
-                //        {
-                //            QuoteOptionSuggestions.IsEnabled = true;
-                //            QuoteOptionSuggestions.Header = "Suggested Options - Loading";
-                //            first = !first;
-                //        }
-                //        DockPanel dockPanel = new DockPanel ();
-                //        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-                //        TextBlock headerTextBlock = new TextBlock {
-                //            Text = firstOptionRecommendations.LineItemDescription,
-                //            Style = (Style)Application.Current.Resources["BoldTextBlock"],
-                //            HorizontalAlignment = HorizontalAlignment.Center
-                //        };
-                //        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-                //        dockPanel.Children.Add(headerTextBlock);
-                //        foreach (string suggestion in firstOptionRecommendations.Suggestions)
-                //        {
-                //            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                //            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                //            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-                //            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                //            bulletDecorator.Bullet = ellipse;
-                //            bulletDecorator.Child = textBlock;
-                //        }
-                //        OptionSuggestionsDockPanel.Children.Add(dockPanel);
-                //    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                //}
             }
             catch (Exception ex)
             {
@@ -2880,7 +2859,7 @@ namespace NatoliOrderInterface
             {
                 if (QuoteErrorsTabItem.Header.ToString() == "Errors" && errorNotificationPopped == false)
                 {
-                    tabControl.SelectedIndex = 4;
+                    QuoteErrorsTabItem.IsSelected = true;
                     Cursor = Cursors.Arrow;
                     MessageBox.Show("This quote has errors, please ensure that they have been reviewed.", "ERRORS", MessageBoxButton.OK, MessageBoxImage.Information);
                     errorNotificationPopped = true;
@@ -3085,13 +3064,13 @@ namespace NatoliOrderInterface
             }
             if (header == "Price/SMI Check")
             {
-                FillSMIAndScratchPadPage();
-                ChangeSMIScrollHeights();
+                //FillSMIAndScratchPadPage();
+                //ChangeSMIScrollHeights();
             }
             if (header == "Order Entry Instructions")
             {
-                ResetInstructionEntering();
-                FillOrderEntryInstructions();
+                //ResetInstructionEntering();
+                //FillOrderEntryInstructions();
             }
         }
         private void BillToButton_Click(object sender, RoutedEventArgs e)
