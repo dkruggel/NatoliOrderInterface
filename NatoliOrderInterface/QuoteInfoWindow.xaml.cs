@@ -475,118 +475,125 @@ namespace NatoliOrderInterface
         #region Events
         private async void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
         {
-            List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user)).ConfigureAwait(false);
-            if (errors.Count > 0)
+            try
             {
-                Dispatcher.Invoke(() =>
+                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user)).ConfigureAwait(false);
+                if (errors.Count > 0)
                 {
-                    QuoteErrorsTabItem.Header = "Errors";
-                    QuoteErrorsTabItem.IsEnabled = true;
-                    ErrorsDockPanel.Children.Clear();
-                    foreach (string error in errors)
+                    Dispatcher.Invoke(() =>
                     {
-                        BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                        bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                        Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-                        TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                        bulletDecorator.Bullet = ellipse;
-                        bulletDecorator.Child = textBlock;
-                        ErrorsDockPanel.Children.Add(bulletDecorator);
-                    }
-                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        QuoteErrorsTabItem.Header = "Errors";
+                        QuoteErrorsTabItem.IsEnabled = true;
+                        ErrorsDockPanel.Children.Clear();
+                        foreach (string error in errors)
+                        {
+                            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
+                            TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                            bulletDecorator.Bullet = ellipse;
+                            bulletDecorator.Child = textBlock;
+                            ErrorsDockPanel.Children.Add(bulletDecorator);
+                        }
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
 
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        QuoteErrorsTabItem.Header = "No Errors Found";
+                        QuoteErrorsTabItem.IsEnabled = false;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+
+                bool first = true;
+                int percent = 0;
+                foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
+                {
+                    percent = (i * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
+                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Run(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)).ConfigureAwait(false);
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (first)
+                        {
+                            QuoteOptionSuggestions.IsEnabled = true;
+                            QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
+                            first = !first;
+                        }
+                        DockPanel dockPanel = new DockPanel();
+                        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
+                        TextBlock headerTextBlock = new TextBlock
+                        {
+                            Text = firstOptionRecommendations.LineItemDescription,
+                            Style = (Style)Application.Current.Resources["BoldTextBlock"],
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            FontSize = 28,
+                            Margin = new Thickness(40, 0, 0, 0)
+                        };
+                        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
+                        dockPanel.Children.Add(headerTextBlock);
+                        foreach (string suggestion in firstOptionRecommendations.Suggestions)
+                        {
+                            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
+                            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                            bulletDecorator.Bullet = ellipse;
+                            bulletDecorator.Child = textBlock;
+                            dockPanel.Children.Add(bulletDecorator);
+                        }
+                        OptionSuggestionsDockPanel.Children.Add(dockPanel);
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+                Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+
+                //List<Task<(string, List<string>)>> tasks = new List<Task<(string, List<string>)>>();
+                //for (int i = 1; i <= quote.LineItemCount; i++)
+                //{
+                //    tasks.Add(new Task<(string, List<string>)>(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)));
+                //}
+                //bool first = true;
+                //while (tasks.Count > 0)
+                //{
+                //    Task<(string, List<string>)> firstFinishedTask = await Task.WhenAny(tasks).ConfigureAwait(false);
+                //    tasks.Remove(firstFinishedTask);
+                //    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await firstFinishedTask.ConfigureAwait(false);
+                //    Dispatcher.Invoke(() =>
+                //    {
+                //        if (first)
+                //        {
+                //            QuoteOptionSuggestions.IsEnabled = true;
+                //            QuoteOptionSuggestions.Header = "Suggested Options - Loading";
+                //            first = !first;
+                //        }
+                //        DockPanel dockPanel = new DockPanel ();
+                //        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
+                //        TextBlock headerTextBlock = new TextBlock {
+                //            Text = firstOptionRecommendations.LineItemDescription,
+                //            Style = (Style)Application.Current.Resources["BoldTextBlock"],
+                //            HorizontalAlignment = HorizontalAlignment.Center
+                //        };
+                //        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
+                //        dockPanel.Children.Add(headerTextBlock);
+                //        foreach (string suggestion in firstOptionRecommendations.Suggestions)
+                //        {
+                //            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                //            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                //            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
+                //            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                //            bulletDecorator.Bullet = ellipse;
+                //            bulletDecorator.Child = textBlock;
+                //        }
+                //        OptionSuggestionsDockPanel.Children.Add(dockPanel);
+                //    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //}
             }
-            else
+            catch (Exception ex)
             {
-                Dispatcher.Invoke(() =>
-                {
-                    QuoteErrorsTabItem.Header = "No Errors Found";
-                    QuoteErrorsTabItem.IsEnabled = false;
-                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
-
-            bool first = true;
-            int percent = 0;
-            foreach (int i in quote.lineItems.Keys.Where(k=> quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
-            {
-                percent = (i * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Run(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)).ConfigureAwait(false);
-                Dispatcher.Invoke(() =>
-                {
-                    if (first)
-                    {
-                        QuoteOptionSuggestions.IsEnabled = true;
-                        QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
-                        first = !first;
-                    }
-                    DockPanel dockPanel = new DockPanel();
-                    dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-                    TextBlock headerTextBlock = new TextBlock
-                    {
-                        Text = firstOptionRecommendations.LineItemDescription,
-                        Style = (Style)Application.Current.Resources["BoldTextBlock"],
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        FontSize = 28,
-                        Margin = new Thickness(40,0,0,0)
-                    };
-                    headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-                    dockPanel.Children.Add(headerTextBlock);
-                    foreach (string suggestion in firstOptionRecommendations.Suggestions)
-                    {
-                        BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                        bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                        Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-                        TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                        bulletDecorator.Bullet = ellipse;
-                        bulletDecorator.Child = textBlock;
-                        dockPanel.Children.Add(bulletDecorator);
-                    }
-                    OptionSuggestionsDockPanel.Children.Add(dockPanel);
-                }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            }
-            Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-
-
-            //List<Task<(string, List<string>)>> tasks = new List<Task<(string, List<string>)>>();
-            //for (int i = 1; i <= quote.LineItemCount; i++)
-            //{
-            //    tasks.Add(new Task<(string, List<string>)>(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user)));
-            //}
-            //bool first = true;
-            //while (tasks.Count > 0)
-            //{
-            //    Task<(string, List<string>)> firstFinishedTask = await Task.WhenAny(tasks).ConfigureAwait(false);
-            //    tasks.Remove(firstFinishedTask);
-            //    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await firstFinishedTask.ConfigureAwait(false);
-            //    Dispatcher.Invoke(() =>
-            //    {
-            //        if (first)
-            //        {
-            //            QuoteOptionSuggestions.IsEnabled = true;
-            //            QuoteOptionSuggestions.Header = "Suggested Options - Loading";
-            //            first = !first;
-            //        }
-            //        DockPanel dockPanel = new DockPanel ();
-            //        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-            //        TextBlock headerTextBlock = new TextBlock {
-            //            Text = firstOptionRecommendations.LineItemDescription,
-            //            Style = (Style)Application.Current.Resources["BoldTextBlock"],
-            //            HorizontalAlignment = HorizontalAlignment.Center
-            //        };
-            //        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-            //        dockPanel.Children.Add(headerTextBlock);
-            //        foreach (string suggestion in firstOptionRecommendations.Suggestions)
-            //        {
-            //            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-            //            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-            //            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-            //            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-            //            bulletDecorator.Bullet = ellipse;
-            //            bulletDecorator.Child = textBlock;
-            //        }
-            //        OptionSuggestionsDockPanel.Children.Add(dockPanel);
-            //    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            //}
         }
 
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
