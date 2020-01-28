@@ -241,7 +241,6 @@ namespace NatoliOrderInterface
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
-
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {

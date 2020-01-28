@@ -13,12 +13,55 @@ using System.Text;
 using System.Windows;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace NatoliOrderInterface
 {
     
+
     public interface IMethods
     {
+        public static readonly Dictionary<string, string> lineItemTypeToDescription = new Dictionary<string, string> {
+            { "A","ALIGNMENT TOOL" },
+            { "CT","COPPER TABLETS" },
+            { "D","DIE" },
+            { "DA","DIE ASSEMBLY" },
+            { "DH","DIE HOLDER" },
+            { "DI","DIE INSERT" },
+            { "DP","DIE PLATE" },
+            { "DS","DIE SEGMENT" },
+            { "E","ELEC. DOCS" },
+            { "H","HOB" },
+            { "K","KEY" },
+            { "L","LOWER" },
+            { "LA","LOWER ASSEMBLY" },
+            { "LC","LOWER CAP" },
+            { "LCR","CORE ROD" },
+            { "LCRK","CORE ROD KEY" },
+            { "LCRKC","CORE ROD KEY COLLAR" },
+            { "LCRP","CORE ROD PUNCH" },
+            { "LH","LOWER HOLDER" },
+            { "LHD","LOWER HEAD" },
+            { "LT","LOWER TIP" },
+            { "M","MISC." },
+            { "MC","MISC. CHARGE" },
+            { "R","REJECT" },
+            { "RA","REJECT ASSEMBLY" },
+            { "RC","REJECT CAP" },
+            { "RET","RETURN SAMPLES" },
+            { "RH","REJECT HOLDER" },
+            { "RHD","REJECT HEAD" },
+            { "RT","REJECT TIP" },
+            { "T","TOOLING BOX" },
+            { "TM","TM-II DATA" },
+            { "U","UPPER" },
+            { "UA","UPPER ASSEMBLY" },
+            { "UC","UPPER CAP" },
+            { "UH","UPPER HOLDER" },
+            { "UHD","UPPER HEAD" },
+            { "UT","UPPER TIP" },
+            { "Z","PHYS. DOCS" },
+        };
         /// <summary>
         /// Writes to error log file at @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt". 'errorLoc' should describe the location in the code. 'errorMessage' should be the Exception.Message. 'user' can be null if it has not been given a value yet.
         /// </summary>
@@ -1745,7 +1788,7 @@ namespace NatoliOrderInterface
                                                             errors.Add("More than one key exist at that size. Make sure that your key number is correct and a Key Line Item is added if we do not keep it in stock.");
                                                         }
                                                     }
-                                                    else
+                                                    else if(!(width == .1865 && length == .75))
                                                     {
                                                         errors.Add("No keys with key size: " + width + " X " + length + " exist in the Keys table.");
                                                     }
@@ -2371,7 +2414,7 @@ namespace NatoliOrderInterface
                                                         // Is Round
                                                         if (die.ShapeId == 1)
                                                         {
-                                                            errors.Add("'L' is bisected. Please add key at appropriate take-off angle.");
+                                                            errors.Add("'L' is bisected. If aligning with upper bisect/embossing, please add key at appropriate take-off angle.");
                                                         }
                                                     }
                                                 }
@@ -2528,5 +2571,49 @@ namespace NatoliOrderInterface
             }
             return errors;
         }
+        public static (string LineItemDescription, List<string> Suggestions) QuoteLineItemOptionSuggestions(string quoteNo, string quoteRevNo, string lineItemType, User user)
+        {
+            List<string> recommendations = new List<string>();
+            try
+            {
+                //recommendations.Add("Testing");
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations.exe";
+                start.Arguments = string.Format("{0} {1} {2}", quoteNo, quoteRevNo, lineItemType);
+                start.UseShellExecute = false;
+                start.RedirectStandardOutput = true;
+                start.CreateNoWindow = true;
+                string result = "";
+                using (Process process = Process.Start(start))
+                {
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        result = reader.ReadToEnd();
+                    }
+                }
+                List<string> _recommendations = result.Split("\r\n").ToList();
+                _recommendations.RemoveAt(0);
+                _recommendations.RemoveAt(_recommendations.Count - 1);
+                foreach (string _recommendation in _recommendations)
+                {
+                    string recommendation = _recommendation.Trim();
+                    recommendation = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
+                    string option = recommendation.Substring(0, recommendation.IndexOf(' ')).Trim();
+                    string optiontext = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
+                    recommendation = "(" + option + ") " + optiontext;
+                    recommendations.Add(recommendation);
+                }
+                return (lineItemTypeToDescription[lineItemType], recommendations);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+                WriteToErrorLog("QuoteLineItemOptionSuggestions", ex.Message, user);
+                return (lineItemTypeToDescription[lineItemType], recommendations);
+            }
+        }
+
+
+        
     }
 }
