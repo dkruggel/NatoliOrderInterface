@@ -587,7 +587,6 @@ namespace NatoliOrderInterface
         private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
-            //Dispatcher.BeginInvoke(new ThreadStart(() => MessageBox.Show("Could not load signature", "Image Failed", MessageBoxButton.OK, MessageBoxImage.Error)));
         }
         #endregion
         #endregion
