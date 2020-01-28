@@ -837,7 +837,15 @@ namespace NatoliOrderInterface
                         break;
                 }
                 using var _driveworksContext = new DriveWorksContext();
-                return _driveworksContext.SecurityUsers.Where(u => u.DisplayName.EqualsWithIgnoreCase(displayName)).FirstOrDefault().EmailAddress;
+                if (_driveworksContext.SecurityUsers.Any(u => u.DisplayName.ToUpper() == displayName.ToUpper()))
+                {
+                    return _driveworksContext.SecurityUsers.First(u => u.DisplayName.ToUpper() == displayName.ToUpper()).EmailAddress;
+                }
+                else
+                {
+                    return "";
+                }
+                
             }
             catch (Exception eSql)
             {
