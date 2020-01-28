@@ -473,7 +473,7 @@ namespace NatoliOrderInterface
         }
 
         #region Events
-        private async void Quote_Info_Window_ContentRendered(object sender, EventArgs e)
+        private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
         {
             try
             {
@@ -574,7 +574,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
-
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             ChangeLineItemScrollerHeight();
@@ -587,6 +586,7 @@ namespace NatoliOrderInterface
         }
         private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
+            IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
             //Dispatcher.BeginInvoke(new ThreadStart(() => MessageBox.Show("Could not load signature", "Image Failed", MessageBoxButton.OK, MessageBoxImage.Error)));
         }
         #endregion
