@@ -93,7 +93,6 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Error in the Error Handling of Errors");
             }
         }
-
         /// <summary>
         /// Checks if string 'input' contains any strings 'containsKeywords' using Default StringComparison.InvariantCulture. Returns bool.
         /// </summary>
@@ -2579,6 +2578,14 @@ namespace NatoliOrderInterface
             }
             return errors;
         }
+        /// <summary>
+        /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
+        /// </summary>
+        /// <param name="quoteNo"></param>
+        /// <param name="quoteRevNo"></param>
+        /// <param name="lineItemType"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public static (string LineItemDescription, List<string> Suggestions) QuoteLineItemOptionSuggestions(string quoteNo, string quoteRevNo, string lineItemType, User user)
         {
             List<string> recommendations = new List<string>();
@@ -2620,8 +2627,5 @@ namespace NatoliOrderInterface
                 return (lineItemTypeToDescription[lineItemType], recommendations);
             }
         }
-
-
-        
     }
 }
