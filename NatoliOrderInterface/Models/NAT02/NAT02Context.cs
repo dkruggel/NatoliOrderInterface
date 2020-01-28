@@ -49,6 +49,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiQuotesOneWeekCompleted> EoiQuotesOneWeekCompleted { get; set; }
         public virtual DbSet<EoiQuoteSMICheck> EoiQuoteSMICheck { get; set; }
         public virtual DbSet<EoiOrderEntryInstructions> EoiOrderEntryInstructions { get; set; }
+        public virtual DbSet<EoiTrackedDocuments> EoiTrackedDocuments { get; set; }
         public virtual DbSet<MultiTipSketchInformation> MultiTipSketchInformation { get; set; }
         public virtual DbSet<PartAllocation> PartAllocation { get; set; }
 
@@ -518,6 +519,35 @@ namespace NatoliOrderInterface.Models
                 entity.HasKey(e => e.EmployeeId);
 
                 entity.ToView("EOI_Settings");
+            });
+
+            modelBuilder.Entity<EoiTrackedDocuments>(entity =>
+            {
+                entity.ToTable("EOI_TrackedDocuments");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.MovementId).HasColumnName("Movement_ID");
+
+                entity.Property(e => e.Number)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.User)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<EoiTabletProjectsDrawn>(entity =>
