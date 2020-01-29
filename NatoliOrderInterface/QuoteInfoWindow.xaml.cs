@@ -537,9 +537,9 @@ namespace NatoliOrderInterface
                         if (first)
                         {
                             QuoteOptionSuggestions.IsEnabled = true;
-                            QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
                             first = !first;
                         }
+                        QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
                         DockPanel dockPanel = new DockPanel();
                         dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
                         TextBlock headerTextBlock = new TextBlock

@@ -2593,7 +2593,8 @@ namespace NatoliOrderInterface
             {
                 //recommendations.Add("Testing");
                 ProcessStartInfo start = new ProcessStartInfo();
-                start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations.exe";
+                //start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations.exe";
+                start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations\Option_Recommendations.exe";
                 start.Arguments = string.Format("{0} {1} {2}", quoteNo, quoteRevNo, lineItemType);
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
