@@ -388,6 +388,7 @@ namespace NatoliOrderInterface
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
             updateApp.Click += UpdateApp_Click;
+            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
             // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
             fileMenu.Items.Add(projectSearch);
             fileMenu.Items.Add(forceRefresh);
@@ -2205,8 +2206,8 @@ namespace NatoliOrderInterface
 
             projectWindow.Show();
 
-            // Dispose of project window
-            projectWindow.Dispose();
+            // Dispose of project window THIS STOPS THE TIMER.
+            //projectWindow.Dispose();
         }
         private void ProjectSearch_Click(object sender, RoutedEventArgs e)
         {
@@ -2600,29 +2601,42 @@ namespace NatoliOrderInterface
         private void ProjectSearchButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
+            using var _projectesContext = new ProjectsContext();
             try
             {
                 string projectNumber = ProjectSearchTextBlock.Text;
                 string revNumber = ProjectRevNoSearchTextBlock.Text;
-                //try
-                //{
-                //    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false) { Owner = this};
-                //    projectWindow.Show();
-                //    projectWindow.Dispose();
-                //}
-                //catch (Exception ex)
-                //{
-                //    // MessageBox.Show(ex.Message);
-                //    IMethods.WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message, User);
-                //}
-                string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
-                try
+                if (User.EmployeeCode == "E4754" && (_projectesContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber) || _projectesContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber)))
                 {
-                    if (revNumber != "0")
+                    try
                     {
-                        if (System.IO.Directory.Exists(path + "_" + revNumber + @"\"))
+                        ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false) { Owner = this };
+                        projectWindow.Show();
+                        // projectWindow.Dispose(); THIS STOPS THE TIMERS FROM WORKING
+                    }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        IMethods.WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message, User);
+                    }
+                }
+                else
+                {
+                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
+                    try
+                    {
+                        if (revNumber != "0")
                         {
-                            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + revNumber + @"\");
+                            if (System.IO.Directory.Exists(path + "_" + revNumber + @"\"))
+                            {
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + revNumber + @"\");
+                            }
+                            else
+                            {
+                                if (!System.IO.Directory.Exists(path + @"\"))
+                                    System.IO.Directory.CreateDirectory(path + @"\");
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                            }
                         }
                         else
                         {
@@ -2631,27 +2645,25 @@ namespace NatoliOrderInterface
                             System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
                         }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        if (!System.IO.Directory.Exists(path + @"\"))
-                            System.IO.Directory.CreateDirectory(path + @"\");
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                        // MessageBox.Show(ex.Message);
+                        IMethods.WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message, User);
                     }
                 }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show(ex.Message);
-                    IMethods.WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message, User);
-                }
+                
             }
             catch (Exception ex)
             {
+
                 // MessageBox.Show(ex.Message);
                 IMethods.WriteToErrorLog("ProjectSearchButton_Click - After new window instance", ex.Message, User);
             }
+            _projectesContext.Dispose();
             Cursor = Cursors.Arrow;
             ProjectSearchTextBlock.Text = "";
             ProjectRevNoSearchTextBlock.Text = "";
+            
         }
         private void OrderSearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -2732,17 +2744,29 @@ namespace NatoliOrderInterface
             {
                 try
                 {
+                    int revNo = 0;
                     if (ProjectSearchTextBlock.Text.Length > 0 && ProjectRevNoSearchTextBlock.Text.Length == 0)
                     {
                         using var _projectscontext = new ProjectsContext();
-                        var revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => p.RevisionNumber);
+                        if (_projectscontext.EngineeringProjects.Any(p => p.ProjectNumber == ProjectSearchTextBlock.Text))
+                        {
+                            revNo = _projectscontext.EngineeringProjects.Where(p => p.ProjectNumber == ProjectSearchTextBlock.Text).Max(p => Convert.ToInt32(p.RevNumber));
+                        }
+                        else if (_projectscontext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == ProjectSearchTextBlock.Text))
+                        {
+                            revNo = _projectscontext.EngineeringArchivedProjects.Where(p => p.ProjectNumber == ProjectSearchTextBlock.Text).Max(p => Convert.ToInt32(p.RevNumber));
+                        }
+                        else if(_projectscontext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)))
+                        {
+                            revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => (int)p.RevisionNumber);
+                        }
                         ProjectRevNoSearchTextBlock.Text = revNo.ToString();
                         _projectscontext.Dispose();
                     }
                 }
-                catch //(Exception ex)
+                catch (Exception ex)
                 {
-
+                    IMethods.WriteToErrorLog("MainWindow.cs => ProjectSearchTextBlock_PreviewKeyDown", ex.Message, User);
                 }
                 ProjectSearchButton_Click(sender, new RoutedEventArgs());
             }

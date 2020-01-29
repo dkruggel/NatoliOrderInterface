@@ -662,6 +662,14 @@ namespace NatoliOrderInterface
                     UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
                     UpperLand.IsEnabled = false;
                     UpperHobDescription.Text = engineeringProject.UpperHobDescription;
+                    if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
                     UpperHobDescription.IsEnabled = false;
                     UpperTolerances.Text = engineeringProject.UpperTolerances;
                     UpperTolerances.IsEnabled = false;
@@ -674,6 +682,14 @@ namespace NatoliOrderInterface
                     LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
                     LowerLand.IsEnabled = false;
                     LowerHobDescription.Text = engineeringProject.LowerHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
                     LowerHobDescription.IsEnabled = false;
                     LowerTolerances.Text = engineeringProject.LowerTolerances;
                     LowerTolerances.IsEnabled = false;
@@ -686,6 +702,14 @@ namespace NatoliOrderInterface
                     ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
                     ShortRejectLand.IsEnabled = false;
                     ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
                     ShortRejectHobDescription.IsEnabled = false;
                     ShortRejectTolerances.Text = engineeringProject.ShortRejectTolerances;
                     ShortRejectTolerances.IsEnabled = false;
@@ -698,6 +722,14 @@ namespace NatoliOrderInterface
                     LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
                     LongRejectLand.IsEnabled = false;
                     LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
                     LongRejectHobDescription.IsEnabled = false;
                     LongRejectTolerances.Text = engineeringProject.LongRejectTolerances;
                     LongRejectTolerances.IsEnabled = false;
@@ -4565,11 +4597,14 @@ namespace NatoliOrderInterface
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
                             string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = note1 + " " + note2 + " " + note3));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = hob.DieId.Trim()));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            {
+                                UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                DieNumber.Text = hob.DieId.Trim();
+                            })) ;
                             if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
@@ -4656,11 +4691,14 @@ namespace NatoliOrderInterface
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
                             string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = note1 + " " + note2 + " " + note3));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = hob.DieId.Trim()));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            {
+                                LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                DieNumber.Text = hob.DieId.Trim();
+                            }));
                             if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
@@ -4742,11 +4780,14 @@ namespace NatoliOrderInterface
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
                             string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = hob.DieId.Trim()));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            {
+                                ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                DieNumber.Text = hob.DieId.Trim();
+                            }));
                             if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
@@ -4828,11 +4869,14 @@ namespace NatoliOrderInterface
                             string note1 = hob.Note1.Trim();
                             string note2 = hob.Note2.Trim();
                             string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = hob.DieId.Trim()));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            {
+                                LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                DieNumber.Text = hob.DieId.Trim();
+                            }));
                             if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
