@@ -8541,423 +8541,87 @@ namespace NatoliOrderInterface
         #region Module Search Box Text Changed Events
         private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
-            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
-            string searchString = textBox.Text.ToLower();
-
-            if (textBox.Text.Length > 0)
-            {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
-                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
-                textBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
-                textBlock.Visibility = Visibility.Visible;
-            }
-
-            // Filter databased on text entry
-            var _filtered =
-                ordersBeingEnteredDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
-                                                  o.Value.quoteNumber.ToString().Contains(searchString) ||
-                                                  o.Value.customerName.ToLower().Contains(searchString))
-                                      .OrderBy(kvp => kvp.Key)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            BeingEnteredExpanders(_filtered);
+            Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
         }
         private void OrdersInTheOfficeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
-            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
-            string searchString = textBox.Text.ToLower();
-
-            if (textBox.Text.Length > 0)
-            {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
-                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
-                textBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
-                textBlock.Visibility = Visibility.Visible;
-            }
-
-            // Filter databased on text entry
-            var _filtered =
-                ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
-                                                 o.Value.customerName.ToString().Contains(searchString) ||
-                                                 o.Value.employeeName.ToLower().Contains(searchString) ||
-                                                 o.Value.csr.ToLower().Contains(searchString))
-                                     .OrderBy(kvp => kvp.Value.daysToShip)
-                                     .ThenBy(kvp => kvp.Value.daysInOffice)
-                                     .ThenBy(kvp => kvp.Key)
-                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            InTheOfficeExpanders(_filtered);
+            Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
         }
         private void QuotesNotConvertedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
-            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
-            string searchString = textBox.Text.ToLower();
-
-            if (textBox.Text.Length > 0)
-            {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
-                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
-                textBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
-                textBlock.Visibility = Visibility.Visible;
-            }
-
-            // Filter data based on text entry
-            if (searchString.ToLower().StartsWith("rep:"))
-            {
-                searchString = searchString.Substring(4);
-                var _filtered =
-                quotesNotConvertedDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
-                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                QuotesNotConvertedExpanders(_filtered);
-            }
-            else
-            {
-                var _filtered =
-                quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString) ||
-                                                  p.Value.csr.ToLower().Contains(searchString))
-                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                QuotesNotConvertedExpanders(_filtered);
-            }
+            Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
         }
         private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            ordersEnteredUnscannedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString))
-                                      .OrderBy(kvp => kvp.Key)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            OrdersEnteredUnscannedExpanders(_filtered);
+            Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
         }
         private void OrdersInEngineeringUnprintedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            ordersInEngineeringUnprintedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                        p.Value.customerName.ToLower().Contains(searchString) ||
-                                                        p.Value.employeeName.ToLower().Contains(searchString))
-                                            .OrderByDescending(kvp => kvp.Value.daysInEng)
-                                            .ThenBy(kvp => kvp.Value.daysToShip)
-                                            .ThenBy(kvp => kvp.Key)
-                                            .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            OrdersInEngineeringUnprintedExpanders(_filtered);
+            Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
         }
         private void QuotesToConvertSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            quotesToConvertDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
-                                           p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                           p.Value.customerName.ToLower().Contains(searchString) ||
-                                           p.Value.csr.ToLower().Contains(searchString))
-                               .OrderBy(kvp => kvp.Key.quoteNumber)
-                               .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            QuotesToConvertExpanders(_filtered);
+            Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
         }
         private void OrdersReadyToPrintSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            ordersReadyToPrintDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                              p.Value.customerName.ToLower().Contains(searchString) ||
-                                              p.Value.employeeName.ToLower().Contains(searchString) ||
-                                              p.Value.checkedBy.ToLower().Contains(searchString))
-                                  .OrderBy(kvp => kvp.Key)
-                                  .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            OrdersReadyToPrintExpanders(_filtered);
+            Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
         }
         private void OrdersPrintedInEngineeringSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                      p.Value.customerName.ToLower().Contains(searchString) ||
-                                                      p.Value.employeeName.ToLower().Contains(searchString) ||
-                                                      p.Value.checkedBy.ToLower().Contains(searchString))
-                                          .OrderByDescending(kvp => kvp.Key)
-                                          .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            OrdersPrintedInEngineeringExpanders(_filtered);
+            Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
         }
         private void AllTabletProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            allTabletProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                             p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                             p.Value.customerName.ToLower().Contains(searchString) ||
-                                             p.Value.csr.ToLower().Contains(searchString) ||
-                                             p.Value.drafter.ToLower().Contains(searchString))
-                                 .OrderByDescending(kvp => kvp.Value.priority)
-                                 .ThenBy(kvp => kvp.Value.dueDate)
-                                 .ThenBy(kvp => kvp.Key.projectNumber)
-                                 .ToDictionary(x => x.Key, x => x.Value);
-
-
-            // Remove/Add expanders based on filtering
-            AllTabletProjectsExpanders(_filtered);
+            Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
         }
         private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            tabletProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                    p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                    p.Value.customerName.ToLower().Contains(searchString) ||
-                                                    p.Value.csr.ToLower().Contains(searchString))
-                                        .OrderByDescending(kvp => kvp.Value.priority)
-                                        .ThenBy(kvp => kvp.Value.dueDate)
-                                        .ThenBy(kvp => kvp.Key.projectNumber)
-                                        .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            TabletProjectsNotStartedExpanders(_filtered);
+            Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
         }
         private void TabletProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            tabletProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Value.customerName.ToLower().Contains(searchString) ||
-                                                 p.Value.csr.ToLower().Contains(searchString) ||
-                                                 p.Value.drafter.ToLower().Contains(searchString))
-                                     .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => kvp.Value.dueDate)
-                                     .ThenBy(kvp => kvp.Key.projectNumber)
-                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            TabletProjectsStartedExpanders(_filtered);
+            Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
         }
         private void TabletProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            tabletProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Value.customerName.ToLower().Contains(searchString) ||
-                                               p.Value.csr.ToLower().Contains(searchString) ||
-                                               p.Value.drafter.ToLower().Contains(searchString))
-                                   .OrderByDescending(kvp => kvp.Value.priority)
-                                   .ThenBy(kvp => kvp.Value.dueDate)
-                                   .ThenBy(kvp => kvp.Key.projectNumber)
-                                   .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            TabletProjectsDrawnExpanders(_filtered);
+            Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
         }
         private void TabletProjectsSubmittedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            tabletProjectsSubmittedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Value.customerName.ToLower().Contains(searchString) ||
-                                                   p.Value.csr.ToLower().Contains(searchString) ||
-                                                   p.Value.drafter.ToLower().Contains(searchString))
-                                       .OrderByDescending(kvp => kvp.Value.priority)
-                                       .ThenBy(kvp => kvp.Value.dueDate)
-                                       .ThenBy(kvp => kvp.Key.projectNumber)
-                                       .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            TabletProjectsSubmittedExpanders(_filtered);
+            Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
         }
         private void TabletProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            tabletProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.Value.customerName.ToLower().Contains(searchString) ||
-                                                p.Value.csr.ToLower().Contains(searchString))
-                                    .OrderByDescending(kvp => kvp.Value.priority)
-                                    .ThenBy(kvp => kvp.Value.dueDate)
-                                    .ThenBy(kvp => kvp.Key.projectNumber)
-                                    .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            TabletProjectsOnHoldExpanders(_filtered);
+            Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
         }
         private void AllToolProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            allToolProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                             p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                             p.Value.customerName.ToLower().Contains(searchString) ||
-                                             p.Value.csr.ToLower().Contains(searchString) ||
-                                             p.Value.drafter.ToLower().Contains(searchString))
-                                 .OrderByDescending(kvp => kvp.Value.priority)
-                                 .ThenBy(kvp => kvp.Value.dueDate)
-                                 .ThenBy(kvp => kvp.Key.projectNumber)
-                                 .ToDictionary(x => x.Key, x => x.Value);
-
-
-            // Remove/Add expanders based on filtering
-            AllToolProjectsExpanders(_filtered);
+            Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
         }
         private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            toolProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                    p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                    p.Value.customerName.ToLower().Contains(searchString) ||
-                                                    p.Value.csr.ToLower().Contains(searchString))
-                                        .OrderByDescending(kvp => kvp.Value.priority)
-                                        .ThenBy(kvp => kvp.Value.dueDate)
-                                        .ThenBy(kvp => kvp.Key.projectNumber)
-                                        .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            ToolProjectsNotStartedExpanders(_filtered);
+            Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
         }
         private void ToolProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            toolProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Value.customerName.ToLower().Contains(searchString) ||
-                                                 p.Value.csr.ToLower().Contains(searchString) ||
-                                                 p.Value.drafter.ToLower().Contains(searchString))
-                                     .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => kvp.Value.dueDate)
-                                     .ThenBy(kvp => kvp.Key.projectNumber)
-                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            ToolProjectsStartedExpanders(_filtered);
+            Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
         }
         private void ToolProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            toolProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Value.customerName.ToLower().Contains(searchString) ||
-                                               p.Value.csr.ToLower().Contains(searchString) ||
-                                               p.Value.drafter.ToLower().Contains(searchString))
-                                   .OrderByDescending(kvp => kvp.Value.priority)
-                                   .ThenBy(kvp => kvp.Value.dueDate)
-                                   .ThenBy(kvp => kvp.Key.projectNumber)
-                                   .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            ToolProjectsDrawnExpanders(_filtered);
+            Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
         }
         private void ToolProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            toolProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.Value.customerName.ToLower().Contains(searchString) ||
-                                                p.Value.csr.ToLower().Contains(searchString))
-                                    .OrderByDescending(kvp => kvp.Value.priority)
-                                    .ThenBy(kvp => kvp.Value.dueDate)
-                                    .ThenBy(kvp => kvp.Key.projectNumber)
-                                    .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            ToolProjectsOnHoldExpanders(_filtered);
+            Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
         }
         private void DriveWorksQueueSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            var _filtered =
-            driveWorksQueueDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                           p.Value.releasedBy.ToLower().Contains(searchString) ||
-                                           p.Value.tag.ToLower().Contains(searchString))
-                               .OrderBy(kvp => kvp.Value.priority)
-                               .ThenBy(kvp => kvp.Value.releaseTime)
-                               .ToDictionary(x => x.Key, x => x.Value);
-
-            // Remove/Add expanders based on filtering
-            DriveWorksQueueExpanders(_filtered);
+            Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
         }
         private void NatoliOrderListSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string searchString = ((sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox).Text.ToLower();
-            // Filter data based on text entry
-            if (searchString.ToLower().StartsWith("rep:"))
-            {
-                searchString = searchString.Substring(4);
-                var _filtered =
-                natoliOrderListDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
-                                      .OrderBy(kvp => kvp.Value.shipDate)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                NatoliOrderListExpanders(_filtered);
-            }
-            else
-            {
-                var _filtered =
-                natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                           p.Value.customerName.ToLower().Contains(searchString))
-                               .OrderBy(kvp => kvp.Value.shipDate)
-                               .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                NatoliOrderListExpanders(_filtered);
-            }
+            Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
         }
         #endregion
 
@@ -11702,12 +11366,9 @@ namespace NatoliOrderInterface
                 else if (order)
                 {
                     selectedOrders.Remove((col0val, checkBox, headers.Single(h => h.Value == header).Key));
-                    if (expander.IsExpanded)
+                    foreach (Grid grid in (expander.Content as StackPanel).Children)
                     {
-                        foreach (Grid grid in (expander.Content as StackPanel).Children)
-                        {
-                            (grid.Children[0] as CheckBox).IsChecked = false;
-                        }
+                        (grid.Children[0] as CheckBox).IsChecked = false;
                     }
                 }
             }
