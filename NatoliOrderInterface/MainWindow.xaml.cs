@@ -339,8 +339,8 @@ namespace NatoliOrderInterface
         #region MenuStuff
         public void BuildMenus()
         {
-            MainMenu.Items.Clear();
-
+            //MainMenu.Items.Clear();
+            MainMenu.Items.RemoveAt(0);
             #region FileMenuRegion
             MenuItem fileMenu = new MenuItem
             {
