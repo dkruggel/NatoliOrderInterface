@@ -23,7 +23,7 @@ namespace NatoliOrderInterface.Models.DriveWorks
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=NSQL05;Database=DriveWorks;Persist Security Info=True;User ID=BarcodeUser;Password=PrivateKey(0)");
+                optionsBuilder.UseSqlServer("Server="+App.Server+";Database=DriveWorks;Persist Security Info=True;User ID="+App.UserID+";Password="+App.Password+"");
             }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
