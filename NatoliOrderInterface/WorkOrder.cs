@@ -1049,7 +1049,7 @@ namespace NatoliOrderInterface
             IEnumerable<CheckBox> collection = stackPanelTemp.Children.OfType<CheckBox>().Where(c => c.IsChecked == true);
             foreach (CheckBox checkBox in collection)
             {
-                IEnumerable<KeyValuePair<int, string>> lineItem = lineItems.Where(x => checkBox.Name[0..^8] == x.Value);
+                IEnumerable<KeyValuePair<int, string>> lineItem = lineItems.Where(x => int.Parse(checkBox.Tag.ToString()) == x.Key);
                 lineItemsToScan.Add(lineItem.ElementAt(0).Key);
             }
         }
@@ -1085,7 +1085,8 @@ namespace NatoliOrderInterface
                     {
                         Name = lineType + "CheckBox",
                         Content = lineDesc,
-                        IsChecked = true
+                        IsChecked = true,
+                        Tag = kvp.Key
                     };
                     stackPanel.Children.Add(checkBox);
                     context.Dispose();
