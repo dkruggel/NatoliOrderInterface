@@ -973,9 +973,9 @@ namespace NatoliOrderInterface
                             tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
                             tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
                             tabletDrawnBy.TimeSubmitted = DateTime.Now;
-                            tabletDrawnBy.TabletDrawnBy1 = User.GetUserName() == "Floyd" ? "Joe" :
-                                                           User.GetUserName() == "Ronald" ? "Ron" :
-                                                           User.GetUserName() == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName();
+                            tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+                                                           User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
                             _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
 
                             // Drive specification transition name to "Drawn - Tablets"
