@@ -138,7 +138,7 @@ namespace NatoliOrderInterface
         {
             using var _nat01Context = new NAT01Context();
             List<string> cupTypes = new List<string>() { { "" } };
-            cupTypes.AddRange(_nat01Context.CupConfig.Where(c => c.CupID > 0).Select(c => c.CupID + " - " + c.Description.Trim()).ToList());
+            cupTypes.AddRange(_nat01Context.CupConfig.Where(c => c.CupID > 0).Select(c => c.CupID.ToString().Trim() + " - " + c.Description.Trim()).ToList());
             _nat01Context.Dispose();
             return cupTypes;
         }
