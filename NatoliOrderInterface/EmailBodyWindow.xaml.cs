@@ -62,7 +62,7 @@ namespace NatoliOrderInterface
 
         private string GetEmailAddress(string userName)
         {
-            string connectionString = @"Data Source=NSQL05;Initial Catalog=Driveworks;Persist Security Info=True; User ID=DWInterferenceUser;Password=PrivateKey(86)";
+            string connectionString = @"Data Source=" + App.Server + ";Initial Catalog=Driveworks;Persist Security Info=True; User ID=" + App.UserID+";Password="+App.Password+"";
             string email = string.Empty;
             if (userName == "Gregory") { userName = "Greg"; }
             try

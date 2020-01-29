@@ -10133,7 +10133,7 @@ namespace NatoliOrderInterface
 
         static Dictionary<double, double> ListTop100Orders()
         {
-            string connectionString = @"Data Source=NSQL05;Initial Catalog=Projects;Persist Security Info=True; User ID=DWInterferenceUser;Password=PrivateKey(86)";
+            string connectionString = @"Data Source=" + App.Server + ";Initial Catalog=Projects;Persist Security Info=True; User ID=" + App.UserID+";Password="+App.Password+"";
             const string GetTop100OrdersQuery = "SELECT TOP 100 OrderNo / 100, QuoteNumber FROM NAT01.dbo.OrderHeader ORDER BY OrderNo DESC";
 
             var orders = new Dictionary<double, double>();
@@ -10212,7 +10212,7 @@ namespace NatoliOrderInterface
 
         static void FindExtraQuoteFolders()
         {
-            string connectionString = @"Data Source=NSQL05;Initial Catalog=Projects;Persist Security Info=True; User ID=DWInterferenceUser;Password=PrivateKey(86)";
+            string connectionString = @"Data Source=" + App.Server + ";Initial Catalog=Projects;Persist Security Info=True; User ID=" + App.UserID+";Password="+App.Password+"";
             const string GetTop100OrdersQuery = "SELECT TOP 250 (OrderNo / 100) AS 'OrderNo', QuoteNumber FROM NAT01.dbo.OrderHeader ORDER BY OrderNo DESC";
 
             var orders = new Dictionary<double, double>();
@@ -10271,7 +10271,7 @@ namespace NatoliOrderInterface
 
         public void GetPercentages()
         {
-            string connectionString = @"Data Source=NSQL05;Initial Catalog=NAT01;Persist Security Info=True; User ID=DWInterferenceUser;Password=PrivateKey(86)";
+            string connectionString = @"Data Source="+App.Server+";Initial Catalog=NAT01;Persist Security Info=True; User ID="+App.UserID+";Password="+App.Password+"";
             const string query = "SELECT * FROM (SELECT COUNT(OrderNo) AS NumberOfOrders2018 FROM NAT01.dbo.OrderHeader OH WITH (NOLOCK) WHERE " +
                                  "OH.OrderDate >= CONCAT('01-01-', DATEPART(year, DATEADD(year, -1, GETDATE()))) AND OH.OrderDate <= " +
                                  "DATEADD(year, -1, GETDATE())) a JOIN (SELECT COUNT(OrderNo) AS NumberOfOrders2019 FROM NAT01.dbo.OrderHeader OH WITH (NOLOCK) WHERE " +

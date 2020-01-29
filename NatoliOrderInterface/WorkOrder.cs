@@ -1026,7 +1026,7 @@ namespace NatoliOrderInterface
 
                 using (con)
                 {
-                    con.ConnectionString = "Data Source=NSQL05;Initial Catalog=NATBC;Persist Security Info=True;User ID="+App.UserID+";Password="+App.Password+"";
+                    con.ConnectionString = "Data Source=" + App.Server + ";Initial Catalog=NATBC;Persist Security Info=True;User ID=" + App.UserID+";Password="+App.Password+"";
                     con.Open();
                     DataTable TransferBatch = new DataTable();
                     TransferBatch.Load(cmd.ExecuteReader());
