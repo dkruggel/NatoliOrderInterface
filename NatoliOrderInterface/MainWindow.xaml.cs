@@ -369,36 +369,44 @@ namespace NatoliOrderInterface
             };
             MenuItem createProject = new MenuItem()
             {
-                Header = "Create Project"
+                Header = "Create Project",
+                ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
             MenuItem projectSearch = new MenuItem()
             {
-                Header = "Project Search"
+                Header = "Project Search",
+                ToolTip = "Search for old engineering projects."
             };
             MenuItem forceRefresh = new MenuItem
             {
-                Header = "Force Refresh"
+                Header = "Force Refresh",
+                ToolTip = "Bypass the refresh timer."
             };
             MenuItem editLayout = new MenuItem
             {
-                Header = "Edit Layout"
+                Header = "Edit Layout",
+                ToolTip = "Change which views are shown in the main window."
             };
             MenuItem checkMissingVariables = new MenuItem
             {
-                Header = "Missing Automation Info"
+                Header = "Missing Automation Info",
+                ToolTip = "Checks for orders missing automation information."
             };
             MenuItem filterProjects = new MenuItem
             {
                 Header = "Filter Active Projects",
-                IsChecked = User.FilterActiveProjects
+                IsChecked = User.FilterActiveProjects,
+                ToolTip = "Filters All Tablet Projects and All Tool Projects to just active projects (in engineering)."
             };
             MenuItem printDrawings = new MenuItem
             {
-                Header = "Print Drawings"
+                Header = "Print Drawings",
+                ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
             };
             MenuItem updateApp = new MenuItem
             {
-                Header = "Update App"
+                Header = "Update App",
+                ToolTip = "Updates the app to the most current version (if available)."
             };
             createProject.Click += CreateProject_Click;
             projectSearch.Click += ProjectSearch_Click;
