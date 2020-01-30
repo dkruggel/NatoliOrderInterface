@@ -664,7 +664,7 @@
                                 <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1,0,0,0">
                                     <TextBlock x:Name="InstructionEnteringCheckedTimeBlock" Text="" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
-                                <Image x:Name="AddOrderEntryImage" Grid.Column="4" Source="/greenplusadditionicon.png" Width="20" Height="20" Cursor="Hand" MouseUp="AddOrderEntryInstructionImage_MouseUp"/>
+                                <Image x:Name="AddOrderEntryImage" Grid.Column="4" Source="{StaticResource greenplusadditioniconDrawingImage}" Width="20" Height="20" Cursor="Hand" MouseUp="AddOrderEntryInstructionImage_MouseUp"/>
                                 <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.ColumnSpan="5"/>
                             </Grid>
                             <StackPanel x:Name="InstructionsStackPanel">
@@ -688,7 +688,7 @@
                                     <Border Grid.Column="3" BorderBrush="Black" BorderThickness="1,0,0,0">
                                         <TextBlock Text="11/07/2019 7:52am" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
-                                    <Image Grid.Column="4" Source="/redxdeleteicon.png" Width="20" Height="20" Cursor="Hand"/>
+                                    <Image Grid.Column="4" Source="{StaticResource redxdeleteiconDrawingImage}" Width="20" Height="20" Cursor="Hand"/>
                                     <Border BorderBrush="Black" BorderThickness="0,0,0,1" Grid.ColumnSpan="5"/>
                                 </Grid>
                             </StackPanel>

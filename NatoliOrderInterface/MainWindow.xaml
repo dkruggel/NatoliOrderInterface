@@ -325,7 +325,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Content">
                 <Setter.Value>
-                    <Image Source="magnifying_glass.png" Width="20"/>
+                    <Image Source="{StaticResource magnifying_glassDrawingImage}" Width="20"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
