@@ -143,29 +143,12 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
-            splashScreen.Show(true);
-            var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
-            if (currentlyRunningProcesses.Any())
-            {
-                var process =currentlyRunningProcesses.First();
-                var id = process.Id;
-                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
-                Application.Current.Shutdown();
-            }
+            ShowSplashScreen();
+            IfAppIsRunningSwitchToItAndShutdown();
             InitializeComponent();
             App.GetConnectionString();
             UpdatedFromChild = MainRefresh;
-            try
-            {
-                User = new User(Environment.UserName);
-                // User = new User("pturner");
-                // User = new User("billt");
-            }
-            catch (Exception ex)
-            {
-                User = new User("");
-            }
+            SetUser();
             try
             {
                 // Waiting for everyone to be updated to Windows 10 version 1903
@@ -184,10 +167,7 @@ namespace NatoliOrderInterface
             Title = "Natoli Order Interface " + "v" + User.PackageVersion;
             _filterProjects = User.FilterActiveProjects;
             if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
-            using var _nat02Context = new NAT02Context();
-            _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()));
-            _nat02Context.SaveChanges();
-            _nat02Context.Dispose();
+            RemoveUserFromOrdersBeingCheckedBy(User);
             this.Show();
             if (User.Maximized == true)
             {
@@ -230,6 +210,46 @@ namespace NatoliOrderInterface
             quoteTimer.Start();
             NatoliOrderListTimer.Stop();
             NatoliOrderListTimer.Start();
+        }
+
+        private void ShowSplashScreen()
+        {
+            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
+            splashScreen.Show(true);
+        }
+
+        private void IfAppIsRunningSwitchToItAndShutdown()
+        {
+            var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p => p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
+            if (currentlyRunningProcesses.Any())
+            {
+                var process = currentlyRunningProcesses.First();
+                var id = process.Id;
+                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void SetUser()
+        {
+            try
+            {
+                User = new User(Environment.UserName);
+                // User = new User("pturner");
+                // User = new User("billt");
+            }
+            catch (Exception ex)
+            {
+                User = new User("");
+            }
+        }
+
+        private void RemoveUserFromOrdersBeingCheckedBy(User user)
+        {
+            using var _nat02Context = new NAT02Context();
+            _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == user.GetUserName()));
+            _nat02Context.SaveChanges();
+            _nat02Context.Dispose();
         }
 
         #region Main Window Events
