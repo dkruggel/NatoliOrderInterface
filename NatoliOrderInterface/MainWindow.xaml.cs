@@ -2023,24 +2023,13 @@ namespace NatoliOrderInterface
                     DeleteMachineVariables(workOrder.OrderNumber.ToString());
                 }
 
-                // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
-
                 try
                 {
                     Cursor = Cursors.Wait;
                     Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
                     Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
                         app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", selectedOrders.Select(o => o.Item1));
+                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", validOrders.Select(o => o.Item1));
                     mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
                     mailItem.Body = "";
                     mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
@@ -2052,6 +2041,17 @@ namespace NatoliOrderInterface
                 {
                     MessageBox.Show(ex.Message);
                     Cursor = Cursors.Arrow;
+                }
+
+                // Uncheck Check All CheckBox
+                var x = MainGrid.Children;
+                foreach (Border border in x.OfType<Border>())
+                {
+                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    {
+                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    }
                 }
             }
             // Scan just the order that was right clicked if nothing else has been selected

@@ -1054,7 +1054,8 @@ namespace NatoliOrderInterface
                         {
                             StartOrderButton.IsEnabled = true;
                         }
-                        if (!orderLocation.StartsWith("EnteredUnscanned") && (orderLocation.StartsWith("BeingEntered") || orderLocation.StartsWith("InEngineering") || orderLocation.StartsWith("ReadyToPrint") || orderLocation.StartsWith("PrintedInEngineering")))
+                        if (!orderLocation.StartsWith("EnteredUnscanned") && (orderLocation.StartsWith("BeingEntered") || orderLocation.StartsWith("InEngineering") ||
+                            orderLocation.StartsWith("ReadyToPrint") || orderLocation.StartsWith("PrintedInEngineering") || (string.IsNullOrEmpty(orderLocation) && !shipped)))
                         {
                             SendToOfficeButton.IsEnabled = true;
                         }
