@@ -146,7 +146,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_10+"  Opacity="0">
+                    <DrawingGroup x:Name="Number_10_Plus"  Opacity="0">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>

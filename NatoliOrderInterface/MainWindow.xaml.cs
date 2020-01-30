@@ -3117,7 +3117,7 @@ namespace NatoliOrderInterface
                 var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
 
                 // Write headers
-                stream.Write("Quote Number,Rev Number,Customer Name,Quote Date\n");
+                stream.Write("Sales Rep ID,Quote Number,Rev Number,Customer Name,Quote Date\n");
 
                 foreach (Expander expander in expanders)
                 {
@@ -3125,9 +3125,13 @@ namespace NatoliOrderInterface
                     short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
                     string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
                     using var _ = new NAT01Context();
+                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).UserAcctNo;
+                    using var __ = new NECContext();
+                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+                    __.Dispose();
                     DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
                     _.Dispose();
-                    stream.Write("{0},{1},{2},{3}\n", quoteNumber, revNumber, customerName, quoteDate.ToShortDateString());
+                    stream.Write("{0},{1},{2},{3},{4}\n", repId, quoteNumber, revNumber, customerName, quoteDate.ToShortDateString());
                 }
 
                 stream.Flush();
