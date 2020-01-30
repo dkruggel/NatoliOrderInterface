@@ -4,6 +4,164 @@
              xmlns:local="clr-namespace:NatoliOrderInterface"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Drawing Images -->
+        <DrawingImage x:Key="Bell_With_LayersDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V640 H640 V0 H0 Z">
+                    <GeometryDrawing Brush="#FF000000" Geometry="F0 M640,640z M0,0z M361.587,50.623C457.765,70.005 530.758,155.435 530.758,257.106 530.758,376.954 519.372,467.096 640,547.365L0,547.365C120.958,466.872 109.537,375.005 109.537,257.105 109.537,154.892 183.333,69.095 280.267,50.315 285.854,1.83100000000002 356.355,2.06700000000003 361.587,50.623z M406.954,553.283C399.524,594.586 363.418,625.91 319.988,625.91 276.57,625.91 240.463,594.586 233.034,553.283L406.954,553.283z" />
+                    <DrawingGroup x:Name="Notification_Dot"  Opacity="0">
+                        <GeometryDrawing Brush="#FFC83737">
+                            <GeometryDrawing.Geometry>
+                                <EllipseGeometry RadiusX="206.2659" RadiusY="206.2652" Center="412.7714,222.0788" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_1" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="327.86057,305.19421" FontRenderingEmSize="274.16333008" BidiLevel="0" IsSideways="False" Characters="1" GlyphIndices="20" AdvanceWidths="149.666666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_2" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="328.50497,306.81354" FontRenderingEmSize="269.47369385" BidiLevel="0" IsSideways="False" Characters="2" GlyphIndices="21" AdvanceWidths="147.106666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_3" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="333.97818,309.93994" FontRenderingEmSize="264.087677" BidiLevel="0" IsSideways="False" Characters="3" GlyphIndices="22" AdvanceWidths="144.166666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_4" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="322.94037,312.81693" FontRenderingEmSize="275.08395386" BidiLevel="0" IsSideways="False" Characters="4" GlyphIndices="23" AdvanceWidths="150.166666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_5" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="327.19006,307.11639" FontRenderingEmSize="269.47369385" BidiLevel="0" IsSideways="False" Characters="5" GlyphIndices="24" AdvanceWidths="147.106666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_6" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="330.4874,306.9093" FontRenderingEmSize="264.5994873" BidiLevel="0" IsSideways="False" Characters="6" GlyphIndices="25" AdvanceWidths="144.443333333333" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_7" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="327.82074,320.15823" FontRenderingEmSize="275.08395386" BidiLevel="0" IsSideways="False" Characters="7" GlyphIndices="26" AdvanceWidths="150.166666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_8"  Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="329.43915,309.43472" FontRenderingEmSize="263.07000732" BidiLevel="0" IsSideways="False" Characters="8" GlyphIndices="27" AdvanceWidths="143.61" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_9" Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="332.9762,310.15955" FontRenderingEmSize="264.5994873" BidiLevel="0" IsSideways="False" Characters="9" GlyphIndices="28" AdvanceWidths="144.443333333333" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_10"  Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="272.30695,288.50137" FontRenderingEmSize="211.40644836" BidiLevel="0" IsSideways="False" Characters="10" GlyphIndices="20 19" AdvanceWidths="115.406666666667 115.406666666667" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                    <DrawingGroup x:Name="Number_10+"  Opacity="0">
+                        <DrawingGroup>
+                            <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
+                                <GlyphRunDrawing.GlyphRun>
+                                    <GlyphRun PixelsPerDip="1" BaselineOrigin="232.72462,291.55121" FontRenderingEmSize="195.01860046" BidiLevel="0" IsSideways="False" Characters="10" GlyphIndices="20 19" AdvanceWidths="106.46 106.46" Language="en-us">
+                                        <GlyphRun.GlyphTypeface>
+                                            <GlyphTypeface FontUri="C:\WINDOWS\FONTS\TAHOMA.TTF" StyleSimulations="None" />
+                                        </GlyphRun.GlyphTypeface>
+                                    </GlyphRun>
+                                </GlyphRunDrawing.GlyphRun>
+                            </GlyphRunDrawing>
+                        </DrawingGroup>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <!-- Colors -->
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0" />
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
