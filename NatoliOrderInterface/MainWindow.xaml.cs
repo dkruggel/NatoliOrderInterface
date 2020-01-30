@@ -143,7 +143,7 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            ShowSplashScreen();
+            ShowSplashScreen("Natoli_Logo_Color.png");
             IfAppIsRunningSwitchToItAndShutdown();
             InitializeComponent();
             App.GetConnectionString();
@@ -184,18 +184,7 @@ namespace NatoliOrderInterface
             // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
-            mainTimer.Elapsed += MainTimer_Elapsed;
-            mainTimer.Interval = User.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
-            mainTimer.Enabled = true;
-            quoteTimer.Elapsed += QuoteTimer_Elapsed;
-            quoteTimer.Interval = 5 * (60 * 1000); // 5 minutes
-            quoteTimer.Enabled = true;
-            NatoliOrderListTimer.Elapsed += NatoliOrderListTimer_Elapsed;
-            NatoliOrderListTimer.Interval = 15 * (60 * 1000); // 15 minutes
-            NatoliOrderListTimer.Enabled = true;
-            oqTimer.Elapsed += OQTimer_Elapsed;
-            oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
-            oqTimer.Enabled = true;
+            InitializeTimers(User);
         }
 
         private void MainRefresh()
@@ -204,23 +193,36 @@ namespace NatoliOrderInterface
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
 
-            mainTimer.Stop();
-            mainTimer.Start();
-            quoteTimer.Stop();
-            quoteTimer.Start();
-            NatoliOrderListTimer.Stop();
-            NatoliOrderListTimer.Start();
+            ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
         }
-
-        private void ShowSplashScreen()
+        /// <summary>
+        /// Resets timers from a list in the order they are provided.
+        /// </summary>
+        /// <param name="timers"></param>
+        private void ResetTimers(List<Timer> timers)
         {
-            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
+            foreach (Timer timer in timers)
+            {
+                timer.Stop();
+                timer.Start();
+            }
+            
+        }
+        /// <summary>
+        /// Shows startup splash image
+        /// </summary>
+        /// <param name="image"></param>
+        private void ShowSplashScreen(string image)
+        {
+            SplashScreen splashScreen = new SplashScreen(image);
             splashScreen.Show(true);
         }
-
+        /// <summary>
+        /// Checks for an app of this name running. If it is running, this app shutsdown.
+        /// </summary>
         private void IfAppIsRunningSwitchToItAndShutdown()
         {
-            var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p => p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
+            var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
             if (currentlyRunningProcesses.Any())
             {
                 var process = currentlyRunningProcesses.First();
@@ -229,7 +231,9 @@ namespace NatoliOrderInterface
                 Application.Current.Shutdown();
             }
         }
-
+        /// <summary>
+        /// Binds a user to User.
+        /// </summary>
         private void SetUser()
         {
             try
@@ -243,13 +247,35 @@ namespace NatoliOrderInterface
                 User = new User("");
             }
         }
-
+        /// <summary>
+        /// Removes all instances of this user in EOI_OrdersBeingCheckedBy
+        /// </summary>
+        /// <param name="user"></param>
         private void RemoveUserFromOrdersBeingCheckedBy(User user)
         {
             using var _nat02Context = new NAT02Context();
             _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == user.GetUserName()));
             _nat02Context.SaveChanges();
             _nat02Context.Dispose();
+        }
+        /// <summary>
+        /// Starts all the times with their desired interval
+        /// </summary>
+        /// <param name="user"></param>
+        private void InitializeTimers(User user)
+        {
+            mainTimer.Elapsed += MainTimer_Elapsed;
+            mainTimer.Interval = user.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
+            mainTimer.Enabled = true;
+            quoteTimer.Elapsed += QuoteTimer_Elapsed;
+            quoteTimer.Interval = 5 * (60 * 1000); // 5 minutes
+            quoteTimer.Enabled = true;
+            NatoliOrderListTimer.Elapsed += NatoliOrderListTimer_Elapsed;
+            NatoliOrderListTimer.Interval = 15 * (60 * 1000); // 15 minutes
+            NatoliOrderListTimer.Enabled = true;
+            oqTimer.Elapsed += OQTimer_Elapsed;
+            oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
+            oqTimer.Enabled = true;
         }
 
         #region Main Window Events
