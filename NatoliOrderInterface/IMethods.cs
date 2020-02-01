@@ -2578,6 +2578,90 @@ namespace NatoliOrderInterface
             }
             return errors;
         }
+
+        public static (string LineItemDescription, List<string> Suggestions) GetLineItemSuggestionsFromUserAndMachine(Quote quote, QuoteLineItem quoteLineItem, User user)
+        {
+            List<string> recommendations = new List<string>();
+            using var _nat01Context = new NAT01Context();
+            try
+            {
+                List<OrderDetails> commonMachineOrderDetails = _nat01Context.OrderDetails.Where(od => od.OrderNo != quote.OrderNo && od.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(od.DetailTypeId) && !string.IsNullOrWhiteSpace(od.DetailTypeId) && od.DetailTypeId == quoteLineItem.LineItemType.Trim()).ToList();
+                List<OrderHeader> commonUserOrderHeaders = _nat01Context.OrderHeader.Where(oh => !string.IsNullOrWhiteSpace(oh.UserAcctNo) && oh.UserAcctNo == quote.UserAcctNo && !string.IsNullOrWhiteSpace(oh.UserLocNo) && oh.UserLocNo == quote.UserLocNo && oh.OrderNo != quote.OrderNo).ToList();
+                List<OrderDetails> commonOrderDetails = new List<OrderDetails>();
+                List<string> optionStrings = new List<string>();
+                List<string> modes = new List<string>();
+                foreach (OrderHeader orderHeader in commonUserOrderHeaders)
+                {
+                    if (commonMachineOrderDetails.Any(od => od.OrderNo == orderHeader.OrderNo))
+                    {
+                        commonOrderDetails.AddRange(commonMachineOrderDetails.Where(od => od.OrderNo == orderHeader.OrderNo));
+                    }
+                }
+                foreach (OrderDetails orderDetails in commonOrderDetails)
+                {
+                    if (_nat01Context.OrderDetailOptions.Any(odo => odo.OrderNumber == orderDetails.OrderNo && odo.OrderDetailLineNo == orderDetails.LineNumber))
+                    {
+                        optionStrings.AddRange(_nat01Context.OrderDetailOptions.Where(odo => odo.OrderNumber == orderDetails.OrderNo && odo.OrderDetailLineNo == orderDetails.LineNumber).Select(odo => odo.OptionCode).ToList());
+                    }
+                }
+                List<string> unRecommendables = quoteLineItem.OptionNumbers;
+                for (int i = 500; i < 1000; i++)
+                {
+                    unRecommendables.Add(i.ToString());
+                }
+                List<string> headOptionCodes = new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "011", "012", "013", "014", "015", "016", "017", "018", "019", "022" };
+                if (quoteLineItem.OptionNumbers.Intersect(headOptionCodes).Any() || headOptionCodes.Intersect(quoteLineItem.OptionNumbers).Any())
+                {
+                    unRecommendables.AddRange(headOptionCodes);
+                }
+                List<string> nogrooveOptionCodes = new List<string> { "101", "102", "103", "104", "106", "110", "111", "112", "113", "115", "116" };
+                List<string> grooveOptionCodes = new List<string> { "110", "111", "112", "113", "115", "116" };
+                if (quoteLineItem.OptionNumbers.Intersect(grooveOptionCodes).Any() || grooveOptionCodes.Intersect(quoteLineItem.OptionNumbers).Any())
+                {
+                    unRecommendables.AddRange(nogrooveOptionCodes);
+                }
+                List<string> toolOLOptions = new List<string> { "333", "332", "330", "328" };
+                if (quoteLineItem.OptionNumbers.Intersect(toolOLOptions).Any() || toolOLOptions.Intersect(quoteLineItem.OptionNumbers).Any())
+                {
+                    unRecommendables.AddRange(toolOLOptions);
+                }
+                if (quoteLineItem.OptionNumbers.Contains("004"))
+                {
+                    unRecommendables.Add("332");
+                }
+                if (quoteLineItem.OptionNumbers.Contains("001") || quoteLineItem.OptionNumbers.Contains("002"))
+                {
+                    unRecommendables.Add("333");
+                }
+                unRecommendables.AddRange(new List<string> { "300", "301", "302", "303", "304" });
+                unRecommendables.AddRange(_nat01Context.OptionsList.Where(o => string.IsNullOrWhiteSpace(o.OptionDescription)).Select(o => o.OptionCode).ToList());
+                unRecommendables = unRecommendables.Distinct().ToList();
+                foreach (string optionCode in unRecommendables)
+                {
+                    optionStrings.RemoveAll(o => o ==optionCode);
+                }
+                int modeCount = Math.Min(optionStrings.Distinct().Count(), 3);
+                List<string> optionRecommendations = optionStrings.GroupBy(os => os).OrderByDescending(x => x.Count()).ThenBy(x => x.Key).Select(x => x.Key).Take(modeCount).ToList();
+                foreach (string option in optionRecommendations)
+                {
+                    if (_nat01Context.OptionsList.Any(ol => ol.OptionCode == option))
+                    {
+                        recommendations.Add("(" + option + ") " + _nat01Context.OptionsList.First(ol => ol.OptionCode == option).OptionDescription.Trim());
+                    }
+                }
+                if (recommendations.Count == 0)
+                {
+                    recommendations.Add("NO OPTIONS FOUND TO RECOMMEND.");
+                }
+                return (lineItemTypeToDescription[quoteLineItem.LineItemType], recommendations);
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+                WriteToErrorLog("QuoteLineItemOptionSuggestions " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
+                return (lineItemTypeToDescription[quoteLineItem.LineItemType], recommendations);
+            }
+        }
         /// <summary>
         /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
         /// </summary>
@@ -2624,7 +2708,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteLineItemOptionSuggestions", ex.Message, user);
+                WriteToErrorLog("QuoteLineItemOptionSuggestions " + quoteNo + "-" + quoteRevNo, ex.Message, user);
                 return (lineItemTypeToDescription[lineItemType], recommendations);
             }
         }

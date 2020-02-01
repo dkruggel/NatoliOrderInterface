@@ -528,10 +528,13 @@ namespace NatoliOrderInterface
 
                 bool first = true;
                 int percent = 0;
+                int j = 1;
                 foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
                 {
-                    percent = (i * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                    percent = (j * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
+                    j++;
+                    //(string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.GetLineItemSuggestionsFromUserAndMachine(quote, new QuoteLineItem(quote,(short)i), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                     Dispatcher.Invoke(() =>
                     {
                         if (first)
