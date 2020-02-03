@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using WpfAnimatedGif;
 using System.Diagnostics;
 using Colors = System.Windows.Media.Colors;
+using Microsoft.ML;
 using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 
@@ -8503,10 +8504,10 @@ namespace NatoliOrderInterface
                 Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF")
             };
 
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
+            // expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+            // expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+            // expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+            // expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
 
             // expander.Expanded += DriveWorksQueueExpander_Expanded;
             return expander;

@@ -20,7 +20,9 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<DwAutoRun> DwAutoRun { get; set; }
         public virtual DbSet<EoiBasePriceList> EoiBasePriceList { get; set; }
         public virtual DbSet<EoiMissingAutomationVariablesView> EoiMissingAutomationVariablesView { get; set; }
-        public virtual DbSet<EoiNotifications> EoiNotifications { get; set; }
+        public virtual DbSet<EoiNotificationsActive> EoiNotificationsActive { get; set; }
+        public virtual DbSet<EoiNotificationsActive> EoiNotificationsArchived { get; set; }
+        public virtual DbSet<EoiNotificationsActive> EoiNotificationsViewed { get; set; }
         public virtual DbSet<EoiOrdersBeingChecked> EoiOrdersBeingChecked { get; set; }
         public virtual DbSet<EoiOrdersBeingEnteredView> EoiOrdersBeingEnteredView { get; set; }
         public virtual DbSet<EoiOrdersCheckedBy> EoiOrdersCheckedBy { get; set; }
@@ -217,11 +219,75 @@ namespace NatoliOrderInterface.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<EoiNotifications>(entity =>
+            modelBuilder.Entity<EoiNotificationsActive>(entity =>
             {
-                entity.ToTable("EOI_Notifications");
+                entity.ToTable("EOI_Notifications_Active");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.User)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Number)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EoiNotificationsArchived>(entity =>
+            {
+                entity.ToTable("EOI_Notifications_Archived");
+
+                entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
+
+                entity.Property(e => e.User)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Message)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Number)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Timestamp)
+                    .IsRequired()
+                    .IsRowVersion()
+                    .IsConcurrencyToken();
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(8)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EoiNotificationsViewed>(entity =>
+            {
+                entity.ToTable("EOI_Notifications_Viewed");
+
+                entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
 
                 entity.Property(e => e.User)
                     .IsRequired()

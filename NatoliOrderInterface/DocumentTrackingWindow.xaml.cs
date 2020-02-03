@@ -19,8 +19,8 @@ namespace NatoliOrderInterface
         {
             user = _user;
             InitializeComponent();
-            OtherLocationsComboBox.Items.Add("Inspection");
-            OtherLocationsComboBox.Items.Add("Heat Treat");
+            OtherLocationsComboBox.Items.Add("Production Management");
+            OtherLocationsComboBox.Items.Add("Shipped");
         }
 
         public DocumentTrackingWindow(WorkOrder order, User _user)
@@ -29,8 +29,8 @@ namespace NatoliOrderInterface
             workOrder = order;
             Title = "Order Tracking for Order: " + workOrder.OrderNumber.ToString();
             InitializeComponent();
-            OtherLocationsComboBox.Items.Add("Inspection");
-            OtherLocationsComboBox.Items.Add("Heat Treat");
+            OtherLocationsComboBox.Items.Add("Production Management");
+            OtherLocationsComboBox.Items.Add("Shipped");
             documentType = "Order";
             documentNumber = workOrder.OrderNumber.ToString();
         }
@@ -41,8 +41,8 @@ namespace NatoliOrderInterface
             this.quote = quote;
             Title = "Order Tracking for Quote: " + this.quote.QuoteNumber.ToString() + '-' + this.quote.QuoteRevNo.ToString();
             InitializeComponent();
-            OtherLocationsComboBox.Items.Add("Inspection");
-            OtherLocationsComboBox.Items.Add("Heat Treat");
+            OtherLocationsComboBox.Items.Add("Production Management");
+            OtherLocationsComboBox.Items.Add("Shipped");
             documentType = "Quote";
             documentNumber = this.quote.QuoteNumber.ToString() + '-' + this.quote.QuoteRevNo.ToString();
         }
@@ -81,7 +81,16 @@ namespace NatoliOrderInterface
                 }
 
                 // Save the changes
-                _.SaveChanges();
+                int ret = _.SaveChanges();
+
+                if (ret == 1)
+                {
+                    MessageBox.Show("Document will now be tracked.");
+                }
+                else
+                {
+                    throw new Microsoft.EntityFrameworkCore.DbUpdateException();
+                }
             }
             catch (Exception ex)
             {
