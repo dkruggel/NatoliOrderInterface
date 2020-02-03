@@ -86,10 +86,6 @@ namespace NatoliOrderInterface
             }
         }
 
-        #region Public Static Functions
-        
-        #endregion
-
         /// <summary>
         /// Checks the form for possible errors.
         /// Will throw MessageBoxes when it finds an error.

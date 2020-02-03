@@ -557,7 +557,12 @@ namespace NatoliOrderInterface
                         dockPanel.Children.Add(headerTextBlock);
                         foreach (string suggestion in firstOptionRecommendations.Suggestions)
                         {
+                            
                             BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                            if (suggestion == firstOptionRecommendations.Suggestions.Last())
+                            {
+                                bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
+                            }
                             bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
                             Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
                             TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
