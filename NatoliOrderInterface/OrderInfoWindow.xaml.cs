@@ -25,7 +25,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Navigation;
 using System.Windows.Documents;
 using System.Windows.Media;
-using ExtensionMethods;
 
 namespace NatoliOrderInterface
 {

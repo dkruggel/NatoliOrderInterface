@@ -1,0 +1,3 @@
+C:\Users\twilliams\source\repos\NatoliOrderInterface\ExtensionMethods\obj\Debug\netcoreapp3.1\ExtensionMethods.csprojAssemblyReference.cache
+C:\Users\twilliams\source\repos\NatoliOrderInterface\ExtensionMethods\obj\Debug\netcoreapp3.1\ExtensionMethods.AssemblyInfoInputs.cache
+C:\Users\twilliams\source\repos\NatoliOrderInterface\ExtensionMethods\obj\Debug\netcoreapp3.1\ExtensionMethods.AssemblyInfo.cs
