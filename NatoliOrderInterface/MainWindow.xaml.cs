@@ -21,7 +21,6 @@ using System.Windows.Media.Imaging;
 using WpfAnimatedGif;
 using System.Diagnostics;
 using Colors = System.Windows.Media.Colors;
-using Microsoft.ML;
 using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 
