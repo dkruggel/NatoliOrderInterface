@@ -144,29 +144,12 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            SplashScreen splashScreen = new SplashScreen("Natoli_Logo_Color.png");
-            splashScreen.Show(true);
-            var currentlyRunningProcesses = System.Diagnostics.Process.GetProcessesByName("NatoliOrderInterface").Where(p=> p.Id != System.Diagnostics.Process.GetCurrentProcess().Id);
-            if (currentlyRunningProcesses.Any())
-            {
-                var process =currentlyRunningProcesses.First();
-                var id = process.Id;
-                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
-                Application.Current.Shutdown();
-            }
+            ShowSplashScreen("Natoli_Logo_Color.png");
+            IfAppIsRunningSwitchToItAndShutdown();
             InitializeComponent();
             App.GetConnectionString();
             UpdatedFromChild = MainRefresh;
-            try
-            {
-                User = new User(Environment.UserName);
-                // User = new User("pturner");
-                // User = new User("billt");
-            }
-            catch (Exception ex)
-            {
-                User = new User("");
-            }
+            SetUser();
             try
             {
                 // Waiting for everyone to be updated to Windows 10 version 1903
@@ -185,10 +168,7 @@ namespace NatoliOrderInterface
             Title = "Natoli Order Interface " + "v" + User.PackageVersion;
             _filterProjects = User.FilterActiveProjects;
             if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
-            using var _nat02Context = new NAT02Context();
-            _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()));
-            _nat02Context.SaveChanges();
-            _nat02Context.Dispose();
+            RemoveUserFromOrdersBeingCheckedBy(User);
             this.Show();
             if (User.Maximized == true)
             {
@@ -205,8 +185,88 @@ namespace NatoliOrderInterface
             // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
             // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
             InitializingMenuItem.Visibility = Visibility.Collapsed;
+            InitializeTimers(User);
+        }
+
+        private void MainRefresh()
+        {
+            BindData("Main");
+            BindData("QuotesNotConverted");
+            BindData("NatoliOrderList");
+
+            ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
+        }
+        /// <summary>
+        /// Resets timers from a list in the order they are provided.
+        /// </summary>
+        /// <param name="timers"></param>
+        private void ResetTimers(List<Timer> timers)
+        {
+            foreach (Timer timer in timers)
+            {
+                timer.Stop();
+                timer.Start();
+            }
+            
+        }
+        /// <summary>
+        /// Shows startup splash image
+        /// </summary>
+        /// <param name="image"></param>
+        private void ShowSplashScreen(string image)
+        {
+            SplashScreen splashScreen = new SplashScreen(image);
+            splashScreen.Show(true);
+        }
+        /// <summary>
+        /// Checks for an app of this name running. If it is running, this app shutsdown.
+        /// </summary>
+        private void IfAppIsRunningSwitchToItAndShutdown()
+        {
+            var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
+            if (currentlyRunningProcesses.Any())
+            {
+                var process = currentlyRunningProcesses.First();
+                var id = process.Id;
+                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
+                Application.Current.Shutdown();
+            }
+        }
+        /// <summary>
+        /// Binds a user to User.
+        /// </summary>
+        private void SetUser()
+        {
+            try
+            {
+                User = new User(Environment.UserName);
+                // User = new User("pturner");
+                // User = new User("billt");
+            }
+            catch (Exception ex)
+            {
+                User = new User("");
+            }
+        }
+        /// <summary>
+        /// Removes all instances of this user in EOI_OrdersBeingCheckedBy
+        /// </summary>
+        /// <param name="user"></param>
+        private void RemoveUserFromOrdersBeingCheckedBy(User user)
+        {
+            using var _nat02Context = new NAT02Context();
+            _nat02Context.EoiOrdersBeingChecked.RemoveRange(_nat02Context.EoiOrdersBeingChecked.Where(o => o.User == user.GetUserName()));
+            _nat02Context.SaveChanges();
+            _nat02Context.Dispose();
+        }
+        /// <summary>
+        /// Starts all the times with their desired interval
+        /// </summary>
+        /// <param name="user"></param>
+        private void InitializeTimers(User user)
+        {
             mainTimer.Elapsed += MainTimer_Elapsed;
-            mainTimer.Interval = User.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
+            mainTimer.Interval = user.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
             mainTimer.Enabled = true;
             quoteTimer.Elapsed += QuoteTimer_Elapsed;
             quoteTimer.Interval = 5 * (60 * 1000); // 5 minutes
@@ -217,20 +277,6 @@ namespace NatoliOrderInterface
             oqTimer.Elapsed += OQTimer_Elapsed;
             oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
             oqTimer.Enabled = true;
-        }
-
-        private void MainRefresh()
-        {
-            BindData("Main");
-            BindData("QuotesNotConverted");
-            BindData("NatoliOrderList");
-
-            mainTimer.Stop();
-            mainTimer.Start();
-            quoteTimer.Stop();
-            quoteTimer.Start();
-            NatoliOrderListTimer.Stop();
-            NatoliOrderListTimer.Start();
         }
 
         #region Main Window Events
@@ -350,36 +396,44 @@ namespace NatoliOrderInterface
             };
             MenuItem createProject = new MenuItem()
             {
-                Header = "Create Project"
+                Header = "Create Project",
+                ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
             MenuItem projectSearch = new MenuItem()
             {
-                Header = "Project Search"
+                Header = "Project Search",
+                ToolTip = "Search for old engineering projects."
             };
             MenuItem forceRefresh = new MenuItem
             {
-                Header = "Force Refresh"
+                Header = "Force Refresh",
+                ToolTip = "Bypass the refresh timer."
             };
             MenuItem editLayout = new MenuItem
             {
-                Header = "Edit Layout"
+                Header = "Edit Layout",
+                ToolTip = "Change which views are shown in the main window."
             };
             MenuItem checkMissingVariables = new MenuItem
             {
-                Header = "Missing Automation Info"
+                Header = "Missing Automation Info",
+                ToolTip = "Checks for orders missing automation information."
             };
             MenuItem filterProjects = new MenuItem
             {
                 Header = "Filter Active Projects",
-                IsChecked = User.FilterActiveProjects
+                IsChecked = User.FilterActiveProjects,
+                ToolTip = "Filters All Tablet Projects and All Tool Projects to just active projects (in engineering)."
             };
             MenuItem printDrawings = new MenuItem
             {
-                Header = "Print Drawings"
+                Header = "Print Drawings",
+                ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
             };
             MenuItem updateApp = new MenuItem
             {
-                Header = "Update App"
+                Header = "Update App",
+                ToolTip = "Updates the app to the most current version (if available)."
             };
             createProject.Click += CreateProject_Click;
             projectSearch.Click += ProjectSearch_Click;
