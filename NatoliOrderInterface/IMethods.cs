@@ -984,13 +984,14 @@ namespace NatoliOrderInterface
         public static List<string> QuoteErrors(string quoteNo, string quoteRevNo, User user)
         {
             List<string> errors = new List<string>();
+            Quote quote = new Quote(Convert.ToInt32(quoteNo), Convert.ToInt16(quoteRevNo));
+            using var _nat01Context = new NAT01Context();
+            using var _nat02Context = new NAT02Context();
+            using var _driveworksContext = new DriveWorksContext();
             try
             {
                 // When querying option values be sure to check if it exists in QuoteLineItem.OptionNumber before directly querying the optionvalue table to avoid orphan data.
-                using var _nat01Context = new NAT01Context();
-                using var _nat02Context = new NAT02Context();
-                using var _driveworksContext = new DriveWorksContext();
-                Quote quote = new Quote(Convert.ToInt32(quoteNo), Convert.ToInt16(quoteRevNo));
+                
                 List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
                 List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
                 foreach (QuoteDetails line in quoteDetails)
@@ -2560,10 +2561,7 @@ namespace NatoliOrderInterface
 
                         }
                     }
-                    quote.Dispose();
-                    _nat01Context.Dispose();
-                    _nat02Context.Dispose();
-                    _driveworksContext.Dispose();
+                    
                     if (errors.Count > 0)
                     {
                         errors.Sort();
@@ -2576,6 +2574,10 @@ namespace NatoliOrderInterface
                 errors.Add("Could not finish checking for errors. Please let someone know that it failed.");
                 WriteToErrorLog("QuoteErrors", ex.Message, user);
             }
+            quote.Dispose();
+            _nat01Context.Dispose();
+            _nat02Context.Dispose();
+            _driveworksContext.Dispose();
             return errors;
         }
         /// <summary>
