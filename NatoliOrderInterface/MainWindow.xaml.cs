@@ -380,6 +380,40 @@ namespace NatoliOrderInterface
                 NatoliOrderListTimer.Start();
             }
         }
+        private void GridWindow_LayoutUpdated(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (string VisiblePanel in User.VisiblePanels)
+                {
+                    int i = User.VisiblePanels.IndexOf(VisiblePanel);
+                    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+                    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+                    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+                    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                    {
+                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+                        {
+                            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+                        }
+                    }
+                    else
+                    {
+                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+                        {
+                            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
         #endregion
 
         #region MenuStuff
@@ -7630,22 +7664,6 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
 
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsDrawn").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
@@ -7687,22 +7705,6 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
 
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsOnHold").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
@@ -7739,22 +7741,6 @@ namespace NatoliOrderInterface
             {
                 interiorStackPanel.Children.Remove(expander1);
             }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
 
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "DriveWorksQueue").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
@@ -7789,22 +7775,6 @@ namespace NatoliOrderInterface
             foreach (Expander expander1 in removeThese)
             {
                 interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
             }
 
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "NatoliOrderList").First().Value;
