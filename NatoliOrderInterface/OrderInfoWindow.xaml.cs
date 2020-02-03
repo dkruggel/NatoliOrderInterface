@@ -2006,10 +2006,13 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
+                    PdfDocument pdfDocument = null;
                     foreach (string file in filePaths)
                     {
                         tempFile = file.Replace(".pdf", "_TEMP.pdf");
-                        PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                        PdfReader pdfReader = new PdfReader(file);
+                        PdfWriter pdfWriter = new PdfWriter(tempFile);
+                        pdfDocument = new PdfDocument(pdfReader, pdfWriter);
                         int page_count = pdfDocument.GetNumberOfPages();
                         Document document = new Document(pdfDocument);
                         for (int i = 1; i <= page_count; i++)
@@ -2020,6 +2023,8 @@ namespace NatoliOrderInterface
                             document.Add(image);
                         }
                         document.Close();
+                        pdfReader.Close();
+                        pdfWriter.Close();
                         File.Move(tempFile, file, true);
 
                         int file_count;
@@ -2049,6 +2054,7 @@ namespace NatoliOrderInterface
 
                         }
                     }
+                    pdfDocument.Close();
                 }
             }
             catch (Exception ex)
