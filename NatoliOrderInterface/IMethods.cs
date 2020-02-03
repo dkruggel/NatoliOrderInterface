@@ -2578,14 +2578,62 @@ namespace NatoliOrderInterface
             }
             return errors;
         }
-
+        /// <summary>
+        /// Takes Quote and QuoteLineItem to view the order history of options from that user and machinenumber, then "suggests" the most frequently used options that are not on this quote.
+        /// </summary>
+        /// <param name="quote"></param>
+        /// <param name="quoteLineItem"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public static (string LineItemDescription, List<string> Suggestions) GetLineItemSuggestionsFromUserAndMachine(Quote quote, QuoteLineItem quoteLineItem, User user)
         {
+            if (quote == null)
+            {
+                quote = new Quote();
+            }
+            if (quoteLineItem == null)
+            {
+                quoteLineItem = new QuoteLineItem(quote);
+            }
             List<string> recommendations = new List<string>();
             using var _nat01Context = new NAT01Context();
             try
             {
-                List<OrderDetails> commonMachineOrderDetails = _nat01Context.OrderDetails.Where(od => od.OrderNo != quote.OrderNo && od.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(od.DetailTypeId) && !string.IsNullOrWhiteSpace(od.DetailTypeId) && od.DetailTypeId == quoteLineItem.LineItemType.Trim()).ToList();
+                List<OrderDetails> commonMachineOrderDetails = new List<OrderDetails>();
+                short dieShapeID = 0;
+                if (quoteLineItem.DieShapeID == null)
+                {
+                    if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UT" ||
+                        quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LT" ||
+                        quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RT")
+                    {
+                        if (_nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID))
+                        {
+                            string dieID = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID).DieId;
+                            if (_nat01Context.DieList.Any(d => d.DieId == dieID))
+                            {
+                                dieShapeID = (short)_nat01Context.DieList.First(d => d.DieId == dieID).ShapeId;
+                            }
+                        }
+
+                    }
+                    else if (quoteLineItem.LineItemType.StartsWith('D'))
+                    {
+                        dieShapeID = 0;
+                    }
+                }
+                else
+                {
+                    dieShapeID = (short)quoteLineItem.DieShapeID;
+                }
+                if (dieShapeID > 0 || !_nat01Context.OrderDetails.Any(od => od.OrderNo != quote.OrderNo && od.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(od.DetailTypeId) && !string.IsNullOrWhiteSpace(od.DetailTypeId) && od.DetailTypeId == quoteLineItem.LineItemType.Trim() && ((od.DieShapeId != 1 && dieShapeID != 1) || (od.DieShapeId == 1 && dieShapeID == 1))))
+                {
+                    commonMachineOrderDetails = _nat01Context.OrderDetails.Where(od => od.OrderNo != quote.OrderNo && od.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(od.DetailTypeId) && !string.IsNullOrWhiteSpace(od.DetailTypeId) && od.DetailTypeId == quoteLineItem.LineItemType.Trim() && ((od.DieShapeId != 1 && dieShapeID != 1) || (od.DieShapeId == 1 && dieShapeID == 1))).ToList();
+                }
+                else
+                {
+                    commonMachineOrderDetails = _nat01Context.OrderDetails.Where(od => od.OrderNo != quote.OrderNo && od.MachineNo == quoteLineItem.MachineNo && !string.IsNullOrEmpty(od.DetailTypeId) && !string.IsNullOrWhiteSpace(od.DetailTypeId) && od.DetailTypeId == quoteLineItem.LineItemType.Trim()).ToList();
+                }
                 List<OrderHeader> commonUserOrderHeaders = _nat01Context.OrderHeader.Where(oh => !string.IsNullOrWhiteSpace(oh.UserAcctNo) && oh.UserAcctNo == quote.UserAcctNo && !string.IsNullOrWhiteSpace(oh.UserLocNo) && oh.UserLocNo == quote.UserLocNo && oh.OrderNo != quote.OrderNo).ToList();
                 List<OrderDetails> commonOrderDetails = new List<OrderDetails>();
                 List<string> optionStrings = new List<string>();
