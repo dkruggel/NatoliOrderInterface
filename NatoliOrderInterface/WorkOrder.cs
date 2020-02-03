@@ -1086,7 +1086,8 @@ namespace NatoliOrderInterface
                         Name = lineType + "CheckBox",
                         Content = lineDesc,
                         IsChecked = true,
-                        Tag = kvp.Key
+                        Tag = kvp.Key,
+                        Margin = new Thickness(0,0,0,15)
                     };
                     stackPanel.Children.Add(checkBox);
                     context.Dispose();
