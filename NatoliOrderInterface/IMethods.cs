@@ -2762,5 +2762,6 @@ namespace NatoliOrderInterface
                 return (lineItemTypeToDescription[lineItemType], recommendations);
             }
         }
+        
     }
 }

@@ -5,9 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="PDFOrderingWindow" Height="450" Width="800">
-    <DockPanel>
-        <ListBox x:Name="ListBox1">
-        </ListBox>
+        Title="PDFOrderingWindow" Height="450" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}">
+    <DockPanel LastChildFill="False">
+        <TextBlock DockPanel.Dock="Top" Text="Specify Order Of .pdfs" Style="{StaticResource BoldTextBlock}" FontSize="24" HorizontalAlignment="Center"/>
+        <ScrollViewer DockPanel.Dock="Top" Margin="0,20" BorderBrush="{StaticResource Focused.Border}" BorderThickness="1" VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="ListBox1" Margin="20,0"/>
+        </ScrollViewer>
+        <Grid HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="OK" Grid.Column="0" Style="{StaticResource Button}" Content="OK" VerticalAlignment="Center" Click="OK_Click"/>
+            <Button x:Name="Cancel" Grid.Column="1" Style="{StaticResource Button}" Content="Cancel" VerticalAlignment="Center" Click="Cancel_Click"/>
+        </Grid>
     </DockPanel>
 </Window>
