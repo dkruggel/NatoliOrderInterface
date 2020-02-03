@@ -225,6 +225,8 @@ namespace NatoliOrderInterface.Models
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+                entity.HasKey(e => e.Id);
+
                 entity.Property(e => e.User)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -254,6 +256,8 @@ namespace NatoliOrderInterface.Models
             modelBuilder.Entity<EoiNotificationsArchived>(entity =>
             {
                 entity.ToTable("EOI_Notifications_Archived");
+
+                entity.HasKey(e => e.NotificationId);
 
                 entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
 
@@ -286,6 +290,8 @@ namespace NatoliOrderInterface.Models
             modelBuilder.Entity<EoiNotificationsViewed>(entity =>
             {
                 entity.ToTable("EOI_Notifications_Viewed");
+
+                entity.HasKey(e => e.NotificationId);
 
                 entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
 
