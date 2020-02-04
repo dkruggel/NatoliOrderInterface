@@ -217,7 +217,7 @@ namespace NatoliOrderInterface
             splashScreen.Show(true);
         }
         /// <summary>
-        /// Checks for an app of this name running. If it is running, this app shutsdown.
+        /// Checks for an app of this name running. If it is running, this app shuts down.
         /// </summary>
         private void IfAppIsRunningSwitchToItAndShutdown()
         {
