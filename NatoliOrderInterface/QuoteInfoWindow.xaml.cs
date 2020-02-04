@@ -529,52 +529,56 @@ namespace NatoliOrderInterface
                 bool first = true;
                 int percent = 0;
                 int j = 1;
-                foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
+                if (quote.lineItems.Keys.Any(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
                 {
-                    percent = (j * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                    j++;
-                    //(string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                    (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.GetLineItemSuggestionsFromUserAndMachine(quote, new QuoteLineItem(quote,(short)i), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                    Dispatcher.Invoke(() =>
+                    foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
                     {
-                        if (first)
+                        percent = (j * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
+                        j++;
+                        //(string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                        (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.GetLineItemSuggestionsFromUserAndMachine(quote, new QuoteLineItem(quote, (short)i), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                        Dispatcher.Invoke(() =>
                         {
-                            QuoteOptionSuggestions.IsEnabled = true;
-                            first = !first;
-                        }
-                        QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
-                        DockPanel dockPanel = new DockPanel();
-                        dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-                        TextBlock headerTextBlock = new TextBlock
-                        {
-                            Text = firstOptionRecommendations.LineItemDescription,
-                            Style = (Style)Application.Current.Resources["BoldTextBlock"],
-                            HorizontalAlignment = HorizontalAlignment.Left,
-                            FontSize = 28,
-                            Margin = new Thickness(40, 0, 0, 0)
-                        };
-                        headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-                        dockPanel.Children.Add(headerTextBlock);
-                        foreach (string suggestion in firstOptionRecommendations.Suggestions)
-                        {
-                            
-                            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                            if (suggestion == firstOptionRecommendations.Suggestions.Last())
+                            if (first)
                             {
-                                bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
+                                QuoteOptionSuggestions.IsEnabled = true;
+                                first = !first;
                             }
-                            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
-                            TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                            bulletDecorator.Bullet = ellipse;
-                            bulletDecorator.Child = textBlock;
-                            dockPanel.Children.Add(bulletDecorator);
-                        }
-                        OptionSuggestionsDockPanel.Children.Add(dockPanel);
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
+                            DockPanel dockPanel = new DockPanel();
+                            dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
+                            TextBlock headerTextBlock = new TextBlock
+                            {
+                                Text = firstOptionRecommendations.LineItemDescription,
+                                Style = (Style)Application.Current.Resources["BoldTextBlock"],
+                                HorizontalAlignment = HorizontalAlignment.Left,
+                                FontSize = 28,
+                                Margin = new Thickness(40, 0, 0, 0)
+                            };
+                            headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
+                            dockPanel.Children.Add(headerTextBlock);
+                            foreach (string suggestion in firstOptionRecommendations.Suggestions)
+                            {
+
+                                BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                                if (suggestion == firstOptionRecommendations.Suggestions.Last())
+                                {
+                                    bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
+                                }
+                                bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                                Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["ForeGround.AccentBrush"] };
+                                TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                                bulletDecorator.Bullet = ellipse;
+                                bulletDecorator.Child = textBlock;
+                                dockPanel.Children.Add(bulletDecorator);
+                            }
+                            OptionSuggestionsDockPanel.Children.Add(dockPanel);
+                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    }
+                    Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
-                Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
+                
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
