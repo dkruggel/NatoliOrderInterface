@@ -72,6 +72,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NatoliOrderInterface_Package\**" />
+    <EmbeddedResource Remove="NatoliOrderInterface_Package\**" />
+    <None Remove="NatoliOrderInterface_Package\**" />
+    <Page Remove="NatoliOrderInterface_Package\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="attach_file.png" />
     <None Remove="Barcode Locations\D0043_Chrome_Tank.png" />
     <None Remove="Barcode Locations\D006_Hobbing.png" />
@@ -261,6 +268,7 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="1.4.18" />
   </ItemGroup>
 
   <ItemGroup>
