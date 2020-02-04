@@ -11,6 +11,8 @@ NatoliOrderInterface_Package/
 NatoliOrderInterface.Package/
 ./NatoliOrderInterface_Package/
 ./NatoliOrderInterface.Package/
+Natoli.ERP.Pakkage
+./Natoli.ERP.Pakkage/
 
 # User-specific files
 *.rsuser
