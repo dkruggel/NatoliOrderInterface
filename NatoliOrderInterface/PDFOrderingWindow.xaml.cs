@@ -26,40 +26,34 @@ namespace NatoliOrderInterface
         private readonly WorkOrder workOrder = null;
         public PDFOrderingWindow(List<string> filePaths, OrderInfoWindow orderInfoWindow, WorkOrder workOrder, User user)
         {
-            if (filePaths == null || orderInfoWindow == null || workOrder == null || user == null || filePaths.Count == 0)
+            Owner = orderInfoWindow;
+            InitializeComponent();
+            directory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
+            this.user = user;
+            this.workOrder = workOrder;
+
+            Dictionary<int,string> filesDict = new Dictionary<int, string>();
+            foreach (string file in filePaths)
             {
-                Close();
+                string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
+                if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
+                {
+                    lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
+                }
+                filesDict.Add(lineItemNumber, lineItemName);
             }
-            else
+            foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp=>kvp.Key))
             {
-                Owner = orderInfoWindow;
-                InitializeComponent();
-                directory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
-                this.user = user;
-                this.workOrder = workOrder;
-                Dictionary<int, string> filesDict = new Dictionary<int, string>();
-                foreach (string file in filePaths)
-                {
-                    string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
-                    int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
-                    if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
-                    {
-                        lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
-                    }
-                    filesDict.Add(lineItemNumber, lineItemName);
-                }
-                foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp => kvp.Key))
-                {
-                    textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
-                }
-                ListBox1.ItemsSource = textBlockList;
-                System.Windows.Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
-                itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Drop)));
-                ListBox1.ItemContainerStyle = itemContainerStyle;
-                Show();
+                textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
             }
+            ListBox1.ItemsSource = textBlockList;
+            System.Windows.Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
+            itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Drop)));
+            ListBox1.ItemContainerStyle = itemContainerStyle;
+            this.Show();
         }
 
         private void ListBoxItem_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -108,12 +102,11 @@ namespace NatoliOrderInterface
             {
                 string tempFile = "";
                 int file_count = 1;
-                PdfDocument pdfDocument = null;
                 foreach (TextBlock textBlock in textBlockList)
                 {
                     string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
                     string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
-                    if (tempFile.Length == 0)
+                    if (tempFile == "")
                     {
                         string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
                         foreach (string fileToDelete in filesAlreadyInDirectory)
@@ -122,9 +115,7 @@ namespace NatoliOrderInterface
                         }
                     }
                     tempFile = file.Replace(".pdf", "_TEMP.pdf");
-                    PdfReader pdfReader = new PdfReader(file);
-                    PdfWriter pdfWriter = new PdfWriter(tempFile);
-                    pdfDocument = new PdfDocument(pdfReader, pdfWriter);
+                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
                     int page_count = pdfDocument.GetNumberOfPages();
                     Document document = new Document(pdfDocument);
                     for (int i = 1; i <= page_count; i++)
@@ -135,14 +126,11 @@ namespace NatoliOrderInterface
                         document.Add(image);
                     }
                     document.Close();
-                    pdfReader.Close();
-                    pdfWriter.Close();
                     File.Move(tempFile, file, true);
                     string lineItemName = file.GetFileNameFromPath();
                     File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
                     file_count++;
                 }
-                pdfDocument.Close();
             }
             catch (Exception ex)
             {
