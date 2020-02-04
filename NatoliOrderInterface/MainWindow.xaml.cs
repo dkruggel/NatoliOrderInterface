@@ -18,7 +18,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using WpfAnimatedGif;
 using System.Diagnostics;
 using Colors = System.Windows.Media.Colors;
 using Windows.Management.Deployment;
@@ -3102,7 +3101,7 @@ namespace NatoliOrderInterface
             bitImage.UriSource = new Uri("NATOLI_ANIMATION.gif", UriKind.Relative);
             bitImage.EndInit();
             //AnimationBehavior.SetSourceUri(image, new Uri("NATOLI_ANIMATION.gif", UriKind.Relative));
-            ImageBehavior.SetAnimatedSource(image, bitImage);
+            //ImageBehavior.SetAnimatedSource(image, bitImage);
             dockPanel.Children.Add(image);
 
             return dockPanel;
