@@ -142,48 +142,55 @@ namespace NatoliOrderInterface
 
         public MainWindow()
         {
-            ShowSplashScreen("Natoli_Logo_Color.png");
-            IfAppIsRunningSwitchToItAndShutdown();
-            InitializeComponent();
-            App.GetConnectionString();
-            UpdatedFromChild = MainRefresh;
-            SetUser();
             try
             {
-                // Waiting for everyone to be updated to Windows 10 version 1903
-                CheckForAvailableUpdatesAndLaunch(User);
-                // DocumentTrackingWindow documentTrackingWindow = new DocumentTrackingWindow(User);
-                // documentTrackingWindow.Show();
+                ShowSplashScreen("Natoli_Logo_Color.png");
+                IfAppIsRunningSwitchToItAndShutdown();
+                InitializeComponent();
+                App.GetConnectionString();
+                UpdatedFromChild = MainRefresh;
+                SetUser();
+                try
+                {
+                    // Waiting for everyone to be updated to Windows 10 version 1903
+                    CheckForAvailableUpdatesAndLaunch(User);
+                    // DocumentTrackingWindow documentTrackingWindow = new DocumentTrackingWindow(User);
+                    // documentTrackingWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
+                }
+                Width = (double)User.Width;
+                Height = (double)User.Height;
+                Top = (double)User.Top;
+                Left = (double)User.Left;
+                Title = "Natoli Order Interface " + "v" + User.PackageVersion;
+                _filterProjects = User.FilterActiveProjects;
+                if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
+                RemoveUserFromOrdersBeingCheckedBy(User);
+                this.Show();
+                if (User.Maximized == true)
+                {
+                    Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
+                }
+                originalProps = new List<string>();
+                dictList = new List<object>();
+                foreach (string s in User.VisiblePanels)
+                {
+                    originalProps.Add(s);
+                }
+                ConstructModules();
+                BuildMenus();
+                // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
+                // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
+                InitializingMenuItem.Visibility = Visibility.Collapsed;
+                InitializeTimers(User);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
+                IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
-            Width = (double)User.Width;
-            Height = (double)User.Height;
-            Top = (double)User.Top;
-            Left = (double)User.Left;
-            Title = "Natoli Order Interface " + "v" + User.PackageVersion;
-            _filterProjects = User.FilterActiveProjects;
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
-            RemoveUserFromOrdersBeingCheckedBy(User);
-            this.Show();
-            if (User.Maximized == true)
-            {
-                Dispatcher.Invoke(new Action(() => this.WindowState = WindowState.Maximized));
-            }
-            originalProps = new List<string>();
-            dictList = new List<object>();
-            foreach (string s in User.VisiblePanels)
-            {
-                originalProps.Add(s);
-            }
-            ConstructModules();
-            BuildMenus();
-            // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
-            // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
-            InitializingMenuItem.Visibility = Visibility.Collapsed;
-            InitializeTimers(User);
         }
 
         private void MainRefresh()
