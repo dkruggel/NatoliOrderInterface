@@ -72,6 +72,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NatoliOrderInterface_Package\**" />
+    <EmbeddedResource Remove="NatoliOrderInterface_Package\**" />
+    <None Remove="NatoliOrderInterface_Package\**" />
+    <Page Remove="NatoliOrderInterface_Package\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="attach_file.png" />
     <None Remove="Barcode Locations\D0043_Chrome_Tank.png" />
     <None Remove="Barcode Locations\D006_Hobbing.png" />
