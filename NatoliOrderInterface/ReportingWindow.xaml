@@ -1,0 +1,227 @@
+﻿<Window x:Class="NatoliOrderInterface.ReportingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="Reporting" Height="1025" Width="1860">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Height="50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Menu and stuff up here" Grid.Column="0"/>
+        </Grid>
+
+        <StackPanel DockPanel.Dock="Left" Width="150">
+            <Button Content="Buttons" Width="75" Height="25"/>
+        </StackPanel>
+
+        <Grid>
+            <StackPanel>
+                <!--<Border BorderBrush="Black" BorderThickness="2,2,2,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Customer Service Representative" Height="30" VerticalContentAlignment="Center" Grid.Column="0" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="1" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Quotes Not Converted" Height="30" VerticalContentAlignment="Center" Grid.Column="2" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Total" Height="30" VerticalContentAlignment="Center" Grid.Column="3" BorderBrush="Black" BorderThickness="0,0,1,0"/>
+                        <Label Content="Conversion Percentage" Height="30" VerticalContentAlignment="Center" Grid.Column="4"/>
+                    </Grid>
+                </Border>-->
+
+                <DataGrid>
+                    
+                </DataGrid>
+                
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>

@@ -187,6 +187,9 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
+
+                ReportingWindow reportingWindow = new ReportingWindow();
+                reportingWindow.Show();
             }
             catch(Exception ex)
             {
@@ -400,7 +403,7 @@ namespace NatoliOrderInterface
 
                     if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
                     {
-                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width != new GridLength(22))
                         {
                             Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
                             AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
@@ -408,7 +411,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width == new GridLength(22))
                         {
                             Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
                             headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
