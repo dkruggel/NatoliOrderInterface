@@ -871,7 +871,7 @@ namespace NatoliOrderInterface
                 {
                     if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
                     {
-                        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
+                        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "Test\\" + "NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "x64.appxbundle");
                         break;
                     }
                 }
