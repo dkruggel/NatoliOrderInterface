@@ -653,6 +653,27 @@ namespace NatoliOrderInterface
             set { this.aEtching10 = value; }
         }
 
+        private string inspectionNote = "";
+        public string InspectionNote
+        {
+            get { return inspectionNote; }
+            set { this.inspectionNote = value; }
+        }
+
+        private string etchingNote = "";
+        public string EtchingNote
+        {
+            get { return etchingNote; }
+            set { this.etchingNote = value; }
+        }
+
+        private string shippingNote = "";
+        public string ShippingNote
+        {
+            get { return shippingNote; }
+            set { this.shippingNote = value; }
+        }
+
 
         private List<OrderLineItem> lineItemsList;
         public List<OrderLineItem> LineItemsList
@@ -740,6 +761,9 @@ namespace NatoliOrderInterface
             this.endUserName = string.IsNullOrEmpty(endUserName) ? "" : endUserName.Trim();
             referenceOrder = orderHeader.RefWo;
             engineeringNotes = orderHeader.EngineeringNote1.Trim() + "\n" + orderHeader.EngineeringNote2.Trim() + "\n" + orderHeader.MiscNote.Trim();
+            inspectionNote = string.IsNullOrEmpty(orderHeader.InspectionNote) ? "" : orderHeader.InspectionNote.Trim();
+            etchingNote = string.IsNullOrEmpty(orderHeader.EtchingNote) ? "" : orderHeader.EtchingNote.Trim();
+            shippingNote = string.IsNullOrEmpty(orderHeader.ShippingNote) ? "" : orderHeader.ShippingNote.Trim();
             this.csr = string.IsNullOrEmpty(csr) ? "" : csr.Trim();
             accountNumber = string.IsNullOrEmpty(orderHeader.ShipToAccountNo) ? "" : orderHeader.ShipToAccountNo.Trim();
             terms = string.IsNullOrEmpty(orderHeader.TermsId) ? "" : orderHeader.TermsId.Trim();

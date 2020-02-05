@@ -567,6 +567,20 @@
                                 </TabControl>
                             </DockPanel>
                         </Border>
+                        <DockPanel DockPanel.Dock="Top">
+                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                <TextBlock Text="Inspection:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                <TextBlock x:Name="InspectionNote"/>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                <TextBlock Text="Etching:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                <TextBlock x:Name="EtchingNote"/>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                <TextBlock Text="Shipping:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                <TextBlock x:Name="ShippingNote"/>
+                            </DockPanel>
+                        </DockPanel>
                     </DockPanel>
                 </DockPanel>
             </DockPanel>

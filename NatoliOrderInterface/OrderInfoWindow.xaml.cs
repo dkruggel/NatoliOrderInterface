@@ -115,7 +115,9 @@ namespace NatoliOrderInterface
             }
             FillInfo();
             LineItemChange();
+            
             if (user.Department == "Engineering") { CreateMachineVariablesDataGrid(); }
+            
             CreateBarcodeDataGrid();
             FillEtchingInstructions();
             Show();
@@ -190,6 +192,9 @@ namespace NatoliOrderInterface
                     RushLabel.Content = "+RUSH+";
                 }
             }
+            InspectionNote.Text = workOrder.InspectionNote;
+            EtchingNote.Text = workOrder.EtchingNote;
+            ShippingNote.Text = workOrder.ShippingNote;
             CreateLineItemDataGrid();
         }
         private void CreateLineItemDataGrid()

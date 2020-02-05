@@ -243,7 +243,14 @@ namespace NatoliOrderInterface
             ShipMethod.Text = quote.ShippedVia;
             Incoterms.Text = quote.Incoterms;
             DutiesTaxesFees.Text = quote.DutiesTaxesBilling;
-            MachineDescription.Text = quoteLineItems[0].MachineDescription;
+            foreach (QuoteLineItem quoteLineItem in quoteLineItems)
+            {
+                if (quoteLineItem.MachineNo != 0 && quoteLineItem.MachineNo != null)
+                {
+                    MachineDescription.Text = string.IsNullOrEmpty(quoteLineItem.MachineDescription) ? "" : quoteLineItem.MachineDescription.Trim() + " // (" + quoteLineItem.MachineNo + ")";
+                    break;
+                }
+            }
             QtyStackPanel.Children.Clear();
             ItemDescriptionStackPanel.Children.Clear();
             ItemDescription2StackPanel.Children.Clear();
