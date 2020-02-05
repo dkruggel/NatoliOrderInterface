@@ -195,6 +195,7 @@ namespace NatoliOrderInterface
             InspectionNote.Text = workOrder.InspectionNote;
             EtchingNote.Text = workOrder.EtchingNote;
             ShippingNote.Text = workOrder.ShippingNote;
+            ShipsWith.Text = workOrder.ShipWithWONo;
             CreateLineItemDataGrid();
         }
         private void CreateLineItemDataGrid()
