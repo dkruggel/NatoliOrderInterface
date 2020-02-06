@@ -66,9 +66,6 @@ namespace NatoliOrderInterface
             EoiSettings settings = _nat02context.EoiSettings.SingleOrDefault(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower());
             try
             {
-                //var version = Windows.ApplicationModel.Package.Current.Id.Version;
-                //string packageVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
-                //PackageVersion = packageVersion;
 
                 System.IO.StreamReader streamReader = new System.IO.StreamReader(@"\\nshare\VB_Apps\NatoliOrderInterface\version.json");
                 string version = "";
@@ -77,13 +74,7 @@ namespace NatoliOrderInterface
                     version = streamReader.ReadLine().Split(':')[1].Trim('"');
                     break;
                 }
-
-                //if (settings.PackageVersion != packageVersion)
-                //{
-                //    settings.PackageVersion = packageVersion;
-                //    _nat02context.EoiSettings.Update(settings);
-                //    _nat02context.SaveChanges();
-                //}
+                PackageVersion = version;
             }
             catch (Exception ex)
             {
@@ -94,7 +85,6 @@ namespace NatoliOrderInterface
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();
             EmployeeCode = settings.EmployeeId;
             userName = settings.FullName;
-            //PackageVersion = settings.PackageVersion;
             using var _driveworksContext = new DriveWorksContext();
             dwDisplayName = userName == "Gregory Lyle" ? "Greg Lyle" : userName == "Nicholas Tarte" ? "Nick Tarte" : userName == "Floyd Smith" ? "Joe Smith" : userName == "Ronald Faltus" ? "Ron Faltus" : userName;
             if (_driveworksContext.SecurityUsers.Any(su => su.DisplayName == dwDisplayName))
