@@ -68,12 +68,13 @@ namespace NatoliOrderInterface
             {
                 var version = Windows.ApplicationModel.Package.Current.Id.Version;
                 string packageVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
-                if (settings.PackageVersion != packageVersion)
-                {
-                    settings.PackageVersion = packageVersion;
-                    _nat02context.EoiSettings.Update(settings);
-                    _nat02context.SaveChanges();
-                }
+                PackageVersion = packageVersion;
+                //if (settings.PackageVersion != packageVersion)
+                //{
+                //    settings.PackageVersion = packageVersion;
+                //    _nat02context.EoiSettings.Update(settings);
+                //    _nat02context.SaveChanges();
+                //}
             }
             catch (Exception ex)
             {
@@ -84,7 +85,7 @@ namespace NatoliOrderInterface
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();
             EmployeeCode = settings.EmployeeId;
             userName = settings.FullName;
-            PackageVersion = settings.PackageVersion;
+            //PackageVersion = settings.PackageVersion;
             using var _driveworksContext = new DriveWorksContext();
             dwDisplayName = userName == "Gregory Lyle" ? "Greg Lyle" : userName == "Nicholas Tarte" ? "Nick Tarte" : userName == "Floyd Smith" ? "Joe Smith" : userName == "Ronald Faltus" ? "Ron Faltus" : userName;
             if (_driveworksContext.SecurityUsers.Any(su => su.DisplayName == dwDisplayName))

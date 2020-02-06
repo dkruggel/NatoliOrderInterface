@@ -154,7 +154,7 @@ namespace NatoliOrderInterface
                 try
                 {
                     // Waiting for everyone to be updated to Windows 10 version 1903
-                    CheckForAvailableUpdatesAndLaunch(User);
+                    // CheckForAvailableUpdatesAndLaunch(User);
                     // DocumentTrackingWindow documentTrackingWindow = new DocumentTrackingWindow(User);
                     // documentTrackingWindow.Show();
                 }
