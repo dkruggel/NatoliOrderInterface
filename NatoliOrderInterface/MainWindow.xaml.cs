@@ -362,6 +362,7 @@ namespace NatoliOrderInterface
                 nat02context.Dispose();
             }
             Dispose();
+            System.Environment.Exit(0);
         }
         private void GridWindow_Activated(object sender, EventArgs e)
         {
