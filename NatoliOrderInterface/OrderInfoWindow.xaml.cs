@@ -693,7 +693,6 @@ namespace NatoliOrderInterface
                     break;
             }
         }
-
         private void ListHobDrawings()
         {
             Border borderOld = OrderPanel.Children.OfType<Border>().Where(sp => sp.Name == "HobDrawingsBorder").FirstOrDefault() as Border;

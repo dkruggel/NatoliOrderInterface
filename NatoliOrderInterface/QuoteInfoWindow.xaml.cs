@@ -269,8 +269,8 @@ namespace NatoliOrderInterface
             RefWONo.Text = quote.RefWO.ToString();
             Subtotal.Text = quote.QuoteSubtotal == 0 ? "$0.00" : "$" + String.Format("{0:#,###.00}", quote.QuoteSubtotal);
             Freight.Text = quote.QuoteFreightCharge == 0 ? "$0.00" : "$" + String.Format("{0:#,###.00}", quote.QuoteFreightCharge);
-            Markdown.Text = quote.QuoteFreightCharge == 0 ? "" : "$" + String.Format("{0:#,###.00}", quote.QuoteMarkdown);
-            MarkdownCallout.Text = quote.QuoteFreightCharge == 0 ? "" : "DISCOUNT:";
+            Markdown.Text = quote.QuoteMarkdown == 0 ? "" : "$" + String.Format("{0:#,###.00}", quote.QuoteMarkdown);
+            MarkdownCallout.Text = quote.QuoteMarkdown == 0 ? "" : "DISCOUNT:";
             try
             {
                 AddedToInvoice.Text = quote.Nat01Context.QuoteFreightDesc.Where(q => q.FreightId == quote.FreightDescID.ToString()).FirstOrDefault().Description.Trim();
