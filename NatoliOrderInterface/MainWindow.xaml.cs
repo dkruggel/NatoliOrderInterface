@@ -188,8 +188,8 @@ namespace NatoliOrderInterface
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
 
-                ReportingWindow reportingWindow = new ReportingWindow();
-                reportingWindow.Show();
+                //ReportingWindow reportingWindow = new ReportingWindow();
+                //reportingWindow.Show();
             }
             catch(Exception ex)
             {
