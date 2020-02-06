@@ -2661,24 +2661,6 @@ namespace NatoliOrderInterface
 
             }
         }
-        private void ProjectrevNoSearchTextBlock_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            textBox.CaptureMouse();
-        }
-        private void ProjectrevNoSearchTextBlock_GotMouseCapture(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            textBox.SelectAll();
-        }
-        private void ProjectrevNoSearchTextBlock_IsMouseCaptureWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-
-            textBox.SelectAll();
-        }
         private void ProjectSearchTextBlock_LostFocus(object sender, RoutedEventArgs e)
         {
             try
@@ -2707,12 +2689,20 @@ namespace NatoliOrderInterface
             TextBox textBox = (TextBox)sender;
 
             textBox.SelectAll();
+
+            textBox.SelectionStart = 0;
+
+            textBox.SelectionLength = textBox.Text.Length;
         }
         private void QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
 
             textBox.SelectAll();
+
+            textBox.SelectionStart = 0;
+
+            textBox.SelectionLength = textBox.Text.Length;
         }
         private void ProjectSearchButton_Click(object sender, RoutedEventArgs e)
         {
