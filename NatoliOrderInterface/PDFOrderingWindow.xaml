@@ -11,7 +11,7 @@
         <ScrollViewer DockPanel.Dock="Top" Margin="0,20" BorderBrush="{StaticResource Focused.Border}" BorderThickness="1" VerticalScrollBarVisibility="Auto">
             <ListBox x:Name="ListBox1" Margin="20,0"/>
         </ScrollViewer>
-        <Grid HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+        <Grid HorizontalAlignment="Right" MinWidth="180" DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

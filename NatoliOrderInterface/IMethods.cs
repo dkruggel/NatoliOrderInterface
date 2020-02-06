@@ -14,6 +14,8 @@ using System.Windows;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml;
+using System.Windows.Markup;
 
 namespace NatoliOrderInterface
 {
@@ -2720,48 +2722,47 @@ namespace NatoliOrderInterface
         /// <param name="lineItemType"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static (string LineItemDescription, List<string> Suggestions) QuoteLineItemOptionSuggestions(string quoteNo, string quoteRevNo, string lineItemType, User user)
-        {
-            List<string> recommendations = new List<string>();
-            try
-            {
-                //recommendations.Add("Testing");
-                ProcessStartInfo start = new ProcessStartInfo();
-                //start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations.exe";
-                start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations\Option_Recommendations.exe";
-                start.Arguments = string.Format("{0} {1} {2}", quoteNo, quoteRevNo, lineItemType);
-                start.UseShellExecute = false;
-                start.RedirectStandardOutput = true;
-                start.CreateNoWindow = true;
-                string result = "";
-                using (Process process = Process.Start(start))
-                {
-                    using (StreamReader reader = process.StandardOutput)
-                    {
-                        result = reader.ReadToEnd();
-                    }
-                }
-                List<string> _recommendations = result.Split("\r\n").ToList();
-                _recommendations.RemoveAt(0);
-                _recommendations.RemoveAt(_recommendations.Count - 1);
-                foreach (string _recommendation in _recommendations)
-                {
-                    string recommendation = _recommendation.Trim();
-                    recommendation = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
-                    string option = recommendation.Substring(0, recommendation.IndexOf(' ')).Trim();
-                    string optiontext = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
-                    recommendation = "(" + option + ") " + optiontext;
-                    recommendations.Add(recommendation);
-                }
-                return (lineItemTypeToDescription[lineItemType], recommendations);
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                WriteToErrorLog("QuoteLineItemOptionSuggestions " + quoteNo + "-" + quoteRevNo, ex.Message, user);
-                return (lineItemTypeToDescription[lineItemType], recommendations);
-            }
-        }
-        
+        //public static (string LineItemDescription, List<string> Suggestions) QuoteLineItemOptionSuggestions(string quoteNo, string quoteRevNo, string lineItemType, User user)
+        //{
+        //    List<string> recommendations = new List<string>();
+        //    try
+        //    {
+        //        //recommendations.Add("Testing");
+        //        ProcessStartInfo start = new ProcessStartInfo();
+        //        //start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations.exe";
+        //        start.FileName = @"\\nshare\VB_Apps\NatoliOrderInterface\Option_Recommendations\dist\Option_Recommendations\Option_Recommendations.exe";
+        //        start.Arguments = string.Format("{0} {1} {2}", quoteNo, quoteRevNo, lineItemType);
+        //        start.UseShellExecute = false;
+        //        start.RedirectStandardOutput = true;
+        //        start.CreateNoWindow = true;
+        //        string result = "";
+        //        using (Process process = Process.Start(start))
+        //        {
+        //            using (StreamReader reader = process.StandardOutput)
+        //            {
+        //                result = reader.ReadToEnd();
+        //            }
+        //        }
+        //        List<string> _recommendations = result.Split("\r\n").ToList();
+        //        _recommendations.RemoveAt(0);
+        //        _recommendations.RemoveAt(_recommendations.Count - 1);
+        //        foreach (string _recommendation in _recommendations)
+        //        {
+        //            string recommendation = _recommendation.Trim();
+        //            recommendation = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
+        //            string option = recommendation.Substring(0, recommendation.IndexOf(' ')).Trim();
+        //            string optiontext = recommendation.Substring(recommendation.IndexOf(' ')).Trim();
+        //            recommendation = "(" + option + ") " + optiontext;
+        //            recommendations.Add(recommendation);
+        //        }
+        //        return (lineItemTypeToDescription[lineItemType], recommendations);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //MessageBox.Show(ex.Message);
+        //        WriteToErrorLog("QuoteLineItemOptionSuggestions " + quoteNo + "-" + quoteRevNo, ex.Message, user);
+        //        return (lineItemTypeToDescription[lineItemType], recommendations);
+        //    }
+        //}
     }
 }
