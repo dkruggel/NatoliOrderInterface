@@ -79,16 +79,31 @@ namespace NatoliOrderInterface
                 string existing = sr.ReadToEnd();
                 existing = existing.TrimEnd();
                 sr.Close();
-                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-                sw.Write(
-                    "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
-                    "DateTime: " + DateTime.Now + "\r\n\t" +
-                    "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
-                    "Location: " + errorLoc + "\r\n\t" +
-                    "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
-                    existing);
-                sw.Flush();
-                sw.Close();
+                if (existing == null || existing.Trim().Length == 0)
+                {
+                    System.IO.StreamWriter sw = new System.IO.StreamWriter(@"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log_Appends.txt", true);
+                    sw.Write(
+                        "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
+                        "DateTime: " + DateTime.Now + "\r\n\t" +
+                        "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
+                        "Location: " + errorLoc + "\r\n\t" +
+                        "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n");
+                    sw.Flush();
+                    sw.Close();
+                }
+                else
+                {
+                    System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                    sw.Write(
+                        "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
+                        "DateTime: " + DateTime.Now + "\r\n\t" +
+                        "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
+                        "Location: " + errorLoc + "\r\n\t" +
+                        "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
+                        existing);
+                    sw.Flush();
+                    sw.Close();
+                }
             }
             catch
             {
