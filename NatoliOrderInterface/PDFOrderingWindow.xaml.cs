@@ -5,25 +5,35 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Windows.Media.Effects;
 using System.Windows.Shapes;
-using System.Linq;
 
 namespace NatoliOrderInterface
 {
     public partial class PDFOrderingWindow : Window, IMethods
     {
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Win32Point
+        {
+            public Int32 X;
+            public Int32 Y;
+        };
         private readonly ObservableCollection<TextBlock> textBlockList = new ObservableCollection<TextBlock>();
         private readonly string directory = "";
         private readonly User user = null;
         private readonly WorkOrder workOrder = null;
+        private Window _dragdropWindow = null;
         public PDFOrderingWindow(List<string> filePaths, OrderInfoWindow orderInfoWindow, WorkOrder workOrder, User user)
         {
             Owner = orderInfoWindow;
@@ -35,60 +45,28 @@ namespace NatoliOrderInterface
             Dictionary<int,string> filesDict = new Dictionary<int, string>();
             foreach (string file in filePaths)
             {
+                int metric = 0;
                 string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                if (lineItemName.EndsWith("_M"))
+                {
+                    lineItemName = lineItemName.Remove(lineItemName.Length - 2);
+                    metric++;
+                }
                 int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
                 if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
                 {
                     lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
+                    lineItemNumber = lineItemNumber * 2 + metric;
                 }
-                filesDict.Add(lineItemNumber, lineItemName);
+                filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
             }
             foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp=>kvp.Key))
             {
                 textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
             }
-            ListBox1.ItemsSource = textBlockList;
-            System.Windows.Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
-            itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Drop)));
-            ListBox1.ItemContainerStyle = itemContainerStyle;
+
+            DragAndDrop dragAndDrop = new DragAndDrop(ListBox1, textBlockList);
             this.Show();
-        }
-
-        private void ListBoxItem_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && sender is ListBoxItem)
-            {
-                ListBoxItem draggedItem = sender as ListBoxItem;
-                DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
-                draggedItem.IsSelected = true;
-            }
-        }
-
-        private void ListBoxItem_Drop(object sender, DragEventArgs e)
-        {
-            // This needs to be "Data" to trigger "DataContext" changed and update the view from the changed itemsource.
-            TextBlock droppedData = e.Data.GetData(typeof(TextBlock)) as TextBlock;
-            TextBlock target = ((ListBoxItem)(sender)).DataContext as TextBlock;
-
-            int removedIdx = ListBox1.Items.IndexOf(droppedData);
-            int targetIdx = ListBox1.Items.IndexOf(target);
-
-            if (removedIdx < targetIdx)
-            {
-                textBlockList.Insert(targetIdx + 1, droppedData);
-                textBlockList.RemoveAt(removedIdx);
-            }
-            else
-            {
-                int remIdx = removedIdx + 1;
-                if (textBlockList.Count + 1 > remIdx)
-                {
-                    textBlockList.Insert(targetIdx, droppedData);
-                    textBlockList.RemoveAt(remIdx);
-                }
-            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -102,7 +80,7 @@ namespace NatoliOrderInterface
             {
                 string tempFile = "";
                 int file_count = 1;
-                foreach (TextBlock textBlock in textBlockList)
+                foreach (TextBlock textBlock in ListBox1.ItemsSource)
                 {
                     string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
                     string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);

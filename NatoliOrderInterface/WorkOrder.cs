@@ -674,6 +674,13 @@ namespace NatoliOrderInterface
             set { this.shippingNote = value; }
         }
 
+        private string shipWithWONo = "";
+        public string ShipWithWONo
+        {
+            get { return shipWithWONo; }
+            set { this.shipWithWONo = value; }
+        }
+
 
         private List<OrderLineItem> lineItemsList;
         public List<OrderLineItem> LineItemsList
@@ -764,6 +771,7 @@ namespace NatoliOrderInterface
             inspectionNote = string.IsNullOrEmpty(orderHeader.InspectionNote) ? "" : orderHeader.InspectionNote.Trim();
             etchingNote = string.IsNullOrEmpty(orderHeader.EtchingNote) ? "" : orderHeader.EtchingNote.Trim();
             shippingNote = string.IsNullOrEmpty(orderHeader.ShippingNote) ? "" : orderHeader.ShippingNote.Trim();
+            shipWithWONo = string.IsNullOrEmpty(orderHeader.ShipWithWono) ? "" : orderHeader.ShipWithWono.Trim();
             this.csr = string.IsNullOrEmpty(csr) ? "" : csr.Trim();
             accountNumber = string.IsNullOrEmpty(orderHeader.ShipToAccountNo) ? "" : orderHeader.ShipToAccountNo.Trim();
             terms = string.IsNullOrEmpty(orderHeader.TermsId) ? "" : orderHeader.TermsId.Trim();

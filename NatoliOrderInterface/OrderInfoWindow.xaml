@@ -580,6 +580,10 @@
                                 <TextBlock Text="Shipping:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
                                 <TextBlock x:Name="ShippingNote"/>
                             </DockPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                <TextBlock Text="Ships With:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                <TextBlock x:Name="ShipsWith"/>
+                            </DockPanel>
                         </DockPanel>
                     </DockPanel>
                 </DockPanel>
