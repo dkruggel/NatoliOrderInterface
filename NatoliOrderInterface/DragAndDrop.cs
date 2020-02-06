@@ -22,7 +22,7 @@ using System.Windows.Shapes;
 
 namespace NatoliOrderInterface
 {
-    class DragAndDrop : Window
+    class DragAndDrop : Window , IMethods
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -40,117 +40,150 @@ namespace NatoliOrderInterface
         public ObservableCollection<TextBlock> TextBlocks = new ObservableCollection<TextBlock>();
         private TextBlock DraggedTextBlock = null;
         public ListBox ListBox = new ListBox();
+        private User user;
 
 
-        public DragAndDrop(ListBox listBox, ObservableCollection<TextBlock> textBlocks, double depthOfShadow = 4, double directionOfDropShadow = 315)
+        public DragAndDrop(User _user, ListBox _listBox, ObservableCollection<TextBlock> _textBlocks, double depthOfShadow = 4, double directionOfDropShadow = 315)
         {
-            DirectionOfDropShadow = directionOfDropShadow;
-            DepthOfShadow = depthOfShadow;
-            TextBlocks = textBlocks;
-            ListBox = listBox;
-            System.Windows.Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
-            itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
-            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
-            ListBox.ItemContainerStyle = itemContainerStyle;
-            ListBox.ItemsSource = TextBlocks;
+            user = _user;
+            try
+            {
+
+                DirectionOfDropShadow = directionOfDropShadow;
+                DepthOfShadow = depthOfShadow;
+                TextBlocks = _textBlocks;
+                ListBox = _listBox;
+                System.Windows.Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
+                itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
+                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
+                itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+                ListBox.ItemContainerStyle = itemContainerStyle;
+                ListBox.ItemsSource = TextBlocks;
+            }
+            catch(Exception ex)
+            {
+                IMethods.WriteToErrorLog("DragAndDrop.cs", ex.Message, user);
+            }
         }
 
         public void CreateDragDropWindow(Visual dragElement)
         {
-            this.DragDropWindow = new Window();
-            DragDropWindow.WindowStyle = WindowStyle.None;
-            DragDropWindow.AllowsTransparency = true;
-            DragDropWindow.AllowDrop = false;
-            DragDropWindow.Background = null;
-            DragDropWindow.IsHitTestVisible = false;
-            DragDropWindow.SizeToContent = SizeToContent.WidthAndHeight;
-            DragDropWindow.Topmost = true;
-            DragDropWindow.ShowInTaskbar = false;
-
-            Rectangle r = new Rectangle();
-            r.Width = ((FrameworkElement)dragElement).ActualWidth + Math.Abs(DepthOfShadow * Math.Cos(DirectionOfDropShadow));
-            r.Height = ((FrameworkElement)dragElement).ActualHeight + Math.Abs(DepthOfShadow * Math.Sin(DirectionOfDropShadow));
-            r.Fill = new VisualBrush(dragElement);
-            this.DragDropWindow.Content = r;
-
-
-            Win32Point w32Mouse = new Win32Point();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            try
             {
-                GetCursorPos(ref w32Mouse);
+                this.DragDropWindow = new Window();
+                DragDropWindow.WindowStyle = WindowStyle.None;
+                DragDropWindow.AllowsTransparency = true;
+                DragDropWindow.AllowDrop = false;
+                DragDropWindow.Background = null;
+                DragDropWindow.IsHitTestVisible = false;
+                DragDropWindow.SizeToContent = SizeToContent.WidthAndHeight;
+                DragDropWindow.Topmost = true;
+                DragDropWindow.ShowInTaskbar = false;
+
+                Rectangle r = new Rectangle();
+                r.Width = ((FrameworkElement)dragElement).ActualWidth + Math.Abs(DepthOfShadow * Math.Cos(DirectionOfDropShadow));
+                r.Height = ((FrameworkElement)dragElement).ActualHeight + Math.Abs(DepthOfShadow * Math.Sin(DirectionOfDropShadow));
+                r.Fill = new VisualBrush(dragElement);
+                this.DragDropWindow.Content = r;
+
+
+                Win32Point w32Mouse = new Win32Point();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    GetCursorPos(ref w32Mouse);
+                }
+                else
+                {
+                    // How to do on Linux and OSX?
+                }
+
+
+                this.DragDropWindow.Left = w32Mouse.X;
+                this.DragDropWindow.Top = w32Mouse.Y;
+                this.DragDropWindow.Show();
             }
-            else
+            catch (Exception ex)
             {
-                // How to do on Linux and OSX?
+                IMethods.WriteToErrorLog("DragAndDrop.cs => CreateDragDropWindow", ex.Message, user);
             }
-
-
-            this.DragDropWindow.Left = w32Mouse.X;
-            this.DragDropWindow.Top = w32Mouse.Y;
-            this.DragDropWindow.Show();
         }
         public void ListBoxItem_PreviewDragLeave(object sender, DragEventArgs e)
         {
-            DraggedTextBlock = ((sender as ListBoxItem).Content) as TextBlock;
+            try
+            {
+                DraggedTextBlock = ((sender as ListBoxItem).Content) as TextBlock;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("DragAndDrop.cs => ListBoxItem_PreviewDragLeave", ex.Message, user);
+            }
         }
 
         public void ListBoxItem_DraggingFeedback(object sender, GiveFeedbackEventArgs e)
         {
-            DraggedTextBlock = ((sender as ListBoxItem).Content) as TextBlock;
-            if (e.Effects == DragDropEffects.Move)
+            try
             {
-                e.UseDefaultCursors = false;
-                Mouse.SetCursor(Cursors.SizeAll);
-                if (DragDropWindow == null)
+                DraggedTextBlock = ((sender as ListBoxItem).Content) as TextBlock;
+                if (e.Effects == DragDropEffects.Move)
                 {
-                    CreateDragDropWindow(DraggedTextBlock);
-                    DraggedTextBlock.Effect = new DropShadowEffect
+                    e.UseDefaultCursors = false;
+                    Mouse.SetCursor(Cursors.SizeAll);
+                    if (DragDropWindow == null)
                     {
-                        Color = new Color { A = 70, R = 0, G = 0, B = 0 },
-                        Direction = DirectionOfDropShadow,
-                        ShadowDepth = DepthOfShadow,
-                        Opacity = .75,
-                    };
-                }
-                else
-                {
-                    Win32Point w32Mouse = new Win32Point();
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        GetCursorPos(ref w32Mouse);
+                        CreateDragDropWindow(DraggedTextBlock);
+                        DraggedTextBlock.Effect = new DropShadowEffect
+                        {
+                            Color = new Color { A = 70, R = 0, G = 0, B = 0 },
+                            Direction = DirectionOfDropShadow,
+                            ShadowDepth = DepthOfShadow,
+                            Opacity = .75,
+                        };
                     }
                     else
                     {
-                        // How to do on Linux and OSX?
-                    }
+                        Win32Point w32Mouse = new Win32Point();
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            GetCursorPos(ref w32Mouse);
+                        }
+                        else
+                        {
+                            // How to do on Linux and OSX?
+                        }
 
-                    this.DragDropWindow.Left = w32Mouse.X;
-                    this.DragDropWindow.Top = w32Mouse.Y;
-                }
-            }
-            else if (e.Effects == DragDropEffects.None)
-            {
-                if (CloseWindow())
-                {
-                    foreach (UIElement uIElement in ListBox.Items)
-                    {
-                        uIElement.ClearValue(EffectProperty);
+                        this.DragDropWindow.Left = w32Mouse.X;
+                        this.DragDropWindow.Top = w32Mouse.Y;
                     }
-                    return;
                 }
+                else if (e.Effects == DragDropEffects.None)
+                {
+                    if (CloseWindow())
+                    {
+                        foreach (UIElement uIElement in ListBox.Items)
+                        {
+                            uIElement.ClearValue(EffectProperty);
+                        }
+                        return;
+                    }
+                }
+                else
+                {
+                    e.UseDefaultCursors = true;
+                }
+                e.Handled = true;
             }
-            else
+            catch (Exception ex)
             {
-                e.UseDefaultCursors = true;
+                IMethods.WriteToErrorLog("DragAndDrop.cs => ListBoxItem_DraggingFeedback", ex.Message, user);
             }
-            e.Handled = true;
         }
 
         public void ListBoxItem_PreviewMouseMove(object sender, MouseEventArgs e)
         {
+            try
+            { 
             if (e.LeftButton == MouseButtonState.Pressed && sender is ListBoxItem)
             {
                 ListBoxItem draggedItem = sender as ListBoxItem;
@@ -166,10 +199,17 @@ namespace NatoliOrderInterface
                 CreateDragDropWindow(textBlock);
                 DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
             }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("DragAndDrop.cs => ListBoxItem_PreviewMouseMove", ex.Message, user);
+            }
         }
 
         public void ListBoxItem_Dropping(object sender, DragEventArgs e)
         {
+            try
+            { 
             TextBlock droppedData = e.Data.GetData(typeof(TextBlock)) as TextBlock;
             TextBlock target = ((ListBoxItem)(sender)).DataContext as TextBlock;
 
@@ -196,17 +236,30 @@ namespace NatoliOrderInterface
             CloseWindow();
             droppedData.ClearValue(EffectProperty);
             Mouse.SetCursor(Cursors.Arrow);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("DragAndDrop.cs => ListBoxItem_Dropping", ex.Message, user);
+            }
         }
         public bool CloseWindow()
         {
-            if (this.DragDropWindow != null)
+            try
             {
-                this.DragDropWindow.Close();
-                this.DragDropWindow = null;
-                return true;
+                if (this.DragDropWindow != null)
+                {
+                    this.DragDropWindow.Close();
+                    this.DragDropWindow = null;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception ex)
             {
+                IMethods.WriteToErrorLog("DragAndDrop.cs => CloseWindow", ex.Message, user);
                 return false;
             }
         }
