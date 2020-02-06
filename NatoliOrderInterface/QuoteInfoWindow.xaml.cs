@@ -51,6 +51,7 @@ namespace NatoliOrderInterface
         private bool? isChecked = false;
         private bool errorNotificationPopped = false;
         private bool validData;
+        private bool isFirstTimeEntering;
         private WorkOrder workOrder;
 
         public QuoteInfoWindow()
@@ -891,6 +892,10 @@ namespace NatoliOrderInterface
 
                     bool priceChanged = false;
                     TextBox priceBase = new TextBox();
+                    priceBase.TabIndex = 0;
+                    priceBase.GotFocus += Price_GotFocus;
+                    priceBase.GotMouseCapture += Price_GotMouseCapture;
+                    priceBase.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                     priceBase.IsEnabled = !isConvertedToOrder;
                     double basePrice = 0;
                     try
@@ -912,14 +917,14 @@ namespace NatoliOrderInterface
                                                                                  x.QuoteNo == quote.QuoteNumber &&
                                                                                  x.Revision == quote.QuoteRevNo))
                                 {
-                                    if (Math.Round(basePrice, 2) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                    if (Math.Round(basePrice, 2, MidpointRounding.ToPositiveInfinity) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
                                                                                     x.MachineType == quoteLineItem.MachinePriceCode &&
                                                                                     x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
                                                                                     x.Shape == quoteLineItem.ShapePriceCode &&
                                                                                     x.PunchType == lineItem.Value &&
                                                                                     x.QuantityOrdered >= x.OrderQty &&
                                                                                     x.QuoteNo == quote.QuoteNumber &&
-                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2))
+                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2, MidpointRounding.ToPositiveInfinity))
                                     {
                                         priceChanged = true;
                                     }
@@ -1008,6 +1013,7 @@ namespace NatoliOrderInterface
                     commentHeader.SetValue(Grid.RowSpanProperty, 1);
 
                     TextBox commentBox = new TextBox();
+                    commentBox.IsTabStop = false;
                     commentBox.TextWrapping = TextWrapping.Wrap;
                     commentBox.IsEnabled = !isConvertedToOrder;
                     commentBox.Name = lineItem.Value.ToString().ToUpper() + lineItem.Key.ToString() + "SMIScratchPadComment";
@@ -1088,6 +1094,10 @@ namespace NatoliOrderInterface
                             dollarSign.SetValue(Grid.ColumnSpanProperty, 1);
 
                             TextBox price = new TextBox();
+                            price.TabIndex = q + 1;
+                            price.GotFocus += Price_GotFocus;
+                            price.GotMouseCapture += Price_GotMouseCapture;
+                            price.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                             price.IsEnabled = !isConvertedToOrder;
                             price.HorizontalAlignment = HorizontalAlignment.Stretch;
                             price.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1146,6 +1156,9 @@ namespace NatoliOrderInterface
                     percentSignPM.SetValue(Grid.ColumnSpanProperty, 1);
 
                     TextBox pricePM = new TextBox();
+                    pricePM.GotFocus += Price_GotFocus;
+                    pricePM.GotMouseCapture += Price_GotMouseCapture;
+                    pricePM.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                     pricePM.IsEnabled = !isConvertedToOrder;
                     pricePM.Text = exists ? string.Format("{0:0.00}", _nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).PercentMark) : "0.00";
                     pricePM.Name = "PercentMark" + lineItem.Key + lineItem.Value;
@@ -1195,6 +1208,9 @@ namespace NatoliOrderInterface
                     dollarSignUnitPrice.SetValue(Grid.ColumnSpanProperty, 1);
 
                     TextBox unitPriceTextBox = new TextBox();
+                    unitPriceTextBox.GotFocus += Price_GotFocus;
+                    unitPriceTextBox.GotMouseCapture += Price_GotMouseCapture;
+                    unitPriceTextBox.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                     unitPriceTextBox.IsEnabled = !(quote.OrderNo > 0) && quoteDetails.UnitPriceOverride == true ? true : false;
                     unitPriceTextBox.Text = string.Format("{0:0.00}", quoteLineItem.UnitPrice);
                     unitPriceTextBox.TextChanged += UnitPriceTextBox_TextChanged;
@@ -1277,6 +1293,9 @@ namespace NatoliOrderInterface
                     dollarSignExtendedPrice.SetValue(Grid.ColumnSpanProperty, 1);
 
                     TextBox extendedPriceTextBox = new TextBox();
+                    extendedPriceTextBox.GotFocus += Price_GotFocus;
+                    extendedPriceTextBox.GotMouseCapture += Price_GotMouseCapture;
+                    extendedPriceTextBox.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                     extendedPriceTextBox.IsEnabled = !isConvertedToOrder;
                     extendedPriceTextBox.Text = string.Format("{0:0.00}", quoteLineItem.ExtendedPrice);
                     extendedPriceTextBox.Name = "ExtendedPrice" + lineItem.Key + lineItem.Value;
@@ -1324,6 +1343,45 @@ namespace NatoliOrderInterface
             _nat02Context.Dispose();
             _nat01Context.Dispose();
             _natbcContext.Dispose();
+        }
+
+        //private void Price_GotMouseCapture(object sender, EventArgs e)
+        //{
+        //    TextBox textBox = (TextBox)sender;
+        //    if (!textBox.IsSelectionActive)
+        //    {
+        //        textBox.SelectAll();
+        //        textBox.SelectionStart = 0;
+        //        textBox.SelectionLength = textBox.Text.Length;
+        //    }            
+        //}
+        //private void Price_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        //{
+        //    TextBox textBox = (TextBox)sender;
+        //    textBox.SelectAll();
+        //    textBox.SelectionStart = 0;
+        //    textBox.SelectionLength = textBox.Text.Length;
+        //}
+
+        private void Price_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+
+            textBox.CaptureMouse();
+        }
+
+        private void Price_GotMouseCapture(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+
+            textBox.SelectAll();
+        }
+
+        private void Price_IsMouseCaptureWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+
+            textBox.SelectAll();
         }
 
         private void ChangeSMIScrollHeights()
@@ -1538,11 +1596,11 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         //}
                     }
                 }
@@ -1662,12 +1720,12 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
 
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         //}
                     }
                 }
@@ -1781,11 +1839,11 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
                         //}
                     }
                 }
@@ -1809,7 +1867,7 @@ namespace NatoliOrderInterface
                     {
                         if (double.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out double unitPrice))
                         {
-                            double extendedPrice = Math.Round(unitPrice * (double)qty, 2);
+                            double extendedPrice = Math.Round(unitPrice * (double)qty, 2, MidpointRounding.ToPositiveInfinity);
                             foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "ExtendedPrice"))
                             {
                                 TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag.ToString() == "ExtendedPrice");
