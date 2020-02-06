@@ -187,7 +187,7 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
-
+                
                 //ReportingWindow reportingWindow = new ReportingWindow(this);
                 //reportingWindow.Show();
             }
@@ -843,47 +843,28 @@ namespace NatoliOrderInterface
         }
         public void CheckForAvailableUpdatesAndLaunch(User user)
         {
-            try
-            {
-                // Get the current app's package for the current user.
-                //PackageManager pm = new PackageManager();
-                // Package package = pm.FindPackageForUser(string.Empty, targetPackageFullName);
-                //PackageUpdateAvailabilityResult result = await Package.Current.CheckUpdateAvailabilityAsync();
-                //switch (result.Availability)
-                //{
-                //    case PackageUpdateAvailability.Available:
-                //        //MessageBox.Show("There is a new update available.");
-                //        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
-                //        break;
-                //    case PackageUpdateAvailability.Required:
-                //        break;
-                //    case PackageUpdateAvailability.NoUpdates:
-                //        break;
-                //    case PackageUpdateAvailability.Unknown:
-                //    default:
-                //        break;
-                //}
+            //try
+            //{                
+            //    string currentVersion = user.PackageVersion;
+            //    using var _nat02Context = new NAT02Context();
+            //    string minimumVersion = _nat02Context.EoiSettings.First(s => s.EmployeeId == "EPACKG").PackageVersion;
+            //    _nat02Context.Dispose();
+            //    string[] currentVersionNumbers = currentVersion.Split('.');
+            //    string[] minimumVersionNumbers = minimumVersion.Split('.');
+            //    for (int i = 0; i < 4; i++)
+            //    {
+            //        if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
+            //        {
+            //            Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "Test\\" + "NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "x64.appxbundle");
+            //            break;
+            //        }
+            //    }
                 
-                string currentVersion = user.PackageVersion;
-                using var _nat02Context = new NAT02Context();
-                string minimumVersion = _nat02Context.EoiSettings.First(s => s.EmployeeId == "EPACKG").PackageVersion;
-                _nat02Context.Dispose();
-                string[] currentVersionNumbers = currentVersion.Split('.');
-                string[] minimumVersionNumbers = minimumVersion.Split('.');
-                for (int i = 0; i < 4; i++)
-                {
-                    if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
-                    {
-                        Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "Test\\" + "NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "x64.appxbundle");
-                        break;
-                    }
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
+            //}
         }
 
         private void PrintDrawings_Click(object sender, RoutedEventArgs e)

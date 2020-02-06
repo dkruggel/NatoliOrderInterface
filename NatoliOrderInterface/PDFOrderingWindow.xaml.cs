@@ -65,7 +65,7 @@ namespace NatoliOrderInterface
                 textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
             }
 
-            DragAndDrop dragAndDrop = new DragAndDrop(ListBox1, textBlockList);
+            DragAndDrop dragAndDrop = new DragAndDrop(user,ListBox1, textBlockList);
             this.Show();
         }
 
