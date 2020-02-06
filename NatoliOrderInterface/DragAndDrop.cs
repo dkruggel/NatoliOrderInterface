@@ -9,16 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
-using System.Windows.Shapes;
 
 namespace NatoliOrderInterface
 {
@@ -26,6 +16,7 @@ namespace NatoliOrderInterface
     {
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
+
         internal static extern bool GetCursorPos(ref Win32Point pt);
 
         [StructLayout(LayoutKind.Sequential)]
