@@ -13,8 +13,7 @@ namespace NatoliOrderInterface
         internal static extern bool SetForegroundWindow(IntPtr hWnd);
         [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
         internal static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        
         #endregion
     }
 }
