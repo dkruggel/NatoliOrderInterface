@@ -2000,7 +2000,11 @@ namespace NatoliOrderInterface
                 foreach (string file in filePaths)
                 {
                     string lineItemName = file.GetFileNameFromPath();
-                    if (!workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
+                    if (lineItemName.EndsWith("_M"))
+                    {
+                        lineItemName =lineItemName.Remove(lineItemName.Length - 2);
+                    }
+                    if (!workOrder.lineItems.Any(l => (l.Value==null ? "" : l.Value.Trim()) == lineItemName.Trim()))
                     {
                         hasUnknownLineItemName = true;
                     }
