@@ -574,15 +574,15 @@
                             </DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,4">
                                 <TextBlock Text="Etching:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="EtchingNote"/>
+                                <TextBlock x:Name="EtchingNote" TextWrapping="Wrap"/>
                             </DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,4">
                                 <TextBlock Text="Shipping:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="ShippingNote"/>
+                                <TextBlock x:Name="ShippingNote" TextWrapping="Wrap"/>
                             </DockPanel>
                             <DockPanel DockPanel.Dock="Top" Margin="0,4">
                                 <TextBlock Text="Ships With:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="ShipsWith"/>
+                                <TextBlock x:Name="ShipsWith" TextWrapping="Wrap"/>
                             </DockPanel>
                         </DockPanel>
                     </DockPanel>

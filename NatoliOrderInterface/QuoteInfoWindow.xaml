@@ -214,9 +214,9 @@
                                         <TextBlock Text="SUBTOTAL:" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Arial"/>
                                     </Grid>
                                     <Grid Margin="{Binding Margin, ElementName=ExtendedValueGrid}" VerticalAlignment="Top" Height="50">
-                                        <TextBlock x:Name="Subtotal" Text="$3,709.90" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="Arial" Margin="0,4,0,0"/>
-                                        <TextBlock x:Name="Markdown" Text="$709.90" HorizontalAlignment="Center" VerticalAlignment="Top" FontFamily="Arial" Margin="0,20,0,0"/>
-                                        <TextBlock x:Name="Freight" Text="$1,709.90" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontFamily="Arial"/>
+                                        <TextBlock x:Name="Subtotal" Text="$3,709.90" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Arial" Margin="0,4,24,0"/>
+                                        <TextBlock x:Name="Markdown" Text="$709.90" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Arial" Margin="0,20,24,0"/>
+                                        <TextBlock x:Name="Freight" Text="$1,709.90" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontFamily="Arial" Margin="0,0,24,0"/>
                                     </Grid>
                                     <TextBlock Text="ALL DIMENSIONS ARE IN INCHES" FontFamily="TimesNewRoman" FontWeight="Bold" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,54,0,0" VerticalAlignment="Top">
                                         <TextBlock.Background>
