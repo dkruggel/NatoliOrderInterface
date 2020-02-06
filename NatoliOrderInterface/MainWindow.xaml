@@ -372,7 +372,7 @@
                     <TextBlock Text="Project#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
                     <TextBox x:Name="ProjectSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,2,0" Width="50" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" LostFocus="ProjectSearchTextBlock_LostFocus"/>
                     <TextBlock Text="-" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                    <TextBox x:Name="ProjectRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown"/>
+                    <TextBox x:Name="ProjectRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" GotFocus="ProjectrevNoSearchTextBlock_GotFocus" GotMouseCapture="ProjectrevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="ProjectrevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
                     <Grid Width="110">
                         <Button x:Name="ProjectSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Project" Click="ProjectSearchButton_Click"/>
                     </Grid>
@@ -382,7 +382,7 @@
                         <TextBlock Text="Quote#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
                         <TextBox x:Name="QuoteSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,2,0" Width="50" PreviewKeyDown="QuoteSearchTextBlock_PreviewKeyDown" LostFocus="QuoteSearchTextBlock_LostFocus"/>
                         <TextBlock Text="-" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                        <TextBox x:Name="QuoteRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="QuoteSearchTextBlock_PreviewKeyDown"/>
+                        <TextBox x:Name="QuoteRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="QuoteSearchTextBlock_PreviewKeyDown" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
                     <Grid Width="110">
                         <Button x:Name="QuoteSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Quote" Click="QuoteSearchButton_Click"/>
                     </Grid>
