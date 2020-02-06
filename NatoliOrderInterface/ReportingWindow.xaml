@@ -3,26 +3,36 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Reporting" Height="1025" Width="1860">
+        Title="Reporting" Height="1025" Width="1860" WindowStartupLocation="CenterOwner">
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="50">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="200"/> <!-- Note and Spacing -->
+                <ColumnDefinition Width="100"/> <!-- Beginning Date Picker -->
+                <ColumnDefinition Width="50"/> <!-- Space -->
+                <ColumnDefinition Width="100"/> <!-- End Date Picker -->
+                <ColumnDefinition Width="150"/> <!-- Space -->
+                <ColumnDefinition Width="40"/> <!-- RangeIntTextBox -->
+                <ColumnDefinition Width="10"/> <!-- Space -->
+                <ColumnDefinition Width="80"/> <!-- RangePeriodComboBox -->
+                <ColumnDefinition Width="20"/> <!-- Space -->
             </Grid.ColumnDefinitions>
-            <Label Content="Menu and stuff up here" Grid.Column="0"/>
+            <Label Content="Menu and stuff up here" Grid.Column="0" Height="30"/>
+            <DatePicker Name="BeginningDatePicker" Grid.Column="1" Height="25"/>
+            <DatePicker Name="EndDatePicker" Grid.Column="3" Height="25"/>
+            <TextBox x:Name="RangeIntTextBox" Grid.Column="5" Height="22"/>
+            <ComboBox Name="RangePeriodComboBox" Grid.Column="7" Height="22"/>
+            <!--<TextBox x:Name="BeginningTextBox" Grid.Column="1" Height="20"/>
+            <TextBox x:Name="EndTextBox" Grid.Column="3" Height="20"/>-->
         </Grid>
 
         <StackPanel DockPanel.Dock="Left" Width="150">
-            <Button Content="Buttons" Width="75" Height="25"/>
+            <Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Buttons" Width="75" Height="25"/>
         </StackPanel>
 
         <Grid>
-            <StackPanel>
+            <StackPanel Orientation="Vertical">
                 <!--<Border BorderBrush="Black" BorderThickness="2,2,2,5">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -217,10 +227,67 @@
                     </Grid>
                 </Border>-->
 
-                <DataGrid>
-                    
-                </DataGrid>
-                
+                <Grid HorizontalAlignment="Stretch" Height="400">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="450"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DataGrid x:Name="QuoteConversionDataGrid" ItemsSource="{Binding}" AlternatingRowBackground="LightBlue" AlternationCount="2" Width="350" Grid.Column="0" MouseUp="QuoteConversionDataGrid_MouseUp" HorizontalAlignment="Left"/>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="100%" Grid.Row="0" VerticalAlignment="Top"/>
+                        <Label Content="75%" Grid.Row="1" VerticalAlignment="Center"/>
+                        <Label Content="50%" Grid.Row="2" VerticalAlignment="Center"/>
+                        <Label Content="25%" Grid.Row="3" VerticalAlignment="Center"/>
+                        <Label Content="0%" Grid.Row="4" VerticalAlignment="Bottom"/>
+                    </Grid>
+                    <!--<Grid x:Name="LineGraph" Grid.Column="2" Margin="5,0,50,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Line x:Name="Line1" X1="0" Y1="0" X2="0" Y2="0" Grid.Column="0" Grid.ColumnSpan="6" SnapsToDevicePixels="False" Stroke="Black"/>
+                        <Line x:Name="Line2" X1="0" Y1="0" X2="0" Y2="0" Grid.Column="0" Grid.ColumnSpan="6" SnapsToDevicePixels="False" Stroke="Black"/>
+                        <Line x:Name="Line3" X1="0" Y1="0" X2="0" Y2="0" Grid.Column="0" Grid.ColumnSpan="6" SnapsToDevicePixels="False" Stroke="Black"/>
+                        <Line x:Name="Line4" X1="0" Y1="0" X2="0" Y2="0" Grid.Column="0" Grid.ColumnSpan="6" SnapsToDevicePixels="False" Stroke="Black"/>
+                        <Line x:Name="Line5" X1="0" Y1="0" X2="0" Y2="0" Grid.Column="0" Grid.ColumnSpan="6" SnapsToDevicePixels="False" Stroke="Black"/>
+                        <Label Content="6" HorizontalAlignment="Left" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <Label Content="5" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Bottom"/>
+                        <Label Content="4" HorizontalAlignment="Center" Grid.Column="2" VerticalAlignment="Bottom"/>
+                        <Label Content="3" HorizontalAlignment="Center" Grid.Column="3" VerticalAlignment="Bottom"/>
+                        <Label Content="2" HorizontalAlignment="Center" Grid.Column="4" VerticalAlignment="Bottom"/>
+                        <Label Content="1" HorizontalAlignment="Right" Grid.Column="5" VerticalAlignment="Bottom"/>
+                    </Grid>-->
+                    <Grid x:Name="BarGraph" Grid.Column="2" Margin="5,0,50,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="6" HorizontalAlignment="Center" Grid.Column="0" VerticalAlignment="Bottom"/>
+                        <Label Content="5" HorizontalAlignment="Center" Grid.Column="1" VerticalAlignment="Bottom"/>
+                        <Label Content="4" HorizontalAlignment="Center" Grid.Column="2" VerticalAlignment="Bottom"/>
+                        <Label Content="3" HorizontalAlignment="Center" Grid.Column="3" VerticalAlignment="Bottom"/>
+                        <Label Content="2" HorizontalAlignment="Center" Grid.Column="4" VerticalAlignment="Bottom"/>
+                        <Label Content="1" HorizontalAlignment="Center" Grid.Column="5" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </Grid>
+
             </StackPanel>
         </Grid>
     </DockPanel>

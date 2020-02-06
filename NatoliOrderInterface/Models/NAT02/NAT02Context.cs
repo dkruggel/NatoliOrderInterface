@@ -54,7 +54,8 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiTrackedDocuments> EoiTrackedDocuments { get; set; }
         public virtual DbSet<MultiTipSketchInformation> MultiTipSketchInformation { get; set; }
         public virtual DbSet<PartAllocation> PartAllocation { get; set; }
-
+        public virtual DbSet<VwQuoteConversion> VwQuoteConversion { get; set; }
+        public virtual DbSet<QuotePercentage> QuotePercentage { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -992,6 +993,20 @@ namespace NatoliOrderInterface.Models
                 entity.HasKey(e => new { e.QuoteNumber, e.QuoteRevNo, });
                 entity.Property(e => e.EnteredDate).HasColumnType("date");
                 entity.Property(e => e.ShipDate).HasColumnType("date");
+            });
+
+            modelBuilder.Entity<VwQuoteConversion>(entity =>
+            {
+                entity.ToView("vw_QuoteConversion");
+
+                entity.Property(e => e.NotConverted).HasColumnName("Not Converted");
+
+                entity.HasKey(e => e.Rep);
+            });
+
+            modelBuilder.Entity<QuotePercentage>(entity =>
+            {
+                entity.HasNoKey();
             });
 
             OnModelCreatingPartial(modelBuilder);
