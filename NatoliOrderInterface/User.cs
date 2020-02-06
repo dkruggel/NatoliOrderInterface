@@ -66,9 +66,18 @@ namespace NatoliOrderInterface
             EoiSettings settings = _nat02context.EoiSettings.SingleOrDefault(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower());
             try
             {
-                var version = Windows.ApplicationModel.Package.Current.Id.Version;
-                string packageVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
-                PackageVersion = packageVersion;
+                //var version = Windows.ApplicationModel.Package.Current.Id.Version;
+                //string packageVersion = string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+                //PackageVersion = packageVersion;
+
+                System.IO.StreamReader streamReader = new System.IO.StreamReader(@"\\nshare\VB_Apps\NatoliOrderInterface\version.json");
+                string version = "";
+                while (!streamReader.ReadLine().Contains(':'))
+                {
+                    version = streamReader.ReadLine().Split(':')[1].Trim('"');
+                    break;
+                }
+
                 //if (settings.PackageVersion != packageVersion)
                 //{
                 //    settings.PackageVersion = packageVersion;
@@ -78,7 +87,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                // IMethods.WriteToErrorLog("User.cs -> Export applications version.", ex.Message, null);
+                IMethods.WriteToErrorLog("User.cs -> Export applications version.", ex.Message, null);
             }
             _nat02context.Dispose();
             DomainName = domainName;
