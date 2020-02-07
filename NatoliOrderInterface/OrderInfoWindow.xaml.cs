@@ -1994,7 +1994,7 @@ namespace NatoliOrderInterface
                     MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the .pdf(s).", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName != "WorkOrdersToPrint";
+                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName == "WorkOrdersToPrint";
                 // Check to see if there is an unknown file name
                 foreach (string file in filePaths)
                 {
@@ -2003,7 +2003,10 @@ namespace NatoliOrderInterface
                     {
                         lineItemName =lineItemName.Remove(lineItemName.Length - 2);
                     }
-                    if (!workOrder.lineItems.Any(l => (l.Value==null ? "" : l.Value.Trim()) == lineItemName.Trim()))
+                    
+                    if (!workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ? 
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName : 
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
                     {
                         hasUnknownLineItemName = true;
                     }

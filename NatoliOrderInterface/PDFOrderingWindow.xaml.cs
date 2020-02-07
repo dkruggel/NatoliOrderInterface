@@ -72,9 +72,13 @@ namespace NatoliOrderInterface
                         metric++;
                     }
                     int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
-                    if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
+                    if (workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
                     {
-                        lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
+                        lineItemNumber = workOrder.lineItems.First(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName).Key;
                         lineItemNumber = lineItemNumber * 2 + metric;
                     }
                     filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
