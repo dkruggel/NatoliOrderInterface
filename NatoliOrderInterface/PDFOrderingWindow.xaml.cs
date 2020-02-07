@@ -34,65 +34,120 @@ namespace NatoliOrderInterface
         private readonly User user = null;
         private readonly WorkOrder workOrder = null;
         private Window _dragdropWindow = null;
-        public PDFOrderingWindow(List<string> filePaths, OrderInfoWindow orderInfoWindow, WorkOrder workOrder, User user)
+        public PDFOrderingWindow(List<string> filePaths, User user, MainWindow mainWindow = null , OrderInfoWindow orderInfoWindow = null, WorkOrder workOrder = null)
         {
-            Owner = orderInfoWindow;
+            if (mainWindow != null)
+            {
+                Owner = mainWindow;
+            }
+            else if(orderInfoWindow != null && workOrder != null)
+            {
+                Owner = orderInfoWindow;
+                this.workOrder = workOrder;
+            }
             InitializeComponent();
             directory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
             this.user = user;
-            this.workOrder = workOrder;
 
             Dictionary<int,string> filesDict = new Dictionary<int, string>();
-            foreach (string file in filePaths)
+            // From master folder
+            if (workOrder == null)
             {
-                int metric = 0;
-                string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
-                if (lineItemName.EndsWith("_M"))
+                foreach (string file in filePaths.OrderBy(t=>t.ToString()))
                 {
-                    lineItemName = lineItemName.Remove(lineItemName.Length - 2);
-                    metric++;
+                    string fileName = file.GetFileNameFromPath();
+                    textBlockList.Add(new TextBlock { Text = fileName });
                 }
-                int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
-                if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
-                {
-                    lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
-                    lineItemNumber = lineItemNumber * 2 + metric;
-                }
-                filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
             }
-            foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp=>kvp.Key))
+            // From WO Folder
+            else
             {
-                textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
+                foreach (string file in filePaths)
+                {
+                    int metric = 0;
+                    string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                    if (lineItemName.EndsWith("_M"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.Length - 2);
+                        metric++;
+                    }
+                    int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
+                    if (workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
+                    {
+                        lineItemNumber = workOrder.lineItems.First(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName).Key;
+                        lineItemNumber = lineItemNumber * 2 + metric;
+                    }
+                    filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
+                }
+                foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp => kvp.Key))
+                {
+                    textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
+                }
             }
 
             DragAndDrop dragAndDrop = new DragAndDrop(user,ListBox1, textBlockList);
             this.Show();
+
+            if (mainWindow != null)
+            {
+                ButtonGrid.Children.Clear();
+                ButtonGrid.ColumnDefinitions.Clear();
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                Button reorderButton = new Button { Name = "Reorder", Content = "Reorder", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(reorderButton, 0);
+                reorderButton.Click += Reorder_Click;
+                Button cancelButton = new Button { Name = "Cancel", Content = "Cancel", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(cancelButton, 1);
+                cancelButton.Click += Cancel_Click;
+                ButtonGrid.Children.Add(reorderButton);
+                ButtonGrid.Children.Add(cancelButton);
+            }
+            else if (orderInfoWindow != null && workOrder != null)
+            {
+                ButtonGrid.Children.Clear();
+                ButtonGrid.ColumnDefinitions.Clear();
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                Button signAndMoveButton = new Button { Name = "SignAndMove", Content = "Sign and Move", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(signAndMoveButton, 0);
+                signAndMoveButton.Click += SignAndMove_Click;
+                Button moveOnlyButton = new Button { Name = "MoveOnly", Content = "Move Only", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(moveOnlyButton, 1);
+                moveOnlyButton.Click += MoveOnly_Click;
+                Button cancelButton = new Button { Name = "Cancel", Content = "Cancel", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(cancelButton, 2);
+                cancelButton.Click += Cancel_Click;
+                ButtonGrid.Children.Add(signAndMoveButton);
+                ButtonGrid.Children.Add(moveOnlyButton);
+                ButtonGrid.Children.Add(cancelButton);
+            }
         }
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+        private void MovePDFsWOptionToSign(bool toBeSigned)
         {
-            this.Close();
-        }
-        
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            string tempFile = "";
+            int file_count = 1;
+            foreach (TextBlock textBlock in ListBox1.ItemsSource)
             {
-                string tempFile = "";
-                int file_count = 1;
-                foreach (TextBlock textBlock in ListBox1.ItemsSource)
+                string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
+                string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
+                if (tempFile == "")
                 {
-                    string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
-                    string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
-                    if (tempFile == "")
+                    string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
+                    foreach (string fileToDelete in filesAlreadyInDirectory)
                     {
-                        string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
-                        foreach (string fileToDelete in filesAlreadyInDirectory)
-                        {
-                            File.Delete(fileToDelete);
-                        }
+                        File.Delete(fileToDelete);
                     }
-                    tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                }
+                tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                if (toBeSigned)
+                {
                     PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
                     int page_count = pdfDocument.GetNumberOfPages();
                     Document document = new Document(pdfDocument);
@@ -104,15 +159,69 @@ namespace NatoliOrderInterface
                         document.Add(image);
                     }
                     document.Close();
-                    File.Move(tempFile, file, true);
-                    string lineItemName = file.GetFileNameFromPath();
-                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
-                    file_count++;
+                }
+                File.Move(tempFile, file, true);
+                string lineItemName = file.GetFileNameFromPath();
+                File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                file_count++;
+            }
+        }
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void SignAndMove_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MovePDFsWOptionToSign(true);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("PDFOrderingWindow => SignAndMove_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
+            }
+            this.Close();
+        }
+        private void Reorder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int i = 1;
+                foreach (TextBlock textBlock in textBlockList)
+                {
+                    string from = directory + textBlock.Text + ".pdf";
+                    string to = directory + i + "-" + textBlock.Text + ".pdf";
+                    File.Move(from, to);
+                    i++;
+                }
+                i = 1;
+                foreach (string path in Directory.GetFiles(directory).OrderBy(s => s))
+                {
+                    string name = path.GetFileNameFromPath();
+                    string from = path;
+                    string to = directory + name.Replace('-', '_') + ".pdf";
+                    File.Move(from, to);
+                    i++;
                 }
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("PDFOrderingWindow => OK_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("PDFOrderingWindow => Reorder_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
+            }
+            this.Close();
+        }
+        private void MoveOnly_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MovePDFsWOptionToSign(false);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("PDFOrderingWindow => SignAndMove_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }

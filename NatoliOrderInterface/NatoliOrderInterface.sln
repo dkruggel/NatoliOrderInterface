@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NatoliOrderInterface", "NatoliOrderInterface.csproj", "{14EC7DAC-2320-4D22-B5DD-CD42FAB21EEC}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "NatoliOrderInterface.Package", "..\NatoliOrderInterface_Package\NatoliOrderInterface.Package.wapproj", "{67B8A24C-2828-4A73-AFA3-1658AFA88289}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,36 +39,6 @@ Global
 		{14EC7DAC-2320-4D22-B5DD-CD42FAB21EEC}.Release|x64.Build.0 = Release|x64
 		{14EC7DAC-2320-4D22-B5DD-CD42FAB21EEC}.Release|x86.ActiveCfg = Release|x86
 		{14EC7DAC-2320-4D22-B5DD-CD42FAB21EEC}.Release|x86.Build.0 = Release|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM.ActiveCfg = Debug|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM.Build.0 = Debug|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM.Deploy.0 = Debug|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM64.Build.0 = Debug|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|ARM64.Deploy.0 = Debug|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x64.ActiveCfg = Debug|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x64.Build.0 = Debug|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x64.Deploy.0 = Debug|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x86.ActiveCfg = Debug|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x86.Build.0 = Debug|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Debug|x86.Deploy.0 = Debug|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM.ActiveCfg = Release|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM.Build.0 = Release|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM.Deploy.0 = Release|ARM
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM64.ActiveCfg = Release|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM64.Build.0 = Release|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|ARM64.Deploy.0 = Release|ARM64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x64.ActiveCfg = Release|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x64.Build.0 = Release|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x64.Deploy.0 = Release|x64
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x86.ActiveCfg = Release|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x86.Build.0 = Release|x86
-		{67B8A24C-2828-4A73-AFA3-1658AFA88289}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
