@@ -11480,7 +11480,5 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
-
-
     }
 }

@@ -105,7 +105,7 @@ namespace NatoliOrderInterface
                     foreach (TextBlock textBlock in textBlockList)
                     {
                         string from = directory + textBlock.Text + ".pdf";
-                        string to = directory + textBlock.Text.Remove(textBlock.Text.IndexOf('_')) + "-" + i + ".pdf";
+                        string to = directory + i + "-" + textBlock.Text + ".pdf";
                         File.Move(from, to);
                         i++;
                     }
@@ -157,6 +157,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("PDFOrderingWindow => OK_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
             }
             this.Close();
         }
