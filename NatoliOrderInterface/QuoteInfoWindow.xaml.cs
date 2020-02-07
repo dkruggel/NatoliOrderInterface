@@ -3143,7 +3143,7 @@ namespace NatoliOrderInterface
             if (header == "Price/SMI Check")
             {
                 //FillSMIAndScratchPadPage();
-                //ChangeSMIScrollHeights();
+                ChangeSMIScrollHeights();
             }
             if (header == "Order Entry Instructions")
             {

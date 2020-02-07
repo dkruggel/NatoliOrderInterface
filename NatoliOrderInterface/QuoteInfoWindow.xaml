@@ -451,7 +451,7 @@
                                 </ScrollViewer>
                             </Expander>
                             <StackPanel VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1">
-                                <TabControl x:Name="ScratchPadTabs">
+                                <TabControl x:Name="ScratchPadTabs" Margin="0,0,15,0">
                                 </TabControl>
                                 <Grid x:Name="QuoteSubtotalGrid" Margin="2,0,0,0" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
@@ -508,14 +508,13 @@
                                     <TextBox x:Name="QuoteTotal" Text="0.00" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="1" HorizontalContentAlignment="Right" IsEnabled="False"/>
                                     <TextBlock Text=" QUOTE TOTAL" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Grid.Column="2" Grid.ColumnSpan="2"/>
                                 </Grid>
-                                <Grid HorizontalAlignment="Right" Margin="0,-100,80,0">
+                                <Grid HorizontalAlignment="Right" Margin="0,-100,95,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="160"/>
                                     </Grid.ColumnDefinitions>
                                     <Button IsEnabled="True" x:Name="SaveAllLineItemsButton" Style="{StaticResource Button}" MinHeight="24" VerticalAlignment="Center" MinWidth="140" Content="Save All Line Items"   Click = "SaveAllLineItemsButton_Click"/>
                                 </Grid>
                             </StackPanel>
-
                         </Grid>
                     </StackPanel>
                 </Border>
