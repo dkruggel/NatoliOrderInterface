@@ -36,11 +36,13 @@ namespace NatoliOrderInterface
         private Window _dragdropWindow = null;
         public PDFOrderingWindow(List<string> filePaths, User user, MainWindow mainWindow = null , OrderInfoWindow orderInfoWindow = null, WorkOrder workOrder = null)
         {
+            // From MainWindow
             if (mainWindow != null)
             {
                 Owner = mainWindow;
             }
-            else if(orderInfoWindow != null && workOrder != null)
+            // From OrderInfoWindow
+            else if (orderInfoWindow != null && workOrder != null)
             {
                 Owner = orderInfoWindow;
                 this.workOrder = workOrder;
@@ -50,7 +52,7 @@ namespace NatoliOrderInterface
             this.user = user;
 
             Dictionary<int,string> filesDict = new Dictionary<int, string>();
-            // From master folder
+            // From MainWindow
             if (workOrder == null)
             {
                 foreach (string file in filePaths.OrderBy(t=>t.ToString()))
@@ -59,7 +61,7 @@ namespace NatoliOrderInterface
                     textBlockList.Add(new TextBlock { Text = fileName });
                 }
             }
-            // From WO Folder
+            // From OrderInfoWindow
             else
             {
                 foreach (string file in filePaths)
@@ -92,6 +94,7 @@ namespace NatoliOrderInterface
             DragAndDrop dragAndDrop = new DragAndDrop(user,ListBox1, textBlockList);
             this.Show();
 
+            // From MainWindow
             if (mainWindow != null)
             {
                 ButtonGrid.Children.Clear();
@@ -107,6 +110,7 @@ namespace NatoliOrderInterface
                 ButtonGrid.Children.Add(reorderButton);
                 ButtonGrid.Children.Add(cancelButton);
             }
+            // From OrderInfoWindow
             else if (orderInfoWindow != null && workOrder != null)
             {
                 ButtonGrid.Children.Clear();

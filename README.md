@@ -1,6 +1,10 @@
-# NatoliOrderInterface<br/>
-#### Custom ERP Application for Projects, Quotes, and Orders<br/>
-Start Application by running the launcher in the VB_Apps folder. <br/>
-Versioning is controlled by a .json in the VB_Apps folder.<br/>
-This app requires a 'NatoliOrderInterface.config' with SQL connection credentials.<br/>
-See formatting from 'NatoliOrderInterface.config.example'.<br/>
+## NatoliOrderInterface 
+#### Custom [ERP](https://en.wikipedia.org/wiki/Enterprise_resource_planning "Enterprise Resource Planning") Application for Projects, Quotes, and Orders ####
+* Start Application by running the launcher in the *VB_Apps* folder.
+* Versioning is controlled by a .json in the *VB_Apps* folder.
+* This app requires a `NatoliOrderInterface.config` with SQL connection credentials.
+* See formatting from `NatoliOrderInterface.config.example`.
+
+Created by: [David Kruggel](https://github.com/dkruggel) and [Tyler Williams](https://github.com/Tdub147)
+
+![Natoli Logo](NatoliOrderInterface/Natoli_Logo_Color.png)

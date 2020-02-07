@@ -153,6 +153,7 @@ namespace NatoliOrderInterface
                 IfAppIsRunningSwitchToItAndShutdown();
                 InitializeComponent();
                 App.GetConnectionString();
+                App.GetEmailSettings();
                 UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
