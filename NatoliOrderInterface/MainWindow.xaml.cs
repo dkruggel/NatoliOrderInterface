@@ -5166,7 +5166,7 @@ namespace NatoliOrderInterface
                                                  p.Value.csr.ToLower().Contains(searchString) ||
                                                  p.Value.drafter.ToLower().Contains(searchString))
                                      .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                      .ThenBy(kvp => kvp.Key.projectNumber)
                                      .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5286,7 +5286,7 @@ namespace NatoliOrderInterface
                                                         p.Value.customerName.ToLower().Contains(searchString) ||
                                                         p.Value.csr.ToLower().Contains(searchString))
                                             .OrderByDescending(kvp => kvp.Value.priority)
-                                            .ThenBy(kvp => kvp.Value.dueDate)
+                                            .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                             .ThenBy(kvp => kvp.Key.projectNumber)
                                             .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5408,7 +5408,7 @@ namespace NatoliOrderInterface
                                                      p.Value.csr.ToLower().Contains(searchString) ||
                                                      p.Value.drafter.ToLower().Contains(searchString))
                                          .OrderByDescending(kvp => kvp.Value.priority)
-                                         .ThenBy(kvp => kvp.Value.dueDate)
+                                         .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                          .ThenBy(kvp => kvp.Key.projectNumber)
                                          .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5531,7 +5531,7 @@ namespace NatoliOrderInterface
                                                    p.Value.csr.ToLower().Contains(searchString) ||
                                                    p.Value.drafter.ToLower().Contains(searchString))
                                        .OrderByDescending(kvp => kvp.Value.priority)
-                                       .ThenBy(kvp => kvp.Value.dueDate)
+                                       .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                        .ThenBy(kvp => kvp.Key.projectNumber)
                                        .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5654,7 +5654,7 @@ namespace NatoliOrderInterface
                                                       p.Value.csr.ToLower().Contains(searchString) ||
                                                       p.Value.drafter.ToLower().Contains(searchString))
                                           .OrderByDescending(kvp => kvp.Value.priority)
-                                          .ThenBy(kvp => kvp.Value.dueDate)
+                                          .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                           .ThenBy(kvp => kvp.Key.projectNumber)
                                           .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5778,7 +5778,7 @@ namespace NatoliOrderInterface
                                                   p.Value.customerName.ToLower().Contains(searchString) ||
                                                   p.Value.csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => kvp.Value.priority)
-                                      .ThenBy(kvp => kvp.Value.dueDate)
+                                      .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                       .ThenBy(kvp => kvp.Key.projectNumber)
                                       .ToDictionary(x => x.Key, x => x.Value);
 
@@ -5939,7 +5939,7 @@ namespace NatoliOrderInterface
                                                                  p.Value.csr.ToLower().Contains(searchString) ||
                                                                  p.Value.drafter.ToLower().Contains(searchString))
                                                      .OrderByDescending(kvp => kvp.Value.priority)
-                                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                                      .ThenBy(kvp => kvp.Key.projectNumber)
                                                      .ToDictionary(x => x.Key, x => x.Value);
 
@@ -6055,7 +6055,7 @@ namespace NatoliOrderInterface
                                                       p.Value.customerName.ToLower().Contains(searchString) ||
                                                       p.Value.csr.ToLower().Contains(searchString))
                                           .OrderByDescending(kvp => kvp.Value.priority)
-                                          .ThenBy(kvp => kvp.Value.dueDate)
+                                          .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                           .ThenBy(kvp => kvp.Key.projectNumber)
                                           .ToDictionary(x => x.Key, x => x.Value);
 
@@ -6172,7 +6172,7 @@ namespace NatoliOrderInterface
                                                    p.Value.csr.ToLower().Contains(searchString) ||
                                                    p.Value.drafter.ToLower().Contains(searchString))
                                        .OrderByDescending(kvp => kvp.Value.priority)
-                                       .ThenBy(kvp => kvp.Value.dueDate)
+                                       .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                        .ThenBy(kvp => kvp.Key.projectNumber)
                                        .ToDictionary(x => x.Key, x => x.Value);
 
@@ -6289,7 +6289,7 @@ namespace NatoliOrderInterface
                                                  p.Value.csr.ToLower().Contains(searchString) ||
                                                  p.Value.drafter.ToLower().Contains(searchString))
                                      .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => kvp.Value.dueDate)
+                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                      .ThenBy(kvp => kvp.Key.projectNumber)
                                      .ToDictionary(x => x.Key, x => x.Value);
 
@@ -6407,7 +6407,7 @@ namespace NatoliOrderInterface
                                                   p.Value.customerName.ToLower().Contains(searchString) ||
                                                   p.Value.csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => kvp.Value.priority)
-                                      .ThenBy(kvp => kvp.Value.dueDate)
+                                      .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
                                       .ThenBy(kvp => kvp.Key.projectNumber)
                                       .ToDictionary(x => x.Key, x => x.Value);
 
