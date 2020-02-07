@@ -187,9 +187,6 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
-                
-                //ReportingWindow reportingWindow = new ReportingWindow(this);
-                //reportingWindow.Show();
             }
             catch(Exception ex)
             {
@@ -458,6 +455,11 @@ namespace NatoliOrderInterface
                 Header = "Edit Layout",
                 ToolTip = "Change which views are shown in the main window."
             };
+            MenuItem reports = new MenuItem
+            {
+                Header = "Reports",
+                ToolTip = "Opens reporting window."
+            };
             MenuItem checkMissingVariables = new MenuItem
             {
                 Header = "Missing Automation Info",
@@ -483,6 +485,7 @@ namespace NatoliOrderInterface
             projectSearch.Click += ProjectSearch_Click;
             forceRefresh.Click += ForceRefresh_Click;
             editLayout.Click += EditLayout_Click;
+            reports.Click += Reports_Click;
             checkMissingVariables.Click += CheckMissingVariables_Click;
             filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
@@ -492,6 +495,7 @@ namespace NatoliOrderInterface
             fileMenu.Items.Add(projectSearch);
             fileMenu.Items.Add(forceRefresh);
             fileMenu.Items.Add(editLayout);
+            if (User.ViewReports) { fileMenu.Items.Add(reports); }
             if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
             //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
             fileMenu.Items.Add(filterProjects);
@@ -834,6 +838,12 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void Reports_Click(object sender, RoutedEventArgs e)
+        {
+            ReportingWindow reportingWindow = new ReportingWindow(this);
+            reportingWindow.Show();
         }
 
         private void UpdateApp_Click(object sender, RoutedEventArgs e)

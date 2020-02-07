@@ -50,6 +50,7 @@ namespace NatoliOrderInterface
         public short QuoteDays { get; set; }
         public bool FilterActiveProjects { get; set; }
         public string PackageVersion { get; }
+        public bool ViewReports { get; set; }
 
         public User()
         {
@@ -123,9 +124,13 @@ namespace NatoliOrderInterface
                 Department = "Customer Service";
             }
             VisiblePanels = settings.Panels.Split(',').ToList();
-            if (domainName == "dkruggel") { SignatureLeft = 950; SignatureBottom = 20; }
+            if (domainName == "dkruggel") { SignatureLeft = 955; SignatureBottom = 20; }
             else if (domainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
             else { SignatureLeft = 0; SignatureBottom = 0; }
+            if (userName.ContainsAny("David Kruggel", "Tyler Williams", "James Willis", "Tiffany Simonpietri", "Barbara Bohling"))
+            {
+                ViewReports = true;
+            }
             //if (domainName == "dkruggel" || domainName == "twilliams")
             //{
             //    InputBox inputBox = new InputBox("Enter password", "Password");
