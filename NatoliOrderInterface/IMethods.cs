@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
 using System.Windows.Markup;
+using MailKit;
+using MimeKit;
 
 namespace NatoliOrderInterface
 {
@@ -925,13 +927,26 @@ namespace NatoliOrderInterface
         /// <param name="_revNo"></param>
         public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo)
         {
+
+            //var message = new MimeMessage();
+
+
+
+
+
+
+
+
+
+
+
             SmtpClient smtpServer = new SmtpClient();
             MailMessage mail = new MailMessage();
             try
             {
                 // Send email
-                smtpServer.Port = 25;
-                smtpServer.Host = "192.168.1.186";
+                smtpServer.Port = (int)App.SmtpPort;
+                smtpServer.Host = App.SmtpServer;
                 mail.IsBodyHtml = true;
                 mail.From = new MailAddress("AutomatedEmail@natoli.com");
                 if (CSRs != null)

@@ -82,6 +82,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
     <None Remove="attach_file.png" />
     <None Remove="Barcode Locations\D0043_Chrome_Tank.png" />
     <None Remove="Barcode Locations\D006_Hobbing.png" />
@@ -252,6 +253,7 @@
     <PackageReference Include="DK.WshRuntime" Version="4.0.1.200205031" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.10.0" />
     <PackageReference Include="itext7" Version="7.1.9" />
+    <PackageReference Include="MailKit" Version="2.5.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -267,6 +269,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
     <PackageReference Include="SqlTableDependency" Version="8.5.8" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
@@ -312,6 +316,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="NatoliOrderInterface.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

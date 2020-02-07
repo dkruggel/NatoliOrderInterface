@@ -1,6 +1,13 @@
 ﻿using System.Windows;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.FileExtensions;
+using System.IO;
+using System;
 
 namespace NatoliOrderInterface
 {
@@ -13,6 +20,8 @@ namespace NatoliOrderInterface
         public static string PersistSecurityInfo;
         public static string UserID;
         public static string Password;
+        public static string SmtpServer;
+        public static int? SmtpPort;
         public static List<string> StandardKeys = new List<string> { "N-6600-32M", "N-6600-01M", "N-6600-02M", "N-6600-03M", "N-7080-02M", "N-6010", "N-6441", "N-6441M", "N-6653", "N-6652", "N-6445", "N-6444" };
         
         
@@ -43,6 +52,17 @@ namespace NatoliOrderInterface
                     }
                 }
             }
+        }
+        public static void GetEmailSettings()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+            IConfigurationRoot configuration = builder.Build();
+            var emailConfiguration = configuration.GetSection("EmailConfiguration");
+            SmtpServer = emailConfiguration.GetSection("SmtpServer").Value;
+            SmtpPort = Int32.Parse(emailConfiguration.GetSection("SmtpPort").Value);
         }
     }
 }
