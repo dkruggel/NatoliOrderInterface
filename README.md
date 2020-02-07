@@ -7,4 +7,4 @@
 
 Created by: [David Kruggel](https://github.com/dkruggel) and [Tyler Williams](https://github.com/Tdub147)
 
-[Natoli Website](https://natoli.com/)
+![Natoli Logo](NatoliOrderInterface/Natoli_Logo_Color.png)
