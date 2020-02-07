@@ -159,9 +159,8 @@ namespace NatoliOrderInterface
                         document.Add(image);
                     }
                     document.Close();
+                    File.Move(tempFile, file, true);
                 }
-                File.Move(tempFile, file, true);
-                string lineItemName = file.GetFileNameFromPath();
                 File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
                 file_count++;
             }
