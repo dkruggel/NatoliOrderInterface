@@ -91,76 +91,136 @@ namespace NatoliOrderInterface
 
             DragAndDrop dragAndDrop = new DragAndDrop(user,ListBox1, textBlockList);
             this.Show();
+
+            if (mainWindow != null)
+            {
+                ButtonGrid.Children.Clear();
+                ButtonGrid.ColumnDefinitions.Clear();
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                Button reorderButton = new Button { Name = "Reorder", Content = "Reorder", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(reorderButton, 0);
+                reorderButton.Click += Reorder_Click;
+                Button cancelButton = new Button { Name = "Cancel", Content = "Cancel", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(cancelButton, 1);
+                cancelButton.Click += Cancel_Click;
+                ButtonGrid.Children.Add(reorderButton);
+                ButtonGrid.Children.Add(cancelButton);
+            }
+            else if (orderInfoWindow != null && workOrder != null)
+            {
+                ButtonGrid.Children.Clear();
+                ButtonGrid.ColumnDefinitions.Clear();
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                Button signAndMoveButton = new Button { Name = "SignAndMove", Content = "Sign and Move", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(signAndMoveButton, 0);
+                signAndMoveButton.Click += SignAndMove_Click;
+                Button moveOnlyButton = new Button { Name = "MoveOnly", Content = "Move Only", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(moveOnlyButton, 1);
+                moveOnlyButton.Click += MoveOnly_Click;
+                Button cancelButton = new Button { Name = "Cancel", Content = "Cancel", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
+                Grid.SetColumn(cancelButton, 2);
+                cancelButton.Click += Cancel_Click;
+                ButtonGrid.Children.Add(signAndMoveButton);
+                ButtonGrid.Children.Add(moveOnlyButton);
+                ButtonGrid.Children.Add(cancelButton);
+            }
         }
 
+        private void MovePDFsWOptionToSign(bool toBeSigned)
+        {
+            string tempFile = "";
+            int file_count = 1;
+            foreach (TextBlock textBlock in ListBox1.ItemsSource)
+            {
+                string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
+                string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
+                if (tempFile == "")
+                {
+                    string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
+                    foreach (string fileToDelete in filesAlreadyInDirectory)
+                    {
+                        File.Delete(fileToDelete);
+                    }
+                }
+                tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                if (toBeSigned)
+                {
+                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                    int page_count = pdfDocument.GetNumberOfPages();
+                    Document document = new Document(pdfDocument);
+                    for (int i = 1; i <= page_count; i++)
+                    {
+                        ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
+                        iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
+                                                                                                    .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
+                        document.Add(image);
+                    }
+                    document.Close();
+                }
+                File.Move(tempFile, file, true);
+                string lineItemName = file.GetFileNameFromPath();
+                File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                file_count++;
+            }
+        }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-        
-        private void OK_Click(object sender, RoutedEventArgs e)
+        private void SignAndMove_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // MainWindow
-                if (workOrder == null)
+                MovePDFsWOptionToSign(true);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("PDFOrderingWindow => SignAndMove_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
+            }
+            this.Close();
+        }
+        private void Reorder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int i = 1;
+                foreach (TextBlock textBlock in textBlockList)
                 {
-                    int i = 1;
-                    foreach (TextBlock textBlock in textBlockList)
-                    {
-                        string from = directory + textBlock.Text + ".pdf";
-                        string to = directory + i + "-" + textBlock.Text + ".pdf";
-                        File.Move(from, to);
-                        i++;
-                    }
-                    i = 1;
-                    foreach (string path in Directory.GetFiles(directory).OrderBy(s=>s))
-                    {
-                        string name = path.GetFileNameFromPath();
-                        string from = path;
-                        string to = directory + name.Replace('-', '_') + ".pdf";
-                        File.Move(from, to);
-                        i++;
-                    }
+                    string from = directory + textBlock.Text + ".pdf";
+                    string to = directory + i + "-" + textBlock.Text + ".pdf";
+                    File.Move(from, to);
+                    i++;
                 }
-                else
+                i = 1;
+                foreach (string path in Directory.GetFiles(directory).OrderBy(s => s))
                 {
-                    string tempFile = "";
-                    int file_count = 1;
-                    foreach (TextBlock textBlock in ListBox1.ItemsSource)
-                    {
-                        string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
-                        string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
-                        if (tempFile == "")
-                        {
-                            string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
-                            foreach (string fileToDelete in filesAlreadyInDirectory)
-                            {
-                                File.Delete(fileToDelete);
-                            }
-                        }
-                        tempFile = file.Replace(".pdf", "_TEMP.pdf");
-                        PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
-                        int page_count = pdfDocument.GetNumberOfPages();
-                        Document document = new Document(pdfDocument);
-                        for (int i = 1; i <= page_count; i++)
-                        {
-                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
-                            iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
-                                                                                                        .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
-                            document.Add(image);
-                        }
-                        document.Close();
-                        File.Move(tempFile, file, true);
-                        string lineItemName = file.GetFileNameFromPath();
-                        File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
-                        file_count++;
-                    }
+                    string name = path.GetFileNameFromPath();
+                    string from = path;
+                    string to = directory + name.Replace('-', '_') + ".pdf";
+                    File.Move(from, to);
+                    i++;
                 }
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("PDFOrderingWindow => OK_Click", ex.Message, user);
+                IMethods.WriteToErrorLog("PDFOrderingWindow => Reorder_Click", ex.Message, user);
+                MessageBox.Show(ex.Message);
+            }
+            this.Close();
+        }
+        private void MoveOnly_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MovePDFsWOptionToSign(false);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("PDFOrderingWindow => SignAndMove_Click", ex.Message, user);
                 MessageBox.Show(ex.Message);
             }
             this.Close();
