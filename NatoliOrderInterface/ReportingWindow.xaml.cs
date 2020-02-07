@@ -27,12 +27,12 @@ namespace NatoliOrderInterface
             using var _ = new NAT02Context();
             BeginningDatePicker.SelectedDate = DateTime.Parse("2020-01-01");
             EndDatePicker.SelectedDate = DateTime.Parse("2020-02-01");
-            RangePeriodComboBox.SelectedIndex = 0;
-            RangePeriodComboBox.ItemsSource = new List<string>() { "Day(s)", "Week(s)", "Month(s)", "Year(s)" };
+            //RangePeriodComboBox.SelectedIndex = 0;
+            //RangePeriodComboBox.ItemsSource = new List<string>() { "Day(s)", "Week(s)", "Month(s)", "Year(s)" };
             var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
                                                                                                                EndDatePicker.SelectedDate.Value);
             vwQuoteConversion.Load();
-            QuoteConversionDataGrid.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
+            QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
             _.Dispose();
 
             //BeginningTextBox.Text = "1";
@@ -45,7 +45,7 @@ namespace NatoliOrderInterface
             var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
                                                                                                                EndDatePicker.SelectedDate.Value);
             vwQuoteConversion.Load();
-            QuoteConversionDataGrid.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
+            QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
             _.Dispose();
         }
 
@@ -53,49 +53,11 @@ namespace NatoliOrderInterface
         {
             string csr = ((sender as DataGrid).SelectedCells[0].Item as VwQuoteConversion).Rep;
             using var _ = new NAT02Context();
-            int start = int.Parse(RangeIntTextBox.Text);
             List<double> pct = new List<double>();
-            //for (int i = start; i > 0; i--)
-            //{
-            //    DateTime begin;
-            //    DateTime end;
-            //    switch (RangePeriodComboBox.SelectedIndex)
-            //    {
-            //        case 0:
-            //            begin = DateTime.Now.AddDays(-1 * i);
-            //            end = begin.AddDays(1);
-            //            break;
-            //        case 1:
-            //            begin = DateTime.Now.AddDays(-1 * i * 7);
-            //            end = begin.AddDays(7);
-            //            break;
-            //        case 2:
-            //            begin = DateTime.Now.AddMonths(-1 * i);
-            //            end = begin.AddMonths(1);
-            //            break;
-            //        case 3:
-            //            begin = DateTime.Now.AddYears(-1 * i);
-            //            end = begin.AddYears(1);
-            //            break;
-            //        default:
-            //            begin = DateTime.Now.AddMonths(-1 * i);
-            //            end = begin.AddMonths(1);
-            //            break;
-            //    }
-            //    var quotePercentage = _.QuotePercentage.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversionByCsr {0}, {1}, {2}", csr.Trim(), begin, end).AsEnumerable();
-            //    try
-            //    {
-            //        pct.Add((double)quotePercentage.SingleOrDefault().Rate);
-            //    }
-            //    catch
-            //    {
-            //        pct.Add(0.0);
-            //    }
-            //}
             
             _.Dispose();
             // CreateLineGraph(csr, pct);
-            CreateBarGraph(csr);
+            // CreateBarGraph(csr);
         }
 
         //private void CreateLineGraph(string csr, List<double> pct)
@@ -128,86 +90,86 @@ namespace NatoliOrderInterface
         //    Line5.Y2 = height - (height / 100 * pct[5]);
         //}
 
-        private void CreateBarGraph(string csr)
-        {
-            var height = BarGraph.ActualHeight - 20;
-            var width = BarGraph.ActualWidth;
-            BarGraph.Children.Clear();
-            using var _ = new NAT02Context();
-            int start = int.Parse(RangeIntTextBox.Text);
-            for (int i = start; i > 0; i--)
-            {
-                DateTime begin;
-                DateTime end;
-                switch (RangePeriodComboBox.SelectedIndex)
-                {
-                    case 0:
-                        begin = DateTime.Now.AddDays(-1 * i);
-                        end = begin.AddDays(1);
-                        break;
-                    case 1:
-                        begin = DateTime.Now.AddDays(-1 * i * 7);
-                        end = begin.AddDays(7);
-                        break;
-                    case 2:
-                        begin = DateTime.Now.AddMonths(-1 * i);
-                        end = begin.AddMonths(1);
-                        break;
-                    case 3:
-                        begin = DateTime.Now.AddYears(-1 * i);
-                        end = begin.AddYears(1);
-                        break;
-                    default:
-                        begin = DateTime.Now.AddMonths(-1 * i);
-                        end = begin.AddMonths(1);
-                        break;
-                }
+        //private void CreateBarGraph(string csr)
+        //{
+        //    var height = BarGraph.ActualHeight - 20;
+        //    var width = BarGraph.ActualWidth;
+        //    BarGraph.Children.Clear();
+        //    using var _ = new NAT02Context();
+        //    int start = int.Parse(RangeIntTextBox.Text);
+        //    for (int i = start; i > 0; i--)
+        //    {
+        //        DateTime begin;
+        //        DateTime end;
+        //        switch (RangePeriodComboBox.SelectedIndex)
+        //        {
+        //            case 0:
+        //                begin = DateTime.Now.AddDays(-1 * i);
+        //                end = begin.AddDays(1);
+        //                break;
+        //            case 1:
+        //                begin = DateTime.Now.AddDays(-1 * i * 7);
+        //                end = begin.AddDays(7);
+        //                break;
+        //            case 2:
+        //                begin = DateTime.Now.AddMonths(-1 * i);
+        //                end = begin.AddMonths(1);
+        //                break;
+        //            case 3:
+        //                begin = DateTime.Now.AddYears(-1 * i);
+        //                end = begin.AddYears(1);
+        //                break;
+        //            default:
+        //                begin = DateTime.Now.AddMonths(-1 * i);
+        //                end = begin.AddMonths(1);
+        //                break;
+        //        }
 
-                var quotePercentage = _.QuotePercentage.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversionByCsr {0}, {1}, {2}", csr.Trim(), begin, end).AsEnumerable();
-                var quotePercentage_lastyear = _.QuotePercentage.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversionByCsr {0}, {1}, {2}", csr.Trim(), begin.AddYears(-1), end.AddYears(-1)).AsEnumerable();
+        //        var quotePercentage = _.QuotePercentage.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversionByCsr {0}, {1}, {2}", csr.Trim(), begin, end).AsEnumerable();
+        //        var quotePercentage_lastyear = _.QuotePercentage.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversionByCsr {0}, {1}, {2}", csr.Trim(), begin.AddYears(-1), end.AddYears(-1)).AsEnumerable();
 
-                Line line_lastyear = new Line();
-                Line line_thisyear = new Line();
+        //        Line line_lastyear = new Line();
+        //        Line line_thisyear = new Line();
 
-                try
-                {
-                    line_lastyear = new Line()
-                    {
-                        X1 = (width / start * (start - i)) + 50,
-                        X2 = (width / start * (start - i)) + 50,
-                        Y1 = height,
-                        Y2 = (height) - ((height) / 100 * (double)quotePercentage_lastyear.Single().Rate),
-                        Stroke = new SolidColorBrush(Colors.LightBlue),
-                        StrokeThickness = 25
-                    };
-                    Grid.SetColumnSpan(line_lastyear, 6);
-                }
-                catch
-                {
+        //        try
+        //        {
+        //            line_lastyear = new Line()
+        //            {
+        //                X1 = (width / start * (start - i)) + 50,
+        //                X2 = (width / start * (start - i)) + 50,
+        //                Y1 = height,
+        //                Y2 = (height) - ((height) / 100 * (double)quotePercentage_lastyear.Single().Rate),
+        //                Stroke = new SolidColorBrush(Colors.LightBlue),
+        //                StrokeThickness = 25
+        //            };
+        //            Grid.SetColumnSpan(line_lastyear, 6);
+        //        }
+        //        catch
+        //        {
 
-                }
+        //        }
 
-                try
-                {
-                    line_thisyear = new Line()
-                    {
-                        X1 = (width / start * (start - i)) + 75,
-                        X2 = (width / start * (start - i)) + 75,
-                        Y1 = height,
-                        Y2 = (height) - ((height) / 100 * (double)quotePercentage.Single().Rate),
-                        Stroke = new SolidColorBrush(Colors.LightCoral),
-                        StrokeThickness = 25
-                    };
-                    Grid.SetColumnSpan(line_thisyear, 6);
-                }
-                catch
-                {
+        //        try
+        //        {
+        //            line_thisyear = new Line()
+        //            {
+        //                X1 = (width / start * (start - i)) + 75,
+        //                X2 = (width / start * (start - i)) + 75,
+        //                Y1 = height,
+        //                Y2 = (height) - ((height) / 100 * (double)quotePercentage.Single().Rate),
+        //                Stroke = new SolidColorBrush(Colors.LightCoral),
+        //                StrokeThickness = 25
+        //            };
+        //            Grid.SetColumnSpan(line_thisyear, 6);
+        //        }
+        //        catch
+        //        {
 
-                }
+        //        }
 
-                BarGraph.Children.Add(line_thisyear);
-                BarGraph.Children.Add(line_lastyear);
-            }
-        }
+        //        BarGraph.Children.Add(line_thisyear);
+        //        BarGraph.Children.Add(line_lastyear);
+        //    }
+        //}
     }
 }
