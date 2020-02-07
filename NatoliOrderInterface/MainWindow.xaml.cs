@@ -11423,6 +11423,22 @@ namespace NatoliOrderInterface
 
             }
         }
+        private void GridWindow_Drop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
+                List<string> filePaths = filePathArray.ToList();
+                if (filePaths[0].Contains("WorkOrdersToPrint"))
+                {
+                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, User, this);
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("MainWindow => GridWindow_Drop", ex.Message, User);
+            }
+        }
         #endregion
 
         #region IDisposable Support
@@ -11465,11 +11481,6 @@ namespace NatoliOrderInterface
         }
         #endregion
 
-        private void GridWindow_Drop(object sender, DragEventArgs e)
-        {
-            string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
-            List<string> filePaths = filePathArray.ToList();
-            PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, User, this);
-        }
+
     }
 }
