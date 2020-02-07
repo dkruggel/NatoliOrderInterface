@@ -11438,5 +11438,12 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        private void GridWindow_Drop(object sender, DragEventArgs e)
+        {
+            string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
+            List<string> filePaths = filePathArray.ToList();
+            PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, User, this);
+        }
     }
 }

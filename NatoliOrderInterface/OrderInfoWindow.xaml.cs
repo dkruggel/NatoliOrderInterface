@@ -56,7 +56,6 @@ namespace NatoliOrderInterface
         {
             // For centerowner startup
             Owner = _parent ?? new MainWindow();
-            
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
@@ -1990,11 +1989,12 @@ namespace NatoliOrderInterface
                 List<string> filePaths = filePathArray.ToList();
                 string woDirectory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
                 string woFolderName = woDirectory.Remove(0, woDirectory.LastIndexOf("\\") + 1);
-                if (woFolderName != workOrder.OrderNumber.ToString())
+                if (woFolderName != workOrder.OrderNumber.ToString() && woFolderName != "WorkOrdersToPrint")
                 {
                     MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the .pdf(s).", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
                 }
-                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey";
+                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName != "WorkOrdersToPrint";
                 // Check to see if there is an unknown file name
                 foreach (string file in filePaths)
                 {
@@ -2011,7 +2011,7 @@ namespace NatoliOrderInterface
                 // Open window to set order
                 if (hasUnknownLineItemName)
                 {
-                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, this, workOrder, user);
+                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, user, null, this, workOrder);
                 }
                 else
                 {

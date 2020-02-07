@@ -34,35 +34,55 @@ namespace NatoliOrderInterface
         private readonly User user = null;
         private readonly WorkOrder workOrder = null;
         private Window _dragdropWindow = null;
-        public PDFOrderingWindow(List<string> filePaths, OrderInfoWindow orderInfoWindow, WorkOrder workOrder, User user)
+        public PDFOrderingWindow(List<string> filePaths, User user, MainWindow mainWindow = null , OrderInfoWindow orderInfoWindow = null, WorkOrder workOrder = null)
         {
-            Owner = orderInfoWindow;
+            if (mainWindow != null)
+            {
+                Owner = mainWindow;
+            }
+            else if(orderInfoWindow != null && workOrder != null)
+            {
+                Owner = orderInfoWindow;
+                this.workOrder = workOrder;
+            }
             InitializeComponent();
             directory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
             this.user = user;
-            this.workOrder = workOrder;
 
             Dictionary<int,string> filesDict = new Dictionary<int, string>();
-            foreach (string file in filePaths)
+            // From master folder
+            if (workOrder == null)
             {
-                int metric = 0;
-                string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
-                if (lineItemName.EndsWith("_M"))
+                foreach (string file in filePaths.OrderBy(t=>t.ToString()))
                 {
-                    lineItemName = lineItemName.Remove(lineItemName.Length - 2);
-                    metric++;
+                    string fileName = file.GetFileNameFromPath();
+                    textBlockList.Add(new TextBlock { Text = fileName });
                 }
-                int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
-                if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
-                {
-                    lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
-                    lineItemNumber = lineItemNumber * 2 + metric;
-                }
-                filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
             }
-            foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp=>kvp.Key))
+            // From WO Folder
+            else
             {
-                textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
+                foreach (string file in filePaths)
+                {
+                    int metric = 0;
+                    string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                    if (lineItemName.EndsWith("_M"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.Length - 2);
+                        metric++;
+                    }
+                    int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
+                    if (workOrder.lineItems.Any(l => lineItemName.StartsWith(l.Value)))
+                    {
+                        lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
+                        lineItemNumber = lineItemNumber * 2 + metric;
+                    }
+                    filesDict.Add(lineItemNumber, lineItemName + (metric == 1 ? "_M" : ""));
+                }
+                foreach (KeyValuePair<int, string> keyValuePair in filesDict.OrderBy(kvp => kvp.Key))
+                {
+                    textBlockList.Add(new TextBlock { Text = keyValuePair.Value });
+                }
             }
 
             DragAndDrop dragAndDrop = new DragAndDrop(user,ListBox1, textBlockList);
@@ -78,36 +98,60 @@ namespace NatoliOrderInterface
         {
             try
             {
-                string tempFile = "";
-                int file_count = 1;
-                foreach (TextBlock textBlock in ListBox1.ItemsSource)
+                // MainWindow
+                if (workOrder == null)
                 {
-                    string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
-                    string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
-                    if (tempFile == "")
+                    int i = 1;
+                    foreach (TextBlock textBlock in textBlockList)
                     {
-                        string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
-                        foreach (string fileToDelete in filesAlreadyInDirectory)
+                        string from = directory + textBlock.Text + ".pdf";
+                        string to = directory + textBlock.Text.Remove(textBlock.Text.IndexOf('_')) + "-" + i + ".pdf";
+                        File.Move(from, to);
+                        i++;
+                    }
+                    i = 1;
+                    foreach (string path in Directory.GetFiles(directory).OrderBy(s=>s))
+                    {
+                        string name = path.GetFileNameFromPath();
+                        string from = path;
+                        string to = directory + name.Replace('-', '_') + ".pdf";
+                        File.Move(from, to);
+                        i++;
+                    }
+                }
+                else
+                {
+                    string tempFile = "";
+                    int file_count = 1;
+                    foreach (TextBlock textBlock in ListBox1.ItemsSource)
+                    {
+                        string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
+                        string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
+                        if (tempFile == "")
                         {
-                            File.Delete(fileToDelete);
+                            string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
+                            foreach (string fileToDelete in filesAlreadyInDirectory)
+                            {
+                                File.Delete(fileToDelete);
+                            }
                         }
+                        tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                        PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                        int page_count = pdfDocument.GetNumberOfPages();
+                        Document document = new Document(pdfDocument);
+                        for (int i = 1; i <= page_count; i++)
+                        {
+                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
+                            iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
+                                                                                                        .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
+                            document.Add(image);
+                        }
+                        document.Close();
+                        File.Move(tempFile, file, true);
+                        string lineItemName = file.GetFileNameFromPath();
+                        File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                        file_count++;
                     }
-                    tempFile = file.Replace(".pdf", "_TEMP.pdf");
-                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
-                    int page_count = pdfDocument.GetNumberOfPages();
-                    Document document = new Document(pdfDocument);
-                    for (int i = 1; i <= page_count; i++)
-                    {
-                        ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
-                        iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
-                                                                                                    .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
-                        document.Add(image);
-                    }
-                    document.Close();
-                    File.Move(tempFile, file, true);
-                    string lineItemName = file.GetFileNameFromPath();
-                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
-                    file_count++;
                 }
             }
             catch (Exception ex)

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="PDFOrderingWindow" Height="450" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}">
+        Title="PDFOrderingWindow" Height="550" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}">
     <DockPanel LastChildFill="False">
-        <TextBlock DockPanel.Dock="Top" Text="Specify Order Of .pdfs" Style="{StaticResource BoldTextBlock}" FontSize="24" HorizontalAlignment="Center"/>
-        <ScrollViewer DockPanel.Dock="Top" Margin="0,20" BorderBrush="{StaticResource Focused.Border}" BorderThickness="1" VerticalScrollBarVisibility="Auto">
-            <ListBox x:Name="ListBox1" Margin="20,0"/>
-        </ScrollViewer>
+        <TextBlock DockPanel.Dock="Top" Text="Specify .pdf Order" Style="{StaticResource BoldTextBlock}" FontSize="24" HorizontalAlignment="Center"/>
+        <Border DockPanel.Dock="Top" Margin="0,20,0,20" BorderBrush="{StaticResource Focused.Border}" BorderThickness="0" MaxHeight="400">
+            <ListBox x:Name="ListBox1" Margin="20,0" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </Border>
         <Grid HorizontalAlignment="Right" MinWidth="180" DockPanel.Dock="Bottom">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
