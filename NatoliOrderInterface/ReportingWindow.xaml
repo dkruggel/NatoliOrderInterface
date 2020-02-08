@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Reporting" Height="400" Width="800" WindowStartupLocation="CenterOwner">
+        Title="Reporting" Height="500" Width="600" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="50">
             <Grid.ColumnDefinitions>
@@ -28,7 +28,7 @@
         </Grid>
 
         <StackPanel DockPanel.Dock="Left" Width="150">
-            <Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25"/>
+            <Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25" Style="{StaticResource Button}"/>
         </StackPanel>
 
         <Grid>
