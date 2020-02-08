@@ -39,7 +39,7 @@ namespace NatoliOrderInterface
         {
             user = _user;
             this.quote = quote;
-            Title = "Order Tracking for Quote: " + this.quote.QuoteNumber.ToString() + '-' + this.quote.QuoteRevNo.ToString();
+            Title = "Order Tracking for Quote: " + this.quote.QuoteNumber.ToString();
             InitializeComponent();
             OtherLocationsComboBox.Items.Add("Production Management");
             OtherLocationsComboBox.Items.Add("Shipped");
@@ -60,7 +60,7 @@ namespace NatoliOrderInterface
                 {
                     // Insert into EOI_TrackedDocuments
                     trackedDocument.Type = documentType; // Quote or Order
-                    trackedDocument.Number = documentNumber; // Quote number and rev or Order number
+                    trackedDocument.Number = documentNumber; // Quote number or Order number
                     trackedDocument.MovementId = 3; // Type of movement to notify for
                     trackedDocument.User = user.GetUserName(); // User requesting notification
 

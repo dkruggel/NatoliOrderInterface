@@ -305,6 +305,22 @@ namespace NatoliOrderInterface
         private void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("QuotesNotConverted");
+
+            // Check for new notifications
+            using var _nat02context = new NAT02Context();
+            bool active = _nat02context.EoiNotificationsActive.Any(n => n.User == User.DomainName);
+            if (active)
+            {
+                foreach (var item in MainMenu.Items)
+                {
+                    if ((item as MenuItem).Name == "notificationsMenu")
+                    {
+                        (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
+                        break;
+                    }
+                }
+            }
+            _nat02context.Dispose();
         }
         private void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -832,6 +848,17 @@ namespace NatoliOrderInterface
                 legendMenu.Items.Add(followupQuoteCheckMenu);
             }
 
+            #endregion
+            #region NotificationsRegion
+            MenuItem notificationsMenu = new MenuItem()
+            {
+                Header = "Notifications",
+                Height = MainMenu.Height
+            };
+
+            // Add menu item to open active notifications window
+
+            MainMenu.Items.Add(notificationsMenu);
             #endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
@@ -2256,6 +2283,33 @@ namespace NatoliOrderInterface
 
                     // Uncheck order expander
                     order.Item2.IsChecked = false;
+
+                    // Check EOI_TrackedDocuments table to see if this order needs a notification
+                    using var _nat02context = new NAT02Context();
+                    bool tracked = _nat02context.EoiTrackedDocuments.Any(d => d.Number == order.Item1 && d.MovementId == 3);
+                    if (tracked)
+                    {
+                        // Retrieve tracked document
+                        EoiTrackedDocuments trackedDoc = _nat02context.EoiTrackedDocuments.Single(d => d.Number == order.Item1 && d.MovementId == 3);
+
+                        // Insert into EOI_Notifications_Active
+                        EoiNotificationsActive _active = new EoiNotificationsActive()
+                        {
+                            Type = trackedDoc.Type,
+                            Number = trackedDoc.Number,
+                            Message = "Document has moved to production",
+                            User = trackedDoc.User,
+                            Timestamp = DateTime.Now
+                        };
+                        _nat02context.EoiNotificationsActive.Add(_active);
+
+                        // Delete from EOI_TrackedDocuments
+                        _nat02context.EoiTrackedDocuments.Remove(trackedDoc);
+
+                        // Save context transactions
+                        _nat02context.SaveChanges();
+                    }
+                    _nat02context.Dispose();
                 }
 
                 // Uncheck Check All CheckBox

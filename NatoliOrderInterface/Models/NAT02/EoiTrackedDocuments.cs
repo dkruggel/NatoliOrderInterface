@@ -10,6 +10,5 @@ namespace NatoliOrderInterface.Models
         public string Number { get; set; }
         public int MovementId { get; set; }
         public string User { get; set; }
-        public byte[] Timestamp { get; set; }
     }
 }
