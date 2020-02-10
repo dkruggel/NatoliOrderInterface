@@ -55,14 +55,21 @@ namespace NatoliOrderInterface
         }
         public static void GetEmailSettings()
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            try
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-            IConfigurationRoot configuration = builder.Build();
-            var emailConfiguration = configuration.GetSection("EmailConfiguration");
-            SmtpServer = emailConfiguration.GetSection("SmtpServer").Value;
-            SmtpPort = Int32.Parse(emailConfiguration.GetSection("SmtpPort").Value);
+                IConfigurationRoot configuration = builder.Build();
+                var emailConfiguration = configuration.GetSection("EmailConfiguration");
+                SmtpServer = emailConfiguration.GetSection("SmtpServer").Value;
+                SmtpPort = Int32.Parse(emailConfiguration.GetSection("SmtpPort").Value);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("GetEmailSettings()", ex.Message, null);
+            }
         }
     }
 }

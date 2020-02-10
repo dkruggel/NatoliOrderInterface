@@ -7,66 +7,32 @@
         mc:Ignorable="d"
         Title="Notifications Management" Height="400" Width="600" WindowStartupLocation="CenterScreen">
     <Grid  Background="{StaticResource ActiveCaption}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"/>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0">
-            <Button Content="Nav" Margin="5" Style="{StaticResource Button}"/>
-            <Button Content="Buttons" Margin="5" Style="{StaticResource Button}"/>
-            <Button Content="Here" Margin="5" Style="{StaticResource Button}"/>
-        </StackPanel>
+            <Button Content="Navigation" Margin="5,15,5,5" Style="{StaticResource Button}"/>
+            <Button Content="Archive" Margin="5" Style="{StaticResource Button}"/>
+            <Button Content="Exit" Margin="5" Style="{StaticResource Button}"/>
+        </StackPanel>-->
 
         <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="31"/>
-                <RowDefinition Height="*"/>
-                <!--<RowDefinition Height="20"/>-->
-            </Grid.RowDefinitions>
-            <Grid Height="31" HorizontalAlignment="Stretch">
-                <Label Content="Notifications" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="0" Height="31" FontWeight="Bold" FontSize="14" Padding="0"/>
-            </Grid>
-
-            <ScrollViewer Grid.Row="1">
-                <StackPanel HorizontalAlignment="Stretch" CanVerticallyScroll="True" Orientation="Vertical">
-                    <Grid HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="150"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <CheckBox.LayoutTransform>
-                                <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
-                            </CheckBox.LayoutTransform>
-                        </CheckBox>
-                        <TextBlock Text="Customer Name" Grid.Column="1" VerticalAlignment="Center"/>
-                        <TextBlock Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                    </Grid>
-                    <Grid HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="150"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <CheckBox.LayoutTransform>
-                                <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
-                            </CheckBox.LayoutTransform>
-                        </CheckBox>
-                        <TextBlock Text="Customer Name" Grid.Column="1" VerticalAlignment="Center"/>
-                        <TextBlock Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                    </Grid>
+            <ScrollViewer Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Hidden">
+                <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource InactiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
+                    <TextBlock Text="More" HorizontalAlignment="Center" Visibility="Visible"/> <!--Show when ScrollViewer.ComputedScrollbarVisibility = Visible-->
                 </StackPanel>
             </ScrollViewer>
-
-            <!--<Label Content="Total: " HorizontalContentAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,5,0" Grid.Row="2"/>-->
         </Grid>
     </Grid>
 </Window>
