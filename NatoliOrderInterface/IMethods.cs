@@ -76,17 +76,25 @@ namespace NatoliOrderInterface
             try
             {
                 string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log.txt";
+                string userFallback = "No Information";
                 System.IO.StreamReader sr = new System.IO.StreamReader(path);
                 string existing = sr.ReadToEnd();
                 existing = existing.TrimEnd();
                 sr.Close();
+                
+                try
+                {
+                    userFallback = Environment.UserDomainName;
+                }
+                catch
+                { }
                 if (existing == null || existing.Trim().Length == 0)
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(@"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log_Appends.txt", true);
                     sw.Write(
-                        "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
+                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n\t" +
                         "DateTime: " + DateTime.Now + "\r\n\t" +
-                        "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
+                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n\t" +
                         "Location: " + errorLoc + "\r\n\t" +
                         "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n");
                     sw.Flush();
@@ -96,9 +104,9 @@ namespace NatoliOrderInterface
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
                     sw.Write(
-                        "Version: " + user == null ? "No Information" : user.PackageVersion + "\r\n\t" +
+                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n\t" +
                         "DateTime: " + DateTime.Now + "\r\n\t" +
-                        "User: " + (user == null ? Environment.UserDomainName : user.GetUserName()) + "\r\n\t" +
+                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n\t" +
                         "Location: " + errorLoc + "\r\n\t" +
                         "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
                         existing);
