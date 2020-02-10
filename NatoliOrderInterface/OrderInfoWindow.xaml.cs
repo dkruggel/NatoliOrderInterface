@@ -15,7 +15,7 @@ using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Forms;
-using iText.Forms.Fields;f
+using iText.Forms.Fields;
 using iText.Signatures;
 using iText.IO.Image;
 using Org.BouncyCastle.Pkcs;
