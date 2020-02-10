@@ -68,10 +68,15 @@ namespace NatoliOrderInterface
                 {
                     int metric = 0;
                     string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
-                    if (lineItemName.EndsWith("_M"))
+
+                    if (lineItemName.Contains("_M"))
                     {
-                        lineItemName = lineItemName.Remove(lineItemName.Length - 2);
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
                         metric++;
+                    }
+                    if (lineItemName.Contains("_"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
                     }
                     int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
                     if (workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
@@ -137,10 +142,12 @@ namespace NatoliOrderInterface
         {
             string tempFile = "";
             int file_count = 1;
+            string[] oldFiles = Directory.GetFiles(directory);
             foreach (TextBlock textBlock in ListBox1.ItemsSource)
             {
                 string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
                 string woFolderName = directory.Remove(0, directory.LastIndexOf("\\") + 1);
+                // Delete files already in the folder to move to on first loop
                 if (tempFile == "")
                 {
                     string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
@@ -149,10 +156,13 @@ namespace NatoliOrderInterface
                         File.Delete(fileToDelete);
                     }
                 }
+
+
                 tempFile = System.IO.Path.GetTempFileName();
                 if (toBeSigned)
                 {
-                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                    string oldFile = oldFiles.First(path => System.IO.Path.GetFileName(path).StartsWith(textBlock.Text.ToString()) && System.IO.Path.GetFileName(path).Contains("_M") == textBlock.Text.ToString().Contains("_M"));
+                    PdfDocument pdfDocument = new PdfDocument(new PdfReader(oldFile), new PdfWriter(tempFile));
                     int page_count = pdfDocument.GetNumberOfPages();
                     Document document = new Document(pdfDocument);
                     for (int i = 1; i <= page_count; i++)
@@ -164,8 +174,13 @@ namespace NatoliOrderInterface
                     }
                     document.Close();
                     File.Move(tempFile, file, true);
+                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                    File.Delete(oldFile);
                 }
-                File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                else
+                {
+                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                }
                 file_count++;
             }
         }

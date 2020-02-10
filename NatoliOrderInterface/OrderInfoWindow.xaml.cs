@@ -1980,7 +1980,6 @@ namespace NatoliOrderInterface
             }
             return ret;
         }
-        
         private void OrderPanel_Drop(object sender, DragEventArgs e)
         {
             try
@@ -1996,15 +1995,19 @@ namespace NatoliOrderInterface
                     return;
                 }
                 bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName == "WorkOrdersToPrint";
+                
                 // Check to see if there is an unknown file name
                 foreach (string file in filePaths)
                 {
                     string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
-                    if (lineItemName.EndsWith("_M"))
+                    if (lineItemName.Contains("_M"))
                     {
-                        lineItemName =lineItemName.Remove(lineItemName.Length - 2);
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
                     }
-                    
+                    if (lineItemName.Contains("_"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
+                    }
                     if (!workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ? 
                     IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName : 
                     IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
@@ -2021,7 +2024,7 @@ namespace NatoliOrderInterface
                 {
                     foreach (string file in filePaths)
                     {
-                        //tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                        bool metric = false;
                         tempFile = System.IO.Path.GetTempFileName();
                         PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
                         int page_count = pdfDocument.GetNumberOfPages();
@@ -2034,33 +2037,48 @@ namespace NatoliOrderInterface
                             document.Add(image);
                         }
                         document.Close();
-                        File.Move(tempFile, file, true);
+
+                        
+                        string directory = System.IO.Path.GetDirectoryName(file); // does not include last slash
+                        string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
+
+                        if (lineItemName.Contains("_M"))
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                            metric = true;
+                        }
+                        if (lineItemName.Contains("_"))
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
+                        }
+                        lineItemName += metric ? "_M" : "";
+                        string _file = directory + "\\" + lineItemName + ".pdf";
+                        try
+                        {
+                            File.Move(tempFile, _file, true);
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("OrderPanel_Drop => TempFile to new File Name or deleting old .pdf in tooldrawings folder", ex.Message, user);
+                        }
 
                         int file_count;
-                        string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        if (metric)
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                        }
+                        int lineItemNumber = workOrder.lineItems.First(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                                            IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                                            IMethods.lineItemTypeToDescription[l.Value] == lineItemName).Key;
+                        file_count = metric ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
                         try
                         {
-                            int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
-                            file_count = lineItemName.EndsWith("_M") ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
+                            File.Copy(_file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            string max = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\")
-                                                  .Where(f => f.Contains(workOrder.OrderNumber.ToString()))
-                                                  .OrderByDescending(f => f[(f.IndexOf("_") + 1)..(f.IndexOf(".pdf") - 1)])
-                                                  .FirstOrDefault();
-                            int lineItemNumber = string.IsNullOrEmpty(max) ? 100 :
-                                                               int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) < 100 ? 100 :
-                                                                                               int.Parse(max[(max.IndexOf("_") + 1)..(max.IndexOf(".pdf"))]) + 1;
-                            file_count = lineItemNumber;
-                        }
-                        try
-                        {
-                            File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
-                        }
-                        catch
-                        {
-
+                            IMethods.WriteToErrorLog("OrderPanel_Drop => Copying to WorkOrdersToPrint folder", ex.Message, user);
                         }
                     }
                 }
