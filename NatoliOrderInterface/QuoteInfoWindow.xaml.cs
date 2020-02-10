@@ -3250,6 +3250,11 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("QuoteInfoWindow => UserButton_Click; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
+        private void TrackButton_Click(object sender, RoutedEventArgs e)
+        {
+            DocumentTrackingWindow documentTrackingWindow = new DocumentTrackingWindow(quote, user);
+            documentTrackingWindow.ShowDialog();
+        }
         #endregion
     }
 }
