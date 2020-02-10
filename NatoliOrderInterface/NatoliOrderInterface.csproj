@@ -316,9 +316,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="appsettings.json">
+    <Content Include="appsettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+    </Content>
     <Content Include="NatoliOrderInterface.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
