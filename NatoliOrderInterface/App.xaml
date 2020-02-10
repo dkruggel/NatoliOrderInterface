@@ -6777,7 +6777,7 @@
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
-        <LinearGradientBrush x:Key="ActiveCaption" StartPoint="0.5,0" EndPoint="0.5,1">
+        <LinearGradientBrush x:Key="ActiveCaption" StartPoint="0.5,0" EndPoint="0.5,1.25">
             <GradientStop Color="#FFAABBBF" Offset="0.25"/>
             <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
         </LinearGradientBrush>
@@ -6812,12 +6812,18 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="LayoutTransform" Value="1,0,0,1,0,0"/>
+            <Setter Property="Opacity" Value="0.95"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="5" Direction="315" Color="Black" Opacity="0.5" BlurRadius="5"/>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Padding="8,0,8,0" CornerRadius="4" Background="{TemplateBinding Background}" VerticalAlignment="{TemplateBinding VerticalAlignment}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
                             <Grid>
-                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0,0,0,0" />
+                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="0,0,0,0"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -7413,6 +7419,111 @@
                                 <Image x:Name="MagImage" Source="{StaticResource magnifying_glassDrawingImage}" Grid.Column="1" Margin="0,0,4,0"/>
                             </Grid>
                         </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Module Grids -->
+        <Style x:Key="AllTabletProjectsGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
+                                <CheckBox.LayoutTransform>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
+                                </CheckBox.LayoutTransform>
+                            </CheckBox>
+                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" Foreground="Black"/>
+                            <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Black"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Notification Grids -->
+        <Style x:Key="ActiveNotificationGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <Grid x:Name="Grid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition>
+                                    <ColumnDefinition.Style>
+                                        <Style TargetType="{x:Type ColumnDefinition}">
+                                            <Setter Property="Width" Value="10" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding OrderSelected.Name}" Value="Mark">
+                                                    <Setter Property="Width" Value="2*" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ColumnDefinition.Style>
+                                </ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
+                                <CheckBox.LayoutTransform>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
+                                </CheckBox.LayoutTransform>
+                            </CheckBox>
+                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" FontSize="14"/>
+                            <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Black" FontSize="14"/>
+                            
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- Show nav buttons -->
+                                <Setter Property="Grid.Column" Value="3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="InactiveNotificationGrid"  TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox x:Name="CheckBox" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
+                                <CheckBox.LayoutTransform>
+                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
+                                </CheckBox.LayoutTransform>
+                            </CheckBox>
+                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" Foreground="Gray" FontSize="14"/>
+                            <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Gray" FontSize="14"/>
+                        </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
