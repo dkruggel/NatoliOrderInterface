@@ -1355,98 +1355,23 @@ namespace NatoliOrderInterface
         }
         private void FinishOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            string missingPrints = "";
-            string path = @"\\engserver\workstations\tool_drawings\" + workOrder.OrderNumber + @"\";
-            string file = "";
-            foreach (OrderLineItem oli in orderLineItems)
+            using var context = new NAT02Context();
+
+            int count = context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Count();
+
+            if (count < 1)
             {
-                switch (oli.LineItemType.Trim())
+                var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
                 {
-                    case "U":
-                    case "UT":
-                    case "UA":
-                    case "UH":
-                    case "UC":
-                    case "UHD":
-                        file = "UPPER";
-                        if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
-                        {
-                            missingPrints += file + ",";
-                        }
-                        break;
-                    case "L":
-                    case "LT":
-                    case "LA":
-                    case "LH":
-                    case "LC":
-                    case "LHD":
-                        file = "LOWER";
-                        if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
-                        {
-                            missingPrints += file + ",";
-                        }
-                        break;
-                    case "R":
-                    case "RT":
-                    case "RA":
-                    case "RH":
-                    case "RC":
-                    case "RHD":
-                        file = "REJECT";
-                        if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
-                        {
-                            missingPrints += file + ",";
-                        }
-                        break;
-                    case "A":
-                        file = "ALIGNMENT";
-                        if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
-                        {
-                            missingPrints += file + ",";
-                        }
-                        break;
-                    case "D":
-                    case "DH":
-                    case "DA":
-                    case "DI":
-                    case "DS":
-                        file = "DIE";
-                        if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
-                        {
-                            missingPrints += file + ",";
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-            MessageBoxResult result = MessageBoxResult.Yes;
-            if (!string.IsNullOrEmpty(missingPrints))
-            {
-                result = MessageBox.Show(
-                    "Are you sure you want to finish this order?" + "\n" +
-                    "This order appears to be missing: " + missingPrints.Remove(missingPrints.Length - 1) + " print(s) in the work order folder."
-                    , "Continue?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            }
-            if (result == MessageBoxResult.Yes)
-            {
-                using var context = new NAT02Context();
+                    OrderNo = workOrder.OrderNumber
+                };
+                context.EoiOrdersMarkedForChecking.Add(orderMarkedForChecking);
 
-                int count = context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Count();
-
-                if (count < 1)
-                {
-                    var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
-                    {
-                        OrderNo = workOrder.OrderNumber
-                    };
-                    context.EoiOrdersMarkedForChecking.Add(orderMarkedForChecking);
-
-                    context.SaveChanges();
-                    workOrder.Finished = true;
-                    Dispatcher.Invoke(() => { ButtonRefresh("Finish"); });
-                }
+                context.SaveChanges();
+                workOrder.Finished = true;
+                Dispatcher.Invoke(() => { ButtonRefresh("Finish"); });
             }
+
         }
         private void NotFinishedButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1474,55 +1399,131 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    bool mark_print = PrintOrderButton.Content.ToString() == "Print Order";
-                    OrderHeader order = nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).First();
-                    order.PrintOrderStatus = mark_print ? "Y" : "";
-                    order.WorkOrderPrintQty = mark_print ? (short)(nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).FirstOrDefault().WorkOrderPrintQty + 1) :
-                                                           (short)(nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).FirstOrDefault().WorkOrderPrintQty - 1);
-                    nat01Context.OrderHeader.Update(order);
-                    nat01Context.SaveChanges();
-
-                    if (mark_print)
+                    string missingPrints = "";
+                    string path = @"\\engserver\workstations\tool_drawings\" + workOrder.OrderNumber + @"\";
+                    string file = "";
+                    foreach (OrderLineItem oli in orderLineItems)
                     {
-                        EoiOrdersMarkedForChecking orderMarked = nat02Context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).FirstOrDefault();
-                        nat02Context.EoiOrdersMarkedForChecking.Remove(orderMarked);
-                    }
-                    else
-                    {
-                        EoiOrdersMarkedForChecking orderMarked = new EoiOrdersMarkedForChecking()
+                        switch (oli.LineItemType.Trim())
                         {
-                            OrderNo = workOrder.OrderNumber
-                        };
-                        nat02Context.EoiOrdersMarkedForChecking.Add(orderMarked);
-                    }
-
-                    if (mark_print)
-                    {
-                        try
-                        {
-                            EoiOrdersCheckedBy orderCheckedBy = new EoiOrdersCheckedBy
-                            {
-                                CheckedBy = user.GetUserName(),
-                                OrderNo = orderNumber
-                            }; // nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
-                            nat02Context.EoiOrdersCheckedBy.Add(orderCheckedBy);
+                            case "U":
+                            case "UT":
+                            case "UA":
+                            case "UH":
+                            case "UC":
+                            case "UHD":
+                                file = "UPPER";
+                                if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
+                                {
+                                    missingPrints += file + ",";
+                                }
+                                break;
+                            case "L":
+                            case "LT":
+                            case "LA":
+                            case "LH":
+                            case "LC":
+                            case "LHD":
+                                file = "LOWER";
+                                if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
+                                {
+                                    missingPrints += file + ",";
+                                }
+                                break;
+                            case "R":
+                            case "RT":
+                            case "RA":
+                            case "RH":
+                            case "RC":
+                            case "RHD":
+                                file = "REJECT";
+                                if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
+                                {
+                                    missingPrints += file + ",";
+                                }
+                                break;
+                            case "A":
+                                file = "ALIGNMENT";
+                                if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
+                                {
+                                    missingPrints += file + ",";
+                                }
+                                break;
+                            case "D":
+                            case "DH":
+                            case "DA":
+                            case "DI":
+                            case "DS":
+                                file = "DIE";
+                                if (!File.Exists(path + file + ".pdf") && !missingPrints.Contains(file))
+                                {
+                                    missingPrints += file + ",";
+                                }
+                                break;
+                            default:
+                                break;
                         }
-                        catch
-                        {
-                            EoiOrdersCheckedBy orderCheckedBy = new EoiOrdersCheckedBy
-                            {
-                                CheckedBy = user.GetUserName(),
-                                OrderNo = orderNumber
-                            }; // nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
-                            nat02Context.EoiOrdersCheckedBy.Add(orderCheckedBy);
-                        }
                     }
-                    else
+                    MessageBoxResult result = MessageBoxResult.Yes;
+                    if (!string.IsNullOrEmpty(missingPrints))
                     {
-                        EoiOrdersCheckedBy orderCheckedBy = nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
-                        nat02Context.EoiOrdersCheckedBy.Remove(orderCheckedBy);
+                        result = MessageBox.Show(
+                            "Are you sure you want to finish this order?" + "\n" +
+                            "This order appears to be missing: " + missingPrints.Remove(missingPrints.Length - 1) + " print(s) in the work order folder."
+                            , "Continue?", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     }
-                    nat02Context.SaveChanges();
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        bool mark_print = PrintOrderButton.Content.ToString() == "Print Order";
+                        OrderHeader order = nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).First();
+                        order.PrintOrderStatus = mark_print ? "Y" : "";
+                        order.WorkOrderPrintQty = mark_print ? (short)(nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).FirstOrDefault().WorkOrderPrintQty + 1) :
+                                                               (short)(nat01Context.OrderHeader.Where(o => o.OrderNo == workOrder.OrderNumber * 100).FirstOrDefault().WorkOrderPrintQty - 1);
+                        nat01Context.OrderHeader.Update(order);
+                        nat01Context.SaveChanges();
+
+                        if (mark_print)
+                        {
+                            EoiOrdersMarkedForChecking orderMarked = nat02Context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).FirstOrDefault();
+                            nat02Context.EoiOrdersMarkedForChecking.Remove(orderMarked);
+                        }
+                        else
+                        {
+                            EoiOrdersMarkedForChecking orderMarked = new EoiOrdersMarkedForChecking()
+                            {
+                                OrderNo = workOrder.OrderNumber
+                            };
+                            nat02Context.EoiOrdersMarkedForChecking.Add(orderMarked);
+                        }
+
+                        if (mark_print)
+                        {
+                            try
+                            {
+                                EoiOrdersCheckedBy orderCheckedBy = new EoiOrdersCheckedBy
+                                {
+                                    CheckedBy = user.GetUserName(),
+                                    OrderNo = orderNumber
+                                }; // nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
+                                nat02Context.EoiOrdersCheckedBy.Add(orderCheckedBy);
+                            }
+                            catch
+                            {
+                                EoiOrdersCheckedBy orderCheckedBy = new EoiOrdersCheckedBy
+                                {
+                                    CheckedBy = user.GetUserName(),
+                                    OrderNo = orderNumber
+                                }; // nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
+                                nat02Context.EoiOrdersCheckedBy.Add(orderCheckedBy);
+                            }
+                        }
+                        else
+                        {
+                            EoiOrdersCheckedBy orderCheckedBy = nat02Context.EoiOrdersCheckedBy.Where(o => o.OrderNo == workOrder.OrderNumber).First();
+                            nat02Context.EoiOrdersCheckedBy.Remove(orderCheckedBy);
+                        }
+                        nat02Context.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
