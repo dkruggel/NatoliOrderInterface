@@ -6777,6 +6777,10 @@
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ActiveCaption" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FFAABBBF" Offset="0.25"/>
+            <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
+        </LinearGradientBrush>
         <SolidColorBrush x:Key="ForeGround.AccentBrush" Color="#FFBF7A36"/>
         <SolidColorBrush x:Key="ForeGround.StandardBrush" Color="#107896"/>
         <SolidColorBrush x:Key="Tab.Border" Color="#FF3A3838"/>

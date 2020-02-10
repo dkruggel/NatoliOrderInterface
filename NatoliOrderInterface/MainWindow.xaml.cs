@@ -165,6 +165,8 @@ namespace NatoliOrderInterface
                 if (isDebugMode)
                 {
                     Title = "Natoli Order Interface *DEBUG*";
+                    NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow();
+                    notificationManagementWindow.Show();
                 }
                 else
                 {
