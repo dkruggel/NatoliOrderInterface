@@ -1087,7 +1087,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
                 MessageBox.Show(ex.Message);
             }
         }
