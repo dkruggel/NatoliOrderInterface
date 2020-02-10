@@ -317,7 +317,7 @@
 
   <ItemGroup>
     <Resource Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Content Include="NatoliOrderInterface.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
