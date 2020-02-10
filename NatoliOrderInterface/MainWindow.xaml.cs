@@ -154,6 +154,8 @@ namespace NatoliOrderInterface
                 InitializeComponent();
                 App.GetConnectionString();
                 App.GetEmailSettings();
+                var x = App.SmtpServer;
+                var y = App.SmtpPort;
                 UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
@@ -1446,7 +1448,7 @@ namespace NatoliOrderInterface
                                     {
                                         _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
                                     }
-                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2);
+                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2, User);
                                 }
                             }
                             catch
@@ -1830,7 +1832,7 @@ namespace NatoliOrderInterface
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                                 }
-                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString());
+                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
 
                             }
                             // Save pending changes

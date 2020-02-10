@@ -603,7 +603,7 @@ namespace NatoliOrderInterface
                         finished.Csr = _CSRs[0];
                         _nat02Context.EoiProjectsFinished.Add(finished);
 
-                        SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
+                        SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
                     }
 
                     _projectsContext.SaveChanges();
@@ -641,7 +641,7 @@ namespace NatoliOrderInterface
                     finished.Csr = _CSRs[0];
                     _nat02Context.EoiProjectsFinished.Add(finished);
 
-                    SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber);
+                    SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
@@ -740,21 +740,21 @@ namespace NatoliOrderInterface
                 {
                     foreach (string recipient in to)
                     {
-                        mail.To.Add(GetEmailAddressFromDWFirstName(recipient));
+                        mail.To.Add(GetEmailAddressFromDWPrincipalID(recipient));
                     }
                 }
                 if (cc != null)
                 {
                     foreach (string recipient in cc)
                     {
-                        mail.CC.Add(GetEmailAddressFromDWFirstName(recipient));
+                        mail.CC.Add(GetEmailAddressFromDWPrincipalID(recipient));
                     }
                 }
                 if (bcc != null)
                 {
                     foreach (string recipient in bcc)
                     {
-                        mail.Bcc.Add(GetEmailAddressFromDWFirstName(recipient));
+                        mail.Bcc.Add(GetEmailAddressFromDWPrincipalID(recipient));
                     }
                 }
                 if (attachments != null)
@@ -876,7 +876,7 @@ namespace NatoliOrderInterface
         /// </summary>
         /// <param name="dWfirstName"></param>
         /// <returns></returns>
-        public static string GetEmailAddressFromDWFirstName(string dWfirstName)
+        public static string GetEmailAddressFromDWPrincipalID(string dWfirstName)
         {
             try
             {
@@ -892,9 +892,9 @@ namespace NatoliOrderInterface
                     default:
                         if (_driveworksContext.SecurityUsers.Any(su => su.PrincipalId.Trim() == dWfirstName.Trim()))
                         {
-                            string fullName = _driveworksContext.SecurityUsers.First(su => su.PrincipalId.Trim() == dWfirstName.Trim()).EmailAddress.Trim();
+                            string emailAddress = _driveworksContext.SecurityUsers.First(su => su.PrincipalId.Trim() == dWfirstName.Trim()).EmailAddress.Trim();
                             _driveworksContext.Dispose();
-                            return fullName;
+                            return emailAddress;
                         }
                         else
                         {
@@ -908,7 +908,6 @@ namespace NatoliOrderInterface
                 return "";
                 //MessageBox.Show(ex.Message);
             }
-
         }
         /// <summary>
         /// Creates Zip File from 'inputDirectory' and places it at the 'outputZipFile' path.
@@ -917,7 +916,49 @@ namespace NatoliOrderInterface
         /// <param name="outputZipFile"></param>
         public static void CreateZipFile(string inputDirectory, string outputZipFile)
         {
+            if (File.Exists(outputZipFile))
+            {
+                File.Delete(outputZipFile);
+            }
             System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
+        }
+        /// <summary>
+        /// Takes the PrincipalId of the Driveworks.SecurityUsers table and returns the Full Name.
+        /// </summary>
+        /// <param name="dWfirstName"></param>
+        /// <returns></returns>
+        public static string GetDisplayNameFromDWPrincipalID(string dWfirstName)
+        {
+            try
+            {
+                using var _driveworksContext = new DriveWorksContext();
+                switch (dWfirstName)
+                {
+                    case "Greg":
+                        _driveworksContext.Dispose();
+                        return "intlcs1@natoli.com";
+                    case "Nick":
+                        _driveworksContext.Dispose();
+                        return "intlcs3@natoli.com";
+                    default:
+                        if (_driveworksContext.SecurityUsers.Any(su => su.PrincipalId.Trim() == dWfirstName.Trim()))
+                        {
+                            string displayName = _driveworksContext.SecurityUsers.First(su => su.PrincipalId.Trim() == dWfirstName.Trim()).DisplayName.Trim();
+                            _driveworksContext.Dispose();
+                            return displayName;
+                        }
+                        else
+                        {
+                            _driveworksContext.Dispose();
+                            return "";
+                        }
+                }
+            }
+            catch //(Exception ex)
+            {
+                return "";
+                //MessageBox.Show(ex.Message);
+            }
         }
         /// <summary>
         /// Sends project completed E-mail to CSRs
@@ -925,88 +966,206 @@ namespace NatoliOrderInterface
         /// <param name="CSRs"></param>
         /// <param name="_projectNumber"></param>
         /// <param name="_revNo"></param>
-        public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo)
+        public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
         {
-
-            //var message = new MimeMessage();
-
-
-
-
-
-
-
-
-
-
-
-            SmtpClient smtpServer = new SmtpClient();
-            MailMessage mail = new MailMessage();
             try
             {
-                // Send email
-                smtpServer.Port = (int)App.SmtpPort;
-                smtpServer.Host = App.SmtpServer;
-                mail.IsBodyHtml = true;
-                mail.From = new MailAddress("AutomatedEmail@natoli.com");
                 if (CSRs != null)
                 {
-                    foreach (string CSR in CSRs)
-                    {
-                        mail.To.Add(GetEmailAddressFromDWFirstName(CSR));
-                    }
-                    //mail.Bcc.Add("eng6@natoli.com");
-                    //mail.Bcc.Add("eng5@natoli.com");
                     string projectNumber = _projectNumber ?? "";
                     string revNo = _revNo ?? "";
-                    mail.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
+                    EmailMessage emailMessage = new EmailMessage();
+                    foreach (string CSR in CSRs)
+                    {
+                        emailMessage.ToAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(CSR), GetEmailAddressFromDWPrincipalID(CSR)));
+                    }
+                    emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
+
+                    var message = new MimeMessage();
+                    message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
+
+                    var body = new TextPart(MimeKit.Text.TextFormat.Html)
+                    {
+                        Text = "Dear " + CSRs.First() + ",<br><br>" +
+
+                        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                        "The drawings for the customer are attached.<br><br>" +
+                        "Thanks,<br>" +
+                        "Engineering Team<br><br><br>" +
+
+
+                        "This is an automated email and not monitored by any person(s)."
+                    };
+
+                    var multipart = new Multipart("Mixed");
+                    multipart.Add(body);
+
                     string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
                     string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                     if (System.IO.Directory.Exists(filesForCustomerDirectory))
                     {
                         CreateZipFile(filesForCustomerDirectory, zipFile);
-                        //string[] files = System.IO.Directory.GetFiles(filesForCustomerDirectory);
 
-                        //foreach (string file in files)
-                        //{
-                        //    string fileName = file.Substring(file.LastIndexOf(@"\") + 1, file.Length - file.LastIndexOf(@"\") - 1);
-                        //    Attachment attachment = new Attachment(file);
-                        //    mail.Attachments.Add(attachment);
-                        //}
-
-                        Attachment attachment = new Attachment(zipFile);
-                        mail.Attachments.Add(attachment);
+                        MimePart attachment = new MimePart("application", "zip")
+                        {
+                            Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
+                            ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                            ContentTransferEncoding = ContentEncoding.Base64,
+                            FileName = Path.GetFileName(zipFile)
+                        };
+                        multipart.Add(attachment);
                     }
-                    mail.IsBodyHtml = true;
-                    mail.Body = "Dear " + CSRs.First() + ",<br><br>" +
-
-                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                    "The drawings for the customer are attached.<br><br>" +
-                    "Thanks,<br>" +
-                    "Engineering Team<br><br><br>" +
+                    message.Body = multipart;
 
 
-                    "This is an automated email and not monitored by any person(s).";
-                    smtpServer.Send(mail);
-                    smtpServer.Dispose();
-                    mail.Dispose();
-                    System.IO.File.Delete(zipFile);
-                    //MessageBox.Show("Message sent to CSR.");
-                }
-                else
-                {
-                    MessageBox.Show("List of strings 'CSRs' was null.");
+                    using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
+                    {
+                        
+                        emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
+
+                        try
+                        {
+                            //Using SSL connection [needs username and password]
+                            //emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, true);
+
+                            //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                            //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
+                            {
+                                var maxSize = emailClient.MaxSize;
+                                message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                                {
+                                    Text = "Dear " + CSRs.First() + ",<br><br>" +
+
+                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                    "Thanks,<br>" +
+                                    "Engineering Team<br><br><br>" +
+
+
+                                    "This is an automated email and not monitored by any person(s)."
+                                };
+                                emailClient.Send(message);
+                            }
+
+                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
+                            {
+                                var text = "The SMTP server supports delivery-status notifications.";
+                            }
+
+                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
+                            {
+                                var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
+                            }
+
+                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
+                            {
+                                var text = "The SMTP server supports Content-Transfer-Encoding: binary";
+                            }
+
+                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
+                            {
+                                var text = "The SMTP server supports UTF-8 in message headers.";
+                            }
+                            
+                            emailClient.Disconnect(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            emailClient.Disconnect(true);
+                            if (!ex.Message.StartsWith("5.3.4"))
+                            {
+                                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-
+                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
                 MessageBox.Show(ex.Message);
-                // WriteToErrorLog("SendEmailToCSR", ex.Message);
             }
-            smtpServer.Dispose();
-            mail.Dispose();
         }
+        /// <summary>
+        /// [Deprecated] Sends project completed E-mail to CSRs
+        /// </summary>
+        /// <param name="CSRs"></param>
+        /// <param name="_projectNumber"></param>
+        /// <param name="_revNo"></param>
+        //public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo)
+        //{
+        //    SmtpClient smtpServer = new SmtpClient();
+        //    MailMessage mail = new MailMessage();
+        //    try
+        //    {
+        //        // Send email
+        //        smtpServer.Port = (int)App.SmtpPort;
+        //        smtpServer.Host = App.SmtpServer;
+        //        mail.IsBodyHtml = true;
+        //        mail.From = new MailAddress("AutomatedEmail@natoli.com");
+        //        if (CSRs != null)
+        //        {
+        //            foreach (string CSR in CSRs)
+        //            {
+        //                mail.To.Add(GetEmailAddressFromDWPrincipalID(CSR));
+        //            }
+        //            //mail.Bcc.Add("eng6@natoli.com");
+        //            //mail.Bcc.Add("eng5@natoli.com");
+        //            string projectNumber = _projectNumber ?? "";
+        //            string revNo = _revNo ?? "";
+        //            mail.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
+        //            string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
+        //            string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
+        //            if (System.IO.Directory.Exists(filesForCustomerDirectory))
+        //            {
+        //                CreateZipFile(filesForCustomerDirectory, zipFile);
+        //                //string[] files = System.IO.Directory.GetFiles(filesForCustomerDirectory);
+
+        //                //foreach (string file in files)
+        //                //{
+        //                //    string fileName = file.Substring(file.LastIndexOf(@"\") + 1, file.Length - file.LastIndexOf(@"\") - 1);
+        //                //    Attachment attachment = new Attachment(file);
+        //                //    mail.Attachments.Add(attachment);
+        //                //}
+
+        //                Attachment attachment = new Attachment(zipFile);
+        //                mail.Attachments.Add(attachment);
+        //            }
+        //            mail.IsBodyHtml = true;
+        //            mail.Body = "Dear " + CSRs.First() + ",<br><br>" +
+
+        //            @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+        //            "The drawings for the customer are attached.<br><br>" +
+        //            "Thanks,<br>" +
+        //            "Engineering Team<br><br><br>" +
+
+
+        //            "This is an automated email and not monitored by any person(s).";
+        //            smtpServer.Send(mail);
+        //            smtpServer.Dispose();
+        //            mail.Dispose();
+        //            System.IO.File.Delete(zipFile);
+        //            //MessageBox.Show("Message sent to CSR.");
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("List of strings 'CSRs' was null.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        MessageBox.Show(ex.Message);
+        //        // WriteToErrorLog("SendEmailToCSR", ex.Message);
+        //    }
+        //    smtpServer.Dispose();
+        //    mail.Dispose();
+        //}
         /// <summary>
         /// Returns a list of errors found for specified quote and rev level.
         /// </summary>
