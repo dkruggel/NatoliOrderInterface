@@ -761,10 +761,12 @@ namespace NatoliOrderInterface
             poNumber = (string.IsNullOrEmpty(orderHeader.Ponumber) ? "" :  orderHeader.Ponumber.Trim()) + ' ' + (string.IsNullOrEmpty(orderHeader.Poextension) ? "" : orderHeader.Poextension.Trim());
             shipToCustomerName = string.IsNullOrEmpty(orderHeader.ShiptoName) ? "" : orderHeader.ShiptoName.Trim();
             shipDate = (DateTime)orderHeader.RequestedShipDateRev;
-            if (shipDate.ToShortDateString() != "01/01/1901")
+            var s = shipDate.ToShortDateString();
+            if (shipDate.ToShortDateString() == "1/1/1901")
             {
                 shipDate = (DateTime)orderHeader.RequestedShipDate;
             }
+            shipToCustomerName = string.IsNullOrEmpty(orderHeader.ShiptoName) ? "" : orderHeader.ShiptoName.Trim();
             this.endUserName = string.IsNullOrEmpty(endUserName) ? "" : endUserName.Trim();
             referenceOrder = orderHeader.RefWo;
             engineeringNotes = orderHeader.EngineeringNote1.Trim() + "\n" + orderHeader.EngineeringNote2.Trim() + "\n" + orderHeader.MiscNote.Trim();
