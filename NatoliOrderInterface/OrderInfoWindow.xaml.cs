@@ -1998,7 +1998,7 @@ namespace NatoliOrderInterface
                 // Check to see if there is an unknown file name
                 foreach (string file in filePaths)
                 {
-                    string lineItemName = file.GetFileNameFromPath();
+                    string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
                     if (lineItemName.EndsWith("_M"))
                     {
                         lineItemName =lineItemName.Remove(lineItemName.Length - 2);
@@ -2020,7 +2020,8 @@ namespace NatoliOrderInterface
                 {
                     foreach (string file in filePaths)
                     {
-                        tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                        //tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                        tempFile = System.IO.Path.GetTempFileName();
                         PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
                         int page_count = pdfDocument.GetNumberOfPages();
                         Document document = new Document(pdfDocument);
@@ -2035,7 +2036,7 @@ namespace NatoliOrderInterface
                         File.Move(tempFile, file, true);
 
                         int file_count;
-                        string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                        string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
                         try
                         {
                             int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;

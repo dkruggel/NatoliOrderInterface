@@ -57,7 +57,7 @@ namespace NatoliOrderInterface
             {
                 foreach (string file in filePaths.OrderBy(t=>t.ToString()))
                 {
-                    string fileName = file.GetFileNameFromPath();
+                    string fileName = System.IO.Path.GetFileNameWithoutExtension(file);
                     textBlockList.Add(new TextBlock { Text = fileName });
                 }
             }
@@ -67,7 +67,7 @@ namespace NatoliOrderInterface
                 foreach (string file in filePaths)
                 {
                     int metric = 0;
-                    string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
+                    string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
                     if (lineItemName.EndsWith("_M"))
                     {
                         lineItemName = lineItemName.Remove(lineItemName.Length - 2);
@@ -149,7 +149,7 @@ namespace NatoliOrderInterface
                         File.Delete(fileToDelete);
                     }
                 }
-                tempFile = file.Replace(".pdf", "_TEMP.pdf");
+                tempFile = System.IO.Path.GetTempFileName();
                 if (toBeSigned)
                 {
                     PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
@@ -201,7 +201,7 @@ namespace NatoliOrderInterface
                 i = 1;
                 foreach (string path in Directory.GetFiles(directory).OrderBy(s => s))
                 {
-                    string name = path.GetFileNameFromPath();
+                    string name = System.IO.Path.GetFileNameWithoutExtension(path);
                     string from = path;
                     string to = directory + name.Replace('-', '_') + ".pdf";
                     File.Move(from, to);

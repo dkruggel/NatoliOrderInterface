@@ -5,10 +5,6 @@ using System.Text;
 namespace NatoliOrderInterface
 {
     public static class MyExtensions
-    {
-        public static string GetFileNameFromPath(this string path)
-        {
-            return path.Substring(path.LastIndexOf("\\") + 1, path.IndexOf(".pdf") - path.LastIndexOf("\\") - 1);
-        }
+    { 
     }
 }
