@@ -27,30 +27,37 @@ namespace NatoliOrderInterface
         
         public static void GetConnectionString()
         {
-            var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
-            string[] text = configFile.Split("\n");
-
-            foreach (string line in text)
+            try
             {
-                if (line.First() != '#')
+                var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
+                string[] text = configFile.Split("\n");
+
+                foreach (string line in text)
                 {
-                    string key = line.Split(':')[0];
-                    switch (key)
+                    if (line.First() != '#')
                     {
-                        case "Server":
-                            Server = line.Split(':')[1].Trim();
-                            break;
-                        case "Persist Security Info":
-                            PersistSecurityInfo = line.Split(':')[1].Trim();
-                            break;
-                        case "User ID":
-                            UserID = line.Split(':')[1].Trim();
-                            break;
-                        case "Password":
-                            Password = line.Split(':')[1].Trim();
-                            break;
+                        string key = line.Split(':')[0];
+                        switch (key)
+                        {
+                            case "Server":
+                                Server = line.Split(':')[1].Trim();
+                                break;
+                            case "Persist Security Info":
+                                PersistSecurityInfo = line.Split(':')[1].Trim();
+                                break;
+                            case "User ID":
+                                UserID = line.Split(':')[1].Trim();
+                                break;
+                            case "Password":
+                                Password = line.Split(':')[1].Trim();
+                                break;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("App.Xaml.cs => GetConnectionString()", ex.Message, null);
             }
         }
         public static void GetEmailSettings()
@@ -68,7 +75,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("GetEmailSettings()", ex.Message, null);
+                IMethods.WriteToErrorLog("App.Xaml.cs => GetEmailSettings()", ex.Message, null);
             }
         }
     }
