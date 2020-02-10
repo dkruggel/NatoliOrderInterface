@@ -18,11 +18,10 @@ using System.Xml;
 using System.Windows.Markup;
 using MailKit;
 using MimeKit;
+using NatoliOrderInterface.MimeTypes;
 
 namespace NatoliOrderInterface
 {
-    
-
     public interface IMethods
     {
         public static readonly Dictionary<string, string> lineItemTypeToDescription = new Dictionary<string, string> {
@@ -726,58 +725,186 @@ namespace NatoliOrderInterface
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="priority"></param>
-        public static void SendEmail(List<string> to, List<string> cc = null, List<string> bcc = null, string subject = "", string body = "", List<string> attachments = null, MailPriority priority = MailPriority.Normal)
+        public static void SendEmail(List<string> to, List<string> cc = null, List<string> bcc = null, string subject = "", string body = "", List<string> attachments = null, MailPriority priority = MailPriority.Normal, User user = null)
         {
-            SmtpClient smtpServer = new SmtpClient();
-            MailMessage mail = new MailMessage();
             try
             {
-                smtpServer.Port = 25;
-                smtpServer.Host = "192.168.1.186";
-                mail.IsBodyHtml = true;
-                mail.From = new MailAddress("AutomatedEmail@natoli.com");
-                if (to != null)
+                EmailMessage emailMessage = new EmailMessage();
+                var message = new MimeMessage();
+                if (to.Count > 0)
                 {
                     foreach (string recipient in to)
                     {
-                        mail.To.Add(GetEmailAddressFromDWPrincipalID(recipient));
+                        emailMessage.ToAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(recipient), GetEmailAddressFromDWPrincipalID(recipient)));
+                        message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     }
                 }
-                if (cc != null)
+                if (cc.Count > 0)
                 {
                     foreach (string recipient in cc)
                     {
-                        mail.CC.Add(GetEmailAddressFromDWPrincipalID(recipient));
+                        emailMessage.CCAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(recipient), GetEmailAddressFromDWPrincipalID(recipient)));
+                        message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     }
                 }
-                if (bcc != null)
+                if (bcc.Count > 0)
                 {
                     foreach (string recipient in bcc)
                     {
-                        mail.Bcc.Add(GetEmailAddressFromDWPrincipalID(recipient));
+                        emailMessage.BCCAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(recipient), GetEmailAddressFromDWPrincipalID(recipient)));
+                        message.Bcc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     }
                 }
-                if (attachments != null)
+
+                //emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
+                //message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+                message.Subject = subject;
+
+                var _body = new TextPart(MimeKit.Text.TextFormat.Html)
                 {
+                    Text = body
+                };
+                if (attachments.Count > 0)
+                {
+                    var multipart = new Multipart("Mixed");
+                    multipart.Add(_body);
+
                     foreach (string path in attachments)
                     {
-                        Attachment attachment = new Attachment(path);
-                        mail.Attachments.Add(attachment);
+                        string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(path)).Split('/');
+                        if (System.IO.Directory.Exists(Path.GetDirectoryName(path)))
+                        {
+
+                            MimePart attachment = new MimePart(mimetype[0], mimetype[1])
+                            {
+                                Content = new MimeContent(File.OpenRead(path), ContentEncoding.Default),
+                                ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                                ContentTransferEncoding = ContentEncoding.Base64,
+                                FileName = Path.GetFileName(path)
+                            };
+                            multipart.Add(attachment);
+                        }
+                    }
+                    message.Body = multipart;
+                }
+                else
+                {
+                    message.Body = _body;
+                }
+
+                using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
+                {
+
+                    emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
+
+                    try
+                    {
+                        //Using SSL connection [needs username and password]
+                        //emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, true);
+
+                        //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                        //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+                        if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
+                        {
+                            var maxSize = emailClient.MaxSize;
+                            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                            {
+                                Text = body
+                            };
+                            emailClient.Send(message);
+                        }
+
+                        if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
+                        {
+                            var text = "The SMTP server supports delivery-status notifications.";
+                        }
+
+                        if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
+                        {
+                            var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
+                        }
+
+                        if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
+                        {
+                            var text = "The SMTP server supports Content-Transfer-Encoding: binary";
+                        }
+
+                        if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
+                        {
+                            var text = "The SMTP server supports UTF-8 in message headers.";
+                        }
+
+                        emailClient.Disconnect(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        emailClient.Disconnect(true);
+                        if (!ex.Message.StartsWith("5.3.4"))
+                        {
+                            WriteToErrorLog("IMethods.cs => SendEmail -> SmtpClient", ex.Message, user);
+                        }
                     }
                 }
-                mail.Subject = subject;
-                mail.Body = body;
-                mail.Priority = priority;
-                smtpServer.Send(mail);
-                smtpServer.Dispose();
-                mail.Dispose();
             }
             catch (Exception ex)
             {
+                WriteToErrorLog("IMethods.cs => SendEmail", ex.Message, user);
                 MessageBox.Show(ex.Message);
             }
-            smtpServer.Dispose();
-            mail.Dispose();
+
+            //SmtpClient smtpServer = new SmtpClient();
+            //MailMessage mail = new MailMessage();
+            //try
+            //{
+            //    smtpServer.Port = 25;
+            //    smtpServer.Host = "192.168.1.186";
+            //    mail.IsBodyHtml = true;
+            //    mail.From = new MailAddress("AutomatedEmail@natoli.com");
+            //    if (to != null)
+            //    {
+            //        foreach (string recipient in to)
+            //        {
+            //            mail.To.Add(GetEmailAddressFromDWPrincipalID(recipient));
+            //        }
+            //    }
+            //    if (cc != null)
+            //    {
+            //        foreach (string recipient in cc)
+            //        {
+            //            mail.CC.Add(GetEmailAddressFromDWPrincipalID(recipient));
+            //        }
+            //    }
+            //    if (bcc != null)
+            //    {
+            //        foreach (string recipient in bcc)
+            //        {
+            //            mail.Bcc.Add(GetEmailAddressFromDWPrincipalID(recipient));
+            //        }
+            //    }
+            //    if (attachments != null)
+            //    {
+            //        foreach (string path in attachments)
+            //        {
+            //            Attachment attachment = new Attachment(path);
+            //            mail.Attachments.Add(attachment);
+            //        }
+            //    }
+            //    mail.Subject = subject;
+            //    mail.Body = body;
+            //    mail.Priority = priority;
+            //    smtpServer.Send(mail);
+            //    smtpServer.Dispose();
+            //    mail.Dispose();
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+            //smtpServer.Dispose();
+            //mail.Dispose();
         }
         /// <summary>
         /// Checks for 'processName' in processes and brings to front.
@@ -1007,8 +1134,8 @@ namespace NatoliOrderInterface
                     if (System.IO.Directory.Exists(filesForCustomerDirectory))
                     {
                         CreateZipFile(filesForCustomerDirectory, zipFile);
-
-                        MimePart attachment = new MimePart("application", "zip")
+                        string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
+                        MimePart attachment = new MimePart(mimetype[0], mimetype[1])
                         {
                             Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
                             ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
