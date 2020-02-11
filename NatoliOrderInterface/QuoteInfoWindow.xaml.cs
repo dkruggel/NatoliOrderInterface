@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using System.Windows.Interop;
 
 namespace NatoliOrderInterface
 {
@@ -36,6 +37,19 @@ namespace NatoliOrderInterface
 
     public partial class QuoteInfoWindow : Window, IMethods
     {
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr FindWindow(string strClassName, string strWindowName);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        public struct Rect
+        {
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
+        }
         enum SymbolicLink
         {
             File = 0,
@@ -61,7 +75,7 @@ namespace NatoliOrderInterface
 
         public QuoteInfoWindow(Quote quote, MainWindow parent, User user)
         {
-            Owner = parent;
+            //Owner = parent;
             InitializeComponent();
             this.user = user ?? new User("");
             this.quote = quote ?? new Quote(0,0);
@@ -119,17 +133,26 @@ namespace NatoliOrderInterface
                 }
             }
             Title = "Quote#: " + quoteNumber + " Rev#: " + quote.QuoteRevNo;
-            if (this.parent.WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                //Top = parent.Top;
-                //Left = parent.Left;
-                Width = parent.Width;
-                Height = parent.Height;
-            }
+
+            IntPtr hwnd = new WindowInteropHelper(parent).Handle;
+            Rect windowRect = new Rect();
+            GetWindowRect(hwnd, ref windowRect);
+            Top = windowRect.Top + 8;
+            Left = windowRect.Left + 8;
+            Width = parent.Width;
+            Height = parent.Height;
+
+            //if (this.parent.WindowState == WindowState.Maximized)
+            //{
+            //    WindowState = WindowState.Maximized;
+            //}
+            //else
+            //{
+            //    Top = parent.Top;
+            //    Left = parent.Left;
+            //    Width = parent.Width;
+            //    Height = parent.Height;
+            //}
             //quoteLocation = quote_location;
             QuoteTopHeaderExpanderHeader.Text = "Quote: " + quote.QuoteNumber + " Rev: " + quote.QuoteRevNo;
             List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == quote.QuoteNumber && l.Revision == quote.QuoteRevNo).OrderBy(q => q.LineNumber).ToList();
@@ -479,6 +502,10 @@ namespace NatoliOrderInterface
         }
 
         #region Events
+        private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowState = parent.WindowState;
+        }
         private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
         {
             try
@@ -2501,7 +2528,7 @@ namespace NatoliOrderInterface
                             nameOfFile = dialog.ReturnString.Length > 0 ? dialog.ReturnString : nameOfFile;
                         }
                         mailitem.SaveAs(path + nameOfFile + ".msg");
-                        MessageBox.Show("Successful drop.");
+                        MessageBox.Show(this, "Successful drop.");
                     }
                 }
             }
@@ -2517,7 +2544,7 @@ namespace NatoliOrderInterface
                 }
                 System.IO.File.Copy(filename, fp);
                 if (filename.Contains(@"\Local\Temp")) { File.Delete(filename); }
-                MessageBox.Show("Successful drop.");
+                MessageBox.Show(this, "Successful drop.");
             }
         }
         private void Grid_DragEnter(object sender, DragEventArgs e)

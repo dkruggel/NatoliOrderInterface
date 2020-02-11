@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Navigation;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Interop;
 
 namespace NatoliOrderInterface
 {
@@ -33,6 +34,20 @@ namespace NatoliOrderInterface
 
     public partial class OrderInfoWindow : Window, IDisposable
     {
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr FindWindow(string strClassName, string strWindowName);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        public struct Rect
+        {
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
+        }
+
         private readonly MainWindow parent;
         private readonly WorkOrder workOrder;
         private readonly int orderNumber;
@@ -55,24 +70,33 @@ namespace NatoliOrderInterface
         public OrderInfoWindow(WorkOrder _workOrder, MainWindow _parent, string _orderLocation, User _user, bool _isReferenceWO = false)
         {
             // For centerowner startup
-            Owner = _parent ?? new MainWindow();
+            // Owner = _parent ?? new MainWindow();
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
             orderNumber = workOrder.OrderNumber;
             Title = "Work Order " + orderNumber;
             parent = _parent ?? new MainWindow();
-            if (_parent.WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                //Top = parent.Top;
-                //Left = parent.Left;
-                Width = parent.Width;
-                Height = parent.Height;
-            }
+            IntPtr hwnd = new WindowInteropHelper(parent).Handle;
+            Rect windowRect = new Rect();
+            GetWindowRect(hwnd, ref windowRect);
+            Top = windowRect.Top + 8;
+            Left = windowRect.Left + 8;
+            Width = parent.Width;
+            Height = parent.Height;
+            
+            //if (_parent.WindowState == WindowState.Maximized)
+            //{
+            //    WindowState = WindowState.Maximized;
+            //}
+            //else
+            //{
+            //    Top = _parent.Top;
+            //    Left = _parent.Left;
+            //    //Width = _parent.Width;
+            //    //Height = _parent.Height;
+            //}
+            
             orderLocation = _orderLocation ?? "";
             isReferenceWO = _isReferenceWO;
             if (user.Department == "Customer Service")
@@ -1045,6 +1069,7 @@ namespace NatoliOrderInterface
                     FinishOrderButton.IsEnabled = false;
                     NotFinishedButton.IsEnabled = false;
                     PrintOrderButton.IsEnabled = false;
+                    DoNotProcessOrderButton.IsEnabled = (user.GetUserName().EndsWith("Simonpietri") || user.GetUserName().EndsWith("Willis"));
                 }
                 else
                 {
@@ -1221,6 +1246,8 @@ namespace NatoliOrderInterface
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
+            WindowState = parent.WindowState;
+            
             if (!Environment.CurrentDirectory.Contains("Debug"))
             {
                 using var _nat02context = new NAT02Context();
