@@ -7,19 +7,9 @@
         mc:Ignorable="d"
         Title="Notifications Management" Height="400" Width="600" WindowStartupLocation="CenterScreen">
     <Grid  Background="{StaticResource ActiveCaption}">
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0">
-            <Button Content="Navigation" Margin="5,15,5,5" Style="{StaticResource Button}"/>
-            <Button Content="Archive" Margin="5" Style="{StaticResource Button}"/>
-            <Button Content="Exit" Margin="5" Style="{StaticResource Button}"/>
-        </StackPanel>-->
-
         <Grid Grid.Column="1">
             <ScrollViewer Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Hidden">
-                <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                     <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
                     <ContentControl Style="{StaticResource InactiveNotificationGrid}"/>
                     <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
@@ -31,7 +21,7 @@
                     <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
                     <ContentControl Style="{StaticResource ActiveNotificationGrid}"/>
                     <TextBlock Text="More" HorizontalAlignment="Center" Visibility="Visible"/> <!--Show when ScrollViewer.ComputedScrollbarVisibility = Visible-->
-                </StackPanel>
+                </DockPanel>
             </ScrollViewer>
         </Grid>
     </Grid>
