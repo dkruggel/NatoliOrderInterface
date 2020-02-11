@@ -454,62 +454,52 @@ namespace NatoliOrderInterface
             MenuItem fileMenu = new MenuItem
             {
                 Header = "File",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 Height = MainMenu.Height
             };
             MenuItem createProject = new MenuItem()
             {
                 Header = "Create Project",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
             MenuItem projectSearch = new MenuItem()
             {
                 Header = "Project Search",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Search for old engineering projects."
             };
             MenuItem forceRefresh = new MenuItem
             {
                 Header = "Force Refresh",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Bypass the refresh timer."
             };
             MenuItem editLayout = new MenuItem
             {
                 Header = "Edit Layout",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Change which views are shown in the main window."
             };
             MenuItem reports = new MenuItem
             {
                 Header = "Reports",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Opens reporting window."
             };
             MenuItem checkMissingVariables = new MenuItem
             {
                 Header = "Missing Automation Info",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Checks for orders missing automation information."
             };
             MenuItem filterProjects = new MenuItem
             {
                 Header = "Filter Active Projects",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 IsChecked = User.FilterActiveProjects,
                 ToolTip = "Filters All Tablet Projects and All Tool Projects to just active projects (in engineering)."
             };
             MenuItem printDrawings = new MenuItem
             {
                 Header = "Print Drawings",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
             };
             MenuItem updateApp = new MenuItem
             {
                 Header = "Update App",
-                Foreground = (SolidColorBrush)Application.Current.Resources["ForeGround.StandardBrush"],
                 ToolTip = "Updates the app to the most current version (if available)."
             };
             createProject.Click += CreateProject_Click;

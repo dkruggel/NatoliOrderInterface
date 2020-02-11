@@ -363,7 +363,7 @@
     <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}">
             
-            <Menu x:Name="MainMenu" Height="30" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
+            <Menu x:Name="MainMenu" Height="30" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource ForeGround.StandardBrush}">
                 <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
                 <!--<Image Source="{StaticResource Bell_With_LayersDrawingImage}" Margin="3"/>-->
             </Menu>
