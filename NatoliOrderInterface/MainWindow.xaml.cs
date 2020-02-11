@@ -23,6 +23,7 @@ using Colors = System.Windows.Media.Colors;
 using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 using WpfAnimatedGif;
+using NatoliOrderInterface.FolderIntegrity;
 
 namespace NatoliOrderInterface
 {
@@ -165,8 +166,11 @@ namespace NatoliOrderInterface
                 if (isDebugMode)
                 {
                     Title = "Natoli Order Interface *DEBUG*";
-                    NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow();
-                    notificationManagementWindow.Show();
+                    if (User.EmployeeCode == "E4408")
+                    {
+                        NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow();
+                        notificationManagementWindow.Show();
+                    }
                 }
                 else
                 {
