@@ -926,8 +926,13 @@ namespace NatoliOrderInterface
                     try
                     {
                         string category = quote.InternationalYorN == 'Y' ? "I" : "D";
-                        string repName = _nat01Context.QuoteRepresentative.Where(qr => qr.RepId == quote.QuoteRepID).First().Name;
-                        bool international = _natbcContext.MoeEmployees.Where(e => e.MoeEmployeeName == repName).First().MoeDepartmentCode == "D1149";
+                        string repName = _nat01Context.QuoteRepresentative.Where(qr => qr.RepId == quote.QuoteRepID).First().Name.Trim();
+                        string repLastName = repName.Split(' ')[1];
+                        bool international = _natbcContext.MoeEmployees.Any(e => (!string.IsNullOrEmpty(e.MoeEmployeeName) && !string.IsNullOrWhiteSpace(e.MoeEmployeeName)) && 
+                        (e.MoeEmployeeName.Trim() == repName || 
+                        (e.MoeEmployeeName.Trim() != repName && 
+                        e.MoeLastName == repLastName)) && 
+                        e.MoeDepartmentCode == "D1149");
                         if (exists)
                         {
                             if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))

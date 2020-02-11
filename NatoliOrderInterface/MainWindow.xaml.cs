@@ -23,6 +23,7 @@ using Colors = System.Windows.Media.Colors;
 using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 using WpfAnimatedGif;
+using NatoliOrderInterface.FolderIntegrity;
 
 namespace NatoliOrderInterface
 {

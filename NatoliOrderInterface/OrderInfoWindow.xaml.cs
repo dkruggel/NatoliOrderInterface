@@ -1907,7 +1907,22 @@ namespace NatoliOrderInterface
             try
             {
                 string path = @"\\engserver\workstations\tool_drawings\" + workOrder.OrderNumber + @"\" + fileName + ".pdf";
-                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                if (File.Exists(path))
+                {
+                    Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                }
+                else if (Directory.Exists(System.IO.Path.GetDirectoryName(path)))
+                {
+                    path = System.IO.Path.GetDirectoryName(path);
+                    Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                }
+                else
+                {
+                    path = System.IO.Path.GetDirectoryName(path);
+                    Directory.CreateDirectory(path);
+                    Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -1968,7 +1983,21 @@ namespace NatoliOrderInterface
                 try
                 {
                     string path = @"\\engserver\workstations\tool_drawings\" + workOrder.OrderNumber + @"\" + fileName + ".pdf";
-                    Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                    if (File.Exists(path))
+                    {
+                        Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                    }
+                    else if (Directory.Exists(System.IO.Path.GetDirectoryName(path)))
+                    {
+                        path = System.IO.Path.GetDirectoryName(path);
+                        Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                    }
+                    else
+                    {
+                        path = System.IO.Path.GetDirectoryName(path);
+                        Directory.CreateDirectory(path);
+                        Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                    }
                 }
                 catch (Exception ex)
                 {
