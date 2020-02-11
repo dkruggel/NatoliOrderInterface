@@ -139,6 +139,8 @@ namespace NatoliOrderInterface
             GetWindowRect(hwnd, ref windowRect);
             Top = windowRect.Top + 8;
             Left = windowRect.Left + 8;
+            Width = parent.Width;
+            Height = parent.Height;
 
             //if (this.parent.WindowState == WindowState.Maximized)
             //{
