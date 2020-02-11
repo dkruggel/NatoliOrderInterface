@@ -155,8 +155,6 @@ namespace NatoliOrderInterface
                 InitializeComponent();
                 App.GetConnectionString();
                 App.GetEmailSettings();
-                var x = App.SmtpServer;
-                var y = App.SmtpPort;
                 UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
