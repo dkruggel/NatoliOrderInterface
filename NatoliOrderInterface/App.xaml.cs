@@ -65,7 +65,7 @@ namespace NatoliOrderInterface
             try
             {
                 var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .SetBasePath(@"\\nshare\VB_Apps\NatoliOrderInterface\Resources")
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
                 IConfigurationRoot configuration = builder.Build();
