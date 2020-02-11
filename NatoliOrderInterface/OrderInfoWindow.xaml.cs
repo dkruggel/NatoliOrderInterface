@@ -1067,7 +1067,7 @@ namespace NatoliOrderInterface
                     FinishOrderButton.IsEnabled = false;
                     NotFinishedButton.IsEnabled = false;
                     PrintOrderButton.IsEnabled = false;
-                    DoNotProcessOrderButton.IsEnabled = true;
+                    DoNotProcessOrderButton.IsEnabled = (user.GetUserName().EndsWith("Simonpietri") || user.GetUserName().EndsWith("Willis"));
                 }
                 else
                 {
