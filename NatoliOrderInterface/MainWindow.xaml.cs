@@ -165,8 +165,6 @@ namespace NatoliOrderInterface
                 if (isDebugMode)
                 {
                     Title = "Natoli Order Interface *DEBUG*";
-                    NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow();
-                    notificationManagementWindow.Show();
                 }
                 else
                 {
@@ -192,8 +190,12 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
+#if DEBUG
+                NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+                notificationManagementWindow.Show();
+#endif
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
@@ -861,9 +863,10 @@ namespace NatoliOrderInterface
             };
 
             // Add menu item to open active notifications window
-
+#if DEBUG
             MainMenu.Items.Add(notificationsMenu);
-            #endregion
+#endif
+#endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
@@ -7142,7 +7145,7 @@ namespace NatoliOrderInterface
             IEnumerable<double> newOrders = dict.Keys.Except(orders);
             foreach (double order in newOrders)
             {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+                int index = dict.OrderBy(o => o.Key).ToList().IndexOf(dict.First(o => o.Key == order));
                 Expander expander = CreatePrintedInEngineeringExpander(dict.First(x => x.Key == order));
                 Dispatcher.Invoke(() =>
                 interiorStackPanel.Children.Insert(index, expander));
@@ -10134,7 +10137,7 @@ namespace NatoliOrderInterface
 
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                 {
-                    Owner = this,
+                    // Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10198,7 +10201,7 @@ namespace NatoliOrderInterface
                     string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
                     OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                     {
-                        Owner = this,
+                        // Owner = this,
                         Left = Left,
                         Top = Top
                     };
