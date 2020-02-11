@@ -69,19 +69,5 @@ namespace NatoliOrderInterface.Properties {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to #This is a file that contains KeyValuePairs to configure the application that should not be passed to the Gir repository.
-        ///#May contain sensitive information such as passwords.
-        ///Server: NSQL05
-        ///Persist Security Info: True
-        ///User ID: BarcodeUser
-        ///Password: PrivateKey(0).
-        /// </summary>
-        internal static string NatoliOrderInterface {
-            get {
-                return ResourceManager.GetString("NatoliOrderInterface", resourceCulture);
-            }
-        }
     }
 }

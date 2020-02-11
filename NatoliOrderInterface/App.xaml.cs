@@ -29,36 +29,56 @@ namespace NatoliOrderInterface
         {
             try
             {
-                var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
-                string[] text = configFile.Split("\n");
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(@"\\nshare\VB_Apps\NatoliOrderInterface\Resources")
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
-                foreach (string line in text)
-                {
-                    if (line.First() != '#')
-                    {
-                        string key = line.Split(':')[0];
-                        switch (key)
-                        {
-                            case "Server":
-                                Server = line.Split(':')[1].Trim();
-                                break;
-                            case "Persist Security Info":
-                                PersistSecurityInfo = line.Split(':')[1].Trim();
-                                break;
-                            case "User ID":
-                                UserID = line.Split(':')[1].Trim();
-                                break;
-                            case "Password":
-                                Password = line.Split(':')[1].Trim();
-                                break;
-                        }
-                    }
-                }
+                IConfigurationRoot configuration = builder.Build();
+                var emailConfiguration = configuration.GetSection("ConnectionStrings");
+                Server = emailConfiguration.GetSection("Server").Value;
+                PersistSecurityInfo = emailConfiguration.GetSection("PersistSecurityInfo").Value;
+                UserID = emailConfiguration.GetSection("UserID").Value;
+                Password = emailConfiguration.GetSection("Password").Value;
             }
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("App.Xaml.cs => GetConnectionString()", ex.Message, null);
             }
+
+
+
+            //try
+            //{
+            //    var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
+            //    string[] text = configFile.Split("\n");
+
+            //    foreach (string line in text)
+            //    {
+            //        if (line.First() != '#')
+            //        {
+            //            string key = line.Split(':')[0];
+            //            switch (key)
+            //            {
+            //                case "Server":
+            //                    Server = line.Split(':')[1].Trim();
+            //                    break;
+            //                case "Persist Security Info":
+            //                    PersistSecurityInfo = line.Split(':')[1].Trim();
+            //                    break;
+            //                case "User ID":
+            //                    UserID = line.Split(':')[1].Trim();
+            //                    break;
+            //                case "Password":
+            //                    Password = line.Split(':')[1].Trim();
+            //                    break;
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    IMethods.WriteToErrorLog("App.Xaml.cs => GetConnectionString()", ex.Message, null);
+            //}
         }
         public static void GetEmailSettings()
         {

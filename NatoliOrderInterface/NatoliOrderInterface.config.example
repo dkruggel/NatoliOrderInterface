@@ -1,6 +1,0 @@
-﻿#This is an example file that contains KeyValuePairs to configure the application that should not be passed to the Gir repository.
-#May contain sensitive information such as passwords.
-Server: <Server>
-Persist Security Info: <Persist Security Info>
-User ID: <User ID>
-Password: <Password>
