@@ -6755,6 +6755,26 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="OpenOrderDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                    <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,512">
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M512,512z M0,0z M765,4900C626,4881 514,4824 404,4715 338,4650 315,4617 282,4549 210,4398 215,4544 215,2560 215,576 210,722 282,571 339,451 451,339 571,282 722,210 576,215 2560,215 4544,215 4398,210 4549,282 4663,336 4779,450 4833,560 4907,710 4903,658 4908,1530 4910,1962 4909,2338 4905,2367 4891,2484 4787,2569 4674,2557 4605,2550 4551,2516 4513,2457L4485,2415 4480,1600 4475,785 4447,743C4432,719,4401,688,4377,673L4335,645 2560,645 785,645 743,673C719,688,688,719,673,743L645,785 645,2560 645,4335 673,4377C688,4401,719,4432,743,4447L785,4475 1600,4480 2415,4485 2457,4513C2514,4549 2550,4609 2557,4676 2568,4776 2494,4877 2393,4901 2346,4912 848,4911 765,4900z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M512,512z M0,0z M3362,4900C3266,4877 3193,4774 3203,4676 3210,4609 3246,4549 3303,4513L3345,4485 3759,4482 4174,4479 3293,3597C2695,2998 2405,2701 2391,2673 2352,2594 2371,2489 2436,2428 2500,2369 2597,2353 2673,2391 2701,2405 2998,2695 3597,3293L4479,4174 4482,3759 4485,3345 4513,3303C4549,3246 4609,3210 4676,3203 4776,3192 4877,3266 4901,3367 4915,3427 4912,4691 4898,4748 4882,4812 4812,4882 4748,4898 4694,4912 3418,4914 3362,4900z" />
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+        <DrawingImage x:Key="imagesDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V225 H225 V0 H0 Z">
+                    <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,225">
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M225,225z M0,0z M1170,1963C1130,1949 1130,1943 1130,1438 1130,1170 1126,950 1122,950 1118,950 1088,977 1055,1010 1006,1059 994,1067 981,1058 968,1048 967,1048 978,1060 988,1072 964,1101 828,1237 686,1380 661,1400 633,1400 585,1400 547,1351 568,1315 583,1287 1164,710 1182,704 1191,701 1210,704 1222,711 1254,727 1798,1269 1816,1302 1844,1355 1814,1400 1753,1400 1730,1400 1694,1369 1552,1227 1457,1132 1383,1050 1387,1045 1391,1041 1390,1040 1384,1043 1378,1046 1351,1027 1325,1000 1298,972 1272,950 1268,950 1264,950 1260,1170 1260,1438 1260,1813 1257,1930 1248,1943 1234,1961 1193,1972 1170,1963z M880,1154C880,1146 876,1142 870,1145 865,1148 860,1155 860,1161 860,1166 865,1170 870,1170 876,1170 880,1163 880,1154z M870,1110C870,1100 866,1088 860,1085 854,1081 850,1092 850,1110 850,1128 854,1139 860,1135 866,1132 870,1120 870,1110z M1183,1113C1179,1097 1176,1077 1176,1068 1176,1056 1172,1054 1166,1060 1159,1067 1159,1080 1167,1100 1179,1132 1173,1138 1150,1118 1138,1107 1138,1108 1149,1123 1171,1151 1192,1145 1183,1113z M1239,1093C1238,1066 1236,1053 1233,1063 1231,1072 1225,1078 1220,1075 1216,1072 1217,1086 1223,1105 1229,1124 1235,1140 1237,1140 1239,1140 1239,1119 1239,1093z M925,1032C904,1027 880,1037 880,1049 880,1054 893,1053 911,1047 932,1039 937,1034 925,1032z" />
+                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M225,225z M0,0z M314,972C283,952,280,917,280,625L280,329 305,305 329,280 1195,280 2061,280 2085,305 2110,329 2110,635C2110,927 2109,941 2090,960 2079,971 2057,980 2040,980 2023,980 2001,971 1990,960 1971,941 1970,927 1970,680L1970,420 1195,420 420,420 420,680C420,927 419,941 400,960 380,980 335,986 314,972z" />
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <!-- Colors -->
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0" />
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -7457,26 +7477,16 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContentControl}">
                         <Grid x:Name="Grid">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="80"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition>
-                                    <ColumnDefinition.Style>
-                                        <Style TargetType="{x:Type ColumnDefinition}">
-                                            <Setter Property="Width" Value="10" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding OrderSelected.Name}" Value="Mark">
-                                                    <Setter Property="Width" Value="2*" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ColumnDefinition.Style>
-                                </ColumnDefinition>
+                                <ColumnDefinition Width="164"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="25"/>
@@ -7486,14 +7496,31 @@
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
                                 </CheckBox.LayoutTransform>
                             </CheckBox>
-                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" FontSize="14"/>
-                            <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Black" FontSize="14"/>
-                            
+                            <TextBlock x:Name="OrderNumberTextBlock" Text="275840" Grid.Column="1" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" FontSize="16"/>
+                            <Grid Grid.Column="3" Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition x:Name="EllipsesColumn" Width="0"/>
+                                    <ColumnDefinition x:Name="OpenOrderColumn" Width="0"/>
+                                    <ColumnDefinition x:Name="ArchiveColumn" Width="0"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="Black" FontSize="16"/>
+                                <TextBlock x:Name="EllipsesTextBlock" Text="..." Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="Black" FontSize="16"/>
+                                <Image Source="{StaticResource OpenOrderDrawingImage}" Height="20" Width="20" Grid.Column="2"/>
+                                <Image Source="{StaticResource imagesDrawingImage}" Height="25" Width="25" Grid.Column="3"/>
+                            </Grid>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!-- Show nav buttons -->
-                                <Setter Property="Grid.Column" Value="3"/>
+                                <Setter TargetName="EllipsesColumn" Property="Width" Value="Auto"/>
+                                <Setter TargetName="OpenOrderColumn" Property="Width" Value="Auto"/>
+                                <Setter TargetName="ArchiveColumn" Property="Width" Value="Auto"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="NotificationMessageTextBlock" Property="Foreground" Value="White"/>
+                                <Setter TargetName="EllipsesTextBlock" Property="Foreground" Value="White"/>
+                                <Setter Property="Opacity" Value="0.5"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -7504,14 +7531,16 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContentControl}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="80"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="164"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="25"/>
@@ -7521,9 +7550,42 @@
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
                                 </CheckBox.LayoutTransform>
                             </CheckBox>
-                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" Foreground="Gray" FontSize="14"/>
-                            <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Gray" FontSize="14"/>
+                            <TextBlock x:Name="OrderNumberTextBlock" Text="275840" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Foreground="Gray"/>
+                            <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" FontSize="16" Foreground="Gray"/>
+                            <Grid Grid.Column="3" Grid.ColumnSpan="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition x:Name="EllipsesColumn" Width="0"/>
+                                    <ColumnDefinition x:Name="OpenOrderColumn" Width="0"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="Gray" FontSize="16"/>
+                                <TextBlock x:Name="EllipsesTextBlock" Text="..." Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="Gray" FontSize="16"/>
+                                <Image Source="{StaticResource OpenOrderDrawingImage}" Height="20" Width="20" Grid.Column="2">
+                                    <Image.Style>
+                                        <Style>
+                                            <Style.Triggers>
+                                                <!--<Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Opacity" Value="1"/>
+                                                </Trigger>-->
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Grid>
                         </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- Show nav buttons -->
+                                <Setter TargetName="EllipsesColumn" Property="Width" Value="Auto"/>
+                                <Setter TargetName="OpenOrderColumn" Property="Width" Value="Auto"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="OrderNumberTextBlock" Property="Foreground" Value="White"/>
+                                <Setter TargetName="CustomerNameTextBlock" Property="Foreground" Value="White"/>
+                                <Setter TargetName="NotificationMessageTextBlock" Property="Foreground" Value="White"/>
+                                <Setter TargetName="EllipsesTextBlock" Property="Foreground" Value="White"/>
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

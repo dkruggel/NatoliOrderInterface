@@ -4442,7 +4442,7 @@ namespace NatoliOrderInterface
                         int count = _nat02context.MaMachineVariables.Where(o => o.WorkOrderNumber == order.OrderNo.ToString()).Count();
                         string machineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).FirstOrDefault().MachinePriceCode.Trim();
                         short machineNo = (short)nat01context.OrderDetails.First(o => o.OrderNo == order.OrderNo * 100).MachineNo;
-                        string stockSize = nat01context.MachineList.Single(m => m.MachineNo == machineNo).UpperSize;
+                        string stockSize = machineNo == 0 ? "" : nat01context.MachineList.Single(m => m.MachineNo == machineNo).UpperSize;
                         bool rework = nat01context.OrderDetails.Any(o => o.Desc1.Contains("<REWORK>"));
                         var lineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100 && (o.DetailTypeId == "U" || o.DetailTypeId == "L" || o.DetailTypeId == "R")).ToList();
                         if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
