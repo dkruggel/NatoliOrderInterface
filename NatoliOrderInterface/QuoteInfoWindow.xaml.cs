@@ -2113,7 +2113,7 @@ namespace NatoliOrderInterface
                         }
                         else
                         {
-                            IMethods.WriteToErrorLog("SaveAllLineItemsButton_Click => Enter Data into NAT01 => { option is not listed on scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions] }", "", user);
+                            IMethods.WriteToErrorLog("SaveAllLineItemsButton_Click => Enter Data into NAT01 => { option is not listed on scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions] }; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, "", user);
                             MessageBox.Show("Failed on Line Item '" + tab.Header.ToString() + "'. Option (" + optionCode + ") is not found on the scratchpad but is in [NAT01].[dbo].[QuoteDetailOptions].", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
