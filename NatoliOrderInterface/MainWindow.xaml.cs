@@ -76,6 +76,7 @@ namespace NatoliOrderInterface
         private readonly System.Timers.Timer quoteTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer oqTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer NatoliOrderListTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer foldersTimer = new System.Timers.Timer();
         private int _projectNumber = 0;
         private int? _revNumber = 0;
         private double _quoteNumber = 0;
@@ -190,8 +191,14 @@ namespace NatoliOrderInterface
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
 #if DEBUG
-                NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
-                notificationManagementWindow.Show();
+                if (User.EmployeeCode == "E4754")
+                {
+                }
+                else if (User.EmployeeCode == "E4408")
+                {
+                    NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+                    notificationManagementWindow.Show();
+                }
 #endif
             }
             catch (Exception ex)
@@ -289,7 +296,15 @@ namespace NatoliOrderInterface
             oqTimer.Elapsed += OQTimer_Elapsed;
             oqTimer.Interval = 2 * (60 * 1000); // 2 minutes
             oqTimer.Enabled = true;
+            if (user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754")
+            {
+                foldersTimer.Elapsed += FoldersTimer_Elapsed;
+                foldersTimer.Interval = 2 * (60 * 60 * 1000); // 2 hours
+                foldersTimer.Enabled = true;
+            }
         }
+
+        
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -327,6 +342,20 @@ namespace NatoliOrderInterface
             }
             _nat02context.Dispose();
         }
+        private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                (List<string> errantFolders, List<Tuple<string, string>> renamedFolders) = FolderCheck.CustomerFolderCheck();
+                Task.Factory.StartNew(() => IMethods.WriteToErrantFoldersLog(errantFolders, User));
+                Task.Factory.StartNew(() => IMethods.WriteToFoldersRenamedLog(renamedFolders, User));
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("FoldersTimer_Elapsed()", ex.Message, User);
+            }
+        }
+
         private void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("NatoliOrderList");

@@ -1611,7 +1611,10 @@ namespace NatoliOrderInterface
                 using var nat01context = new NAT01Context();
                 string mach = nat01context.MachineList.Where(m => m.MachineNo == orderLineItems[lineItemNumber - 1].MachineNo).Select(m => m.MachineNo.ToString().Trim() + "-" + m.Description.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim()).FirstOrDefault();
                 nat01context.Dispose();
-                string folderName = @"\\engserver\workstations\tools\Customers\" + workOrder.UserNumber + " - " + workOrder.EndUserName.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                string directoryName = workOrder.UserNumber + " - " + workOrder.EndUserName;
+                directoryName = FolderIntegrity.FolderCheck.FixDirectoryName(directoryName);
+                string folderName = @"\\engserver\workstations\tools\Customers\" + directoryName + "\\" + mach + "\\"; // orderLineItems[lineItemNumber - 1].MachineNo + "-" + orderLineItems[lineItemNumber - 1].MachineDescription.Trim().Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                
                 if (System.IO.Directory.Exists(folderName))
                 {
                     Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -1619,7 +1622,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    folderName = @"\\engserver\workstations\tools\Customers\" + workOrder.UserNumber + " - " + workOrder.EndUserName.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim();
+                    folderName = @"\\engserver\workstations\tools\Customers\" + directoryName;
                     if (System.IO.Directory.Exists(folderName))
                     {
                         Process process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + folderName + @"""");
@@ -1627,7 +1630,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        folderName = @"\\engserver\workstations\tools\Customers\" + workOrder.UserNumber + " - " + workOrder.EndUserName.Replace("/", "-").Replace("*", "").Replace(":", " ").Trim('.').Trim() + "\\" + mach + "\\";
+                        folderName = @"\\engserver\workstations\tools\Customers\" + directoryName + "\\" + mach + "\\";
                         Directory.CreateDirectory(folderName);
                     }
                 }

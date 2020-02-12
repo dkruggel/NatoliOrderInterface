@@ -92,10 +92,10 @@ namespace NatoliOrderInterface
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(@"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log_Appends.txt", true);
                     sw.Write(
-                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n\t" +
-                        "DateTime: " + DateTime.Now + "\r\n\t" +
-                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n\t" +
-                        "Location: " + errorLoc + "\r\n\t" +
+                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n" +
+                        "DateTime: " + DateTime.Now + "\r\n" +
+                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n" +
+                        "Location: " + errorLoc + "\r\n" +
                         "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n");
                     sw.Flush();
                     sw.Close();
@@ -104,10 +104,10 @@ namespace NatoliOrderInterface
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
                     sw.Write(
-                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n\t" +
-                        "DateTime: " + DateTime.Now + "\r\n\t" +
-                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n\t" +
-                        "Location: " + errorLoc + "\r\n\t" +
+                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n" +
+                        "DateTime: " + DateTime.Now + "\r\n" +
+                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n" +
+                        "Location: " + errorLoc + "\r\n" +
                         "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
                         existing);
                     sw.Flush();
@@ -117,6 +117,94 @@ namespace NatoliOrderInterface
             catch
             {
                 MessageBox.Show("Error in the Error Handling of Errors");
+            }
+        }
+        /// <summary>
+        /// Writes to @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Errant_Folders_Log.txt"
+        /// </summary>
+        /// <param name="errantFolders"></param>
+        /// <param name="user"></param>
+        public static void WriteToErrantFoldersLog(List<string> errantFolders, User user)
+        {
+            try
+            {
+                string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Errant_Folders_Log.txt";
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                string existing = sr.ReadToEnd();
+                existing = existing;
+                sr.Close();
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
+                foreach (string folder in errantFolders)
+                {
+                    newText += " - " + folder + "\r\n";
+                }
+                string firstEntry = existing;
+                int startindex = firstEntry.IndexOf(" - ");
+                int endindext = firstEntry.IndexOf("\r\n" + "+");
+                firstEntry = firstEntry.Substring(startindex, endindext - startindex);
+                string _newText = newText.Substring(dateLine.Length);
+                if (firstEntry == _newText)
+                {
+                    existing += DateTime.Now + "\r\n" + "\r\n" + "No changes." + "\r\n" + "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                    newText = "";
+                }
+                else
+                {
+                    newText +=  "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+                WriteToErrorLog("IMethods.cs => WriteToErrantFoldersLog()", ex.Message, user);
+            }
+        }
+        /// <summary>
+        /// Writes to @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt"
+        /// </summary>
+        /// <param name="renamedFolders"></param>
+        /// <param name="user"></param>
+        public static void WriteToFoldersRenamedLog(List<Tuple<string,string>> renamedFolders, User user)
+        {
+            try
+            {
+                string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt";
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                string existing = sr.ReadToEnd();
+                existing = existing;
+                sr.Close();
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
+                foreach (Tuple<string, string> folder in renamedFolders)
+                {
+                    newText += " - " + folder.Item1 + " => " + folder.Item2 + "\r\n";
+                }
+                string firstEntry = existing;
+                int startindex = firstEntry.IndexOf(" - ");
+                int endindext = firstEntry.IndexOf("\r\n" + "+");
+                firstEntry = firstEntry.Substring(startindex, endindext - startindex);
+                string _newText = newText.Substring(dateLine.Length);
+                if (renamedFolders.Count == 0 || firstEntry == _newText)
+                {
+                    existing += DateTime.Now + "\r\n" + "\r\n" + "No changes." + "\r\n" + "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                    newText = "";
+                }
+                else
+                {
+                    newText += "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+                WriteToErrorLog("IMethods.cs => WriteToFoldersRenamedLog()", ex.Message, user);
             }
         }
         /// <summary>
@@ -1369,14 +1457,18 @@ namespace NatoliOrderInterface
                                     machine.MachineNo == 1015)
                                 {
                                     // Has A Hob W/ a Die ID of width or length > 1.0
-                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
+                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" && 
+                                    qli.LineItemType != "DS" && qli.LineItemType != "DA" && 
+                                    qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
+                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && 
+                                     _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && 
+                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
                                     {
                                         errors.Add("Tablet is too large for press.");
                                     }
                                     // Has a Die W/ Die ID of width or length > 1.0
                                     else if (quoteLineItems.Any(qli => qli.LineItemType == "D" && qli.LineItemType == "DS" && qli.LineItemType == "DA" && qli.LineItemType == "DC" && qli.LineItemType == "DI" && qli.LineItemType == "DP" &&
-                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
+                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId == qli.HobNoShapeID && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
                                     {
                                         errors.Add("Tablet is too large for press.");
                                     }

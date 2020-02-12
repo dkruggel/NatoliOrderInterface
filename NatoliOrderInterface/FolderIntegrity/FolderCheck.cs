@@ -10,12 +10,42 @@ namespace NatoliOrderInterface.FolderIntegrity
     public static class FolderCheck
     {
         /// <summary>
+        /// Changes directory name only to our standard folder name
+        /// </summary>
+        /// <param name="directoryName"></param>
+        /// <returns></returns>
+        public static string FixDirectoryName(string directoryName)
+        {
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+            string correctDirectoryName = directoryName.Trim();
+            foreach (char c in invalid)
+            {
+                string replacement = "";
+                if (c == '/' || c == '\\')
+                {
+                    replacement = "-";
+                }
+                correctDirectoryName = correctDirectoryName.Replace(c.ToString(), replacement);
+            }
+            while (correctDirectoryName.Contains("  "))
+            {
+                correctDirectoryName = correctDirectoryName.Replace("  ", " ");
+            }
+            while (correctDirectoryName.Last() == '.' || correctDirectoryName.Last() == ' ')
+            {
+                correctDirectoryName = correctDirectoryName.Trim('.');
+                correctDirectoryName = correctDirectoryName.Trim();
+            }
+            return correctDirectoryName;
+        }
+        /// <summary>
         /// Renames customer folders to match the database. If it finds folders that do not match any customer number, it returns them as a list.
         /// </summary>
         /// <returns></returns>
-        public static List<string> MoveCustomerFolders()
+        public static (List<string> foldersWithoutANumber, List<Tuple<string,string>> foldersRenamed) CustomerFolderCheck()
         {
             List<string> foldersWithoutANumber = new List<string>();
+            List<Tuple<string, string>> foldersRenamed = new List<Tuple<string, string>>();
             try
             {
                 string customersDirectory = @"\\engserver\workstations\tools\Customers";
@@ -33,20 +63,13 @@ namespace NatoliOrderInterface.FolderIntegrity
                         {
                             var customer = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == customerNumber.Trim());
                             string correctCustomerName = customer.Custname.Trim();
-                            foreach (char c in invalid)
-                            {
-                                correctCustomerName = correctCustomerName.Replace(c.ToString(), "");
-                            }
-                            while (correctCustomerName.Last() == '.' || correctCustomerName.Last() == ' ')
-                            {
-                                correctCustomerName = correctCustomerName.Trim('.');
-                                correctCustomerName = correctCustomerName.Trim();
-                            }
+                            correctCustomerName = FixDirectoryName(correctCustomerName);
                             // Folder's customer name doesn't match the database's customer name
-                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == customerNumber.Trim() && !string.IsNullOrWhiteSpace(c.Custname) && !string.IsNullOrEmpty(c.Custname) && c.Custname.Trim() != customerName.Trim()))
+                            if (correctCustomerName.Trim() != customerName.Trim())
                             {
-                                string correctCustomerFolder = customer.Custnmbr.Trim() + " - " + customer.Custname.Trim();
+                                string correctCustomerFolder = customer.Custnmbr.Trim() + " - " + correctCustomerName.Trim();
                                 MoveFolders(customersDirectory + "\\" + customerFolder, customersDirectory + "\\" + correctCustomerFolder);
+                                foldersRenamed.Add(new Tuple<string, string>(customersDirectory + "\\" + customerFolder, customersDirectory + "\\" + correctCustomerFolder));
                             }
                         }
                         // No customer number match
@@ -61,7 +84,7 @@ namespace NatoliOrderInterface.FolderIntegrity
             {
                 throw new Exception(ex.Message, ex);
             }
-            return foldersWithoutANumber;
+            return (foldersWithoutANumber, foldersRenamed);
         }
         /// <summary>
         /// Moves folders and contents of folders to new folder. Moves files if folder is duplicate. Renames duplicate files.
