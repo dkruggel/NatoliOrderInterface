@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="On Hold Comment" Height="200" Width="400" MinHeight="200" MinWidth="400">
+        Title="On Hold Comment" Height="200" Width="400" MinHeight="200" MinWidth="400" UseLayoutRounding="True">
     <Grid>
         <Grid.ColumnDefinitions>
             
