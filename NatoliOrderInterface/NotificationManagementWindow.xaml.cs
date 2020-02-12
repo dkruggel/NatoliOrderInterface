@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.NAT01;
 using System.Linq;
+using NatoliOrderInterface.Models.NEC;
 
 namespace NatoliOrderInterface
 {
@@ -37,18 +38,56 @@ namespace NatoliOrderInterface
         {
             using var _ = new NAT02Context();
             List<EoiNotificationsActive> active = _.EoiNotificationsActive.OrderBy(a => a.Timestamp).ToList();
-            List<EoiNotificationsArchived> archived = _.EoiNotificationsArchived.OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsViewed> archived = _.EoiNotificationsViewed.OrderBy(a => a.Timestamp).ToList();
 
-            for (int i = 0; i < 20; i++)
+            List<(int, string, string, string, bool, string)> notifications = new List<(int, string, string, string, bool, string)>();
+
+            foreach (EoiNotificationsActive a in active)
+            {
+                using var __ = new NAT01Context();
+                using var ___ = new NECContext();
+                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
+                string custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                notifications.Add((a.Id, a.Number, custName, a.Message, true, a.Type));
+                __.Dispose();
+                ___.Dispose();
+            }
+            foreach (EoiNotificationsViewed a in archived)
+            {
+                using var __ = new NAT01Context();
+                using var ___ = new NECContext();
+                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
+                string custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname.Trim();
+                notifications.Add((a.NotificationId, a.Number, custName, a.Message, false, a.Type));
+                __.Dispose();
+                ___.Dispose();
+            }
+
+            notifications.OrderBy(n => n.Item1);
+
+            //foreach ((int, string, string, string, bool, string) notification in notifications)
+            //{
+            //    ContentControl contentControl = new ContentControl()
+            //    {
+            //        Style = notification.Item5 ? FindResource("ActiveNotificationGrid") as Style :
+            //                                     FindResource("InactiveNotificationGrid") as Style
+            //    };
+
+            //    contentControl.ApplyTemplate();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = notification.Item2;
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = notification.Item3;
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "NotificationMessageTextBlock").Text =
+            //        notification.Item4.Replace("Document", notification.Item6);
+
+            //    NotificationDockPanel.Children.Add(contentControl);
+            //}
+
+            for (int i = 0; i < 10; i++)
             {
                 ContentControl contentControl = new ContentControl()
                 {
                     Style = FindResource("ActiveNotificationGrid") as Style
                 };
-
-                contentControl.ApplyTemplate();
-                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (276000 + i).ToString();
-
                 NotificationDockPanel.Children.Add(contentControl);
             }
 
@@ -60,15 +99,40 @@ namespace NatoliOrderInterface
             string orderNumber = (((sender as Image).Parent as Grid).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
             using var _ = new NAT02Context();
 
-            EoiNotificationsArchived archived = new EoiNotificationsArchived()
+            if (_.EoiNotificationsActive.Count(n => n.Number == orderNumber) > 0)
             {
+                EoiNotificationsActive active = _.EoiNotificationsActive.Single(n => n.Number == orderNumber);
 
-            };
+                EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                {
+                    NotificationId = active.Id,
+                    Number = active.Number,
+                    Type = active.Type,
+                    Message = active.Message,
+                    User = active.User,
+                    Timestamp = DateTime.Now
+                };
 
-            EoiNotificationsActive active = new EoiNotificationsActive()
+                _.EoiNotificationsActive.Remove(active);
+                _.EoiNotificationsArchived.Add(archived);
+            }
+            else if (_.EoiNotificationsViewed.Count(n => n.Number == orderNumber) > 0)
             {
+                EoiNotificationsViewed viewed = _.EoiNotificationsViewed.Single(n => n.Number == orderNumber);
 
-            };
+                EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                {
+                    NotificationId = viewed.NotificationId,
+                    Number = viewed.Number,
+                    Type = viewed.Type,
+                    Message = viewed.Message,
+                    User = viewed.User,
+                    Timestamp = DateTime.Now
+                };
+
+                _.EoiNotificationsViewed.Remove(viewed);
+                _.EoiNotificationsArchived.Add(archived);
+            }
 
             _.Dispose();
         }

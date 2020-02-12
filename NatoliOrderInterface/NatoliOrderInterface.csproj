@@ -236,6 +236,7 @@
     <None Remove="Barcode Locations\M999.png" />
     <None Remove="Barcode Locations\No_Department.png" />
     <None Remove="Barcode Locations\Stock_Polish.png" />
+    <None Remove="Fonts\ASansrounded.ttf" />
     <None Remove="greenplusadditionicon.png" />
     <None Remove="magnifying_glass.png" />
     <None Remove="NATOLI_ANIMATION.gif" />
@@ -473,6 +474,9 @@
     <Resource Include="Barcode Locations\M999.png" />
     <Resource Include="Barcode Locations\No_Department.png" />
     <Resource Include="Barcode Locations\Stock_Polish.png" />
+    <Resource Include="Fonts\ASansrounded.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="greenplusadditionicon.png" />
     <Resource Include="magnifying_glass.png" />
     <Reference Include="System.Runtime.WindowsRuntime">

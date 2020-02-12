@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:NatoliOrderInterface"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Fonts -->
+        <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/ASansrounded</FontFamily>
         <!-- Drawing Images -->
         <DrawingImage x:Key="Bell_With_LayersDrawingImage">
             <DrawingImage.Drawing>
@@ -6798,8 +6800,11 @@
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="ActiveCaption" StartPoint="0.5,0" EndPoint="0.5,1.25">
-            <GradientStop Color="#FFAABBBF" Offset="0.25"/>
-            <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
+            <!--<GradientStop Color="#FFAABBBF" Offset="0.25"/>
+            <GradientStop Color="#FF3C3C3C" Offset="1.2"/>-->
+            <GradientStop Color="#00A7E1" Offset="0"/>
+            <GradientStop Color="#007EA7" Offset="0.5"/>
+            <GradientStop Color="#003459" Offset="2"/>
         </LinearGradientBrush>
         <SolidColorBrush x:Key="ForeGround.AccentBrush" Color="#FFBF7A36"/>
         <SolidColorBrush x:Key="ForeGround.StandardBrush" Color="#107896"/>
@@ -6821,6 +6826,7 @@
         <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
         <Image x:Key="MagnifyingGlassImage" Source="magnifying_glass.png"/>
         <Image x:Key="xImage" Source="x.png"/>
+        <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="2" Direction="300" Color="Black" Opacity="0.65" BlurRadius="4"/>
         <!-- Buttons -->
         <Style x:Key="Button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource Button.Background}"/>
