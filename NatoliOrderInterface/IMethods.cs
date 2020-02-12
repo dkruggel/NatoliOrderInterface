@@ -1457,14 +1457,18 @@ namespace NatoliOrderInterface
                                     machine.MachineNo == 1015)
                                 {
                                     // Has A Hob W/ a Die ID of width or length > 1.0
-                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
-                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
+                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" && 
+                                    qli.LineItemType != "DS" && qli.LineItemType != "DA" && 
+                                    qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" &&
+                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && 
+                                     _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && 
+                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
                                     {
                                         errors.Add("Tablet is too large for press.");
                                     }
                                     // Has a Die W/ Die ID of width or length > 1.0
                                     else if (quoteLineItems.Any(qli => qli.LineItemType == "D" && qli.LineItemType == "DS" && qli.LineItemType == "DA" && qli.LineItemType == "DC" && qli.LineItemType == "DI" && qli.LineItemType == "DP" &&
-                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() == qli.HobNoShapeID.Trim() && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
+                                     _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId == qli.HobNoShapeID && (d.WidthMinorAxis > 1.0 || d.LengthMajorAxis > 1.0))))
                                     {
                                         errors.Add("Tablet is too large for press.");
                                     }

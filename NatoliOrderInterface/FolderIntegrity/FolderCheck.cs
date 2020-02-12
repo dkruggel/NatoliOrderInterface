@@ -24,7 +24,6 @@ namespace NatoliOrderInterface.FolderIntegrity
                 if (c == '/' || c == '\\')
                 {
                     replacement = "-";
-
                 }
                 correctDirectoryName = correctDirectoryName.Replace(c.ToString(), replacement);
             }
