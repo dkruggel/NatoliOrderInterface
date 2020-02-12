@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="PDFOrderingWindow" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}" MaxHeight="550">
+        Title="PDFOrderingWindow" Width="800" WindowStartupLocation="CenterOwner" Topmost="True" Background="{StaticResource BackgroundBrush}" MaxHeight="550" UseLayoutRounding="True">
     <DockPanel LastChildFill="False">
         <TextBlock DockPanel.Dock="Top" Text="Specify .pdf Order" Style="{StaticResource BoldTextBlock}" FontSize="24" HorizontalAlignment="Center"/>
         <Border DockPanel.Dock="Top" Margin="0,20,0,20" BorderBrush="{StaticResource Focused.Border}" BorderThickness="0" MaxHeight="400">

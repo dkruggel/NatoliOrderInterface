@@ -35,6 +35,10 @@ namespace NatoliOrderInterface
 
         private void FillNotifications()
         {
+            using var _ = new NAT02Context();
+            List<EoiNotificationsActive> active = _.EoiNotificationsActive.OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsArchived> archived = _.EoiNotificationsArchived.OrderBy(a => a.Timestamp).ToList();
+
             for (int i = 0; i < 20; i++)
             {
                 ContentControl contentControl = new ContentControl()
@@ -47,11 +51,26 @@ namespace NatoliOrderInterface
 
                 NotificationDockPanel.Children.Add(contentControl);
             }
+
+            _.Dispose();
         }
 
         private void ArchiveNotification_Click(object sender, RoutedEventArgs e)
         {
+            string orderNumber = (((sender as Image).Parent as Grid).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+            using var _ = new NAT02Context();
 
+            EoiNotificationsArchived archived = new EoiNotificationsArchived()
+            {
+
+            };
+
+            EoiNotificationsActive active = new EoiNotificationsActive()
+            {
+
+            };
+
+            _.Dispose();
         }
 
         private void OpenOrder_Click(object sender, RoutedEventArgs e)

@@ -21,8 +21,8 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiBasePriceList> EoiBasePriceList { get; set; }
         public virtual DbSet<EoiMissingAutomationVariablesView> EoiMissingAutomationVariablesView { get; set; }
         public virtual DbSet<EoiNotificationsActive> EoiNotificationsActive { get; set; }
-        public virtual DbSet<EoiNotificationsActive> EoiNotificationsArchived { get; set; }
-        public virtual DbSet<EoiNotificationsActive> EoiNotificationsViewed { get; set; }
+        public virtual DbSet<EoiNotificationsArchived> EoiNotificationsArchived { get; set; }
+        public virtual DbSet<EoiNotificationsViewed> EoiNotificationsViewed { get; set; }
         public virtual DbSet<EoiOrdersBeingChecked> EoiOrdersBeingChecked { get; set; }
         public virtual DbSet<EoiOrdersBeingEnteredView> EoiOrdersBeingEnteredView { get; set; }
         public virtual DbSet<EoiOrdersCheckedBy> EoiOrdersCheckedBy { get; set; }

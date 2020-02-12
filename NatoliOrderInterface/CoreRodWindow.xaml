@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Core Rod Specifications" Height="200" Width="750" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}">
+        Title="Core Rod Specifications" Height="200" Width="750" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}" UseLayoutRounding="True">
     <Window.Resources>
         <Style x:Key="CheckBoxColumn" TargetType="ColumnDefinition">
             <Setter Property="Width" Value="150"/>

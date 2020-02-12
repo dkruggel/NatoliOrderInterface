@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="InputBox" Height="200" Width="250" Topmost="True" WindowStartupLocation="CenterOwner">
+        Title="InputBox" Height="200" Width="250" Topmost="True" WindowStartupLocation="CenterOwner" UseLayoutRounding="True">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
