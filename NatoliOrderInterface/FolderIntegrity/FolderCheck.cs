@@ -9,10 +9,15 @@ namespace NatoliOrderInterface.FolderIntegrity
 {
     public static class FolderCheck
     {
+        /// <summary>
+        /// Changes directory name only to our standard folder name
+        /// </summary>
+        /// <param name="directoryName"></param>
+        /// <returns></returns>
         public static string FixDirectoryName(string directoryName)
         {
             string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-            string correctCustomerFolder = directoryName.Trim();
+            string correctDirectoryName = directoryName.Trim();
             foreach (char c in invalid)
             {
                 string replacement = "";
@@ -20,18 +25,18 @@ namespace NatoliOrderInterface.FolderIntegrity
                 {
                     replacement = "-";
                 }
-                correctCustomerFolder = correctCustomerFolder.Replace(c.ToString(), replacement);
+                correctDirectoryName = correctDirectoryName.Replace(c.ToString(), replacement);
             }
-            while (correctCustomerFolder.Contains("  "))
+            while (correctDirectoryName.Contains("  "))
             {
-                correctCustomerFolder = correctCustomerFolder.Replace("  ", " ");
+                correctDirectoryName = correctDirectoryName.Replace("  ", " ");
             }
-            while (correctCustomerFolder.Last() == '.' || correctCustomerFolder.Last() == ' ')
+            while (correctDirectoryName.Last() == '.' || correctDirectoryName.Last() == ' ')
             {
-                correctCustomerFolder = correctCustomerFolder.Trim('.');
-                correctCustomerFolder = correctCustomerFolder.Trim();
+                correctDirectoryName = correctDirectoryName.Trim('.');
+                correctDirectoryName = correctDirectoryName.Trim();
             }
-            return correctCustomerFolder;
+            return correctDirectoryName;
         }
         /// <summary>
         /// Renames customer folders to match the database. If it finds folders that do not match any customer number, it returns them as a list.
