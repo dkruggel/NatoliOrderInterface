@@ -1069,10 +1069,13 @@ namespace NatoliOrderInterface
                     FinishOrderButton.IsEnabled = false;
                     NotFinishedButton.IsEnabled = false;
                     PrintOrderButton.IsEnabled = false;
-                    DoNotProcessOrderButton.IsEnabled = (user.GetUserName().EndsWith("Simonpietri") || user.GetUserName().EndsWith("Willis"));
+                    DoNotProcessOrderButton.IsEnabled = (user.GetUserName().EndsWith("Simonpietri") ||
+                                                         user.GetUserName().EndsWith("Willis") ||
+                                                         user.GetUserName().EndsWith("Brokes"));
                 }
                 else
                 {
+                    DoNotProcessOrderButton.IsEnabled = true;
                     if (button == "None")
                     {
                         using var _ = new NATBCContext();
