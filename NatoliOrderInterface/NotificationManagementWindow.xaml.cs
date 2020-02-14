@@ -65,31 +65,115 @@ namespace NatoliOrderInterface
 
             notifications.OrderBy(n => n.Item1);
 
-            //foreach ((int, string, string, string, bool, string) notification in notifications)
-            //{
-            //    ContentControl contentControl = new ContentControl()
-            //    {
-            //        Style = notification.Item5 ? FindResource("ActiveNotificationGrid") as Style :
-            //                                     FindResource("InactiveNotificationGrid") as Style
-            //    };
-
-            //    contentControl.ApplyTemplate();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = notification.Item2;
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = notification.Item3;
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "NotificationMessageTextBlock").Text =
-            //        notification.Item4.Replace("Document", notification.Item6);
-
-            //    NotificationDockPanel.Children.Add(contentControl);
-            //}
-
-            for (int i = 0; i < 10; i++)
+            foreach ((int, string, string, string, bool, string) notification in notifications)
             {
                 ContentControl contentControl = new ContentControl()
                 {
-                    Style = FindResource("ActiveNotificationGrid") as Style
+                    Style = notification.Item5 ? FindResource("ActiveNotificationGrid") as Style :
+                                                 FindResource("InactiveNotificationGrid") as Style
                 };
-                NotificationDockPanel.Children.Add(contentControl);
+
+                contentControl.ApplyTemplate();
+                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = notification.Item2;
+                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = notification.Item3;
+                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "NotificationMessageTextBlock").Text =
+                    notification.Item4.Replace("Document", notification.Item6);
+
+                NM_DockPanel.Children.Add(contentControl);
             }
+
+            //List<EoiAllOrdersView> orders = _.EoiAllOrdersView.OrderBy(o => o.OrderNumber).ToList();
+
+            //foreach (EoiAllOrdersView order in orders)
+            //{
+            //    ContentControl contentControl = new ContentControl()
+            //    {
+            //        Style = FindResource("OrderGrid") as Style
+            //    };
+
+            //    contentControl.ApplyTemplate();
+            //    Grid grid = (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First();
+
+            //    string location = "";
+            //    string state = "";
+
+            //    if (order.BeingEntered == 1)
+            //    {
+            //        location = "Order Entry";
+            //        state = "Being Converted to Order";
+            //    }
+            //    else if (order.EnteredUnscanned == 1)
+            //    {
+            //        location = "Order Entry/Eng.";
+            //        state = "Ready for Engineering";
+            //    }
+            //    else if (order.InEngineering == 1)
+            //    {
+            //        location = "Engineering";
+            //        if (order.BeingChecked == 1)
+            //        {
+            //            state = "Being Checked";
+            //        }
+            //        else if (order.MarkedForChecking == 1)
+            //        {
+            //            state = "Ready to be Checked";
+            //        }
+            //        else
+            //        {
+            //            state = "Being Drawn";
+            //        }
+            //    }
+            //    else if (order.ReadyToPrint == 1)
+            //    {
+            //        location = "Engineering";
+            //        state = "Ready to Print";
+            //    }
+            //    else if (order.Printed == 1)
+            //    {
+            //        location = "Engineering";
+            //        state = "Printed/Ready for Production";
+            //    }
+            //    else if (order.InTheOffice == 1)
+            //    {
+            //        location = "Office";
+            //        state = "Sent to Office";
+            //    }
+
+            //    if (order.DoNotProcess == 1)
+            //    {
+            //        grid.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#55FFC0CB"));
+            //    }
+            //    else if (order.DoNotProcess == 1)
+            //    {
+            //        grid.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#55FFC0CB"));
+            //    }
+
+            //    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+            //    {
+            //        foreach (TextBlock textBlock in grid.Children.OfType<TextBlock>()) { textBlock.Foreground = FindResource("Tertiary.Dark") as SolidColorBrush; }
+            //    }
+
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = order.OrderNumber.ToString();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteNumberTextBlock").Text = order.QuoteNumber.ToString();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRevNumberTextBlock").Text = order.QuoteRev.ToString();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = order.CustomerName.Trim();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "NumDaysToShipTextBlock").Text = order.NumDaysToShip.ToString();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "NumDaysInDeptTextBlock").Text = order.DaysInDept.ToString();
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "EmployeeTextBlock").Text = order.EmployeeName;
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "LocationTextBlock").Text = location;
+            //    grid.Children.OfType<TextBlock>().Single(tb => tb.Name == "StateTextBlock").Text = state;
+
+            //    NM_DockPanel.Children.Add(contentControl);
+            //}
+
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    ContentControl contentControl = new ContentControl()
+            //    {
+            //        Style = FindResource("ActiveNotificationGrid") as Style
+            //    };
+            //    NM_DockPanel.Children.Add(contentControl);
+            //}
 
             _.Dispose();
         }

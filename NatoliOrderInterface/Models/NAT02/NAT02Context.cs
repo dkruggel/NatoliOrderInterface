@@ -56,6 +56,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<PartAllocation> PartAllocation { get; set; }
         public virtual DbSet<VwQuoteConversion> VwQuoteConversion { get; set; }
         public virtual DbSet<QuotePercentage> QuotePercentage { get; set; }
+        public virtual DbSet<EoiAllOrdersView> EoiAllOrdersView { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -67,6 +68,66 @@ namespace NatoliOrderInterface.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<EoiAllOrdersView>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("EOI_AllOrdersView");
+
+                entity.Property(e => e.BeingEntered).HasColumnName("Being Entered");
+
+                entity.Property(e => e.CheckedBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Csr)
+                    .HasColumnName("CSR")
+                    .HasMaxLength(52)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CustomerName)
+                    .HasMaxLength(64)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EmployeeName)
+                    .HasMaxLength(75)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EnteredUnscanned).HasColumnName("Entered Unscanned");
+
+                entity.Property(e => e.InEngineering).HasColumnName("In Engineering");
+
+                entity.Property(e => e.InTheOffice).HasColumnName("In The Office");
+
+                entity.Property(e => e.OrderNumber).HasColumnName("Order Number");
+
+                entity.Property(e => e.PaidRushFee)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ProcessState)
+                    .HasMaxLength(25)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.QuoteNumber).HasColumnName("Quote Number");
+
+                entity.Property(e => e.QuoteRev).HasColumnName("Quote Rev");
+
+                entity.Property(e => e.ReadyToPrint).HasColumnName("Ready To Print");
+
+                entity.Property(e => e.RushYorN)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Tm2).HasColumnName("TM2");
+
+                entity.Property(e => e.TransitionName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<EoiAllTabletProjectsView>(entity =>
             {
                 entity.HasKey(e => new { e.ProjectNumber, e.RevisionNumber });

@@ -4,8 +4,28 @@
              xmlns:local="clr-namespace:NatoliOrderInterface"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="Primary.Light" Color="#9198A9" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.MediumLight" Color="#6A748C" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.Medium" Color="#4D5874" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.MediumDark" Color="#36415D" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.Dark" Color="#212D4D" Opacity="1"/>
+
+        <SolidColorBrush x:Key="Secondary.Light" Color="#FAFAD4" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.MediumLight" Color="#CFD097" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.Medium" Color="#ACAD6B" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.MediumDark" Color="#898A49" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.Dark" Color="#717229" Opacity="1"/>
+
+        <SolidColorBrush x:Key="Tertiary.Light" Color="#FBD5D4" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.MediumLight" Color="#D09998" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.Medium" Color="#AD6D6B" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.MediumDark" Color="#8A4B4A" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.Dark" Color="#722B29" Opacity="1"/>
+
         <!-- Fonts -->
-        <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/ASansrounded</FontFamily>
+        <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/#ASansrounded</FontFamily>
+        
         <!-- Drawing Images -->
         <DrawingImage x:Key="Bell_With_LayersDrawingImage">
             <DrawingImage.Drawing>
@@ -6761,8 +6781,8 @@
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
                     <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,512">
-                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M512,512z M0,0z M765,4900C626,4881 514,4824 404,4715 338,4650 315,4617 282,4549 210,4398 215,4544 215,2560 215,576 210,722 282,571 339,451 451,339 571,282 722,210 576,215 2560,215 4544,215 4398,210 4549,282 4663,336 4779,450 4833,560 4907,710 4903,658 4908,1530 4910,1962 4909,2338 4905,2367 4891,2484 4787,2569 4674,2557 4605,2550 4551,2516 4513,2457L4485,2415 4480,1600 4475,785 4447,743C4432,719,4401,688,4377,673L4335,645 2560,645 785,645 743,673C719,688,688,719,673,743L645,785 645,2560 645,4335 673,4377C688,4401,719,4432,743,4447L785,4475 1600,4480 2415,4485 2457,4513C2514,4549 2550,4609 2557,4676 2568,4776 2494,4877 2393,4901 2346,4912 848,4911 765,4900z" />
-                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M512,512z M0,0z M3362,4900C3266,4877 3193,4774 3203,4676 3210,4609 3246,4549 3303,4513L3345,4485 3759,4482 4174,4479 3293,3597C2695,2998 2405,2701 2391,2673 2352,2594 2371,2489 2436,2428 2500,2369 2597,2353 2673,2391 2701,2405 2998,2695 3597,3293L4479,4174 4482,3759 4485,3345 4513,3303C4549,3246 4609,3210 4676,3203 4776,3192 4877,3266 4901,3367 4915,3427 4912,4691 4898,4748 4882,4812 4812,4882 4748,4898 4694,4912 3418,4914 3362,4900z" />
+                        <GeometryDrawing Brush="{StaticResource Primary.MediumDark}" Geometry="F1 M512,512z M0,0z M765,4900C626,4881 514,4824 404,4715 338,4650 315,4617 282,4549 210,4398 215,4544 215,2560 215,576 210,722 282,571 339,451 451,339 571,282 722,210 576,215 2560,215 4544,215 4398,210 4549,282 4663,336 4779,450 4833,560 4907,710 4903,658 4908,1530 4910,1962 4909,2338 4905,2367 4891,2484 4787,2569 4674,2557 4605,2550 4551,2516 4513,2457L4485,2415 4480,1600 4475,785 4447,743C4432,719,4401,688,4377,673L4335,645 2560,645 785,645 743,673C719,688,688,719,673,743L645,785 645,2560 645,4335 673,4377C688,4401,719,4432,743,4447L785,4475 1600,4480 2415,4485 2457,4513C2514,4549 2550,4609 2557,4676 2568,4776 2494,4877 2393,4901 2346,4912 848,4911 765,4900z" />
+                        <GeometryDrawing Brush="{StaticResource Primary.MediumDark}" Geometry="F1 M512,512z M0,0z M3362,4900C3266,4877 3193,4774 3203,4676 3210,4609 3246,4549 3303,4513L3345,4485 3759,4482 4174,4479 3293,3597C2695,2998 2405,2701 2391,2673 2352,2594 2371,2489 2436,2428 2500,2369 2597,2353 2673,2391 2701,2405 2998,2695 3597,3293L4479,4174 4482,3759 4485,3345 4513,3303C4549,3246 4609,3210 4676,3203 4776,3192 4877,3266 4901,3367 4915,3427 4912,4691 4898,4748 4882,4812 4812,4882 4748,4898 4694,4912 3418,4914 3362,4900z" />
                     </DrawingGroup>
                 </DrawingGroup>
             </DrawingImage.Drawing>
@@ -6771,14 +6791,32 @@
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V225 H225 V0 H0 Z">
                     <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,225">
-                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M225,225z M0,0z M1170,1963C1130,1949 1130,1943 1130,1438 1130,1170 1126,950 1122,950 1118,950 1088,977 1055,1010 1006,1059 994,1067 981,1058 968,1048 967,1048 978,1060 988,1072 964,1101 828,1237 686,1380 661,1400 633,1400 585,1400 547,1351 568,1315 583,1287 1164,710 1182,704 1191,701 1210,704 1222,711 1254,727 1798,1269 1816,1302 1844,1355 1814,1400 1753,1400 1730,1400 1694,1369 1552,1227 1457,1132 1383,1050 1387,1045 1391,1041 1390,1040 1384,1043 1378,1046 1351,1027 1325,1000 1298,972 1272,950 1268,950 1264,950 1260,1170 1260,1438 1260,1813 1257,1930 1248,1943 1234,1961 1193,1972 1170,1963z M880,1154C880,1146 876,1142 870,1145 865,1148 860,1155 860,1161 860,1166 865,1170 870,1170 876,1170 880,1163 880,1154z M870,1110C870,1100 866,1088 860,1085 854,1081 850,1092 850,1110 850,1128 854,1139 860,1135 866,1132 870,1120 870,1110z M1183,1113C1179,1097 1176,1077 1176,1068 1176,1056 1172,1054 1166,1060 1159,1067 1159,1080 1167,1100 1179,1132 1173,1138 1150,1118 1138,1107 1138,1108 1149,1123 1171,1151 1192,1145 1183,1113z M1239,1093C1238,1066 1236,1053 1233,1063 1231,1072 1225,1078 1220,1075 1216,1072 1217,1086 1223,1105 1229,1124 1235,1140 1237,1140 1239,1140 1239,1119 1239,1093z M925,1032C904,1027 880,1037 880,1049 880,1054 893,1053 911,1047 932,1039 937,1034 925,1032z" />
-                        <GeometryDrawing Brush="#FF000000" Geometry="F1 M225,225z M0,0z M314,972C283,952,280,917,280,625L280,329 305,305 329,280 1195,280 2061,280 2085,305 2110,329 2110,635C2110,927 2109,941 2090,960 2079,971 2057,980 2040,980 2023,980 2001,971 1990,960 1971,941 1970,927 1970,680L1970,420 1195,420 420,420 420,680C420,927 419,941 400,960 380,980 335,986 314,972z" />
+                        <GeometryDrawing Brush="{StaticResource Primary.MediumDark}" Geometry="F1 M225,225z M0,0z M1170,1963C1130,1949 1130,1943 1130,1438 1130,1170 1126,950 1122,950 1118,950 1088,977 1055,1010 1006,1059 994,1067 981,1058 968,1048 967,1048 978,1060 988,1072 964,1101 828,1237 686,1380 661,1400 633,1400 585,1400 547,1351 568,1315 583,1287 1164,710 1182,704 1191,701 1210,704 1222,711 1254,727 1798,1269 1816,1302 1844,1355 1814,1400 1753,1400 1730,1400 1694,1369 1552,1227 1457,1132 1383,1050 1387,1045 1391,1041 1390,1040 1384,1043 1378,1046 1351,1027 1325,1000 1298,972 1272,950 1268,950 1264,950 1260,1170 1260,1438 1260,1813 1257,1930 1248,1943 1234,1961 1193,1972 1170,1963z M880,1154C880,1146 876,1142 870,1145 865,1148 860,1155 860,1161 860,1166 865,1170 870,1170 876,1170 880,1163 880,1154z M870,1110C870,1100 866,1088 860,1085 854,1081 850,1092 850,1110 850,1128 854,1139 860,1135 866,1132 870,1120 870,1110z M1183,1113C1179,1097 1176,1077 1176,1068 1176,1056 1172,1054 1166,1060 1159,1067 1159,1080 1167,1100 1179,1132 1173,1138 1150,1118 1138,1107 1138,1108 1149,1123 1171,1151 1192,1145 1183,1113z M1239,1093C1238,1066 1236,1053 1233,1063 1231,1072 1225,1078 1220,1075 1216,1072 1217,1086 1223,1105 1229,1124 1235,1140 1237,1140 1239,1140 1239,1119 1239,1093z M925,1032C904,1027 880,1037 880,1049 880,1054 893,1053 911,1047 932,1039 937,1034 925,1032z" />
+                        <GeometryDrawing Brush="{StaticResource Primary.MediumDark}" Geometry="F1 M225,225z M0,0z M314,972C283,952,280,917,280,625L280,329 305,305 329,280 1195,280 2061,280 2085,305 2110,329 2110,635C2110,927 2109,941 2090,960 2079,971 2057,980 2040,980 2023,980 2001,971 1990,960 1971,941 1970,927 1970,680L1970,420 1195,420 420,420 420,680C420,927 419,941 400,960 380,980 335,986 314,972z" />
                     </DrawingGroup>
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
-        <!-- Colors -->
-        <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0" />
+
+        <!-- Backgrounds -->
+        <SolidColorBrush x:Key="Background.Solid" Color="#DFDFDF"/>
+        <LinearGradientBrush x:Key="Background.Gradient" StartPoint="0.5,0" EndPoint="0.5,1.25">
+            <GradientStop Color="#DFDFDF" Offset="0"/>
+            <GradientStop Color="#BBBBBB" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Borders -->
+        <SolidColorBrush x:Key="Border.Light" Color="#FFFBD5D4"/>
+        <SolidColorBrush x:Key="Border.MediumLight" Color="#FFD09998"/>
+        <SolidColorBrush x:Key="Border.Medium" Color="#FFAD6D6B"/>
+        <SolidColorBrush x:Key="Border.MediumDark" Color="#FF8A4B4A"/>
+        <SolidColorBrush x:Key="Border.Dark" Color="#FF722B29"/>
+
+        <!-- Text -->
+        <SolidColorBrush x:Key="Foreground.Main" Color="#FF212D4D"/>
+
+        
+        <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0"/>
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#107896" Offset="0"/>
             <GradientStop Color="#555555" Offset="1.2"/>
@@ -6798,13 +6836,6 @@
         <LinearGradientBrush x:Key="Button.IsEnabled.False.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="ActiveCaption" StartPoint="0.5,0" EndPoint="0.5,1.25">
-            <!--<GradientStop Color="#FFAABBBF" Offset="0.25"/>
-            <GradientStop Color="#FF3C3C3C" Offset="1.2"/>-->
-            <GradientStop Color="#00A7E1" Offset="0"/>
-            <GradientStop Color="#007EA7" Offset="0.5"/>
-            <GradientStop Color="#003459" Offset="2"/>
         </LinearGradientBrush>
         <SolidColorBrush x:Key="ForeGround.AccentBrush" Color="#FFBF7A36"/>
         <SolidColorBrush x:Key="ForeGround.StandardBrush" Color="#107896"/>
@@ -6826,7 +6857,7 @@
         <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
         <Image x:Key="MagnifyingGlassImage" Source="magnifying_glass.png"/>
         <Image x:Key="xImage" Source="x.png"/>
-        <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="2" Direction="300" Color="Black" Opacity="0.65" BlurRadius="4"/>
+        <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.85" BlurRadius="2"/>
         <!-- Buttons -->
         <Style x:Key="Button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource Button.Background}"/>
@@ -7450,6 +7481,41 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+        <!-- Notification Menu Item -->
+        <Style x:Key="NotificationMenuStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid Margin="8,1,8,1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <!--<TextBlock Text="Notifications" Grid.Column="0" VerticalAlignment="Center"/>-->
+                                <Image Source="{StaticResource Bell_With_LayersDrawingImage}" Width="35" Height="35">
+                                    <Image.Effect>
+                                        <DropShadowEffect BlurRadius="5" ShadowDepth="4" Direction="315" Color="Black" Opacity="0.6"/>
+                                    </Image.Effect>
+                                </Image>
+                                <!--<Image Source="" Grid.Column="1" VerticalAlignment="Top"/>-->
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                    <Setter Property="Background" Value="#BBCFD097"/>
+                    <!--<Setter Property="Opacity" Value="0.5"/>-->
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <!-- Module Grids -->
         <Style x:Key="AllTabletProjectsGrid" TargetType="{x:Type ContentControl}">

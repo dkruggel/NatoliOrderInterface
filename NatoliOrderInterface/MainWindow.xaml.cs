@@ -340,6 +340,17 @@ namespace NatoliOrderInterface
                     }
                 }
             }
+            else
+            {
+                foreach (var item in MainMenu.Items)
+                {
+                    if ((item as MenuItem).Name == "notificationsMenu")
+                    {
+                        (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
+                        break;
+                    }
+                }
+            }
             _nat02context.Dispose();
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -886,14 +897,15 @@ namespace NatoliOrderInterface
             #region NotificationsRegion
             MenuItem notificationsMenu = new MenuItem()
             {
-                Header = "Notifications",
-                Height = MainMenu.Height
+                //Header = "Notifications",
+                //Height = MainMenu.Height
+                Name = "notificationsMenu",
+                Style = App.Current.Resources["NotificationMenuStyle"] as Style
             };
+            notificationsMenu.Click += NotificationsMenu_Click;
 
             // Add menu item to open active notifications window
-#if DEBUG
             MainMenu.Items.Add(notificationsMenu);
-#endif
 #endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
@@ -901,6 +913,12 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void NotificationsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+            notificationManagementWindow.Show();
         }
 
         private void Reports_Click(object sender, RoutedEventArgs e)
