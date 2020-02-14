@@ -13,23 +13,25 @@
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Margin" Value="0,0,10,0"/>
         <Setter Property="DockPanel.Dock" Value="Top"/>
-        <Setter Property="Template">
+            <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate x:Name="ActiveNotificationTemplate" TargetType="{x:Type ContentControl}">
-                    <Grid>
-                        <Border x:Name="ActiveBorder" BorderBrush="#00171F" BorderThickness="0,0,1,1" CornerRadius="2">
+                        <Grid IsHitTestVisible="True">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3" IsHitTestVisible="True">
                                 
                         </Border>
-                            <Grid x:Name="ActiveNotificationGrid">
+                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3" IsHitTestVisible="True">
+                            </Border>
+                            <Grid x:Name="ActiveNotificationGrid" IsHitTestVisible="True">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="26"/>
+                                    <RowDefinition Height="28"/>
                                 </Grid.RowDefinitions>
 
                                 <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
@@ -37,13 +39,13 @@
                                         <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
                                     </CheckBox.LayoutTransform>
                                 </CheckBox>
-                                <TextBlock x:Name="OrderNumberTextBlock" Text="276000" Grid.Column="1" VerticalAlignment="Center" FontSize="16" Foreground="#00171F"/>
-                                <TextBlock x:Name="CustomerNameTextBlock" Text="CUSTOMER NAME" Grid.Column="2" VerticalAlignment="Center" FontSize="16" Foreground="#00171F"/>
-                                <TextBlock x:Name="NotificationMessageTextBlock" Text="Order has been sent to production" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="#00171F" FontSize="16"/>
-                                <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2">
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="276000" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="CUSTOMER NAME" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="NotificationMessageTextBlock" Text="Order has been sent to production" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
                                     <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
-                                            <TextBlock Text="Open Work Order" Foreground="#003459"/>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
                                         <Image.Style>
                                             <Style>
@@ -62,7 +64,7 @@
                                     </Image>
                                     <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
-                                            <TextBlock Text="Archive Notification" Foreground="#003459"/>
+                                            <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
                                         <Image.Style>
                                             <Style>
@@ -86,14 +88,11 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <!-- Show nav buttons -->
                             <Setter TargetName="OpenOrderImage" Property="Visibility" Value="Visible"/>
-                            <Setter TargetName="ArchiveNotificationImage" Property="Visibility" Value="Visible"/>
-                            <!--<Setter TargetName="OrderNumberTextBlock" Property="Foreground" Value="Gray"/>
-                                <Setter TargetName="CustomerNameTextBlock" Property="Foreground" Value="Gray"/>
-                                <Setter TargetName="NotificationMessageTextBlock" Property="Foreground" Value="Gray"/>-->
-                                <Setter TargetName="ActiveBorder" Property="BorderBrush" Value="Black"/>
+                                <Setter TargetName="ArchiveNotificationImage" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="GridBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                                <Setter TargetName="ActiveBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
                                 <Setter TargetName="ActiveBorder" Property="Effect" Value="{StaticResource NotificationRowBorderEffect}"/>
-                                <!--<Setter Property="Opacity" Value="0.4"/>-->
-                                <Setter TargetName="ActiveBorder" Property="Opacity" Value="1"/>
+                            <Setter TargetName="ActiveBorder" Property="Opacity" Value="1"/>
                             </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -101,75 +100,186 @@
         </Setter>
     </Style>
         <Style x:Key="InactiveNotificationGrid"  TargetType="{x:Type ContentControl}">
-        <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="#eef4ed"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Margin" Value="0,0,10,0"/>
         <Setter Property="DockPanel.Dock" Value="Top"/>
-        <Setter Property="Template">
-            <Setter.Value>
+            <Setter Property="Template">
+                <Setter.Value>
                     <ControlTemplate x:Name="ActiveNotificationTemplate" TargetType="{x:Type ContentControl}">
-                        <Grid x:Name="ActiveNotificationGrid">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40"/>
-                                <ColumnDefinition Width="80"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="25"/>
-                            </Grid.RowDefinitions>
-                            <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
-                                <CheckBox.LayoutTransform>
-                                    <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
-                                </CheckBox.LayoutTransform>
-                            </CheckBox>
-                            <TextBlock x:Name="OrderNumberTextBlock" Grid.Column="1" VerticalAlignment="Center" FontSize="16"/>
-                            <TextBlock x:Name="CustomerNameTextBlock" Grid.Column="2" VerticalAlignment="Center" FontSize="16"/>
-                            <TextBlock x:Name="NotificationMessageTextBlock" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="Black" FontSize="16"/>
-                            <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2">
-                                <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
-                                    <Image.ToolTip>
-                                        <TextBlock Text="Open Work Order"/>
-                                    </Image.ToolTip>
-                                    <Image.Style>
-                                        <Style>
-                                            <Style.Triggers>
-                                                <Trigger Property="Image.IsMouseOver" Value="True">
-                                                    <Setter Property="Image.Opacity" Value="1"/>
-                                                    <Setter Property="Image.Cursor" Value="Hand"/>
-                                                </Trigger>
-                                                <Trigger Property="Image.IsMouseOver" Value="False">
-                                                    <Setter Property="Image.Opacity" Value="0.5"/>
-                                                    <Setter Property="Image.Cursor" Value="Hand"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                            </StackPanel>
+                        <Grid IsHitTestVisible="True">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3">
+
+                            </Border>
+                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3">
+                            </Border>
+                            <Grid x:Name="ActiveNotificationGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
+                                    <CheckBox.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
+                                    </CheckBox.LayoutTransform>
+                                </CheckBox>
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="276000" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="CUSTOMER NAME" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="NotificationMessageTextBlock" Text="Order has been sent to production" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!-- Show nav buttons -->
                                 <Setter TargetName="OpenOrderImage" Property="Visibility" Value="Visible"/>
-                                <!--<Setter TargetName="OrderNumberTextBlock" Property="Foreground" Value="Gray"/>
-                                <Setter TargetName="CustomerNameTextBlock" Property="Foreground" Value="Gray"/>
-                                <Setter TargetName="NotificationMessageTextBlock" Property="Foreground" Value="Gray"/>-->
-                                <Setter Property="Opacity" Value="0.4"/>
+                                <Setter TargetName="GridBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                                <Setter TargetName="ActiveBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                                <Setter TargetName="ActiveBorder" Property="Effect" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                <Setter TargetName="ActiveBorder" Property="Opacity" Value="1"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
-        </Setter>
-    </Style>
+            </Setter>
+        </Style>
+
+        <Style x:Key="OrderGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="ActiveNotificationTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3">
+
+                            </Border>
+                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3">
+                            </Border>
+                            <Grid x:Name="ActiveNotificationGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*" MinWidth="120"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="175"/>
+                                    <ColumnDefinition Width="175"/>
+                                    <ColumnDefinition Width="225"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <CheckBox Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="WhiteSmoke">
+                                    <CheckBox.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.7" ScaleY="0.7" CenterX="0"/>
+                                    </CheckBox.LayoutTransform>
+                                </CheckBox>
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="276099" Margin="0,0,2,0" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteNumberTextBlock" Text="184280" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteRevNumberTextBlock" Text="0" Grid.Column="3" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="FAL DUIVEN BV" Grid.Column="4" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="NumDaysToShipTextBlock" Text="33 Days to Ship" Padding="0,0,10,0" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="NumDaysInDeptTextBlock" Text="33 Days to Ship" Padding="0,0,10,0" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="EmployeeTextBlock" Text="33 Days to Ship" Padding="0,0,10,0" Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="LocationTextBlock" Text="Engineering - Haden Willmuth" Padding="0,0,10,0" Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="StateTextBlock" Text="Being Drawn" Grid.Column="9" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="10" Grid.ColumnSpan="2" Margin="0,0,2,0">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- Show nav buttons -->
+                                <Setter TargetName="OpenOrderImage" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="ArchiveNotificationImage" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="GridBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                                <Setter TargetName="ActiveBorder" Property="BorderBrush" Value="{StaticResource Border.MediumDark}"/>
+                                <Setter TargetName="ActiveBorder" Property="Effect" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                <Setter TargetName="ActiveBorder" Property="Opacity" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    
-    <Grid  Background="{StaticResource ActiveCaption}">
-        <ScrollViewer Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Hidden">
-            <DockPanel x:Name="NotificationDockPanel" HorizontalAlignment="Stretch" LastChildFill="False">
-                <!--<TextBlock Text="More" HorizontalAlignment="Center" Visibility="Visible"/> -->
-                <!--Show when ScrollViewer.ComputedScrollbarVisibility = Visible-->
+
+    <Grid  Background="{StaticResource Background.Gradient}">
+        <ScrollViewer x:Name="NM_ScrollViewer" Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Hidden">
+            <DockPanel x:Name="NM_DockPanel" HorizontalAlignment="Stretch" LastChildFill="False">
+                <!--<ContentControl Style="{StaticResource OrderGrid}"/>-->
             </DockPanel>
         </ScrollViewer>
     </Grid>
