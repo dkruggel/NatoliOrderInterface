@@ -924,7 +924,7 @@ namespace NatoliOrderInterface
                     priceBase.GotMouseCapture += Price_GotMouseCapture;
                     priceBase.IsMouseCaptureWithinChanged += Price_IsMouseCaptureWithinChanged;
                     priceBase.IsEnabled = !isConvertedToOrder;
-                    double basePrice = 0;
+                    decimal basePrice = 0;
                     try
                     {
                         string category = quote.InternationalYorN == 'Y' ? "I" : "D";
@@ -939,7 +939,7 @@ namespace NatoliOrderInterface
                         {
                             if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))
                             {
-                                basePrice = (double)_nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).BasePrice;
+                                basePrice = (decimal)_nat02Context.EoiQuoteScratchPad.First(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value).BasePrice;
                                 if (_nat02Context.EoiBasePriceList.Any(x => x.Category == category &&
                                                                                  x.MachineType == quoteLineItem.MachinePriceCode &&
                                                                                  x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
@@ -949,7 +949,7 @@ namespace NatoliOrderInterface
                                                                                  x.QuoteNo == quote.QuoteNumber &&
                                                                                  x.Revision == quote.QuoteRevNo))
                                 {
-                                    if (Math.Round(basePrice, 2, MidpointRounding.ToPositiveInfinity) != Math.Round(_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                    if (Math.Round(basePrice, 2, MidpointRounding.ToPositiveInfinity) != Math.Round((decimal)_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
                                                                                     x.MachineType == quoteLineItem.MachinePriceCode &&
                                                                                     x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
                                                                                     x.Shape == quoteLineItem.ShapePriceCode &&
@@ -968,7 +968,7 @@ namespace NatoliOrderInterface
 
                             if (international)
                             {
-                                basePrice = 0.0;
+                                basePrice = (decimal)0.0;
                             }
                             else
                             {
@@ -981,7 +981,7 @@ namespace NatoliOrderInterface
                                                                          x.QuoteNo == quote.QuoteNumber &&
                                                                          x.Revision == quote.QuoteRevNo))
                                 {
-                                    basePrice = _nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                    basePrice = (decimal)_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
                                                                             x.MachineType == quoteLineItem.MachinePriceCode &&
                                                                             x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
                                                                             x.Shape == quoteLineItem.ShapePriceCode &&
@@ -1554,10 +1554,10 @@ namespace NatoliOrderInterface
                 TextBox box = sender as TextBox;
                 Grid parentGrid = box.Parent as Grid;
                 Grid parentGridparentGrid = parentGrid.Parent as Grid;
-                double unitPrice = 0;
+                decimal unitPrice = 0;
                 try
                 {
-                    if (double.TryParse(box.Text, out double p1))
+                    if (decimal.TryParse(box.Text, out decimal p1))
                     {
                         unitPrice = p1;
                     }
@@ -1566,7 +1566,7 @@ namespace NatoliOrderInterface
                 {
                     IMethods.WriteToErrorLog("QuoteInfoWindow => BasePriceChanged => unitPrice Conversion; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
                 }
-                double unitPercent = 0;
+                decimal unitPercent = 0;
                 int QTY = 0;
                 string keyValue = box.Tag.ToString().Remove(0, 1);
                 foreach (StackPanel stackPanel in parentGridparentGrid.Children.OfType<StackPanel>())
@@ -1579,7 +1579,7 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    unitPrice += Convert.ToDouble(textBox.Text);
+                                    unitPrice += Convert.ToDecimal(textBox.Text);
                                 }
                                 catch
                                 {
@@ -1590,7 +1590,7 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    unitPercent += Convert.ToDouble(textBox.Text);
+                                    unitPercent += Convert.ToDecimal(textBox.Text);
                                 }
                                 catch
                                 {
@@ -1619,7 +1619,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPercent += Convert.ToDouble(textBox.Text);
+                                unitPercent += Convert.ToDecimal(textBox.Text);
                             }
                             catch
                             {
@@ -1628,7 +1628,7 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
@@ -1651,8 +1651,8 @@ namespace NatoliOrderInterface
                 StackPanel parentStack = parentGrid.Parent as StackPanel;
                 Grid parentStackparentGrid = parentStack.Parent as Grid;
 
-                double unitPrice = 0;
-                double unitPercent = 0;
+                decimal unitPrice = 0;
+                decimal unitPercent = 0;
 
                 int QTY = 0;
                 string keyValue = box.Tag.ToString().Remove(0, 1);
@@ -1664,7 +1664,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                if (double.TryParse(textBox.Text, out double p1))
+                                if (decimal.TryParse(textBox.Text, out decimal p1))
                                 {
                                     unitPrice += p1;
                                 }
@@ -1678,7 +1678,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                if (double.TryParse(textBox.Text, out double p1))
+                                if (decimal.TryParse(textBox.Text, out decimal p1))
                                 {
                                     unitPercent += p1;
                                 }
@@ -1726,7 +1726,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                if (double.TryParse(textBox.Text, out double p1))
+                                if (decimal.TryParse(textBox.Text, out decimal p1))
                                 {
                                     unitPrice += p1;
                                 }
@@ -1740,7 +1740,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                if (double.TryParse(textBox.Text, out double p1))
+                                if (decimal.TryParse(textBox.Text, out decimal p1))
                                 {
                                     unitPercent += p1;
                                 }
@@ -1752,7 +1752,7 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
@@ -1762,7 +1762,7 @@ namespace NatoliOrderInterface
                     }
                 }
 
-                //double quoteSubtotal = 0;
+                //decimal quoteSubtotal = 0;
                 //foreach (TabItem tabItem in ScratchPadTabs.Items)
                 //{
                 //    ScrollViewer scrollViewer = tabItem.Content as ScrollViewer;
@@ -1771,12 +1771,12 @@ namespace NatoliOrderInterface
                 //    {
                 //        foreach (TextBox textBox in grid.Children.OfType<TextBox>().Where(x => x.Tag.ToString() == "ExtendedPrice"))
                 //        {
-                //            quoteSubtotal += Convert.ToDouble(textBox.Text);
+                //            quoteSubtotal += Convert.ToDecimal(textBox.Text);
                 //        }
                 //    }
                 //}
                 //QuoteSubTotal.Text = string.Format("{0:0.00}", quoteSubtotal);
-                //QuoteTotal.Text = string.Format("{0:0.00}", quoteSubtotal + Convert.ToDouble(FlatMark.Text) + Convert.ToDouble(FreightTotal.Text));
+                //QuoteTotal.Text = string.Format("{0:0.00}", quoteSubtotal + Convert.ToDecimal(FlatMark.Text) + Convert.ToDecimal(FreightTotal.Text));
             }
             catch (Exception ex)
             {
@@ -1790,11 +1790,11 @@ namespace NatoliOrderInterface
                 TextBox box = sender as TextBox;
                 Grid parentGrid = box.Parent as Grid;
                 Grid parentGridparentGrid = parentGrid.Parent as Grid;
-                double unitPrice = 0;
-                double unitPercent = 0;
+                decimal unitPrice = 0;
+                decimal unitPercent = 0;
                 try
                 {
-                    if (double.TryParse(box.Text, out double p1))
+                    if (decimal.TryParse(box.Text, out decimal p1))
                     {
                         unitPercent += p1;
                     }
@@ -1816,7 +1816,7 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    if (double.TryParse(textBox.Text, out double p1))
+                                    if (decimal.TryParse(textBox.Text, out decimal p1))
                                     {
                                         unitPrice += p1;
                                     }
@@ -1830,7 +1830,7 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    if (double.TryParse(textBox.Text, out double p1))
+                                    if (decimal.TryParse(textBox.Text, out decimal p1))
                                     {
                                         unitPercent += p1;
                                     }
@@ -1862,7 +1862,7 @@ namespace NatoliOrderInterface
                         {
                             try
                             {
-                                unitPrice += Convert.ToDouble(textBox.Text);
+                                unitPrice += Convert.ToDecimal(textBox.Text);
                             }
                             catch
                             {
@@ -1871,7 +1871,7 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
@@ -1897,9 +1897,9 @@ namespace NatoliOrderInterface
                     TextBlock qtyTextBlock = subGrid.Children.OfType<TextBlock>().First(t => t.Tag.ToString() == "QTY");
                     if (int.TryParse(qtyTextBlock.Text == null ? "0" : qtyTextBlock.Text.ToString(), out int qty))
                     {
-                        if (double.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out double unitPrice))
+                        if (decimal.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out decimal unitPrice))
                         {
-                            double extendedPrice = Math.Round(unitPrice * (double)qty, 2, MidpointRounding.ToPositiveInfinity);
+                            decimal extendedPrice = Math.Round(unitPrice * (decimal)qty, 2, MidpointRounding.ToPositiveInfinity);
                             foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "ExtendedPrice"))
                             {
                                 TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag.ToString() == "ExtendedPrice");
@@ -1918,7 +1918,7 @@ namespace NatoliOrderInterface
         {
             try
             {
-                double quoteSubtotal = 0;
+                decimal quoteSubtotal = 0;
                 foreach (TabItem tabItem in ScratchPadTabs.Items)
                 {
                     ScrollViewer scrollViewer = tabItem.Content as ScrollViewer;
@@ -1927,13 +1927,13 @@ namespace NatoliOrderInterface
                     {
                         foreach (TextBox textBox in grid.Children.OfType<TextBox>().Where(x => x.Tag.ToString() == "ExtendedPrice"))
                         {
-                            if (double.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out double extendedPrice))
+                            if (decimal.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out decimal extendedPrice))
                                 quoteSubtotal += extendedPrice;
                         }
                     }
                 }
                 QuoteSubTotal.Text = string.Format("{0:0.00}", quoteSubtotal);
-                QuoteTotal.Text = string.Format("{0:0.00}", quoteSubtotal + Convert.ToDouble(FlatMark.Text) + Convert.ToDouble(FreightTotal.Text));
+                QuoteTotal.Text = string.Format("{0:0.00}", quoteSubtotal + Convert.ToDecimal(FlatMark.Text) + Convert.ToDecimal(FreightTotal.Text));
             }
             catch (Exception ex)
             {
@@ -2008,7 +2008,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal\n"+ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal\n"+ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -2021,7 +2021,7 @@ namespace NatoliOrderInterface
                         }
                         catch
                         {
-                            MessageBox.Show("Percent Mark is not a number." + "\n" + "Prices were not saved.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Percent Mark is not a number." + "\n" + "Prices were not saved.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
@@ -2034,7 +2034,7 @@ namespace NatoliOrderInterface
                         }
                         catch
                         {
-                            MessageBox.Show("Unit Price is not a number." + "\n" + "Prices were not saved.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Unit Price is not a number." + "\n" + "Prices were not saved.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                         //unitPriceOverride = unitPriceTextBox.IsEnabled;
@@ -2047,7 +2047,7 @@ namespace NatoliOrderInterface
                         }
                         catch
                         {
-                            MessageBox.Show("Extended Price is not a number." + "\n" + "Prices were not saved.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                            MessageBox.Show("Extended Price is not a number." + "\n" + "Prices were not saved.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
 
@@ -2078,7 +2078,7 @@ namespace NatoliOrderInterface
                     }
                     catch
                     {
-                        MessageBox.Show("Price/Percent for option " + option + " is not a number." + "\n" + "Prices were not saved.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Price/Percent for option " + option + " is not a number." + "\n" + "Prices were not saved.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
@@ -2203,7 +2203,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("Base Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
                             }
@@ -2216,7 +2216,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Percent Mark is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("Percent Mark is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
                             }
@@ -2229,7 +2229,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Unit Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("Unit Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
                                 // unitPriceOverride = unitPriceTextBox.IsEnabled;
@@ -2242,7 +2242,7 @@ namespace NatoliOrderInterface
                                 }
                                 catch
                                 {
-                                    MessageBox.Show("Extended Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                    MessageBox.Show("Extended Price is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                                     return;
                                 }
 
@@ -2273,7 +2273,7 @@ namespace NatoliOrderInterface
                             }
                             catch
                             {
-                                MessageBox.Show("Price/Percent for option " + option + " is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To Decimal", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("Price/Percent for option " + option + " is not a number in tab '" + tab.Header.ToString() + "'." + "\n" + "Prices were saved in tabs before '" + tab.Header.ToString() + "'.", "Error Converting To decimal", MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
 
@@ -2368,8 +2368,8 @@ namespace NatoliOrderInterface
                 using (NAT01Context _nat01Context = new NAT01Context())
                 {
                     QuoteHeader quoteHeader = _nat01Context.QuoteHeader.First(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo);
-                    quoteHeader.QuoteSubtotal = Convert.ToDouble(QuoteSubTotal.Text);
-                    quoteHeader.QuoteTotal = Convert.ToDouble(QuoteTotal.Text);
+                    quoteHeader.QuoteSubtotal = (double)Convert.ToDecimal(QuoteSubTotal.Text);
+                    quoteHeader.QuoteTotal = (double)Convert.ToDecimal(QuoteTotal.Text);
                     _nat01Context.Update(quoteHeader);
                     _nat01Context.SaveChanges();
                     _nat01Context.Dispose();
