@@ -56,6 +56,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<PartAllocation> PartAllocation { get; set; }
         public virtual DbSet<VwQuoteConversion> VwQuoteConversion { get; set; }
         public virtual DbSet<QuotePercentage> QuotePercentage { get; set; }
+        public virtual DbSet<EoiCustomerNotes> EoiCustomerNotes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1002,6 +1003,13 @@ namespace NatoliOrderInterface.Models
             modelBuilder.Entity<QuotePercentage>(entity =>
             {
                 entity.HasNoKey();
+            });
+
+            modelBuilder.Entity<EoiCustomerNotes>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("EOI_CustomerNotes");
             });
 
             OnModelCreatingPartial(modelBuilder);
