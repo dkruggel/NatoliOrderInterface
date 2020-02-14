@@ -11,14 +11,14 @@
     </Window.Resources>
     <DockPanel Margin="10,6">
         <DockPanel DockPanel.Dock="Top">
-            <Border DockPanel.Dock="Top" BorderThickness="0,0,0,1" BorderBrush="{StaticResource ForeGround.StandardBrush}" Padding="0,0,0,10">
+            <Border DockPanel.Dock="Top" BorderThickness="0,0,0,1" BorderBrush="{StaticResource Primary.Dark}" Padding="0,0,0,10">
                 <TextBlock Style="{StaticResource BoldTextBlock}" Text="Customer Note" HorizontalAlignment="Center" FontSize="30"></TextBlock>
             </Border>
             
         </DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <DockPanel DockPanel.Dock="Top">
-                <Border DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="{StaticResource ForeGround.StandardBrush}" Padding="10">
+                <Border DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="{StaticResource Primary.Dark}" Padding="10">
                     <DockPanel DockPanel.Dock="Left">
                         <Grid DockPanel.Dock="Top">
                             <Grid.ColumnDefinitions>
@@ -31,24 +31,22 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="{StaticResource ForeGround.StandardBrush}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,10">
-                                <TextBlock  Text="Link" HorizontalAlignment="Center" Style="{StaticResource NormalTextBlock}" FontWeight="Bold" FontSize="16"/>
+                            <Border Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,10">
+                                <TextBlock  Text="Link" HorizontalAlignment="Center" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" FontSize="16"/>
                             </Border>
-                            <ComboBox Grid.Row="1" Grid.ColumnSpan="3" DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="200" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" SelectedIndex="0">
+                            <ComboBox x:Name="LinkType" Grid.Row="1" Grid.ColumnSpan="3" DockPanel.Dock="Top" Margin="0,12,0,12" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="200" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" SelectedIndex="0">
                                 <ComboBoxItem Content="Quote"/>
                                 <ComboBoxItem Content="Order"/>
                             </ComboBox>
-                            <TextBox Grid.Column="0" Grid.Row="2" Style="{StaticResource TextBox}"/>
-                            <Image Grid.Column="1" Grid.Row="2" Source="\greenplusadditionicon.png" Width="24" Margin="4" Cursor="Hand"/>
-                            <Image Grid.Column="2" Grid.Row="2" Source="\redxdeleteicon.png" Width="24" Margin="4"  Cursor="Hand"/>
+                            <TextBox x:Name="LinkDocumentNumber" Grid.Column="0" Grid.Row="2" Style="{StaticResource TextBox}"/>
+                            <Image x:Name="LinkAdd" Grid.Column="1" Grid.Row="2" Source="\greenplusadditionicon.png" Width="24" Margin="4" Cursor="Hand" MouseUp="LinkAdd_MouseUp"/>
+                            <Image x:Name="LinkRemove" Grid.Column="2" Grid.Row="2" Source="\redxdeleteicon.png" Width="24" Margin="4"  Cursor="Hand" MouseUp="LinkRemove_MouseUp"/>
                         </Grid>
-                        <ListBox DockPanel.Dock="Top" BorderBrush="{StaticResource ForeGround.AccentBrush}" Style="{StaticResource ListBox}" MinHeight="80" HorizontalAlignment="Stretch" Background="Transparent">
-                            <ListBoxItem Content="180259-1" Style="{StaticResource ListBoxItem}"/>
-                            <ListBoxItem Content="180259-1" Style="{StaticResource ListBoxItem}"/>
+                        <ListBox x:Name="LinkListBox" DockPanel.Dock="Top"  Style="{StaticResource ListBox}" Height="80" HorizontalAlignment="Stretch" Background="Transparent">
                         </ListBox>
                     </DockPanel>
                 </Border>
-                <Border DockPanel.Dock="Left" BorderThickness="0,0,0,0" BorderBrush="{StaticResource ForeGround.StandardBrush}" Padding="10">
+                <Border DockPanel.Dock="Left" BorderThickness="0,0,0,0" BorderBrush="{StaticResource Primary.Dark}" Padding="10">
                     <Grid Margin="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -65,41 +63,41 @@
                             <RowDefinition Height="8"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <Border Grid.Row="0" Grid.ColumnSpan="5" BorderBrush="{StaticResource ForeGround.StandardBrush}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,10">
-                            <TextBlock  Text="Customer" HorizontalAlignment="Center" Style="{StaticResource NormalTextBlock}" FontWeight="Bold" FontSize="16"/>
+                        <Border Grid.Row="0" Grid.ColumnSpan="5" BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,10">
+                            <TextBlock  Text="Customer" HorizontalAlignment="Center" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" FontSize="16"/>
                         </Border>
-                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer No:"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="1" Width="100" HorizontalAlignment="Left">
-                            <TextBox Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="CustomerNumber" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
-                        <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer Name:"></TextBlock>
+                        <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="1" DockPanel.Dock="Left" Width="100" HorizontalAlignment="Left">
-                            <TextBox Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="CustomerName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
-                        <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To No:"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
-                            <TextBox Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="ShipToNumber" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
-                        <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To Name:"></TextBlock>
+                        <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="3" HorizontalAlignment="Stretch">
-                            <TextBox Style="{StaticResource TextBox}"  Margin="6,0"></TextBox>
+                            <TextBox x:Name="ShipToName" Style="{StaticResource TextBox}"  Margin="6,0"></TextBox>
                         </Grid>
-                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User No:"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch">
-                            <TextBox Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="EndUserNumber" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
-                        <TextBlock Grid.Column="3" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User Name:"></TextBlock>
+                        <TextBlock Grid.Column="3" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="5" HorizontalAlignment="Stretch">
-                            <TextBox Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="EndUserName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
                     </Grid>
                 </Border>
-                <Border DockPanel.Dock="Left" BorderThickness="1,0,0,0" BorderBrush="{StaticResource ForeGround.StandardBrush}" Padding="10">
+                <Border DockPanel.Dock="Left" BorderThickness="1,0,0,0" BorderBrush="{StaticResource Primary.Dark}" Padding="10">
                     <DockPanel DockPanel.Dock="Right">
-                        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource ForeGround.StandardBrush}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,10">
-                            <TextBlock Text="Category" HorizontalAlignment="Center" Style="{StaticResource NormalTextBlock}" FontWeight="Bold" FontSize="16"/>
+                        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1" MaxWidth="120" Margin="0,0,0,18">
+                            <TextBlock Text="Category" HorizontalAlignment="Center" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" FontSize="16"/>
                         </Border>
-                        <ComboBox DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="200" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" SelectedIndex="4">
+                        <ComboBox x:Name="CategoryComboBox" DockPanel.Dock="Top" HorizontalAlignment="Stretch" VerticalAlignment="Top" Width="200" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" SelectedIndex="4">
                             <ComboBoxItem Content="Potential Quote"/>
                             <ComboBoxItem Content="Order Status"/>
                             <ComboBoxItem Content="Technical Questions"/>
@@ -127,8 +125,8 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" HorizontalAlignment="Center" Content="OK" Style="{StaticResource Button}" MinWidth="80" MinHeight="24"/>
-            <Button Grid.Column="1" HorizontalAlignment="Center" Content="Cancel" Style="{StaticResource Button}" MinWidth="80" MinHeight="24"/>
+            <Button x:Name="OKButton" Grid.Column="0" HorizontalAlignment="Center" Content="OK" Style="{StaticResource Button}" MinWidth="80" MinHeight="24" Click="OKButton_Click"/>
+            <Button x:Name="CancelButton" Grid.Column="1" HorizontalAlignment="Center" Content="Cancel" Style="{StaticResource Button}" MinWidth="80" MinHeight="24" Click="CancelButton_Click"/>
         </Grid>
         
     </DockPanel>

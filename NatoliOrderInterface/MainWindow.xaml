@@ -362,7 +362,7 @@
     </Window.Resources>
     <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}">
-            <Menu x:Name="MainMenu" Height="40" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource ForeGround.StandardBrush}">
+            <Menu x:Name="MainMenu" Height="40" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Primary.Dark}">
                 <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
             </Menu>
             <DockPanel HorizontalAlignment="Right">

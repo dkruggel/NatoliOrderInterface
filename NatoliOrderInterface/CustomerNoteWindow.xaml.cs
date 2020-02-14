@@ -22,6 +22,26 @@ namespace NatoliOrderInterface
         {
             InitializeComponent();
         }
+
+        private void LinkAdd_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void LinkRemove_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
     
 }

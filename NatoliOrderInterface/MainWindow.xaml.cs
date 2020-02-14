@@ -328,32 +328,32 @@ namespace NatoliOrderInterface
         {
             BindData("QuotesNotConverted");
 
-            // Check for new notifications
-            using var _nat02context = new NAT02Context();
-            bool active = _nat02context.EoiNotificationsActive.Any(n => n.User == User.DomainName);
-            if (active)
-            {
-                foreach (var item in MainMenu.Items)
-                {
-                    if ((item as MenuItem).Name == "notificationsMenu")
-                    {
-                        (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach (var item in MainMenu.Items)
-                {
-                    if ((item as MenuItem).Name == "notificationsMenu")
-                    {
-                        (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
-                        break;
-                    }
-                }
-            }
-            _nat02context.Dispose();
+            //// Check for new notifications
+            //using var _nat02context = new NAT02Context();
+            //bool active = _nat02context.EoiNotificationsActive.Any(n => n.User == User.DomainName);
+            //if (active)
+            //{
+            //    foreach (var item in MainMenu.Items)
+            //    {
+            //        if ((item as MenuItem).Name == "notificationsMenu")
+            //        {
+            //            (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
+            //            break;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var item in MainMenu.Items)
+            //    {
+            //        if ((item as MenuItem).Name == "notificationsMenu")
+            //        {
+            //            (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
+            //            break;
+            //        }
+            //    }
+            //}
+            //_nat02context.Dispose();
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
