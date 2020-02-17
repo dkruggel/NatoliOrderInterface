@@ -51,14 +51,14 @@
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V640 H640 V0 H0 Z">
                     <GeometryDrawing Brush="#FF000000" Geometry="F0 M640,640z M0,0z M361.587,50.623C457.765,70.005 530.758,155.435 530.758,257.106 530.758,376.954 519.372,467.096 640,547.365L0,547.365C120.958,466.872 109.537,375.005 109.537,257.105 109.537,154.892 183.333,69.095 280.267,50.315 285.854,1.83100000000002 356.355,2.06700000000003 361.587,50.623z M406.954,553.283C399.524,594.586 363.418,625.91 319.988,625.91 276.57,625.91 240.463,594.586 233.034,553.283L406.954,553.283z" />
-                    <DrawingGroup x:Name="Notification_Dot"  Opacity="0">
+                    <DrawingGroup x:Name="Notification_Dot" Opacity="{Binding ElementName=MainWindow, Path=notificationDot}">
                         <GeometryDrawing Brush="#FFC83737">
                             <GeometryDrawing.Geometry>
                                 <EllipseGeometry RadiusX="206.2659" RadiusY="206.2652" Center="412.7714,222.0788" />
                             </GeometryDrawing.Geometry>
                         </GeometryDrawing>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_1" Opacity="0">
+                    <DrawingGroup x:Name="Number_1" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber1}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -71,7 +71,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_2" Opacity="0">
+                    <DrawingGroup x:Name="Number_2" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber2}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -84,7 +84,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_3" Opacity="0">
+                    <DrawingGroup x:Name="Number_3" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber3}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -97,7 +97,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_4" Opacity="0">
+                    <DrawingGroup x:Name="Number_4" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber4}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -110,7 +110,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_5" Opacity="0">
+                    <DrawingGroup x:Name="Number_5" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber5}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -123,7 +123,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_6" Opacity="0">
+                    <DrawingGroup x:Name="Number_6" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber6}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -136,7 +136,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_7" Opacity="0">
+                    <DrawingGroup x:Name="Number_7" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber7}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -149,7 +149,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_8"  Opacity="0">
+                    <DrawingGroup x:Name="Number_8"  Opacity="{Binding ElementName=MainWindow, Path=notificationNumber8}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -162,7 +162,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_9" Opacity="0">
+                    <DrawingGroup x:Name="Number_9" Opacity="{Binding ElementName=MainWindow, Path=notificationNumber9}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -175,7 +175,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_10"  Opacity="0">
+                    <DrawingGroup x:Name="Number_10"  Opacity="{Binding ElementName=MainWindow, Path=notificationNumber10}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
@@ -188,7 +188,7 @@
                             </GlyphRunDrawing>
                         </DrawingGroup>
                     </DrawingGroup>
-                    <DrawingGroup x:Name="Number_10_Plus"  Opacity="0">
+                    <DrawingGroup x:Name="Number_10_Plus"  Opacity="{Binding ElementName=MainWindow, Path=notificationNumber11}">
                         <DrawingGroup>
                             <GlyphRunDrawing ForegroundBrush="#FFFFFFFF">
                                 <GlyphRunDrawing.GlyphRun>
