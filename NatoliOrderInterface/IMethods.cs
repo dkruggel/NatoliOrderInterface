@@ -1226,7 +1226,7 @@ namespace NatoliOrderInterface
 
                     string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
                     string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
-                    if (System.IO.Directory.Exists(filesForCustomerDirectory))
+                    if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
                         CreateZipFile(filesForCustomerDirectory, zipFile);
                         string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
@@ -1295,6 +1295,7 @@ namespace NatoliOrderInterface
                             }
                             
                             emailClient.Disconnect(true);
+                            File.Delete(zipFile);
                         }
                         catch (Exception ex)
                         {
