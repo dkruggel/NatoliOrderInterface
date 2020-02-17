@@ -732,13 +732,13 @@
                     <DockPanel x:Name="ErrorsDockPanel" DockPanel.Dock="Top" LastChildFill="False">
                         <BulletDecorator DockPanel.Dock="Top">
                             <BulletDecorator.Bullet>
-                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource ForeGround.AccentBrush}"/>
+                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Secondary.Dark}"/>
                             </BulletDecorator.Bullet>
                             <TextBlock Text="First Error." VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource NormalTextBlock}" Margin="8,2" FontSize="20"/>
                         </BulletDecorator>
                         <BulletDecorator DockPanel.Dock="Top">
                             <BulletDecorator.Bullet>
-                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource ForeGround.AccentBrush}"/>
+                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Secondary.Dark}"/>
                             </BulletDecorator.Bullet>
                             <TextBlock Text="Second Error." VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource NormalTextBlock}" Margin="8,2" FontSize="20"/>
                         </BulletDecorator>

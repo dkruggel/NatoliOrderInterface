@@ -5,27 +5,47 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <!-- Colors -->
-        <SolidColorBrush x:Key="Primary.Light" Color="#9198A9" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.MediumLight" Color="#6A748C" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.Medium" Color="#4D5874" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.MediumDark" Color="#36415D" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.Dark" Color="#212D4D" Opacity="1"/>
+        <Color x:Key="Primary.Light.Color">#8A97A2</Color>
+        <Color x:Key="Primary.MediumLight.Color">#647786</Color>
+        <Color x:Key="Primary.Medium.Color">#485E70</Color>
+        <Color x:Key="Primary.MediumDark.Color">#324859</Color>
+        <Color x:Key="Primary.Dark.Color">#1E364A</Color>
 
-        <SolidColorBrush x:Key="Secondary.Light" Color="#FAFAD4" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.MediumLight" Color="#CFD097" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.Medium" Color="#ACAD6B" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.MediumDark" Color="#898A49" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.Dark" Color="#717229" Opacity="1"/>
+        <Color x:Key="Secondary.Light.Color">#FBF1D4</Color>
+        <Color x:Key="Secondary.MediumLight.Color">#D0C298</Color>
+        <Color x:Key="Secondary.Medium.Color">#AD9D6B</Color>
+        <Color x:Key="Secondary.MediumDark.Color">#8A7A4A</Color>
+        <Color x:Key="Secondary.Dark.Color">#726029</Color>
 
-        <SolidColorBrush x:Key="Tertiary.Light" Color="#FBD5D4" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.MediumLight" Color="#D09998" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.Medium" Color="#AD6D6B" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.MediumDark" Color="#8A4B4A" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.Dark" Color="#722B29" Opacity="1"/>
+        <Color x:Key="Tertiary.Light.Color">#FBDFD4</Color>
+        <Color x:Key="Tertiary.MediumLight.Color">#D0A898</Color>
+        <Color x:Key="Tertiary.Medium.Color">#AD7E6B</Color>
+        <Color x:Key="Tertiary.MediumDark.Color">#8A5C4A</Color>
+        <Color x:Key="Tertiary.Dark.Color">#723E29</Color>
+        
+        <SolidColorBrush x:Key="Primary.Light" Color="{StaticResource Primary.Light.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.MediumLight" Color="{StaticResource Primary.MediumLight.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.Medium" Color="{StaticResource Primary.Medium.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.MediumDark" Color="{StaticResource Primary.MediumDark.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Primary.Dark" Color="{StaticResource Primary.Dark.Color}" Opacity="1"/>
+
+        <SolidColorBrush x:Key="Secondary.Light" Color="{StaticResource Secondary.Light.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.MediumLight" Color="{StaticResource Secondary.MediumLight.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.Medium" Color="{StaticResource Secondary.Medium.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.MediumDark" Color="{StaticResource Secondary.MediumDark.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Secondary.Dark" Color="{StaticResource Secondary.Dark.Color}" Opacity="1"/>
+
+        <SolidColorBrush x:Key="Tertiary.Light" Color="{StaticResource Tertiary.Light.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.MediumLight" Color="{StaticResource Tertiary.MediumLight.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.Medium" Color="{StaticResource Tertiary.Medium.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.MediumDark" Color="{StaticResource Tertiary.MediumDark.Color}" Opacity="1"/>
+        <SolidColorBrush x:Key="Tertiary.Dark" Color="{StaticResource Tertiary.Dark.Color}" Opacity="1"/>
+
+        
 
         <!-- Fonts -->
         <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/#ASansrounded</FontFamily>
-        
+
         <!-- Drawing Images -->
         <DrawingImage x:Key="Bell_With_LayersDrawingImage">
             <DrawingImage.Drawing>
@@ -6815,33 +6835,31 @@
         <!-- Text -->
         <SolidColorBrush x:Key="Foreground.Main" Color="#FF212D4D"/>
 
-        
+
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0"/>
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="#107896" Offset="0"/>
-            <GradientStop Color="#555555" Offset="1.2"/>
+            <GradientStop Color="{StaticResource Tertiary.MediumLight.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1.0"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsMouseHover.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="#106396" Offset="0"/>
-            <GradientStop Color="#555555" Offset="1.2"/>
+            <GradientStop Color="{StaticResource Tertiary.Medium.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="InactiveTab.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#FFAABBBF" Offset="0"/>
             <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsPressed.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="#FFEED369" Offset=".25"/>
-            <GradientStop Color="Ivory" Offset="1"/>
+            <GradientStop Color="{StaticResource Tertiary.MediumDark.Color}" Offset=".25"/>
+            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsEnabled.False.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="ForeGround.AccentBrush" Color="#FFBF7A36"/>
-        <SolidColorBrush x:Key="ForeGround.StandardBrush" Color="#107896"/>
         <SolidColorBrush x:Key="Tab.Border" Color="#FF3A3838"/>
-        <SolidColorBrush x:Key="MouseOver.Border" Color="#107896"/>
-        <SolidColorBrush x:Key="Focused.Border" Color="#FFBF7A36"/>
+        <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Primary.MediumLight.Color}"/>
+        <SolidColorBrush x:Key="Focused.Border" Color="{StaticResource Primary.Medium.Color}"/>
         <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#e9e9e9"/>
         <SolidColorBrush x:Key="DisabledBorderBrush" Color="#d8bda0"/>
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#43717c" />
@@ -6893,7 +6911,7 @@
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="{StaticResource Button.IsPressed.Background}"/>
-                                <Setter Property="Foreground" Value="#FF2E343C" />
+                                <Setter Property="Foreground" Value="#FFFFFF" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Background" Value="{StaticResource Button.IsEnabled.False.Background}">
@@ -6905,15 +6923,15 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                
+
             </Style.Triggers>
         </Style>
         <!-- Text Boxes-->
         <Style x:Key="TextBox" TargetType="{x:Type TextBox}">
-            <Setter Property="BorderBrush" Value="{StaticResource ForeGround.AccentBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="1"/>
             <Setter Property="AllowDrop" Value="true"/>
@@ -7048,10 +7066,10 @@
         </Style>
         <!-- Text Blocks -->
         <Style x:Key="NormalTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush }"/>
+            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
         </Style>
         <Style x:Key="BoldTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="{StaticResource ForeGround.AccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style x:Key="PriorityTextBlock" TargetType="{x:Type TextBlock}">
@@ -7061,7 +7079,7 @@
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=Priority}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7069,11 +7087,11 @@
         <Style x:Key="TabletsTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=TabletsRequired}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.AccentBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=TabletsRequired}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7081,11 +7099,11 @@
         <Style x:Key="ToolsTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=ToolsRequired}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.AccentBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=ToolsRequired}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7093,11 +7111,11 @@
         <Style x:Key="MultiTipSketchTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=MultiTipSketch}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.AccentBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=MultiTipSketch}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7152,7 +7170,7 @@
                                     BorderThickness="0,0,0,1" />
                             <Path x:Name="Arrow"
                                    Grid.Column="1"    
-                                   Fill="{StaticResource ForeGround.StandardBrush}"
+                                   Fill="{StaticResource Secondary.MediumDark}"
                                    Stroke="Gray"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -7178,7 +7196,7 @@
             <Border x:Name="PART_ContentHost" Focusable="True"/>
         </ControlTemplate>
         <Style x:Key="ComboBoxAlignsLeft" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -7196,7 +7214,7 @@
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton Name="ToggleButton"
-                                          BorderBrush="{StaticResource ForeGround.AccentBrush}"
+                                          BorderBrush="{StaticResource Primary.Dark}"
                                           Background="Transparent"
                                           Foreground="{TemplateBinding Foreground}"
                                           Style="{StaticResource ComboBoxToggleButton}"
@@ -7218,7 +7236,7 @@
                                     Template="{StaticResource ComboBoxTextBox}"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource ForeGround.StandardBrush}"
+                                    Foreground="{StaticResource Secondary.MediumDark}"
                                     Margin="0"
                                     Focusable="True"                               
                                     Visibility="Hidden"
@@ -7268,7 +7286,7 @@
             </Setter>
         </Style>
         <Style x:Key="ComboBoxAlignsCenter" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource ForeGround.StandardBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -7286,7 +7304,7 @@
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton Name="ToggleButton"
-                                          BorderBrush="{StaticResource ForeGround.AccentBrush}"
+                                          BorderBrush="{StaticResource Primary.Dark}"
                                           Background="Transparent"
                                           Foreground="{TemplateBinding Foreground}"
                                           Style="{StaticResource ComboBoxToggleButton}"
@@ -7308,7 +7326,7 @@
                                     Template="{StaticResource ComboBoxTextBox}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource ForeGround.StandardBrush}"
+                                    Foreground="{StaticResource Secondary.MediumDark}"
                                     Margin="0"
                                     Focusable="True"                               
                                     Visibility="Hidden"
@@ -7460,7 +7478,7 @@
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
-                
+
             </Style.Triggers>
         </Style>
         <Style x:Key="SearchBox" TargetType="{x:Type TextBox}">
@@ -7542,6 +7560,209 @@
                             <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" Foreground="Black"/>
                             <TextBlock x:Name="NotificationMessageTextBlock" Text="This order has shipped" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Foreground="Black"/>
                         </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+
+
+
+
+        <!--Control colors.-->
+        <Color x:Key="WindowColor">#FFE8EDF9</Color>
+        <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+        <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+
+        <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+        <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+        <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+        <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+        <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+        <Color x:Key="ControlLightColor">White</Color>
+        <Color x:Key="ControlMediumColor">#FF7381F9</Color>
+        <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+
+        <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+        <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+
+
+        <Color x:Key="GlyphColor">#FF444444</Color>
+        <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+
+        <!--Border colors-->
+        <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+        <Color x:Key="BorderMediumColor">#FF888888</Color>
+        <Color x:Key="BorderDarkColor">#FF444444</Color>
+
+        <Color x:Key="PressedBorderLightColor">#FF888888</Color>
+        <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+
+        <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+        <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+
+        <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+
+        <!--Control-specific resources.-->
+        <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+        <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+        <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+
+        <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+        <LinearGradientBrush x:Key="MenuPopupBrush"
+                     EndPoint="0.5,1"
+                     StartPoint="0.5,0">
+            <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="0" />
+            <GradientStop Color="{DynamicResource ControlMediumColor}"
+                Offset="0.5" />
+            <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
+                     StartPoint="0,0"
+                     EndPoint="1,0">
+            <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#000000FF"
+                    Offset="0" />
+                    <GradientStop Color="#600000FF"
+                    Offset="0.4" />
+                    <GradientStop Color="#600000FF"
+                    Offset="0.6" />
+                    <GradientStop Color="#000000FF"
+                    Offset="1" />
+                </GradientStopCollection>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+
+        
+
+
+
+        <!-- List Box -->
+        <Style x:Key="ListBox" TargetType="ListBox">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="SelectionMode" Value="Extended"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Primary.MediumDark}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Name="Border" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource Primary.MediumDark}" Background="Transparent">
+                            <ScrollViewer Margin="0" Focusable="false">
+                                <StackPanel Margin="2" IsItemsHost="True"/>
+                            </ScrollViewer>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ListBoxItem" TargetType="ListBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush Color="{StaticResource Primary.Dark.Color}" Opacity="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Label x:Name="label" Padding="2" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}">
+                            <ContentPresenter/>
+                        </Label>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <!-- MouseOver and not Selected  -->
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.Light.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}" />
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <!-- Selected and not focused  -->
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="IsFocused" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumDark.Color}" />
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                                <!-- Selected and focused  -->
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumDark.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="#FFFFFF"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}" />
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
