@@ -1238,8 +1238,12 @@ namespace NatoliOrderInterface
                             FileName = Path.GetFileName(zipFile)
                         };
                         multipart.Add(attachment);
+                        message.Body = multipart;
                     }
-                    message.Body = multipart;
+                    else
+                    {
+                        message.Body = body;
+                    }
 
 
                     using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
