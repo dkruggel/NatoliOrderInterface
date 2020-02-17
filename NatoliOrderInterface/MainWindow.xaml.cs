@@ -115,6 +115,19 @@ namespace NatoliOrderInterface
             }
         }
 
+        private double notificationDot = 0.0;
+        private double notificationNumber1 = 0.0;
+        private double notificationNumber2 = 0.0;
+        private double notificationNumber3 = 0.0;
+        private double notificationNumber4 = 0.0;
+        private double notificationNumber5 = 0.0;
+        private double notificationNumber6 = 0.0;
+        private double notificationNumber7 = 0.0;
+        private double notificationNumber8 = 0.0;
+        private double notificationNumber9 = 0.0;
+        private double notificationNumber10 = 0.0;
+        private double notificationNumber11 = 0.0;
+
         #region View Dictionaries
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
@@ -196,8 +209,8 @@ namespace NatoliOrderInterface
                 }
                 else if (User.EmployeeCode == "E4408")
                 {
-                    NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
-                    notificationManagementWindow.Show();
+                    //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+                    //notificationManagementWindow.Show();
                 }
 #endif
             }
@@ -288,7 +301,7 @@ namespace NatoliOrderInterface
             mainTimer.Interval = user.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
             mainTimer.Enabled = true;
             quoteTimer.Elapsed += QuoteTimer_Elapsed;
-            quoteTimer.Interval = 5 * (60 * 1000); // 5 minutes
+            quoteTimer.Interval = 0.1 * (60 * 1000); // 5 minutes
             quoteTimer.Enabled = true;
             NatoliOrderListTimer.Elapsed += NatoliOrderListTimer_Elapsed;
             NatoliOrderListTimer.Interval = 15 * (60 * 1000); // 15 minutes
@@ -328,28 +341,52 @@ namespace NatoliOrderInterface
 
             // Check for new notifications
             using var _nat02context = new NAT02Context();
-            bool active = _nat02context.EoiNotificationsActive.Any(n => n.User == User.DomainName);
-            if (active)
+            int active = _nat02context.EoiNotificationsActive.Count();
+            if (active > 0)
             {
-                foreach (var item in MainMenu.Items)
+                // (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
+                notificationDot = 1;
+                switch (active)
                 {
-                    if ((item as MenuItem).Name == "notificationsMenu")
-                    {
-                        (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
+                    case 1:
+                        notificationNumber1 = 1;
                         break;
-                    }
+                    case 2:
+                        notificationNumber2 = 1;
+                        break;
+                    case 3:
+                        notificationNumber3 = 1;
+                        break;
+                    case 4:
+                        notificationNumber4 = 1;
+                        break;
+                    case 5:
+                        notificationNumber5 = 1;
+                        break;
+                    case 6:
+                        notificationNumber6 = 1;
+                        break;
+                    case 7:
+                        notificationNumber7 = 1;
+                        break;
+                    case 8:
+                        notificationNumber8 = 1;
+                        break;
+                    case 9:
+                        notificationNumber9 = 1;
+                        break;
+                    case 10:
+                        notificationNumber10 = 1;
+                        break;
+                    default:
+                        notificationNumber11 = 1;
+                        break;
                 }
             }
             else
             {
-                foreach (var item in MainMenu.Items)
-                {
-                    if ((item as MenuItem).Name == "notificationsMenu")
-                    {
-                        (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
-                        break;
-                    }
-                }
+                // (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
+                notificationDot = 0;
             }
             _nat02context.Dispose();
         }
@@ -900,7 +937,7 @@ namespace NatoliOrderInterface
                 //Header = "Notifications",
                 //Height = MainMenu.Height
                 Name = "notificationsMenu",
-                Style = App.Current.Resources["NotificationMenuStyle"] as Style
+                Style = FindResource("NotificationMenuStyle") as Style
             };
             notificationsMenu.Click += NotificationsMenu_Click;
 
