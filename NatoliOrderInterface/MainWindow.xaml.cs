@@ -115,7 +115,14 @@ namespace NatoliOrderInterface
             }
         }
 
-        private double notificationDot = 0.0;
+        //public static readonly DependencyProperty notificationDotProperty =
+        //    DependencyProperty.Register("NotificationDot", typeof(double), typeof(MainWindow), new UIPropertyMetadata(string.Empty));
+        //private double NotificationDot
+        //{
+        //    get { return (double)GetValue(notificationDotProperty); }
+        //    set { SetValue(notificationDotProperty, value); }
+        //}
+        private double NotificationDot = 0.0;
         private double notificationNumber1 = 0.0;
         private double notificationNumber2 = 0.0;
         private double notificationNumber3 = 0.0;
@@ -303,7 +310,7 @@ namespace NatoliOrderInterface
             mainTimer.Interval = user.Department == "Engineering" ? 0.5 * (60 * 1000) : 5 * (60 * 1000); // 0.5 or 5 minutes
             mainTimer.Enabled = true;
             quoteTimer.Elapsed += QuoteTimer_Elapsed;
-            quoteTimer.Interval = 0.1 * (60 * 1000); // 5 minutes
+            quoteTimer.Interval = 5 * (60 * 1000); // 5 minutes
             quoteTimer.Enabled = true;
             NatoliOrderListTimer.Elapsed += NatoliOrderListTimer_Elapsed;
             NatoliOrderListTimer.Interval = 15 * (60 * 1000); // 15 minutes
@@ -318,13 +325,58 @@ namespace NatoliOrderInterface
                 foldersTimer.Enabled = true;
             }
         }
-
         
-
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            //Dispatcher.Invoke(() =>
+            //{
+            // Check for new notifications
+            //using var _nat02context = new NAT02Context();
+            //try
+            //{
+            //    int active = _nat02context.EoiNotificationsActive.Count();
+            //    if (active > 0)
+            //    {
+            //        // (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
+            //        NotificationDot = 0.0;
+
+            //        var bell = (App.Current.Resources["Bell_With_LayersDrawingImage"] as DrawingImage).Drawing as DrawingGroup;
+
+            //        //(bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_Dot") as DrawingGroup).Opacity = 1;
+            //        //if (active < 11)
+            //        //    (bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_" + active) as DrawingGroup).Opacity = 1;
+            //        //if (active > 10)
+            //        //    (bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_11") as DrawingGroup).Opacity = 1;
+
+            //        int i = 1;
+            //        foreach (DrawingGroup child in bell.Children.OfType<DrawingGroup>())
+            //        {
+            //            if (i == active)
+            //            {
+            //                child.Opacity = 1;
+            //                break;
+            //            }
+            //            else if (active > 10 && i == 11)
+            //            {
+            //                child.Opacity = 1;
+            //                break;
+            //            }
+            //            i++;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        NotificationDot = 0;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+
+            //}
+            //_nat02context.Dispose();
+            //}
+            //);
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
@@ -340,57 +392,6 @@ namespace NatoliOrderInterface
         private void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("QuotesNotConverted");
-
-            // Check for new notifications
-            using var _nat02context = new NAT02Context();
-            int active = _nat02context.EoiNotificationsActive.Count();
-            if (active > 0)
-            {
-                // (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
-                notificationDot = 1;
-                switch (active)
-                {
-                    case 1:
-                        notificationNumber1 = 1;
-                        break;
-                    case 2:
-                        notificationNumber2 = 1;
-                        break;
-                    case 3:
-                        notificationNumber3 = 1;
-                        break;
-                    case 4:
-                        notificationNumber4 = 1;
-                        break;
-                    case 5:
-                        notificationNumber5 = 1;
-                        break;
-                    case 6:
-                        notificationNumber6 = 1;
-                        break;
-                    case 7:
-                        notificationNumber7 = 1;
-                        break;
-                    case 8:
-                        notificationNumber8 = 1;
-                        break;
-                    case 9:
-                        notificationNumber9 = 1;
-                        break;
-                    case 10:
-                        notificationNumber10 = 1;
-                        break;
-                    default:
-                        notificationNumber11 = 1;
-                        break;
-                }
-            }
-            else
-            {
-                // (item as MenuItem).Background = new SolidColorBrush(Colors.Transparent);
-                notificationDot = 0;
-            }
-            _nat02context.Dispose();
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -942,6 +943,8 @@ namespace NatoliOrderInterface
                 Style = FindResource("NotificationMenuStyle") as Style
             };
             notificationsMenu.Click += NotificationsMenu_Click;
+
+            notificationsMenu.ApplyTemplate();
 
             // Add menu item to open active notifications window
             MainMenu.Items.Add(notificationsMenu);

@@ -143,6 +143,8 @@ namespace NatoliOrderInterface
             string tempFile = "";
             int file_count = 1;
             string[] oldFiles = Directory.GetFiles(directory);
+            string userName;
+            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
             foreach (TextBlock textBlock in ListBox1.ItemsSource)
             {
                 string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
@@ -150,14 +152,13 @@ namespace NatoliOrderInterface
                 // Delete files already in the folder to move to on first loop
                 if (tempFile == "")
                 {
-                    string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
+                    string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
                     foreach (string fileToDelete in filesAlreadyInDirectory)
                     {
                         File.Delete(fileToDelete);
                     }
                 }
-
-
+                
                 tempFile = System.IO.Path.GetTempFileName();
                 if (toBeSigned)
                 {
@@ -167,19 +168,19 @@ namespace NatoliOrderInterface
                     Document document = new Document(pdfDocument);
                     for (int i = 1; i <= page_count; i++)
                     {
-                        ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
+                        ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + userName + @"\Desktop\John Hancock.png");
                         iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
                                                                                                     .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
                         document.Add(image);
                     }
                     document.Close();
                     File.Move(tempFile, file, true);
-                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                    File.Copy(file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
                     File.Delete(oldFile);
                 }
                 else
                 {
-                    File.Copy(file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                    File.Copy(file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
                 }
                 file_count++;
             }
