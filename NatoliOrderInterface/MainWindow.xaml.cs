@@ -966,7 +966,7 @@ namespace NatoliOrderInterface
                 using var _nat02context = new NAT02Context();
                 try
                 {
-                    int active = _nat02context.EoiNotificationsActive.Count();
+                    int active = _nat02context.EoiNotificationsActive.Where(n => n.User == User.DomainName).Count();
                     if (active > 0)
                     {
                         MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;

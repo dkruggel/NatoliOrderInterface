@@ -7173,6 +7173,7 @@
         <Image x:Key="MagnifyingGlassImage" Source="magnifying_glass.png"/>
         <Image x:Key="xImage" Source="x.png"/>
         <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.85" BlurRadius="2"/>
+        <DropShadowEffect x:Key="NoRowBorderEffect" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
         <!-- Buttons -->
         <Style x:Key="Button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource Button.Background}"/>

@@ -226,7 +226,7 @@ namespace NatoliOrderInterface
             using var _context = new NAT02Context();
             using var _nat01context = new NAT01Context();
             Image image = sender as Image;
-            Grid grid = (image.Parent as Grid).Parent as Grid;
+            Grid grid = (image.Parent as StackPanel).Parent as Grid;
             Cursor = Cursors.AppStarting;
             WorkOrder workOrder = null;
 
