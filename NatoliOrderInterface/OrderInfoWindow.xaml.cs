@@ -2093,7 +2093,9 @@ namespace NatoliOrderInterface
                         Document document = new Document(pdfDocument);
                         for (int i = 1; i <= page_count; i++)
                         {
-                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png");
+                            string userName;
+                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
+                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + userName + @"\Desktop\John Hancock.png");
                             iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
                                                                                                         .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
                             document.Add(image);
