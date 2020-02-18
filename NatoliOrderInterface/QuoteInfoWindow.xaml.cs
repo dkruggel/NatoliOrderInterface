@@ -2679,7 +2679,7 @@ namespace NatoliOrderInterface
                             Margin = new Thickness(4, 4, 0, 4),
                             IsChecked = eoiOrderEntryInstruction.Checked,
                             Content = instructionTextBlock,
-                            IsEnabled = user.Department == "Order Entry",
+                            IsEnabled = user.Department == "Order Entry" || user.EmployeeCode == "E4852" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4816",
                         };
                         checkBox.Click += CheckOrderEntryInstruction;
                         TextBlock userTextBlock = new TextBlock
