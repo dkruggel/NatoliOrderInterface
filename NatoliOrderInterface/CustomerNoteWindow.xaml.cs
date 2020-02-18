@@ -10,6 +10,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using NatoliOrderInterface.Models;
+using NatoliOrderInterface.Models.NAT01;
+using System.Linq;
 
 namespace NatoliOrderInterface
 {
@@ -18,29 +21,225 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class CustomerNoteWindow : Window
     {
-        public CustomerNoteWindow()
+        private User user;
+        /// <summary>
+        /// Open Existing Note
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <param name="user"></param>
+        public CustomerNoteWindow(int ID, User user)
         {
+            this.user = user;
             InitializeComponent();
+            using var _nat02Context = new NAT02Context();
+            try
+            {
+                LinkType.IsEnabled = false;
+                LinkDocumentNumber.IsEnabled = false;
+                LinkAdd.IsEnabled = false;
+                LinkAdd.Cursor = Cursors.Arrow;
+                LinkRemove.IsEnabled = false;
+                LinkRemove.Cursor = Cursors.Arrow;
+                if (_nat02Context.EoiCustomerNotes.Any(cn => cn.ID == ID))
+                {
+                    EoiCustomerNotes eoiCustomerNote = _nat02Context.EoiCustomerNotes.First(cn => cn.ID == ID);
+                    CustomerNumber.Text = eoiCustomerNote.CustomerNumber ?? "";
+                    CustomerName.Text = eoiCustomerNote.CustomerName ?? "";
+                    ShipToNumber.Text = eoiCustomerNote.ShipToNumber ?? "";
+                    ShipToName.Text = eoiCustomerNote.ShipToName ?? "";
+                    EndUserNumber.Text = eoiCustomerNote.EndUserNumber ?? "";
+                    EndUserName.Text = eoiCustomerNote.EndUserName ?? "";
+                    CategoryComboBox.Text = eoiCustomerNote.Category;
+                    CommentTextBox.Text = eoiCustomerNote.Note;
+                    if (eoiCustomerNote.QuoteNumbers.Length > 0)
+                    {
+                        string[] quoteNumbers = eoiCustomerNote.QuoteNumbers.Split(',');
+                        foreach (string quoteNumber in quoteNumbers)
+                        {
+                            LinkListBox.Items.Add(quoteNumber);
+                        }
+                    }
+                    if (eoiCustomerNote.OrderNumbers.Length > 0)
+                    {
+                        string[] orderNumbers = eoiCustomerNote.OrderNumbers.Split(',');
+                        foreach (string orderNumber in orderNumbers)
+                        {
+                            LinkListBox.Items.Add(orderNumber);
+                        }
+                    }
+                }
+                CustomerNumber.IsEnabled = false;
+                CustomerName.IsEnabled = false;
+                ShipToNumber.IsEnabled = false;
+                ShipToName.IsEnabled = false;
+                EndUserNumber.IsEnabled = false;
+                EndUserName.IsEnabled = false;
+                CategoryComboBox.IsEnabled = false;
+                CommentTextBox.IsEnabled = false;
+                OKButton.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => Existing Note: '" + ID + "'", ex.Message, user);
+            }
+            _nat02Context.Dispose();
+        }
+        /// <summary>
+        /// Create New Customer Note Window
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="quoteNo"></param>
+        /// <param name="quoteRevNo"></param>
+        public CustomerNoteWindow(User user, int? quoteNo = null, short? quoteRevNo = null)
+        {
+            this.user = user;
+            InitializeComponent();
+            try
+            {
+                if (quoteNo != null && quoteRevNo != null)
+                {
+                    LinkListBox.Items.Add(quoteNo.ToString() + "-" + quoteRevNo.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => QuoteNumber: '" + quoteNo ?? "null" + "' QuoteRevNumber: '" + quoteRevNo ?? "null" + "'", ex.Message, user);
+            }
         }
 
         private void LinkAdd_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            using var _nat01Context = new NAT01Context();
+            string documentNumber = "";
+            try
+            {
+                documentNumber = LinkDocumentNumber.Text.Trim();
 
+                switch (((ComboBoxItem)LinkType.SelectedItem).Content.ToString())
+                {
+                    case "Quote":
+                        if (documentNumber.Contains("-"))
+                        {
+                            string[] quote = documentNumber.Split('-');
+                            if (double.TryParse(quote[0], out double quoteNo) && short.TryParse(quote[1], out short quoteRevNo))
+                            {
+                                if (_nat01Context.QuoteHeader.Any(q => q.QuoteNo == quoteNo && q.QuoteRevNo == quoteRevNo))
+                                {
+                                    LinkListBox.Items.Add(documentNumber);
+                                    LinkDocumentNumber.Clear();
+                                }
+                            }
+                        }
+                        break;
+                    case "Order":
+                        if (double.TryParse(documentNumber, out double orderNo))
+                        {
+                            if (_nat01Context.OrderHeader.Any(o => o.OrderNo == Convert.ToDouble(orderNo + "00")))
+                            {
+                                LinkListBox.Items.Add(documentNumber);
+                                LinkDocumentNumber.Clear();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => LinkAdd_MouseUp() => Document Number: '" + documentNumber + "'", ex.Message, user);
+            }
+            _nat01Context.Dispose();
         }
 
         private void LinkRemove_MouseUp(object sender, MouseButtonEventArgs e)
         {
-
+            string selectedItem = "";
+            try
+            {
+                selectedItem = LinkListBox.SelectedItem.ToString();
+                LinkListBox.Items.Remove(LinkListBox.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => LinkRemove_MouseUp() => Document Number: '" + selectedItem + "'", ex.Message, user);
+            }
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-
+            using var _nat02Context = new NAT02Context();
+            string quoteNumbers = "";
+            string orderNumbers = "";
+            string userName = "";
+            string customerNumber = "";
+            string customerName = "";
+            string shipToNumber = "";
+            string shipToName = "";
+            string endUserNumber = "";
+            string endUserName = "";
+            string category = "";
+            string note = "";
+            try
+            {
+                foreach (string s in LinkListBox.Items.OfType<string>())
+                {
+                    if (s.Contains("-"))
+                    {
+                        quoteNumbers += s + ",";
+                    }
+                    else
+                    {
+                        orderNumbers += s + ",";
+                    }
+                }
+                quoteNumbers = quoteNumbers.Trim(',');
+                orderNumbers = orderNumbers.Trim(',');
+                userName = user.DomainName;
+                customerNumber = CustomerNumber.Text;
+                customerName = CustomerName.Text;
+                shipToNumber = ShipToNumber.Text;
+                shipToName = ShipToName.Text;
+                endUserNumber = EndUserNumber.Text;
+                endUserName = EndUserName.Text;
+                category = ((ComboBoxItem)CategoryComboBox.SelectedItem).Content.ToString();
+                note = CommentTextBox.Text;
+                EoiCustomerNotes customerNote = new EoiCustomerNotes {
+                    User = userName,
+                    CustomerNumber = customerNumber,
+                    CustomerName = customerName,
+                    ShipToNumber = shipToNumber,
+                    ShipToName = shipToName,
+                    EndUserNumber = endUserNumber,
+                    EndUserName = endUserName,
+                    Category = category,
+                    Note = note,
+                    QuoteNumbers = quoteNumbers,
+                    OrderNumbers = orderNumbers,
+                };
+                _nat02Context.EoiCustomerNotes.Add(customerNote);
+                _nat02Context.SaveChanges();
+                _nat02Context.Dispose();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName + "' CustomerNumber: '" + customerNumber + "' CustomerName: '" + customerName + "' ShipToNumber: '" + shipToNumber + "' ShipToName: '" + shipToName + "' EndUserNumber: '" + endUserNumber + "' EndUserName: '" + endUserName + "' Category: '" + category + "' Note: '" + note + "' QuoteNumbers: '" + quoteNumbers + "' OrderNumbers: '" + orderNumbers + "'", ex.Message, user);
+                MessageBox.Show(ex.Message);
+            }
+            _nat02Context.Dispose();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                Close();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => CancelButton_Click()", ex.Message, user);
+            }
         }
     }
     

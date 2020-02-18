@@ -215,7 +215,7 @@ namespace NatoliOrderInterface
                 {
                     if (User.EmployeeCode == "E4754")
                     {
-                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow();
+                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow((int)3, User);
                         customerNoteWindow.Show();
                     }
                     else if (User.EmployeeCode == "E4408")
