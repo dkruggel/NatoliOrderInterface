@@ -7654,12 +7654,6 @@
                 </GradientStopCollection>
             </LinearGradientBrush.GradientStops>
         </LinearGradientBrush>
-
-
-        
-
-
-
         <!-- List Box -->
         <Style x:Key="ListBox" TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels" Value="true" />

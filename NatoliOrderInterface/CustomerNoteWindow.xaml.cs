@@ -56,7 +56,8 @@ namespace NatoliOrderInterface
                         string[] quoteNumbers = eoiCustomerNote.QuoteNumbers.Split(',');
                         foreach (string quoteNumber in quoteNumbers)
                         {
-                            LinkListBox.Items.Add(quoteNumber);
+                            ListBoxItem listBoxItem = new ListBoxItem { Content = quoteNumber, Style = (Style)Application.Current.Resources["ListBoxItem"] };
+                            LinkListBox.Items.Add(listBoxItem);
                         }
                     }
                     if (eoiCustomerNote.OrderNumbers.Length > 0)
@@ -64,7 +65,8 @@ namespace NatoliOrderInterface
                         string[] orderNumbers = eoiCustomerNote.OrderNumbers.Split(',');
                         foreach (string orderNumber in orderNumbers)
                         {
-                            LinkListBox.Items.Add(orderNumber);
+                            ListBoxItem listBoxItem = new ListBoxItem { Content = orderNumber, Style = (Style)Application.Current.Resources["ListBoxItem"] };
+                            LinkListBox.Items.Add(listBoxItem);
                         }
                     }
                 }
@@ -127,11 +129,16 @@ namespace NatoliOrderInterface
                             {
                                 if (_nat01Context.QuoteHeader.Any(q => q.QuoteNo == quoteNo && q.QuoteRevNo == quoteRevNo))
                                 {
-                                    LinkListBox.Items.Add(documentNumber);
+                                    ListBoxItem listBoxItem = new ListBoxItem { Content = documentNumber, Style = (Style)Application.Current.Resources["ListBoxItem"]};
+                                    //LinkListBox.Items.Add(documentNumber);
+                                    LinkListBox.Items.Add(listBoxItem);
                                     LinkDocumentNumber.Clear();
                                 }
                             }
-                            MessageBox.Show("Could not find an existing quote from " + documentNumber + ".");
+                            else
+                            {
+                                MessageBox.Show("Could not find an existing quote from " + documentNumber + ".");
+                            }
                         }
                         break;
                     case "Order":
@@ -139,10 +146,15 @@ namespace NatoliOrderInterface
                         {
                             if (_nat01Context.OrderHeader.Any(o => o.OrderNo == Convert.ToDouble(orderNo + "00")))
                             {
-                                LinkListBox.Items.Add(documentNumber);
+                                ListBoxItem listBoxItem = new ListBoxItem { Content = documentNumber, Style = (Style)Application.Current.Resources["ListBoxItem"] };
+                                //LinkListBox.Items.Add(documentNumber);
+                                LinkListBox.Items.Add(listBoxItem);
                                 LinkDocumentNumber.Clear();
                             }
-                            MessageBox.Show("Could not find an existing order from " + documentNumber + ".");
+                            else
+                            {
+                                MessageBox.Show("Could not find an existing order from " + documentNumber + ".");
+                            }
                         }
                         break;
                     default:
@@ -162,7 +174,7 @@ namespace NatoliOrderInterface
             string selectedItem = "";
             try
             {
-                selectedItem = LinkListBox.SelectedItem.ToString();
+                selectedItem = ((ListBoxItem)LinkListBox.SelectedItem).Content.ToString();
                 LinkListBox.Items.Remove(LinkListBox.SelectedItem);
             }
             catch (Exception ex)
@@ -187,8 +199,9 @@ namespace NatoliOrderInterface
             string note = "";
             try
             {
-                foreach (string s in LinkListBox.Items.OfType<string>())
+                foreach (ListBoxItem listBoxItem in LinkListBox.Items.OfType<ListBoxItem>())
                 {
+                    string s = listBoxItem.Content.ToString();
                     if (s.Contains("-"))
                     {
                         quoteNumbers += s + ",";
