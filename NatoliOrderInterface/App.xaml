@@ -7199,7 +7199,7 @@
             <Border x:Name="PART_ContentHost" Focusable="True"/>
         </ControlTemplate>
         <Style x:Key="ComboBoxAlignsLeft" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource Tertiary.MediumDark}" />
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -7294,7 +7294,7 @@
             </Setter>
         </Style>
         <Style x:Key="ComboBoxAlignsCenter" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource Tertiary.MediumDark}" />
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
