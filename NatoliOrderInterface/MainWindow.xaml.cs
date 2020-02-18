@@ -37,6 +37,7 @@ namespace NatoliOrderInterface
         private bool _panelLoading;
         private string _panelMainMessage = "Main Loading Message";
         private string _panelSubMessage = "Sub Loading Message";
+        public bool isDebugMode = false;
 
 
         const string QUOTE_PATH = @"\\nsql03\data1\Quotes\";
@@ -167,7 +168,6 @@ namespace NatoliOrderInterface
         {
             try
             {
-                bool isDebugMode = false;
 #if DEBUG
                 isDebugMode = true;
 #endif
@@ -210,18 +210,20 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
-#if DEBUG
-                if (User.EmployeeCode == "E4754")
+
+                if (isDebugMode)
                 {
-                    CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow();
-                    customerNoteWindow.Show();
+                    if (User.EmployeeCode == "E4754")
+                    {
+                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
+                        customerNoteWindow.Show();
+                    }
+                    else if (User.EmployeeCode == "E4408")
+                    {
+                        //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+                        //notificationManagementWindow.Show();
+                    }
                 }
-                else if (User.EmployeeCode == "E4408")
-                {
-                    //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
-                    //notificationManagementWindow.Show();
-                }
-#endif
             }
             catch (Exception ex)
             {
@@ -2720,23 +2722,33 @@ namespace NatoliOrderInterface
         }
         private void Subscriptions_SubmenuClosed(object sender, RoutedEventArgs e)
         {
-            MenuItem topMenu = (MenuItem)sender;
-            using var nat02context = new NAT02Context();
-            string subs = "";
-            foreach (MenuItem item in topMenu.Items)
+            try
             {
-                if (item.IsChecked) { subs += item.Header.ToString() + ','; }
+                MenuItem topMenu = (MenuItem)sender;
+                using var nat02context = new NAT02Context();
+                string subs = "";
+                foreach (MenuItem item in topMenu.Items)
+                {
+                    if (item.IsChecked) { subs += item.Header.ToString() + ','; }
+                }
+                if (subs.Length > 0)
+                {
+                    subs = subs.Substring(0, subs.Length - 1);
+                }
+                EoiSettings sub = nat02context.EoiSettings.First(u => u.EmployeeId == User.EmployeeCode);
+                if (sub.Subscribed != subs)
+                {
+                    sub.Subscribed = subs;
+                    nat02context.Update(sub);
+                    nat02context.SaveChanges();
+                    MainRefresh();
+                }
+                nat02context.Dispose();
             }
-            if (subs.Length > 0) { subs = subs.Substring(0, subs.Length - 1); }
-            EoiSettings sub = nat02context.EoiSettings.Where(u => u.EmployeeId == User.EmployeeCode).First();
-            sub.Subscribed = subs;
-            nat02context.Update(sub);
-            nat02context.SaveChanges();
-            MainRefresh();
-            //if (!(subscribedOnOpen.Cast<string>().ToList().SequenceEqual(Properties.Settings.Default.Subscribed.Cast<string>().ToList())))
-            //{
-            //    ExecuteQueries();
-            //}
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("MainWindow.xaml.cs => Subscriptions_SubmenuClosed()", ex.Message, User);
+            }
         }
         #endregion
         #endregion

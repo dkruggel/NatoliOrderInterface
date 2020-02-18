@@ -7158,8 +7158,8 @@
         <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Primary.MediumLight.Color}"/>
         <SolidColorBrush x:Key="Focused.Border" Color="{StaticResource Primary.Medium.Color}"/>
         <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#e9e9e9"/>
-        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#d8bda0"/>
-        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#43717c" />
+        <SolidColorBrush x:Key="DisabledBorderBrush" Color="#808080"/>
+        <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#707070" />
         <SolidColorBrush x:Key="OptionMark.Static.Border" Color="#FF707070"/>
         <SolidColorBrush x:Key="OptionMark.MouseOver.Background" Color="#FFF3F9FF"/>
         <SolidColorBrush x:Key="OptionMark.MouseOver.Glyph" Color="#FF212121"/>
@@ -7434,7 +7434,7 @@
                                 CornerRadius="0"
                                 Background="Transparent"
                                 BorderBrush="Transparent" >
-                            <TextBlock TextAlignment="Center">
+                            <TextBlock Name="TextBlock" TextAlignment="Center">
                                     <ContentPresenter />
                             </TextBlock>
                         </Border>
@@ -7450,6 +7450,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <!-- Combo Box Toggle Arrow-->
         <Style x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
             <Setter Property="Template">
                 <Setter.Value>
@@ -7467,7 +7469,7 @@
                                     BorderThickness="0,0,0,1" />
                             <Path x:Name="Arrow"
                                    Grid.Column="1"    
-                                   Fill="{StaticResource Secondary.MediumDark}"
+                                   Fill="{TemplateBinding Foreground}"
                                    Stroke="Gray"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
@@ -7489,6 +7491,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
             <Border x:Name="PART_ContentHost" Focusable="True"/>
         </ControlTemplate>
@@ -7506,12 +7509,13 @@
             <Setter Property="Margin" Value="0,4,0,0"/>
             <Setter Property="IsEditable" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton Name="ToggleButton"
-                                          BorderBrush="{StaticResource Primary.Dark}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
                                           Background="Transparent"
                                           Foreground="{TemplateBinding Foreground}"
                                           Style="{StaticResource ComboBoxToggleButton}"
@@ -7533,7 +7537,7 @@
                                     Template="{StaticResource ComboBoxTextBox}"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource Secondary.MediumDark}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Margin="0"
                                     Focusable="True"                               
                                     Visibility="Hidden"
@@ -7577,6 +7581,10 @@
                                 <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                                 <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -7596,12 +7604,13 @@
             <Setter Property="Margin" Value="0,4,0,0"/>
             <Setter Property="IsEditable" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
                             <ToggleButton Name="ToggleButton"
-                                          BorderBrush="{StaticResource Primary.Dark}"
+                                          BorderBrush="{TemplateBinding BorderBrush}"
                                           Background="Transparent"
                                           Foreground="{TemplateBinding Foreground}"
                                           Style="{StaticResource ComboBoxToggleButton}"
@@ -7623,7 +7632,7 @@
                                     Template="{StaticResource ComboBoxTextBox}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource Secondary.MediumDark}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Margin="0"
                                     Focusable="True"                               
                                     Visibility="Hidden"
@@ -7666,6 +7675,10 @@
                                 <Setter Property="IsTabStop" Value="false"/>
                                 <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                                 <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -7938,12 +7951,6 @@
                 </GradientStopCollection>
             </LinearGradientBrush.GradientStops>
         </LinearGradientBrush>
-
-
-        
-
-
-
         <!-- List Box -->
         <Style x:Key="ListBox" TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels" Value="true" />

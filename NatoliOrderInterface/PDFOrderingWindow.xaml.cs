@@ -121,8 +121,8 @@ namespace NatoliOrderInterface
                 ButtonGrid.Children.Clear();
                 ButtonGrid.ColumnDefinitions.Clear();
                 ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
-                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
+                ButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(120) });
                 Button signAndMoveButton = new Button { Name = "SignAndMove", Content = "Sign and Move", VerticalAlignment = VerticalAlignment.Center, MinHeight = 24, Style = (System.Windows.Style)Application.Current.Resources["Button"] };
                 Grid.SetColumn(signAndMoveButton, 0);
                 signAndMoveButton.Click += SignAndMove_Click;

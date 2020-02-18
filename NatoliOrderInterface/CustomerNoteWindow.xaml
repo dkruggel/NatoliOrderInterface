@@ -8,6 +8,7 @@
         Title="CustomerNoteWindow" Height="450" Width="800" Background="{StaticResource BackgroundBrush}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Window.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="myIsFocusedOrIsNotEmpty"/>
+        <local:ConvertCustomerNumberToCustomerName x:Key="myConvertCustomerNumberToCustomerName"/>
     </Window.Resources>
     <DockPanel Margin="10,6">
         <DockPanel DockPanel.Dock="Top">
@@ -38,6 +39,14 @@
                                 <ComboBoxItem Content="Quote"/>
                                 <ComboBoxItem Content="Order"/>
                             </ComboBox>
+                            <TextBlock Margin="4,8,0,0" Grid.Column="0" Grid.Row="2" Text="Ex: '184212-2' or '267245'" Foreground="{StaticResource DisabledForegroundBrush}" FontSize="10" >
+                                <TextBlock.Visibility>
+                                    <MultiBinding Converter="{StaticResource myIsFocusedOrIsNotEmpty}" ConverterParameter="t2c_f2v">
+                                        <Binding ElementName="LinkDocumentNumber" Path="IsFocused"/>
+                                        <Binding ElementName="LinkDocumentNumber" Path="Text"/>
+                                    </MultiBinding>
+                                </TextBlock.Visibility>
+                            </TextBlock>
                             <TextBox x:Name="LinkDocumentNumber" Grid.Column="0" Grid.Row="2" Style="{StaticResource TextBox}"/>
                             <Image x:Name="LinkAdd" Grid.Column="1" Grid.Row="2" Source="\greenplusadditionicon.png" Width="24" Margin="4" Cursor="Hand" MouseUp="LinkAdd_MouseUp"/>
                             <Image x:Name="LinkRemove" Grid.Column="2" Grid.Row="2" Source="\redxdeleteicon.png" Width="24" Margin="4"  Cursor="Hand" MouseUp="LinkRemove_MouseUp"/>
@@ -53,7 +62,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition MinWidth="410"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -71,8 +80,15 @@
                             <TextBox x:Name="CustomerNumber" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer Name:" VerticalAlignment="Center"></TextBlock>
-                        <Grid Grid.Column="4" Grid.Row="1" DockPanel.Dock="Left" Width="100" HorizontalAlignment="Left">
-                            <TextBox x:Name="CustomerName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                        <Grid Grid.Column="4" Grid.Row="1" DockPanel.Dock="Left" HorizontalAlignment="Stretch">
+                            <TextBox x:Name="CustomerName" Style="{StaticResource TextBox}" Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="CustomerNumber" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                         <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
@@ -80,7 +96,14 @@
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="3" HorizontalAlignment="Stretch">
-                            <TextBox x:Name="ShipToName" Style="{StaticResource TextBox}"  Margin="6,0"></TextBox>
+                            <TextBox x:Name="ShipToName" Style="{StaticResource TextBox}"  Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="ShipToNumber" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                         <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch">
@@ -88,7 +111,14 @@
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="5" HorizontalAlignment="Stretch">
-                            <TextBox x:Name="EndUserName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="EndUserName" Style="{StaticResource TextBox}" Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="EndUserNumber" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                     </Grid>
                 </Border>
@@ -115,7 +145,6 @@
                             <Binding ElementName="CommentTextBox" Path="Text"/>
                         </MultiBinding>
                     </TextBlock.Visibility>
-                            
                 </TextBlock>
                 <TextBox x:Name="CommentTextBox" Style="{StaticResource TextBox}" BorderThickness="1" Height="200" HorizontalAlignment="Stretch" VerticalContentAlignment="Top" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto" FontWeight="Normal"/>
             </Grid>
@@ -128,6 +157,5 @@
             <Button x:Name="OKButton" Grid.Column="0" HorizontalAlignment="Center" Content="OK" Style="{StaticResource Button}" MinWidth="80" MinHeight="24" Click="OKButton_Click"/>
             <Button x:Name="CancelButton" Grid.Column="1" HorizontalAlignment="Center" Content="Cancel" Style="{StaticResource Button}" MinWidth="80" MinHeight="24" Click="CancelButton_Click"/>
         </Grid>
-        
     </DockPanel>
 </Window>
