@@ -37,6 +37,7 @@ namespace NatoliOrderInterface
         private bool _panelLoading;
         private string _panelMainMessage = "Main Loading Message";
         private string _panelSubMessage = "Sub Loading Message";
+        public bool isDebugMode = false;
 
 
         const string QUOTE_PATH = @"\\nsql03\data1\Quotes\";
@@ -167,7 +168,6 @@ namespace NatoliOrderInterface
         {
             try
             {
-                bool isDebugMode = false;
 #if DEBUG
                 isDebugMode = true;
 #endif
@@ -210,18 +210,20 @@ namespace NatoliOrderInterface
                 // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
-#if DEBUG
-                if (User.EmployeeCode == "E4754")
+
+                if (isDebugMode)
                 {
-                    CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow();
-                    customerNoteWindow.Show();
+                    if (User.EmployeeCode == "E4754")
+                    {
+                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow();
+                        customerNoteWindow.Show();
+                    }
+                    else if (User.EmployeeCode == "E4408")
+                    {
+                        //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
+                        //notificationManagementWindow.Show();
+                    }
                 }
-                else if (User.EmployeeCode == "E4408")
-                {
-                    //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
-                    //notificationManagementWindow.Show();
-                }
-#endif
             }
             catch (Exception ex)
             {

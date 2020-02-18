@@ -8,6 +8,7 @@
         Title="CustomerNoteWindow" Height="450" Width="800" Background="{StaticResource BackgroundBrush}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Window.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="myIsFocusedOrIsNotEmpty"/>
+        <local:ConvertCustomerNumberToCustomerName x:Key="myConvertCustomerNumberToCustomerName"/>
     </Window.Resources>
     <DockPanel Margin="10,6">
         <DockPanel DockPanel.Dock="Top">
@@ -53,7 +54,7 @@
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="20"/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition MinWidth="410"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -71,8 +72,15 @@
                             <TextBox x:Name="CustomerNumber" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource NormalTextBlock}" Text="Customer Name:" VerticalAlignment="Center"></TextBlock>
-                        <Grid Grid.Column="4" Grid.Row="1" DockPanel.Dock="Left" Width="100" HorizontalAlignment="Left">
-                            <TextBox x:Name="CustomerName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                        <Grid Grid.Column="4" Grid.Row="1" DockPanel.Dock="Left" HorizontalAlignment="Stretch">
+                            <TextBox x:Name="CustomerName" Style="{StaticResource TextBox}" Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="CustomerNumber" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                         <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch">
@@ -80,7 +88,14 @@
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource NormalTextBlock}" Text="Ship To Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="3" HorizontalAlignment="Stretch">
-                            <TextBox x:Name="ShipToName" Style="{StaticResource TextBox}"  Margin="6,0"></TextBox>
+                            <TextBox x:Name="ShipToName" Style="{StaticResource TextBox}"  Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="ShipToNumber" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                         <TextBlock Grid.Column="0" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User No:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch">
@@ -88,7 +103,14 @@
                         </Grid>
                         <TextBlock Grid.Column="3" Grid.Row="5" Style="{StaticResource NormalTextBlock}" Text="End User Name:" VerticalAlignment="Center"></TextBlock>
                         <Grid Grid.Column="4" Grid.Row="5" HorizontalAlignment="Stretch">
-                            <TextBox x:Name="EndUserName" Style="{StaticResource TextBox}" Margin="6,0"></TextBox>
+                            <TextBox x:Name="EndUserName" Style="{StaticResource TextBox}" Margin="6,0">
+                                <TextBox.Text>
+                                    <Binding ElementName="EndUserName" Path="Text" 
+                                             Converter="{StaticResource myConvertCustomerNumberToCustomerName}"
+                                             UpdateSourceTrigger="LostFocus">
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </Grid>
                     </Grid>
                 </Border>
