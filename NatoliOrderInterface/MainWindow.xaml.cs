@@ -2757,10 +2757,6 @@ namespace NatoliOrderInterface
                     MainRefresh();
                 }
                 nat02context.Dispose();
-                //if (!(subscribedOnOpen.Cast<string>().ToList().SequenceEqual(Properties.Settings.Default.Subscribed.Cast<string>().ToList())))
-                //{
-                //    ExecuteQueries();
-                //}
             }
             catch (Exception ex)
             {
