@@ -2735,23 +2735,37 @@ namespace NatoliOrderInterface
         }
         private void Subscriptions_SubmenuClosed(object sender, RoutedEventArgs e)
         {
-            MenuItem topMenu = (MenuItem)sender;
-            using var nat02context = new NAT02Context();
-            string subs = "";
-            foreach (MenuItem item in topMenu.Items)
+            try
             {
-                if (item.IsChecked) { subs += item.Header.ToString() + ','; }
+                MenuItem topMenu = (MenuItem)sender;
+                using var nat02context = new NAT02Context();
+                string subs = "";
+                foreach (MenuItem item in topMenu.Items)
+                {
+                    if (item.IsChecked) { subs += item.Header.ToString() + ','; }
+                }
+                if (subs.Length > 0)
+                {
+                    subs = subs.Substring(0, subs.Length - 1);
+                }
+                EoiSettings sub = nat02context.EoiSettings.First(u => u.EmployeeId == User.EmployeeCode);
+                if (sub.Subscribed != subs)
+                {
+                    sub.Subscribed = subs;
+                    nat02context.Update(sub);
+                    nat02context.SaveChanges();
+                    MainRefresh();
+                }
+                nat02context.Dispose();
+                //if (!(subscribedOnOpen.Cast<string>().ToList().SequenceEqual(Properties.Settings.Default.Subscribed.Cast<string>().ToList())))
+                //{
+                //    ExecuteQueries();
+                //}
             }
-            if (subs.Length > 0) { subs = subs.Substring(0, subs.Length - 1); }
-            EoiSettings sub = nat02context.EoiSettings.Where(u => u.EmployeeId == User.EmployeeCode).First();
-            sub.Subscribed = subs;
-            nat02context.Update(sub);
-            nat02context.SaveChanges();
-            MainRefresh();
-            //if (!(subscribedOnOpen.Cast<string>().ToList().SequenceEqual(Properties.Settings.Default.Subscribed.Cast<string>().ToList())))
-            //{
-            //    ExecuteQueries();
-            //}
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("MainWindow.xaml.cs => Subscriptions_SubmenuClosed()", ex.Message, User);
+            }
         }
         #endregion
         #endregion
