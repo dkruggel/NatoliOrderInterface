@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Notifications Management" Height="400" Width="800" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+        Title="Notifications Management" Height="400" Width="800" WindowStartupLocation="CenterScreen" UseLayoutRounding="True" Closing="Window_Closing">
     <Window.Resources>
         <!-- Notification Grids -->
         <Style x:Key="ActiveNotificationGrid" TargetType="{x:Type ContentControl}">

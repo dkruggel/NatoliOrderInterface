@@ -329,54 +329,7 @@ namespace NatoliOrderInterface
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //Dispatcher.Invoke(() =>
-            //{
-            // Check for new notifications
-            //using var _nat02context = new NAT02Context();
-            //try
-            //{
-            //    int active = _nat02context.EoiNotificationsActive.Count();
-            //    if (active > 0)
-            //    {
-            //        // (item as MenuItem).Background = new SolidColorBrush(Colors.PaleVioletRed);
-            //        NotificationDot = 0.0;
-
-            //        var bell = (App.Current.Resources["Bell_With_LayersDrawingImage"] as DrawingImage).Drawing as DrawingGroup;
-
-            //        //(bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_Dot") as DrawingGroup).Opacity = 1;
-            //        //if (active < 11)
-            //        //    (bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_" + active) as DrawingGroup).Opacity = 1;
-            //        //if (active > 10)
-            //        //    (bell.Children.Single(c => c.GetValue(NameProperty) == "Notification_11") as DrawingGroup).Opacity = 1;
-
-            //        int i = 1;
-            //        foreach (DrawingGroup child in bell.Children.OfType<DrawingGroup>())
-            //        {
-            //            if (i == active)
-            //            {
-            //                child.Opacity = 1;
-            //                break;
-            //            }
-            //            else if (active > 10 && i == 11)
-            //            {
-            //                child.Opacity = 1;
-            //                break;
-            //            }
-            //            i++;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        NotificationDot = 0;
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-
-            //}
-            //_nat02context.Dispose();
-            //}
-            //);
+            
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
@@ -384,6 +337,8 @@ namespace NatoliOrderInterface
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
+
+            SetNotificationPicture();
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -392,6 +347,8 @@ namespace NatoliOrderInterface
         private void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("QuotesNotConverted");
+
+            SetNotificationPicture();
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -406,7 +363,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("FoldersTimer_Elapsed()", ex.Message, User);
             }
         }
-
         private void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("NatoliOrderList");
@@ -940,7 +896,7 @@ namespace NatoliOrderInterface
                 //Header = "Notifications",
                 //Height = MainMenu.Height
                 Name = "notificationsMenu",
-                Style = FindResource("NotificationMenuStyle") as Style
+                Style = App.Current.Resources["NotificationMenuStyle"] as Style
             };
             notificationsMenu.Click += NotificationsMenu_Click;
 
@@ -1000,7 +956,38 @@ namespace NatoliOrderInterface
             //    IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
             //}
         }
+        public void SetNotificationPicture()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                // Check for new notifications
+                using var _nat02context = new NAT02Context();
+                try
+                {
+                    int active = _nat02context.EoiNotificationsActive.Count();
+                    if (active > 0)
+                    {
+                        MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
+                        var bell = App.Current.Resources["Bell_With_LayersDrawingImage_" + (active < 11 ? active : 11).ToString()] as DrawingImage;
+                        var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
+                        image.Source = bell as ImageSource;
+                    }
+                    else
+                    {
+                        MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
+                        var bell = App.Current.Resources["Bell_With_LayersDrawingImage"] as DrawingImage;
+                        var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
+                        image.Source = bell as ImageSource;
+                    }
+                }
+                catch (Exception ex)
+                {
 
+                }
+                _nat02context.Dispose();
+            }
+            );
+        }
         private void PrintDrawings_Click(object sender, RoutedEventArgs e)
         {
             //if (User.EmployeeCode == "E4408")

@@ -37,8 +37,8 @@ namespace NatoliOrderInterface
         private void FillNotifications()
         {
             using var _ = new NAT02Context();
-            List<EoiNotificationsActive> active = _.EoiNotificationsActive.OrderBy(a => a.Timestamp).ToList();
-            List<EoiNotificationsViewed> archived = _.EoiNotificationsViewed.OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsActive> active = _.EoiNotificationsActive.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsViewed> viewed = _.EoiNotificationsViewed.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
 
             List<(int, string, string, string, bool, string)> notifications = new List<(int, string, string, string, bool, string)>();
 
@@ -52,13 +52,13 @@ namespace NatoliOrderInterface
                 __.Dispose();
                 ___.Dispose();
             }
-            foreach (EoiNotificationsViewed a in archived)
+            foreach (EoiNotificationsViewed v in viewed)
             {
                 using var __ = new NAT01Context();
                 using var ___ = new NECContext();
-                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
+                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
                 string custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname.Trim();
-                notifications.Add((a.NotificationId, a.Number, custName, a.Message, false, a.Type));
+                notifications.Add((v.NotificationId, v.Number, custName, v.Message, false, v.Type));
                 __.Dispose();
                 ___.Dispose();
             }
@@ -282,6 +282,34 @@ namespace NatoliOrderInterface
             _context.Dispose();
             _nat01context.Dispose();
             Cursor = Cursors.Arrow;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            using var _ = new NAT02Context();
+            List<EoiNotificationsActive> active = _.EoiNotificationsActive.Where(n => n.User == user.DomainName).ToList();
+
+            foreach (EoiNotificationsActive a in active)
+            {
+                EoiNotificationsViewed viewed = new EoiNotificationsViewed()
+                {
+                    NotificationId = a.Id,
+                    Type = a.Type,
+                    Number = a.Number,
+                    Message = a.Message,
+                    User = a.User,
+                    Timestamp = DateTime.Now
+                };
+                _.EoiNotificationsViewed.Add(viewed);
+
+                _.EoiNotificationsActive.Remove(a);
+
+                _.SaveChanges();
+            }
+
+            _.Dispose();
+
+            parent.SetNotificationPicture();
         }
     }
 }
