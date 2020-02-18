@@ -153,6 +153,7 @@
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="28"/>
@@ -186,6 +187,25 @@
                                             </Style>
                                         </Image.Style>
                                     </Image>
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
                                 </StackPanel>
                             </Grid>
                             <Grid.Triggers>
@@ -193,6 +213,9 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
@@ -212,6 +235,9 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                             </ObjectAnimationUsingKeyFrames>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">

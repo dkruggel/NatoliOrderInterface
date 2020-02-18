@@ -44,13 +44,15 @@ namespace NatoliOrderInterface
             OtherLocationsComboBox.Items.Add("Production Management");
             OtherLocationsComboBox.Items.Add("Shipped");
             documentType = "Quote";
-            documentNumber = this.quote.QuoteNumber.ToString() + '-' + this.quote.QuoteRevNo.ToString();
+            documentNumber = this.quote.QuoteNumber.ToString();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             // Initiate an instance of the context
             using var _ = new NAT02Context();
+
+            int ret = 0;
 
             try
             {
@@ -62,10 +64,13 @@ namespace NatoliOrderInterface
                     trackedDocument.Type = documentType; // Quote or Order
                     trackedDocument.Number = documentNumber; // Quote number or Order number
                     trackedDocument.MovementId = 3; // Type of movement to notify for
-                    trackedDocument.User = user.GetUserName(); // User requesting notification
+                    trackedDocument.User = user.DomainName; // User requesting notification
 
                     // Execute the DML statement
                     _.EoiTrackedDocuments.Add(trackedDocument);
+                    
+                    // Save the changes
+                    ret = _.SaveChanges();
                 }
 
                 if (ShippedCheckBox.IsChecked.Value)
@@ -74,18 +79,22 @@ namespace NatoliOrderInterface
                     trackedDocument.Type = documentType; // Quote or Order
                     trackedDocument.Number = documentNumber; // Quote number and rev or Order number
                     trackedDocument.MovementId = 5; // Type of movement to notify for
-                    trackedDocument.User = user.GetUserName(); // User requesting notification
+                    trackedDocument.User = user.DomainName; // User requesting notification
 
                     // Execute the DML statement
                     _.EoiTrackedDocuments.Add(trackedDocument);
-                }
 
-                // Save the changes
-                int ret = _.SaveChanges();
+                    // Save the changes
+                    ret = _.SaveChanges();
+                }
 
                 if (ret == 1)
                 {
                     MessageBox.Show("Document will now be tracked.");
+                }
+                else if (ret == 0)
+                {
+                    
                 }
                 else
                 {
@@ -101,6 +110,8 @@ namespace NatoliOrderInterface
                 // Dispose of the context object
                 _.Dispose();
             }
+
+            Close();
         }
     }
 }

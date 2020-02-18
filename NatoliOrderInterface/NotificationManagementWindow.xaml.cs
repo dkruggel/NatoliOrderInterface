@@ -36,6 +36,8 @@ namespace NatoliOrderInterface
 
         private void FillNotifications()
         {
+            NM_DockPanel.Children.Clear();
+
             using var _ = new NAT02Context();
             List<EoiNotificationsActive> active = _.EoiNotificationsActive.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
             List<EoiNotificationsViewed> viewed = _.EoiNotificationsViewed.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
@@ -180,7 +182,7 @@ namespace NatoliOrderInterface
 
         private void ArchiveNotification_Click(object sender, RoutedEventArgs e)
         {
-            string orderNumber = (((sender as Image).Parent as Grid).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+            string orderNumber = (((sender as Image).Parent as StackPanel).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
             using var _ = new NAT02Context();
 
             if (_.EoiNotificationsActive.Count(n => n.Number == orderNumber) > 0)
@@ -218,7 +220,10 @@ namespace NatoliOrderInterface
                 _.EoiNotificationsArchived.Add(archived);
             }
 
+            _.SaveChanges();
             _.Dispose();
+
+            FillNotifications();
         }
 
         private void OpenOrder_Click(object sender, RoutedEventArgs e)
@@ -300,7 +305,10 @@ namespace NatoliOrderInterface
                     User = a.User,
                     Timestamp = DateTime.Now
                 };
+
                 _.EoiNotificationsViewed.Add(viewed);
+
+                _.SaveChanges();
 
                 _.EoiNotificationsActive.Remove(a);
 

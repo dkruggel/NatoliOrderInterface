@@ -283,7 +283,7 @@ namespace NatoliOrderInterface
             try
             {
                 User = new User(Environment.UserName);
-                // User = new User("pturner");
+                // User = new User("jwillis");
                 // User = new User("billt");
             }
             catch (Exception ex)
