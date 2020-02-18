@@ -111,6 +111,7 @@ namespace NatoliOrderInterface
         {
             using var _nat01Context = new NAT01Context();
             string documentNumber = "";
+            bool isQuoteType = false;
             try
             {
                 documentNumber = LinkDocumentNumber.Text.Trim();
@@ -118,6 +119,7 @@ namespace NatoliOrderInterface
                 switch (((ComboBoxItem)LinkType.SelectedItem).Content.ToString())
                 {
                     case "Quote":
+                        isQuoteType = true;
                         if (documentNumber.Contains("-"))
                         {
                             string[] quote = documentNumber.Split('-');
@@ -129,6 +131,7 @@ namespace NatoliOrderInterface
                                     LinkDocumentNumber.Clear();
                                 }
                             }
+                            MessageBox.Show("Could not find an existing quote from " + documentNumber + ".");
                         }
                         break;
                     case "Order":
@@ -139,6 +142,7 @@ namespace NatoliOrderInterface
                                 LinkListBox.Items.Add(documentNumber);
                                 LinkDocumentNumber.Clear();
                             }
+                            MessageBox.Show("Could not find an existing order from " + documentNumber + ".");
                         }
                         break;
                     default:
@@ -148,6 +152,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => LinkAdd_MouseUp() => Document Number: '" + documentNumber + "'", ex.Message, user);
+                MessageBox.Show("Error converting " + documentNumber + " to " + (isQuoteType ? "a QuoteNumber-RevNumber." : "an Order Number."));
             }
             _nat01Context.Dispose();
         }
