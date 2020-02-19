@@ -17,14 +17,14 @@ using System.Linq;
 namespace NatoliOrderInterface
 {
     /// <summary>
-    /// Interaction logic for CustomerNoteWindow.xaml
+    /// Window to create or view Customer Notes.
     /// </summary>
     public partial class CustomerNoteWindow : Window
     {
         private User user;
         private int ID = 0;
         /// <summary>
-        /// Open Existing Note
+        /// Open existing Customer Note.
         /// </summary>
         /// <param name="ID"></param>
         /// <param name="user"></param>
@@ -96,22 +96,22 @@ namespace NatoliOrderInterface
             _nat02Context.Dispose();
         }
         /// <summary>
-        /// Create New Customer Note Window. Orders use OrderNo without the '00's and leaves revision number as null.
+        /// Create new Customer Note. Prefilled with quote information and prelinked to that quote.
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="documentNo"></param>
+        /// <param name="quoteNo"></param>
         /// <param name="quoteRevNo"></param>
-        public CustomerNoteWindow(User user, int? documentNo = null, short? quoteRevNo = null)
+        public CustomerNoteWindow(User user, int quoteNo, short quoteRevNo)
         {
             this.user = user;
             InitializeComponent();
             try
             {
                 using var _nat01Context = new NAT01Context();
-                if (documentNo != null && quoteRevNo != null)
+                if (quoteNo != null && quoteRevNo != null)
                 {
-                    Quote quote = new Quote(Convert.ToInt32(documentNo), Convert.ToInt16(quoteRevNo));
-                    LinkListBox.Items.Add(documentNo.ToString() + "-" + quoteRevNo.ToString());
+                    Quote quote = new Quote(Convert.ToInt32(quoteNo), Convert.ToInt16(quoteRevNo));
+                    LinkListBox.Items.Add(quoteNo.ToString() + "-" + quoteRevNo.ToString());
                     CustomerNumber.Text = quote.CustomerNo.Trim();
                     CustomerName.Text = quote.BillToName.Trim();
                     ShipToNumber.Text = quote.ShipToAccountNo.Trim();
@@ -119,10 +119,27 @@ namespace NatoliOrderInterface
                     EndUserNumber.Text = quote.UserAcctNo.Trim();
                     quote.Dispose();
                 }
-                else if (documentNo != null)
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => DocumentNo: '" + quoteNo ?? "null" + "' QuoteRevNumber: '" + quoteRevNo ?? "null" + "'", ex.Message, user);
+            }
+        }
+        /// <summary>
+        /// Create New Customer Note. Prefilled with order information and prelinked to that order.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="orderNo"></param>
+        public CustomerNoteWindow(User user, int orderNo)
+        {
+            this.user = user;
+            InitializeComponent();
+            try
+            {
+                if (orderNo != null)
                 {
-                    WorkOrder workOrder = new WorkOrder(Convert.ToInt32(documentNo), this);
-                    LinkListBox.Items.Add(documentNo.ToString());
+                    WorkOrder workOrder = new WorkOrder(Convert.ToInt32(orderNo), this);
+                    LinkListBox.Items.Add(orderNo.ToString());
                     CustomerNumber.Text = workOrder.CustomerNumber.Trim();
                     CustomerName.Text = workOrder.SoldToCustomerName.Trim();
                     ShipToNumber.Text = workOrder.AccountNumber.Trim();
@@ -130,13 +147,28 @@ namespace NatoliOrderInterface
                     EndUserNumber.Text = workOrder.UserNumber.Trim();
                     EndUserNumber.Text = workOrder.EndUserName.Trim();
                 }
+
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => DocumentNo: '" + documentNo ?? "null" + "' QuoteRevNumber: '" + quoteRevNo ?? "null" + "'", ex.Message, user);
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => DocumentNo: '" + orderNo ?? "null" + "'", ex.Message, user);
             }
         }
+        /// <summary>
+        /// Create New Customer Note.
+        /// </summary>
+        /// <param name="user"></param>
+        public CustomerNoteWindow(User user)
+        {
+            this.user = user;
+            InitializeComponent();
+        }
 
+        /// <summary>
+        /// Adds document from the LinkListBox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LinkAdd_MouseUp(object sender, MouseButtonEventArgs e)
         {
             using var _nat01Context = new NAT01Context();
@@ -196,7 +228,11 @@ namespace NatoliOrderInterface
             }
             _nat01Context.Dispose();
         }
-
+        /// <summary>
+        /// Removes document from the LinkListBox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LinkRemove_MouseUp(object sender, MouseButtonEventArgs e)
         {
             string selectedItem = "";
@@ -210,7 +246,11 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => LinkRemove_MouseUp() => Document Number: '" + selectedItem + "'", ex.Message, user);
             }
         }
-
+        /// <summary>
+        /// Submits the data to '[EOI_CustomerNotes]'.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             using var _nat02Context = new NAT02Context();
@@ -299,7 +339,11 @@ namespace NatoliOrderInterface
             }
             _nat02Context.Dispose();
         }
-
+        /// <summary>
+        /// Closes the window without submitting form.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -311,7 +355,11 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => CancelButton_Click()", ex.Message, user);
             }
         }
-
+        /// <summary>
+        /// Enables User to update the notification date by enabling the 'OK' button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NotificationDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (EnteredBy.Text.ToString().Length > 0 && user.DomainName == EnteredBy.Text.Split(": ")[1])
