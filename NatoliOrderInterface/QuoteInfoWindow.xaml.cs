@@ -274,6 +274,10 @@ namespace NatoliOrderInterface
                     MachineDescription.Text = string.IsNullOrEmpty(quoteLineItem.MachineDescription) ? "" : quoteLineItem.MachineDescription.Trim() + " // (" + quoteLineItem.MachineNo + ")";
                     break;
                 }
+                else
+                {
+                    MachineDescription.Text = "";
+                }
             }
             QtyStackPanel.Children.Clear();
             ItemDescriptionStackPanel.Children.Clear();

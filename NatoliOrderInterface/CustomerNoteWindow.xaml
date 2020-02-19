@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="CustomerNoteWindow" Height="450" Width="800" Background="{StaticResource BackgroundBrush}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+        Title="Customer Note" Height="450" Width="800" Background="{StaticResource BackgroundBrush}" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Window.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="myIsFocusedOrIsNotEmpty"/>
         <local:ConvertCustomerNumberToCustomerName x:Key="myConvertCustomerNumberToCustomerName"/>
@@ -13,7 +13,11 @@
     <DockPanel Margin="10,6">
         <DockPanel DockPanel.Dock="Top">
             <Grid>
-                <TextBlock x:Name="EnteredBy" Text="" Style="{DynamicResource NormalTextBlock}"/>
+                <DockPanel>
+                    <TextBlock x:Name="EnteredBy" DockPanel.Dock="Top" Text="" Style="{DynamicResource NormalTextBlock}"/>
+                    <TextBlock x:Name="EnteredDate" DockPanel.Dock="Top" Text="" Style="{DynamicResource NormalTextBlock}"/>
+                </DockPanel>
+                
                 <Border DockPanel.Dock="Top" BorderThickness="0,0,0,1" BorderBrush="{StaticResource Primary.Dark}" Padding="0,0,0,10">
                     <TextBlock Style="{StaticResource BoldTextBlock}" Text="Customer Note" HorizontalAlignment="Center" FontSize="30"></TextBlock>
                 </Border>
@@ -156,7 +160,7 @@
         <Grid DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
             <DockPanel>
                 <TextBlock Text="Remind me about this note on:" VerticalAlignment="Center" Style="{DynamicResource NormalTextBlock}"/>
-                <DatePicker x:Name="NotificationDate" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <DatePicker x:Name="NotificationDate" Margin="10,0" HorizontalAlignment="Left" VerticalAlignment="Center" SelectedDateChanged="NotificationDate_SelectedDateChanged"/>
             </DockPanel>
             <Grid HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>

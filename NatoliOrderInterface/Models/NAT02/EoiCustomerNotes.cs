@@ -7,6 +7,7 @@ namespace NatoliOrderInterface.Models
     public partial class EoiCustomerNotes
     {
         public int ID { get; set; }
+        public DateTime Timestamp { get; set; }
         public string User { get; set; }
         public string CustomerNumber { get; set; }
         public string CustomerName { get; set; }

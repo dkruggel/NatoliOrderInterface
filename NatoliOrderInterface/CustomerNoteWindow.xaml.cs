@@ -22,6 +22,7 @@ namespace NatoliOrderInterface
     public partial class CustomerNoteWindow : Window
     {
         private User user;
+        private int ID = 0;
         /// <summary>
         /// Open Existing Note
         /// </summary>
@@ -30,6 +31,7 @@ namespace NatoliOrderInterface
         public CustomerNoteWindow(int ID, User user)
         {
             this.user = user;
+            this.ID = ID;
             InitializeComponent();
             using var _nat02Context = new NAT02Context();
             try
@@ -43,7 +45,8 @@ namespace NatoliOrderInterface
                 if (_nat02Context.EoiCustomerNotes.Any(cn => cn.ID == ID))
                 {
                     EoiCustomerNotes eoiCustomerNote = _nat02Context.EoiCustomerNotes.First(cn => cn.ID == ID);
-                    EnteredBy.Text = "Entered by:" + eoiCustomerNote.User;
+                    EnteredBy.Text = "Entered by: " + eoiCustomerNote.User;
+                    EnteredDate.Text = "Date: " + eoiCustomerNote.Timestamp.ToLocalTime();
                     CustomerNumber.Text = eoiCustomerNote.CustomerNumber ?? "";
                     CustomerName.Text = eoiCustomerNote.CustomerName ?? "";
                     ShipToNumber.Text = eoiCustomerNote.ShipToNumber ?? "";
@@ -52,7 +55,7 @@ namespace NatoliOrderInterface
                     EndUserName.Text = eoiCustomerNote.EndUserName ?? "";
                     CategoryComboBox.Text = eoiCustomerNote.Category;
                     CommentTextBox.Text = eoiCustomerNote.Note;
-                    if (eoiCustomerNote.QuoteNumbers.Length > 0)
+                    if (eoiCustomerNote.QuoteNumbers != null && eoiCustomerNote.QuoteNumbers.Length > 0)
                     {
                         string[] quoteNumbers = eoiCustomerNote.QuoteNumbers.Split(',');
                         foreach (string quoteNumber in quoteNumbers)
@@ -61,7 +64,7 @@ namespace NatoliOrderInterface
                             LinkListBox.Items.Add(listBoxItem);
                         }
                     }
-                    if (eoiCustomerNote.OrderNumbers.Length > 0)
+                    if (eoiCustomerNote.OrderNumbers != null && eoiCustomerNote.OrderNumbers.Length > 0)
                     {
                         string[] orderNumbers = eoiCustomerNote.OrderNumbers.Split(',');
                         foreach (string orderNumber in orderNumbers)
@@ -76,14 +79,14 @@ namespace NatoliOrderInterface
                         NotificationDate.IsEnabled = false;
                     }
                 }
-                CustomerNumber.IsEnabled = false;
-                CustomerName.IsEnabled = false;
-                ShipToNumber.IsEnabled = false;
-                ShipToName.IsEnabled = false;
-                EndUserNumber.IsEnabled = false;
-                EndUserName.IsEnabled = false;
+                CustomerNumber.IsReadOnly = true;
+                CustomerName.IsReadOnly = true;
+                ShipToNumber.IsReadOnly = true;
+                ShipToName.IsReadOnly = true;
+                EndUserNumber.IsReadOnly = true;
+                EndUserName.IsReadOnly = true;
                 CategoryComboBox.IsEnabled = false;
-                CommentTextBox.IsEnabled = false;
+                CommentTextBox.IsReadOnly = true;
                 OKButton.IsEnabled = false;
             }
             catch (Exception ex)
@@ -194,15 +197,15 @@ namespace NatoliOrderInterface
             using var _nat02Context = new NAT02Context();
             string quoteNumbers = "";
             string orderNumbers = "";
-            string userName = "";
-            string customerNumber = "";
-            string customerName = "";
-            string shipToNumber = "";
-            string shipToName = "";
-            string endUserNumber = "";
-            string endUserName = "";
-            string category = "";
-            string note = "";
+            string userName = null;
+            string customerNumber = null;
+            string customerName = null;
+            string shipToNumber = null;
+            string shipToName = null;
+            string endUserNumber = null;
+            string endUserName = null;
+            string category = null;
+            string note = null;
             DateTime? notificationDate = null;
             try
             {
@@ -220,17 +223,20 @@ namespace NatoliOrderInterface
                 }
                 quoteNumbers = quoteNumbers.Trim(',');
                 orderNumbers = orderNumbers.Trim(',');
-                userName = user.DomainName;
-                customerNumber = CustomerNumber.Text;
-                customerName = CustomerName.Text;
-                shipToNumber = ShipToNumber.Text;
-                shipToName = ShipToName.Text;
-                endUserNumber = EndUserNumber.Text;
-                endUserName = EndUserName.Text;
+                quoteNumbers = string.IsNullOrEmpty(quoteNumbers) ? null : quoteNumbers;
+                orderNumbers = string.IsNullOrEmpty(orderNumbers) ? null : orderNumbers;
+                userName = string.IsNullOrEmpty(user.DomainName) ? null : user.DomainName;
+                customerNumber = string.IsNullOrEmpty(CustomerNumber.Text) ? null : CustomerNumber.Text;
+                customerName = string.IsNullOrEmpty(CustomerName.Text) ? null : CustomerName.Text;
+                shipToNumber = string.IsNullOrEmpty(ShipToNumber.Text) ? null : ShipToNumber.Text;
+                shipToName = string.IsNullOrEmpty(ShipToName.Text) ? null : ShipToName.Text;
+                endUserNumber = string.IsNullOrEmpty(EndUserNumber.Text) ? null : EndUserNumber.Text;
+                endUserName = string.IsNullOrEmpty(EndUserName.Text) ? null : EndUserName.Text;
                 category = ((ComboBoxItem)CategoryComboBox.SelectedItem).Content.ToString();
                 note = CommentTextBox.Text;
-                notificationDate = NotificationDate.Text.ToString() == "" ? (DateTime?)null : NotificationDate.DisplayDate;
+                notificationDate = NotificationDate.Text.ToString() == "" ? (DateTime?)null : NotificationDate.SelectedDate;
                 EoiCustomerNotes customerNote = new EoiCustomerNotes {
+                    Timestamp = DateTime.UtcNow,
                     User = userName,
                     CustomerNumber = customerNumber,
                     CustomerName = customerName,
@@ -244,14 +250,32 @@ namespace NatoliOrderInterface
                     OrderNumbers = orderNumbers,
                     NotificationDate = notificationDate,
                 };
-                _nat02Context.EoiCustomerNotes.Add(customerNote);
+                if (ID > 0)
+                {
+                    customerNote.ID = ID;
+                    _nat02Context.EoiCustomerNotes.Update(customerNote);
+                }
+                else
+                {
+                    _nat02Context.EoiCustomerNotes.Add(customerNote);
+                }
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
                 Close();
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName + "' CustomerNumber: '" + customerNumber + "' CustomerName: '" + customerName + "' ShipToNumber: '" + shipToNumber + "' ShipToName: '" + shipToName + "' EndUserNumber: '" + endUserNumber + "' EndUserName: '" + endUserName + "' Category: '" + category + "' Note: '" + note + "' QuoteNumbers: '" + quoteNumbers + "' OrderNumbers: '" + orderNumbers + "' NotificationDate: '" + notificationDate + "'", ex.Message, user);
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName ?? "Null" 
+                    + "' CustomerNumber: '" + customerNumber ?? "Null" 
+                    + "' CustomerName: '" + customerName ?? "Null" 
+                    + "' ShipToNumber: '" + shipToNumber ?? "Null" 
+                    + "' ShipToName: '" + shipToName ?? "Null" 
+                    + "' EndUserNumber: '" + endUserNumber ?? "Null" 
+                    + "' EndUserName: '" + endUserName ?? "Null" 
+                    + "' Category: '" + category + "' Note: '" 
+                    + note + "' QuoteNumbers: '" + quoteNumbers ?? "Null" 
+                    + "' OrderNumbers: '" + orderNumbers ?? "Null" 
+                    + "' NotificationDate: '" + notificationDate ?? "Null" + "'", ex.Message, user);
                 MessageBox.Show(ex.Message);
             }
             _nat02Context.Dispose();
@@ -266,6 +290,18 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => CancelButton_Click()", ex.Message, user);
+            }
+        }
+
+        private void NotificationDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (EnteredBy.Text.ToString().Length > 0 && user.DomainName == EnteredBy.Text.Split(": ")[1])
+            {
+                OKButton.IsEnabled = true;
+            }
+            else
+            {
+                OKButton.IsEnabled = false;
             }
         }
     }
