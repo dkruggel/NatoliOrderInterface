@@ -1192,10 +1192,11 @@ namespace NatoliOrderInterface
         {
             try
             {
+                string projectNumber = _projectNumber ?? "";
+                string revNo = _revNo ?? "";
+                string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                 if (CSRs != null)
                 {
-                    string projectNumber = _projectNumber ?? "";
-                    string revNo = _revNo ?? "";
                     EmailMessage emailMessage = new EmailMessage();
                     foreach (string CSR in CSRs)
                     {
@@ -1225,7 +1226,7 @@ namespace NatoliOrderInterface
                     multipart.Add(body);
 
                     string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
-                    string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
+                    
                     if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
                         CreateZipFile(filesForCustomerDirectory, zipFile);
@@ -1275,7 +1276,7 @@ namespace NatoliOrderInterface
 
                                     "This is an automated email and not monitored by any person(s)."
                                 };
-                                emailClient.Send(message);
+                                
                             }
 
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
@@ -1297,9 +1298,9 @@ namespace NatoliOrderInterface
                             {
                                 var text = "The SMTP server supports UTF-8 in message headers.";
                             }
-                            
+                            emailClient.SendAsync(message);
                             emailClient.Disconnect(true);
-                            File.Delete(zipFile);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -1311,6 +1312,7 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+                File.Delete(zipFile);
             }
             catch (Exception ex)
             {
