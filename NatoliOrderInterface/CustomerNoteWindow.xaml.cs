@@ -96,25 +96,44 @@ namespace NatoliOrderInterface
             _nat02Context.Dispose();
         }
         /// <summary>
-        /// Create New Customer Note Window
+        /// Create New Customer Note Window. Orders use OrderNo without the '00's and leaves revision number as null.
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="quoteNo"></param>
+        /// <param name="documentNo"></param>
         /// <param name="quoteRevNo"></param>
-        public CustomerNoteWindow(User user, int? quoteNo = null, short? quoteRevNo = null)
+        public CustomerNoteWindow(User user, int? documentNo = null, short? quoteRevNo = null)
         {
             this.user = user;
             InitializeComponent();
             try
             {
-                if (quoteNo != null && quoteRevNo != null)
+                using var _nat01Context = new NAT01Context();
+                if (documentNo != null && quoteRevNo != null)
                 {
-                    LinkListBox.Items.Add(quoteNo.ToString() + "-" + quoteRevNo.ToString());
+                    Quote quote = new Quote(Convert.ToInt32(documentNo), Convert.ToInt16(quoteRevNo));
+                    LinkListBox.Items.Add(documentNo.ToString() + "-" + quoteRevNo.ToString());
+                    CustomerNumber.Text = quote.CustomerNo.Trim();
+                    CustomerName.Text = quote.BillToName.Trim();
+                    ShipToNumber.Text = quote.ShipToAccountNo.Trim();
+                    ShipToName.Text = quote.ShiptoName.Trim();
+                    EndUserNumber.Text = quote.UserAcctNo.Trim();
+                    quote.Dispose();
+                }
+                else if (documentNo != null)
+                {
+                    WorkOrder workOrder = new WorkOrder(Convert.ToInt32(documentNo), this);
+                    LinkListBox.Items.Add(documentNo.ToString());
+                    CustomerNumber.Text = workOrder.CustomerNumber.Trim();
+                    CustomerName.Text = workOrder.SoldToCustomerName.Trim();
+                    ShipToNumber.Text = workOrder.AccountNumber.Trim();
+                    ShipToName.Text = workOrder.ShipToCustomerName.Trim();
+                    EndUserNumber.Text = workOrder.UserNumber.Trim();
+                    EndUserNumber.Text = workOrder.EndUserName.Trim();
                 }
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => QuoteNumber: '" + quoteNo ?? "null" + "' QuoteRevNumber: '" + quoteRevNo ?? "null" + "'", ex.Message, user);
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => DocumentNo: '" + documentNo ?? "null" + "' QuoteRevNumber: '" + quoteRevNo ?? "null" + "'", ex.Message, user);
             }
         }
 
