@@ -141,7 +141,7 @@ namespace NatoliOrderInterface
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
         Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> ordersBeingEnteredDict;
         Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> ordersInTheOfficeDict;
-        Dictionary<double, (string customerName, int daysToShip, string background, string foreground, string fontWeight)> ordersEnteredUnscannedDict;
+        Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> ordersEnteredUnscannedDict;
         Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> ordersInEngineeringUnprintedDict;
         Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersReadyToPrintDict;
         Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersPrintedInEngineeringDict;
@@ -282,8 +282,8 @@ namespace NatoliOrderInterface
         {
             try
             {
-                // User = new User(Environment.UserName);
-                User = new User("mbouzitoun");
+                User = new User(Environment.UserName);
+                // User = new User("mbouzitoun");
                 // User = new User("billt");
             }
             catch (Exception ex)
@@ -3622,6 +3622,7 @@ namespace NatoliOrderInterface
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
                     AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Days In", 0, 4, FontWeights.Normal));
                     // if (ordersEnteredUnscannedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
 
                     headerBorder.Child = headerGrid;
@@ -4394,7 +4395,7 @@ namespace NatoliOrderInterface
                 using var _nat02context = new NAT02Context();
                 List<EoiOrdersEnteredAndUnscannedView> eoiOrdersEnteredAndUnscannedView = _nat02context.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
 
-                ordersEnteredUnscannedDict = new Dictionary<double, (string customerName, int daysToShip, string background, string foreground, string fontWeight)>();
+                ordersEnteredUnscannedDict = new Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)>();
 
                 foreach (EoiOrdersEnteredAndUnscannedView order in eoiOrdersEnteredAndUnscannedView)
                 {
@@ -4434,7 +4435,7 @@ namespace NatoliOrderInterface
                     {
                         back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
                     }
-                    ordersEnteredUnscannedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+                    ordersEnteredUnscannedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.NumDaysIn, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
                 }
                 eoiOrdersEnteredAndUnscannedView.Clear();
                 _nat02context.Dispose();
@@ -6977,7 +6978,7 @@ namespace NatoliOrderInterface
             dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesNotConverted").First().Value;
             dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
         }
-        private void OrdersEnteredUnscannedExpanders(Dictionary<double, (string customerName, int daysToShip, string background, string foreground, string fontWeight)> dict)
+        private void OrdersEnteredUnscannedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> dict)
         {
             int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
@@ -8024,7 +8025,7 @@ namespace NatoliOrderInterface
             // expander.Expanded += InTheOfficeExpander_Expanded;
             return expander;
         }
-        private Expander CreateEnteredUnscannedExpander(KeyValuePair<double, (string customerName, int daysToShip, string background, string foreground, string fontWeight)> kvp)
+        private Expander CreateEnteredUnscannedExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> kvp)
         {
             Grid grid = new Grid
             {
@@ -8036,6 +8037,7 @@ namespace NatoliOrderInterface
             AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysIn.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
 
             Expander expander = new Expander()
             {
