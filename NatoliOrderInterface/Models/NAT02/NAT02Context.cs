@@ -305,11 +305,6 @@ namespace NatoliOrderInterface.Models
                     .HasMaxLength(8)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
-
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .HasMaxLength(8)
@@ -339,11 +334,6 @@ namespace NatoliOrderInterface.Models
                     .HasMaxLength(8)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
-
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .HasMaxLength(8)
@@ -372,11 +362,6 @@ namespace NatoliOrderInterface.Models
                     .IsRequired()
                     .HasMaxLength(8)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
 
                 entity.Property(e => e.Type)
                     .IsRequired()

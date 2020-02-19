@@ -2138,7 +2138,9 @@ namespace NatoliOrderInterface
                         file_count = metric ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
                         try
                         {
-                            File.Copy(_file, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
+                            string userName;
+                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
+                            File.Copy(_file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
                         }
                         catch (Exception ex)
                         {

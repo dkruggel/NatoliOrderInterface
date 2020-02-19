@@ -10,6 +10,6 @@ namespace NatoliOrderInterface.Models
         public string Number { get; set; }
         public string Message { get; set; }
         public string User { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime? Timestamp { get; set; }
     }
 }

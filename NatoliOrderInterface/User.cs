@@ -126,7 +126,7 @@ namespace NatoliOrderInterface
             VisiblePanels = settings.Panels.Split(',').ToList();
             if (domainName == "dkruggel") { SignatureLeft = 955; SignatureBottom = 20; }
             else if (domainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
-            else if (domainName == "dsachuck") { SignatureLeft = 958; SignatureBottom = 20; }
+            else if (domainName == "dsachuk") { SignatureLeft = 958; SignatureBottom = 20; }
             else { SignatureLeft = 0; SignatureBottom = 0; }
             if (userName.ContainsAny("David Kruggel", "Tyler Williams", "James Willis", "Tiffany Simonpietri", "Barbara Bohling"))
             {

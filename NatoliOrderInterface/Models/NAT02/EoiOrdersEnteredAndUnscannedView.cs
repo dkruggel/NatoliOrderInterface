@@ -8,6 +8,7 @@ namespace NatoliOrderInterface.Models
         public double OrderNo { get; set; }
         public string CustomerName { get; set; }
         public int? NumDaysToShip { get; set; }
+        public int? NumDaysIn { get; set; }
         public string RushYorN { get; set; }
         public string PaidRushFee { get; set; }
         public string ProcessState { get; set; }

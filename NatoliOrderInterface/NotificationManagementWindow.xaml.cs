@@ -36,9 +36,11 @@ namespace NatoliOrderInterface
 
         private void FillNotifications()
         {
+            NM_DockPanel.Children.Clear();
+
             using var _ = new NAT02Context();
-            List<EoiNotificationsActive> active = _.EoiNotificationsActive.OrderBy(a => a.Timestamp).ToList();
-            List<EoiNotificationsViewed> archived = _.EoiNotificationsViewed.OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsActive> active = _.EoiNotificationsActive.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
+            List<EoiNotificationsViewed> viewed = _.EoiNotificationsViewed.Where(n => n.User == user.DomainName).OrderBy(a => a.Timestamp).ToList();
 
             List<(int, string, string, string, bool, string)> notifications = new List<(int, string, string, string, bool, string)>();
 
@@ -52,13 +54,13 @@ namespace NatoliOrderInterface
                 __.Dispose();
                 ___.Dispose();
             }
-            foreach (EoiNotificationsViewed a in archived)
+            foreach (EoiNotificationsViewed v in viewed)
             {
                 using var __ = new NAT01Context();
                 using var ___ = new NECContext();
-                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
+                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
                 string custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname.Trim();
-                notifications.Add((a.NotificationId, a.Number, custName, a.Message, false, a.Type));
+                notifications.Add((v.NotificationId, v.Number, custName, v.Message, false, v.Type));
                 __.Dispose();
                 ___.Dispose();
             }
@@ -180,7 +182,7 @@ namespace NatoliOrderInterface
 
         private void ArchiveNotification_Click(object sender, RoutedEventArgs e)
         {
-            string orderNumber = (((sender as Image).Parent as Grid).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+            string orderNumber = (((sender as Image).Parent as StackPanel).Parent as Grid).Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
             using var _ = new NAT02Context();
 
             if (_.EoiNotificationsActive.Count(n => n.Number == orderNumber) > 0)
@@ -218,7 +220,10 @@ namespace NatoliOrderInterface
                 _.EoiNotificationsArchived.Add(archived);
             }
 
+            _.SaveChanges();
             _.Dispose();
+
+            FillNotifications();
         }
 
         private void OpenOrder_Click(object sender, RoutedEventArgs e)
@@ -226,7 +231,7 @@ namespace NatoliOrderInterface
             using var _context = new NAT02Context();
             using var _nat01context = new NAT01Context();
             Image image = sender as Image;
-            Grid grid = (image.Parent as Grid).Parent as Grid;
+            Grid grid = (image.Parent as StackPanel).Parent as Grid;
             Cursor = Cursors.AppStarting;
             WorkOrder workOrder = null;
 
@@ -282,6 +287,37 @@ namespace NatoliOrderInterface
             _context.Dispose();
             _nat01context.Dispose();
             Cursor = Cursors.Arrow;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            using var _ = new NAT02Context();
+            List<EoiNotificationsActive> active = _.EoiNotificationsActive.Where(n => n.User == user.DomainName).ToList();
+
+            foreach (EoiNotificationsActive a in active)
+            {
+                EoiNotificationsViewed viewed = new EoiNotificationsViewed()
+                {
+                    NotificationId = a.Id,
+                    Type = a.Type,
+                    Number = a.Number,
+                    Message = a.Message,
+                    User = a.User,
+                    Timestamp = DateTime.Now
+                };
+
+                _.EoiNotificationsViewed.Add(viewed);
+
+                _.SaveChanges();
+
+                _.EoiNotificationsActive.Remove(a);
+
+                _.SaveChanges();
+            }
+
+            _.Dispose();
+
+            parent.SetNotificationPicture();
         }
     }
 }
