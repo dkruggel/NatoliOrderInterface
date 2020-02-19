@@ -43,6 +43,7 @@ namespace NatoliOrderInterface
                 if (_nat02Context.EoiCustomerNotes.Any(cn => cn.ID == ID))
                 {
                     EoiCustomerNotes eoiCustomerNote = _nat02Context.EoiCustomerNotes.First(cn => cn.ID == ID);
+                    EnteredBy.Text = "Entered by:" + eoiCustomerNote.User;
                     CustomerNumber.Text = eoiCustomerNote.CustomerNumber ?? "";
                     CustomerName.Text = eoiCustomerNote.CustomerName ?? "";
                     ShipToNumber.Text = eoiCustomerNote.ShipToNumber ?? "";
@@ -68,6 +69,11 @@ namespace NatoliOrderInterface
                             ListBoxItem listBoxItem = new ListBoxItem { Content = orderNumber, Style = (Style)Application.Current.Resources["ListBoxItem"] };
                             LinkListBox.Items.Add(listBoxItem);
                         }
+                    }
+                    if (eoiCustomerNote.NotificationDate != null)
+                    {
+                        NotificationDate.SelectedDate = eoiCustomerNote.NotificationDate;
+                        NotificationDate.IsEnabled = false;
                     }
                 }
                 CustomerNumber.IsEnabled = false;
@@ -197,6 +203,7 @@ namespace NatoliOrderInterface
             string endUserName = "";
             string category = "";
             string note = "";
+            DateTime? notificationDate = null;
             try
             {
                 foreach (ListBoxItem listBoxItem in LinkListBox.Items.OfType<ListBoxItem>())
@@ -222,6 +229,7 @@ namespace NatoliOrderInterface
                 endUserName = EndUserName.Text;
                 category = ((ComboBoxItem)CategoryComboBox.SelectedItem).Content.ToString();
                 note = CommentTextBox.Text;
+                notificationDate = NotificationDate.Text.ToString() == "" ? (DateTime?)null : NotificationDate.DisplayDate;
                 EoiCustomerNotes customerNote = new EoiCustomerNotes {
                     User = userName,
                     CustomerNumber = customerNumber,
@@ -234,6 +242,7 @@ namespace NatoliOrderInterface
                     Note = note,
                     QuoteNumbers = quoteNumbers,
                     OrderNumbers = orderNumbers,
+                    NotificationDate = notificationDate,
                 };
                 _nat02Context.EoiCustomerNotes.Add(customerNote);
                 _nat02Context.SaveChanges();
@@ -242,7 +251,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName + "' CustomerNumber: '" + customerNumber + "' CustomerName: '" + customerName + "' ShipToNumber: '" + shipToNumber + "' ShipToName: '" + shipToName + "' EndUserNumber: '" + endUserNumber + "' EndUserName: '" + endUserName + "' Category: '" + category + "' Note: '" + note + "' QuoteNumbers: '" + quoteNumbers + "' OrderNumbers: '" + orderNumbers + "'", ex.Message, user);
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName + "' CustomerNumber: '" + customerNumber + "' CustomerName: '" + customerName + "' ShipToNumber: '" + shipToNumber + "' ShipToName: '" + shipToName + "' EndUserNumber: '" + endUserNumber + "' EndUserName: '" + endUserName + "' Category: '" + category + "' Note: '" + note + "' QuoteNumbers: '" + quoteNumbers + "' OrderNumbers: '" + orderNumbers + "' NotificationDate: '" + notificationDate + "'", ex.Message, user);
                 MessageBox.Show(ex.Message);
             }
             _nat02Context.Dispose();

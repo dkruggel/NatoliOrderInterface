@@ -18,5 +18,6 @@ namespace NatoliOrderInterface.Models
         public string Note { get; set; }
         public string QuoteNumbers { get; set; }
         public string OrderNumbers { get; set; }
+        public DateTime? NotificationDate { get; set; }
     }
 }
