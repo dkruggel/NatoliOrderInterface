@@ -324,17 +324,17 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName ?? "Null" 
-                    + "' CustomerNumber: '" + customerNumber ?? "Null" 
-                    + "' CustomerName: '" + customerName ?? "Null" 
-                    + "' ShipToNumber: '" + shipToNumber ?? "Null" 
-                    + "' ShipToName: '" + shipToName ?? "Null" 
-                    + "' EndUserNumber: '" + endUserNumber ?? "Null" 
-                    + "' EndUserName: '" + endUserName ?? "Null" 
-                    + "' Category: '" + category + "' Note: '" 
-                    + note + "' QuoteNumbers: '" + quoteNumbers ?? "Null" 
-                    + "' OrderNumbers: '" + orderNumbers ?? "Null" 
-                    + "' NotificationDate: '" + notificationDate ?? "Null" + "'", ex.Message, user);
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => OKButton_Click() => User: '" + userName ?? "Null"
+                    + "' CustomerNumber: '" + customerNumber ?? "Null"
+                    + "' CustomerName: '" + customerName ?? "Null"
+                    + "' ShipToNumber: '" + shipToNumber ?? "Null"
+                    + "' ShipToName: '" + shipToName ?? "Null"
+                    + "' EndUserNumber: '" + endUserNumber ?? "Null"
+                    + "' EndUserName: '" + endUserName ?? "Null"
+                    + "' Category: '" + category + "' Note: '"
+                    + note + "' QuoteNumbers: '" + quoteNumbers ?? "Null"
+                    + "' OrderNumbers: '" + orderNumbers ?? "Null"
+                    + "' NotificationDate: '" + notificationDate ?? "Null" + "'", ex.Message + " ----Inner Exception: " + ex.InnerException.Message, user);
                 MessageBox.Show(ex.Message + "\n" + ex.InnerException.Message);
             }
             _nat02Context.Dispose();
