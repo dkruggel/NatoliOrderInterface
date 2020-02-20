@@ -335,7 +335,7 @@ namespace NatoliOrderInterface
                     + note + "' QuoteNumbers: '" + quoteNumbers ?? "Null" 
                     + "' OrderNumbers: '" + orderNumbers ?? "Null" 
                     + "' NotificationDate: '" + notificationDate ?? "Null" + "'", ex.Message, user);
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message + "\n" + ex.InnerException.Message);
             }
             _nat02Context.Dispose();
         }
