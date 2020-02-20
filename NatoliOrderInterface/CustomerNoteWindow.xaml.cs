@@ -366,7 +366,7 @@ namespace NatoliOrderInterface
             {
                 OKButton.IsEnabled = true;
             }
-            else
+            else if(EnteredBy.Text.ToString().Length > 0)
             {
                 OKButton.IsEnabled = false;
             }

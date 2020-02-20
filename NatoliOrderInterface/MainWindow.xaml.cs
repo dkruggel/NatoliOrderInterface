@@ -207,8 +207,7 @@ namespace NatoliOrderInterface
                 }
                 ConstructModules();
                 BuildMenus();
-                // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
-                // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
+                //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
 
@@ -216,9 +215,10 @@ namespace NatoliOrderInterface
                 {
                     if (User.EmployeeCode == "E4754")
                     {
-                        //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
-                        //customerNoteWindow.Show();
+                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
+                        customerNoteWindow.Show();
                         //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "45879", "0", User);
+                        //ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
