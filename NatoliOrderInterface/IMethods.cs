@@ -1335,7 +1335,7 @@ namespace NatoliOrderInterface
                 string zipfile = await Task<string>.Factory.StartNew(() => SendProjectCompletedEmailToCSR(CSRs, _projectNumber, _revNo, user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                 if (zipfile != null)
                 {
-                    int seconds = 20;
+                    int seconds = 60;
                     System.Threading.Thread.Sleep(1000 * seconds);
                     System.IO.File.Delete(zipfile);
                 }
