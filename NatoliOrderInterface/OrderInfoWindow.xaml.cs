@@ -1768,14 +1768,21 @@ namespace NatoliOrderInterface
 
         private void OpenBarcodeLocation_Click(object sender, RoutedEventArgs e)
         {
-            using var _ = new NATBCContext();
-            TravellerScansAudit travellerScansAudit = _.TravellerScansAudit.Where(l => l.OrderNumber == workOrder.OrderNumber * 100 && l.OrderLineNumber == lineItemNumber && l.OperationDesc != "FPI")
-                                                                           .OrderByDescending(l => l.TsaId)
-                                                                           .First();
-            _.Dispose();
+            try
+            {
+                using var _ = new NATBCContext();
+                TravellerScansAudit travellerScansAudit = _.TravellerScansAudit.Where(l => l.OrderNumber == workOrder.OrderNumber * 100 && l.OrderLineNumber == lineItemNumber && l.OperationDesc != "FPI")
+                                                                               .OrderByDescending(l => l.TsaId)
+                                                                               .First();
+                _.Dispose();
 
-            BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit, this);
-            barcodeLocationWindow.Show();
+                BarcodeLocationWindow barcodeLocationWindow = new BarcodeLocationWindow(travellerScansAudit, this);
+                barcodeLocationWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("OrderInfoWindow.xaml.cs => OpenBarcodeLocation_Click() => OrderNo: '" + workOrder.OrderNumber + "'", ex.Message, user);
+            }
         }
         private void ReferenceOrderButton_Click(object sender, RoutedEventArgs e)
         {
