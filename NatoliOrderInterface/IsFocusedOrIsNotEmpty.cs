@@ -70,7 +70,7 @@ namespace NatoliOrderInterface
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return Binding.DoNothing;
+            return new object[] { Binding.DoNothing, Binding.DoNothing };
             throw new NotImplementedException();
         }
     }

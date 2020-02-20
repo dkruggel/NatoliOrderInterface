@@ -24,6 +24,7 @@ using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 using WpfAnimatedGif;
 using NatoliOrderInterface.FolderIntegrity;
+using NatoliOrderInterface;
 
 namespace NatoliOrderInterface
 {
@@ -215,8 +216,9 @@ namespace NatoliOrderInterface
                 {
                     if (User.EmployeeCode == "E4754")
                     {
-                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(2,User);
-                        customerNoteWindow.Show();
+                        //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
+                        //customerNoteWindow.Show();
+                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "45879", "0", User);
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
@@ -230,7 +232,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
         }
-
         private void MainRefresh()
         {
             BindData("Main");
@@ -1528,7 +1529,7 @@ namespace NatoliOrderInterface
                                     {
                                         _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
                                     }
-                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2, User);
+                                    IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, User);
                                 }
                             }
                             catch
@@ -1912,7 +1913,7 @@ namespace NatoliOrderInterface
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                                 }
-                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
+                                IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
 
                             }
                             // Save pending changes

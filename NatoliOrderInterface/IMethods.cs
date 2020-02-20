@@ -697,7 +697,7 @@ namespace NatoliOrderInterface
                         finished.Csr = _CSRs[0];
                         _nat02Context.EoiProjectsFinished.Add(finished);
 
-                        SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
+                        SendProjectCompletedEmailToCSRAsync(_CSRs, projectNumber, projectRevNumber, user);
                     }
 
                     _projectsContext.SaveChanges();
@@ -735,7 +735,7 @@ namespace NatoliOrderInterface
                     finished.Csr = _CSRs[0];
                     _nat02Context.EoiProjectsFinished.Add(finished);
 
-                    SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
+                    SendProjectCompletedEmailToCSRAsync(_CSRs, projectNumber, projectRevNumber, user);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
@@ -1188,7 +1188,7 @@ namespace NatoliOrderInterface
         /// <param name="CSRs"></param>
         /// <param name="_projectNumber"></param>
         /// <param name="_revNo"></param>
-        public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
+        private static string SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
         {
             try
             {
@@ -1200,7 +1200,7 @@ namespace NatoliOrderInterface
                     EmailMessage emailMessage = new EmailMessage();
                     foreach (string CSR in CSRs)
                     {
-                        emailMessage.ToAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(CSR), GetEmailAddressFromDWPrincipalID(CSR)));
+                        emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
                     }
                     emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
 
@@ -1226,10 +1226,10 @@ namespace NatoliOrderInterface
                     multipart.Add(body);
 
                     string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
-                    
+
                     if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
-                        CreateZipFile(filesForCustomerDirectory, zipFile);
+                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
                         string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
                         MimePart attachment = new MimePart(mimetype[0], mimetype[1])
                         {
@@ -1243,13 +1243,14 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
+                        zipFile = null;
                         message.Body = body;
                     }
 
 
                     using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
                     {
-                        
+
                         emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
 
                         try
@@ -1261,6 +1262,7 @@ namespace NatoliOrderInterface
 
                             //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 
+                            emailClient.Send(message);
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
                             {
                                 var maxSize = emailClient.MaxSize;
@@ -1276,7 +1278,6 @@ namespace NatoliOrderInterface
 
                                     "This is an automated email and not monitored by any person(s)."
                                 };
-                                
                             }
 
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
@@ -1298,26 +1299,50 @@ namespace NatoliOrderInterface
                             {
                                 var text = "The SMTP server supports UTF-8 in message headers.";
                             }
-                            emailClient.SendAsync(message);
                             emailClient.Disconnect(true);
-                            
+                            emailClient.Dispose();
                         }
                         catch (Exception ex)
                         {
                             emailClient.Disconnect(true);
                             if (!ex.Message.StartsWith("5.3.4"))
                             {
-                                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
                             }
+                            return null;
                         }
                     }
                 }
-                File.Delete(zipFile);
+                return zipFile;
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
+                //MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+        /// <summary>
+        /// Asynchronously sends project completed E-mail to CSRs. Waits some seconds and deletes the zip attachments
+        /// </summary>
+        /// <param name="CSRs"></param>
+        /// <param name="_projectNumber"></param>
+        /// <param name="_revNo"></param>
+        public static async void SendProjectCompletedEmailToCSRAsync(List<string> CSRs, string _projectNumber, string _revNo, User user)
+        {
+            try
+            {
+                string zipfile = await Task<string>.Factory.StartNew(() => SendProjectCompletedEmailToCSR(CSRs, _projectNumber, _revNo, user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                if (zipfile != null)
+                {
+                    int seconds = 20;
+                    System.Threading.Thread.Sleep(1000 * seconds);
+                    System.IO.File.Delete(zipfile);
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSRAsync; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
             }
         }
         /// <summary>
