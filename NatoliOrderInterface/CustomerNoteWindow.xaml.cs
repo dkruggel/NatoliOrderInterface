@@ -163,6 +163,24 @@ namespace NatoliOrderInterface
             this.user = user;
             InitializeComponent();
         }
+        /// <summary>
+        /// Create New Customer Note. Prefilled with customer information.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="customerNumber"></param>
+        public CustomerNoteWindow(User user, string customerNumber)
+        {
+            this.user = user;
+            InitializeComponent();
+            try
+            {
+                CustomerNumber.Text = customerNumber ?? "";
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("CustomerNoteWindow.xaml.cs => New Note => CustomerNumber: '" + customerNumber ?? "null" + "'", ex.Message, user);
+            }
+        }
 
         /// <summary>
         /// Adds document from the LinkListBox.
