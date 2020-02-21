@@ -31,6 +31,7 @@
                     <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" />
                     <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" />
                     <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="35" Margin="0,0,0,20" Click="OpenBarcodeLocation_Click"/>
+                    <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="35" Margin="0,0,0,20" Click="NewCustomerNote_Click"/>
                     <!--<Button x:Name="OpenWorkOrdersFolder" Content="L:\WorkOrders Folder" Height="35" Margin="0,0,0,20" Click="OpenWorkOrdersFolder_Click"/>-->
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Left" x:Name="OrderPanel" >

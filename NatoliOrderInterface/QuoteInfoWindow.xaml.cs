@@ -3291,5 +3291,11 @@ namespace NatoliOrderInterface
             documentTrackingWindow.ShowDialog();
         }
         #endregion
+
+        private void NoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, quote.QuoteNumber, quote.QuoteRevNo ?? 0);
+            customerNoteWindow.Show();
+        }
     }
 }

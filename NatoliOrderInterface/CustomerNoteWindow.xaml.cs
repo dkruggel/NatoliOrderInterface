@@ -145,7 +145,7 @@ namespace NatoliOrderInterface
                     ShipToNumber.Text = workOrder.AccountNumber.Trim();
                     ShipToName.Text = workOrder.ShipToCustomerName.Trim();
                     EndUserNumber.Text = workOrder.UserNumber.Trim();
-                    EndUserNumber.Text = workOrder.EndUserName.Trim();
+                    EndUserName.Text = workOrder.EndUserName.Trim();
                 }
 
             }

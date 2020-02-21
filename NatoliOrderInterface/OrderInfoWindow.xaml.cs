@@ -1279,6 +1279,131 @@ namespace NatoliOrderInterface
         {
             OrderPanel.Width = Order_Info_Window.ActualWidth - ButtonPanel.ActualWidth - ButtonPanel.Margin.Left - 35;
         }
+        private void OrderPanel_DragEnter(object sender, DragEventArgs e)
+        {
+            string filename;
+            validData = GetFilename(out filename, e);
+            if (validData)
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+        }
+        private void OrderPanel_Drop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                string tempFile;
+                string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
+                List<string> filePaths = filePathArray.ToList();
+                string woDirectory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
+                string woFolderName = woDirectory.Remove(0, woDirectory.LastIndexOf("\\") + 1);
+                if (woFolderName != workOrder.OrderNumber.ToString() && woFolderName != "WorkOrdersToPrint")
+                {
+                    MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the .pdf(s).", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName == "WorkOrdersToPrint";
+
+                // Check to see if there is an unknown file name
+                foreach (string file in filePaths)
+                {
+                    string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
+                    if (lineItemName.Contains("_M"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                    }
+                    if (lineItemName.Contains("_"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
+                    }
+                    if (!workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
+                    {
+                        hasUnknownLineItemName = true;
+                    }
+                }
+                // Open window to set order
+                if (hasUnknownLineItemName)
+                {
+                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, user, null, this, workOrder);
+                }
+                else
+                {
+                    foreach (string file in filePaths)
+                    {
+                        bool metric = false;
+                        tempFile = System.IO.Path.GetTempFileName();
+                        PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
+                        int page_count = pdfDocument.GetNumberOfPages();
+                        Document document = new Document(pdfDocument);
+                        for (int i = 1; i <= page_count; i++)
+                        {
+                            string userName;
+                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
+                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + userName + @"\Desktop\John Hancock.png");
+                            iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
+                                                                                                        .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
+                            document.Add(image);
+                        }
+                        document.Close();
+
+
+                        string directory = System.IO.Path.GetDirectoryName(file); // does not include last slash
+                        string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
+
+                        if (lineItemName.Contains("_M"))
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                            metric = true;
+                        }
+                        if (lineItemName.Contains("_"))
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
+                        }
+                        lineItemName += metric ? "_M" : "";
+                        string _file = directory + "\\" + lineItemName + ".pdf";
+                        try
+                        {
+                            File.Move(tempFile, _file, true);
+                            File.Delete(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("OrderPanel_Drop => TempFile to new File Name or deleting old .pdf in tooldrawings folder", ex.Message, user);
+                        }
+
+                        int file_count;
+                        if (metric)
+                        {
+                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                        }
+                        int lineItemNumber = workOrder.lineItems.First(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
+                                            IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
+                                            IMethods.lineItemTypeToDescription[l.Value] == lineItemName).Key;
+                        file_count = metric ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
+                        try
+                        {
+                            string userName;
+                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
+                            File.Copy(_file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("OrderPanel_Drop => Copying to WorkOrdersToPrint folder", ex.Message, user);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("OrderPanel_Drop", ex.Message, user);
+            }
+        }
 
         #region Clicks
         private void CSRTextBlock_MouseUp(object sender, MouseButtonEventArgs e)
@@ -1761,6 +1886,11 @@ namespace NatoliOrderInterface
         }
         #endregion
 
+        private void NewCustomerNote_Click(object sender, RoutedEventArgs e)
+        {
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, workOrder.OrderNumber);
+            customerNoteWindow.Show();
+        }
         private void OpenBarcodeLocation_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2043,118 +2173,7 @@ namespace NatoliOrderInterface
             }
             return ret;
         }
-        private void OrderPanel_Drop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                string tempFile;
-                string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
-                List<string> filePaths = filePathArray.ToList();
-                string woDirectory = filePaths[0].Remove(filePaths[0].LastIndexOf("\\"));
-                string woFolderName = woDirectory.Remove(0, woDirectory.LastIndexOf("\\") + 1);
-                if (woFolderName != workOrder.OrderNumber.ToString() && woFolderName != "WorkOrdersToPrint")
-                {
-                    MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the .pdf(s).", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
-                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName == "WorkOrdersToPrint";
-                
-                // Check to see if there is an unknown file name
-                foreach (string file in filePaths)
-                {
-                    string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
-                    if (lineItemName.Contains("_M"))
-                    {
-                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
-                    }
-                    if (lineItemName.Contains("_"))
-                    {
-                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
-                    }
-                    if (!workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ? 
-                    IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName : 
-                    IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
-                    {
-                        hasUnknownLineItemName = true;
-                    }
-                }
-                // Open window to set order
-                if (hasUnknownLineItemName)
-                {
-                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, user, null, this, workOrder);
-                }
-                else
-                {
-                    foreach (string file in filePaths)
-                    {
-                        bool metric = false;
-                        tempFile = System.IO.Path.GetTempFileName();
-                        PdfDocument pdfDocument = new PdfDocument(new PdfReader(file), new PdfWriter(tempFile));
-                        int page_count = pdfDocument.GetNumberOfPages();
-                        Document document = new Document(pdfDocument);
-                        for (int i = 1; i <= page_count; i++)
-                        {
-                            string userName;
-                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
-                            ImageData imageData = ImageDataFactory.Create(@"C:\Users\" + userName + @"\Desktop\John Hancock.png");
-                            iText.Layout.Element.Image image = new iText.Layout.Element.Image(imageData).ScaleAbsolute(22, 22)
-                                                                                                        .SetFixedPosition(i, user.SignatureLeft, user.SignatureBottom);
-                            document.Add(image);
-                        }
-                        document.Close();
-
-                        
-                        string directory = System.IO.Path.GetDirectoryName(file); // does not include last slash
-                        string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
-
-                        if (lineItemName.Contains("_M"))
-                        {
-                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
-                            metric = true;
-                        }
-                        if (lineItemName.Contains("_"))
-                        {
-                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
-                        }
-                        lineItemName += metric ? "_M" : "";
-                        string _file = directory + "\\" + lineItemName + ".pdf";
-                        try
-                        {
-                            File.Move(tempFile, _file, true);
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            IMethods.WriteToErrorLog("OrderPanel_Drop => TempFile to new File Name or deleting old .pdf in tooldrawings folder", ex.Message, user);
-                        }
-
-                        int file_count;
-                        if (metric)
-                        {
-                            lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
-                        }
-                        int lineItemNumber = workOrder.lineItems.First(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
-                                            IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
-                                            IMethods.lineItemTypeToDescription[l.Value] == lineItemName).Key;
-                        file_count = metric ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
-                        try
-                        {
-                            string userName;
-                            if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
-                            File.Copy(_file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
-                        }
-                        catch (Exception ex)
-                        {
-                            IMethods.WriteToErrorLog("OrderPanel_Drop => Copying to WorkOrdersToPrint folder", ex.Message, user);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("OrderPanel_Drop", ex.Message, user);
-            }
-        }
+        
         private void PdfSignature(string[] filePaths)
         {
             string filename;
@@ -2239,19 +2258,7 @@ namespace NatoliOrderInterface
                 pdfDocument.Close();
             }
         }
-        private void OrderPanel_DragEnter(object sender, DragEventArgs e)
-        {
-            string filename;
-            validData = GetFilename(out filename, e);
-            if (validData)
-            {
-                e.Effects = DragDropEffects.Copy;
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
-        }
+
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -2287,6 +2294,7 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
+
         #endregion
 
         

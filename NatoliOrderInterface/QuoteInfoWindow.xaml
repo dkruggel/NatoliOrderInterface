@@ -25,6 +25,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Button x:Name="QuoteFolderButton1" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                                 <Button x:Name="ChecklistButton1" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -33,6 +34,7 @@
                                 <Button x:Name="SubmitButton1" Content="Submit" Style="{StaticResource Button}" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                                 <Button x:Name="RecallButton1" Content="Recall" Style="{StaticResource Button}" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                                 <Button x:Name="TrackButton1" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                                <Button x:Name="NoteButton1" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
                         <Expander x:Name="QuoteTopHeaderExpander" IsExpanded="True" Collapsed="QuoteTopHeaderExpander_Collapsed" Expanded="QuoteTopHeaderExpander_Expanded" Width="835" HorizontalAlignment="Center" Background="White">
@@ -418,6 +420,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Button x:Name="QuoteFolderButton2" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                                 <Button x:Name="ChecklistButton2" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -426,6 +429,7 @@
                                 <Button x:Name="SubmitButton2" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                                 <Button x:Name="RecallButton2" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                                 <Button x:Name="TrackButton2" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                                <Button x:Name="NoteButton2" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,2,0">
@@ -538,6 +542,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Button x:Name="QuoteFolderButton3" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                                 <Button x:Name="ChecklistButton3" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -546,6 +551,7 @@
                                 <Button x:Name="SubmitButton3" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                                 <Button x:Name="RecallButton3" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                                 <Button x:Name="TrackButton3" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                                <Button x:Name="NoteButton3" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
                         <Border DockPanel.Dock="Top" Padding="0,0,6,0">
@@ -628,6 +634,7 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
+                                    <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <Button x:Name="QuoteFolderButton4" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                                 <Button x:Name="ChecklistButton4" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -635,7 +642,8 @@
                                 <Button x:Name="OrderFolderButton4" Style="{StaticResource Button}" Content="Work Order" Grid.Column="3" HorizontalAlignment="Stretch" ToolTip="Opens Work Order Window" Height="30" Margin="4,0,4,0" Click="WorkOrderButton_Click"/>
                                 <Button x:Name="SubmitButton4" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                                 <Button x:Name="RecallButton4" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
-                                <!--<Button x:Name="TrackButton4" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>-->
+                                <Button x:Name="TrackButton4" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                                <Button x:Name="NoteButton4" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
                         <StackPanel Margin="0,0,21,0">
@@ -716,6 +724,7 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="QuoteFolderButton5" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                             <Button x:Name="ChecklistButton5" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -724,6 +733,7 @@
                             <Button x:Name="SubmitButton5" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                             <Button x:Name="RecallButton5" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             <Button x:Name="TrackButton5" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                            <Button x:Name="NoteButton5" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                         </Grid>
                     </Border>
                     <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,3" Margin="0,10">
@@ -758,6 +768,7 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Button x:Name="QuoteFolderButton6" Style="{StaticResource Button}" Content="Quote Folder" Grid.Column="0" HorizontalAlignment="Stretch" ToolTip="Opens Quote Folder (if it exists)" Height="30" Margin="8,0,4,0" Click="QuoteFolderButton_Click"/>
                             <Button x:Name="ChecklistButton6" Style="{StaticResource Button}" Content="PO Checklist CS" Grid.Column="1" HorizontalAlignment="Stretch"  ToolTip="Opens Customer Service PO Checklist" Height="30" Margin="4,0,4,0" Click="ChecklistCustomerServiceButton_Click"/>
@@ -766,6 +777,7 @@
                             <Button x:Name="SubmitButton6" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=SubmitButton1}" Content="Submit" Grid.Column="4" HorizontalAlignment="Stretch" ToolTip="Submits Quote To Order Entry" Height="30" Margin="4,0,4,0" Click="SubmitButton_Click"/>
                             <Button x:Name="RecallButton6" Style="{StaticResource Button}" IsEnabled="{Binding IsEnabled, ElementName=RecallButton1}" Content="Recall" Grid.Column="5" HorizontalAlignment="Stretch" ToolTip="Recalls Quote From Order Entry" Margin="4,0,8,0" Click="RecallButton_Click"/>
                             <Button x:Name="TrackButton6" Content="Track" Style="{StaticResource Button}" Grid.Column="6" HorizontalAlignment="Stretch" ToolTip="Opens Document Tracking Window" Margin="4,0,8,0" Click="TrackButton_Click"/>
+                            <Button x:Name="NoteButton6" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                         </Grid>
                     </Border>
                     <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,3" Margin="0,10">

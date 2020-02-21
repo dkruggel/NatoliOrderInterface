@@ -2253,14 +2253,14 @@ namespace NatoliOrderInterface
                                                     {
                                                         errors.Add("'" + quoteLineItem.LineItemType + "' has option (215) without a value.");
                                                     }
-                                                    double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4);
-                                                    double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4);
+                                                    double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4, MidpointRounding.AwayFromZero);
+                                                    double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4, MidpointRounding.AwayFromZero);
                                                     // Key exists in table
-                                                    if (!(width == .1865 && length == .75) && _nat01Context.Keys.Any(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length))
+                                                    if (!(width == .1865 && length == .75) && _nat01Context.Keys.Any(k => Math.Round(k.Width, 4, MidpointRounding.AwayFromZero) == width && Math.Round(k.Length, 4, MidpointRounding.AwayFromZero) == length))
                                                     {
                                                         try
                                                         {
-                                                            Keys key = _nat01Context.Keys.Single(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length);
+                                                            Keys key = _nat01Context.Keys.Single(k => Math.Round(k.Width, 4, MidpointRounding.AwayFromZero) == width && Math.Round(k.Length, 4, MidpointRounding.AwayFromZero) == length);
                                                             // Key is not standard
                                                             if (!string.IsNullOrEmpty(key.DrawingNo) && !App.StandardKeys.Contains(key.DrawingNo.Trim()))
                                                             {
@@ -2850,7 +2850,7 @@ namespace NatoliOrderInterface
                                                 dieWidth = dieWidth ?? die.WidthMinorAxis;
                                                 dieLength = dieLength ?? die.LengthMajorAxis;
                                                 // Less than .001" clearance
-                                                decimal clearance = Math.Round((decimal)dieWidth, 4) - Math.Round((decimal)punchWidth, 4);
+                                                decimal clearance = Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero);
                                                 if (clearance < (decimal).001)
                                                 {
                                                     // No hold low tip size toleracne
