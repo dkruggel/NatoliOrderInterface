@@ -496,73 +496,93 @@ namespace NatoliOrderInterface
                 Header = "File",
                 Height = MainMenu.Height
             };
+
+            MenuItem updateApp = new MenuItem
+            {
+                Header = "Update App",
+                ToolTip = "Updates the app to the most current version (if available)."
+            };
+            updateApp.Click += UpdateApp_Click;
+
+
+            MenuItem customerNote = new MenuItem
+            {
+                Header = "Customer Note",
+                ToolTip = "Opens a New Customer Note"
+            };
+            customerNote.Click += CustomerNote_Click;
+            if (User.ViewReports) { fileMenu.Items.Add(customerNote); }
+
             MenuItem createProject = new MenuItem()
             {
                 Header = "Create Project",
                 ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
+            createProject.Click += CreateProject_Click;
+            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
+            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
+
             MenuItem projectSearch = new MenuItem()
             {
                 Header = "Project Search",
                 ToolTip = "Search for old engineering projects."
             };
+            projectSearch.Click += ProjectSearch_Click;
+            fileMenu.Items.Add(projectSearch);
+
             MenuItem forceRefresh = new MenuItem
             {
                 Header = "Force Refresh",
                 ToolTip = "Bypass the refresh timer."
             };
+            forceRefresh.Click += ForceRefresh_Click;
+            fileMenu.Items.Add(forceRefresh);
+
             MenuItem editLayout = new MenuItem
             {
                 Header = "Edit Layout",
                 ToolTip = "Change which views are shown in the main window."
             };
+            editLayout.Click += EditLayout_Click;
+            fileMenu.Items.Add(editLayout);
+
             MenuItem reports = new MenuItem
             {
                 Header = "Reports",
                 ToolTip = "Opens reporting window."
             };
+            reports.Click += Reports_Click;
+            if (User.ViewReports) { fileMenu.Items.Add(reports); }
+
             MenuItem checkMissingVariables = new MenuItem
             {
                 Header = "Missing Automation Info",
                 ToolTip = "Checks for orders missing automation information."
             };
+            checkMissingVariables.Click += CheckMissingVariables_Click;
+            if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
+
             MenuItem filterProjects = new MenuItem
             {
                 Header = "Filter Active Projects",
                 IsChecked = User.FilterActiveProjects,
                 ToolTip = "Filters All Tablet Projects and All Tool Projects to just active projects (in engineering)."
             };
+            filterProjects.Click += FilterProjects_Click;
+            //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
+            fileMenu.Items.Add(filterProjects);
+
             MenuItem printDrawings = new MenuItem
             {
                 Header = "Print Drawings",
                 ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
             };
-            MenuItem updateApp = new MenuItem
-            {
-                Header = "Update App",
-                ToolTip = "Updates the app to the most current version (if available)."
-            };
-            createProject.Click += CreateProject_Click;
-            projectSearch.Click += ProjectSearch_Click;
-            forceRefresh.Click += ForceRefresh_Click;
-            editLayout.Click += EditLayout_Click;
-            reports.Click += Reports_Click;
-            checkMissingVariables.Click += CheckMissingVariables_Click;
-            filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
-            updateApp.Click += UpdateApp_Click;
-            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
-            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
-            fileMenu.Items.Add(projectSearch);
-            fileMenu.Items.Add(forceRefresh);
-            fileMenu.Items.Add(editLayout);
-            if (User.ViewReports) { fileMenu.Items.Add(reports); }
-            if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
-            //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
-            fileMenu.Items.Add(filterProjects);
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
+
+
             #endregion
             #region SubsMenuRegion
             MenuItem subsMenu = new MenuItem();
@@ -914,6 +934,19 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void CustomerNote_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
+                customerNoteWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("MainWindow.xaml.cs => CustomerNote_Click()", ex.Message, User);
+            }
         }
 
         private void NotificationsMenu_Click(object sender, RoutedEventArgs e)

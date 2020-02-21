@@ -1183,6 +1183,30 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
+        /// Checks to see if file is in use
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool IsFileInUse(string filename)
+        {
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+                        return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+        /// <summary>
         /// Sends project completed E-mail to CSRs
         /// </summary>
         /// <param name="CSRs"></param>
@@ -1333,10 +1357,14 @@ namespace NatoliOrderInterface
             try
             {
                 string zipfile = await Task<string>.Factory.StartNew(() => SendProjectCompletedEmailToCSR(CSRs, _projectNumber, _revNo, user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                
                 if (zipfile != null)
                 {
-                    int seconds = 60;
-                    System.Threading.Thread.Sleep(1000 * seconds);
+                    while (IsFileInUse(zipfile))
+                    {
+                        int seconds = 5;
+                        System.Threading.Thread.Sleep(1000 * seconds);
+                    }
                     System.IO.File.Delete(zipfile);
                 }
             }
