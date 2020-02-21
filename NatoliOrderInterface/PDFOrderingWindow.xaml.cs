@@ -39,12 +39,10 @@ namespace NatoliOrderInterface
             // From MainWindow
             if (mainWindow != null)
             {
-                Owner = mainWindow;
             }
             // From OrderInfoWindow
             else if (orderInfoWindow != null && workOrder != null)
             {
-                Owner = orderInfoWindow;
                 this.workOrder = workOrder;
             }
             InitializeComponent();

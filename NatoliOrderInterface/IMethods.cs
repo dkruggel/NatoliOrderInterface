@@ -1360,9 +1360,11 @@ namespace NatoliOrderInterface
                 
                 if (zipfile != null)
                 {
-                    while (IsFileInUse(zipfile))
+                    int totalTime = 0;
+                    while (IsFileInUse(zipfile) && totalTime / 60 < 5)
                     {
                         int seconds = 5;
+                        totalTime += seconds;
                         System.Threading.Thread.Sleep(1000 * seconds);
                     }
                     System.IO.File.Delete(zipfile);

@@ -69,8 +69,6 @@ namespace NatoliOrderInterface
         }
         public OrderInfoWindow(WorkOrder _workOrder, MainWindow _parent, string _orderLocation, User _user, bool _isReferenceWO = false)
         {
-            // For centerowner startup
-            // Owner = _parent ?? new MainWindow();
             InitializeComponent();
             user = _user ?? new User("");
             workOrder = _workOrder ?? new WorkOrder();
@@ -1738,7 +1736,6 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.SoldToCustomerName, workOrder.CustomerNumber)
             {
-                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1748,7 +1745,6 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.EndUserName, workOrder.UserNumber)
             {
-                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1758,7 +1754,6 @@ namespace NatoliOrderInterface
         {
             SMI SMIWindow = new SMI(workOrder.ShipToCustomerName, workOrder.AccountNumber)
             {
-                Owner = this,
                 Width = Math.Max(ActualWidth - 50, 50),
                 Height = Math.Max(ActualHeight - 50, 50)
             };
@@ -1836,7 +1831,6 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, parent, user)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };

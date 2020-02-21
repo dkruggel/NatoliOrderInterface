@@ -27,9 +27,8 @@ namespace NatoliOrderInterface
         public NotificationManagementWindow(User _user, MainWindow _parent)
         {
             user = _user;
-            parent = _parent;
-            Owner = _parent;
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            parent = _parent;;
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             FillNotifications();
         }
@@ -271,7 +270,6 @@ namespace NatoliOrderInterface
             {
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, parent, null, user)
                 {
-                    //Owner = parent,
                     Left = parent.Left,
                     Top = parent.Top
                 };

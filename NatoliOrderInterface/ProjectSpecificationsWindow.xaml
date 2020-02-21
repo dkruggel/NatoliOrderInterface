@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Project Specifications" Height="200" Width="750" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterOwner" Background="{StaticResource BackgroundBrush}" UseLayoutRounding="True">
+        Title="Project Specifications" Height="200" Width="750" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen" Background="{StaticResource BackgroundBrush}" UseLayoutRounding="True">
     <Window.Resources>
     </Window.Resources>
     <DockPanel Margin="10">

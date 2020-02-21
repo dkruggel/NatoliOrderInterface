@@ -75,7 +75,6 @@ namespace NatoliOrderInterface
 
         public QuoteInfoWindow(Quote quote, MainWindow parent, User user)
         {
-            //Owner = parent;
             InitializeComponent();
             this.user = user ?? new User("");
             this.quote = quote ?? new Quote(0,0);

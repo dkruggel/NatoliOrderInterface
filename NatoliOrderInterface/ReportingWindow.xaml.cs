@@ -23,7 +23,6 @@ namespace NatoliOrderInterface
         public ReportingWindow(Window _parent)
         {
             InitializeComponent();
-            Owner = _parent;
             using var _ = new NAT02Context();
             BeginningDatePicker.SelectedDate = DateTime.Parse("2020-01-01");
             EndDatePicker.SelectedDate = DateTime.Parse("2020-02-01");

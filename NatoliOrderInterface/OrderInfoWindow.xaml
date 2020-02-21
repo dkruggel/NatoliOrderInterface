@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
-        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterOwner" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyUp="Order_Info_Window_PreviewKeyUp" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
+        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterScreen" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyUp="Order_Info_Window_PreviewKeyUp" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
     <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
         <ScrollViewer DockPanel.Dock="Top" x:Name="Scroller" VerticalScrollBarVisibility="Auto"  Background="Transparent">
             <DockPanel x:Name="OrderDockPanel2" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">

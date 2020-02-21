@@ -215,10 +215,10 @@ namespace NatoliOrderInterface
                 {
                     if (User.EmployeeCode == "E4754")
                     {
-                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User, "2000002");
-                        customerNoteWindow.Show();
+                        //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User, "2000002");
+                        //customerNoteWindow.Show();
                         //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "45879", "0", User);
-                        //ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
+                        //ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false);
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
@@ -1362,7 +1362,6 @@ namespace NatoliOrderInterface
 
                 OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -1987,7 +1986,6 @@ namespace NatoliOrderInterface
             {
                 OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -2465,7 +2463,7 @@ namespace NatoliOrderInterface
             projectsContext.Dispose();
 
             // Create new project window/project
-            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true) { Owner = this};
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true);
 
             projectWindow.Show();
 
@@ -2476,8 +2474,7 @@ namespace NatoliOrderInterface
         {
             ProjectSearchWindow projectSearchWindow = new ProjectSearchWindow()
             {
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
             projectSearchWindow.Show();
             projectSearchWindow.Dispose();
@@ -2820,7 +2817,6 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -2909,7 +2905,7 @@ namespace NatoliOrderInterface
                 {
                     try
                     {
-                        ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false) { Owner = this };
+                        ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
                         projectWindow.Show();
                         // projectWindow.Dispose(); THIS STOPS THE TIMERS FROM WORKING
                     }
@@ -3024,7 +3020,6 @@ namespace NatoliOrderInterface
                 }
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, "", User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10260,7 +10255,6 @@ namespace NatoliOrderInterface
 
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                 {
-                    // Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10324,7 +10318,6 @@ namespace NatoliOrderInterface
                     string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
                     OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                     {
-                        // Owner = this,
                         Left = Left,
                         Top = Top
                     };
@@ -10373,7 +10366,6 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10422,7 +10414,6 @@ namespace NatoliOrderInterface
                 {
                     QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                     {
-                        Owner = this,
                         Left = Left,
                         Top = Top
                     };

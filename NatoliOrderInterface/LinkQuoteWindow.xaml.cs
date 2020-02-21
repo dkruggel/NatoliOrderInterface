@@ -20,7 +20,6 @@ namespace NatoliOrderInterface
 
         public LinkQuoteWindow(Window owner)
         {
-            Owner = owner;
             InitializeComponent();
         }
         private void PopulateFromQuoteCheckBox_Click(object sender, RoutedEventArgs e)
