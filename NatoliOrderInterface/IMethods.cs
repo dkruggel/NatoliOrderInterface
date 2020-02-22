@@ -2256,11 +2256,11 @@ namespace NatoliOrderInterface
                                                     double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4, MidpointRounding.AwayFromZero);
                                                     double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4, MidpointRounding.AwayFromZero);
                                                     // Key exists in table
-                                                    if (!(width == .1865 && length == .75) && _nat01Context.Keys.Any(k => Math.Round(k.Width, 4, MidpointRounding.AwayFromZero) == width && Math.Round(k.Length, 4, MidpointRounding.AwayFromZero) == length))
+                                                    if (!(width == .1865 && length == .75) && _nat01Context.Keys.Any(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length))
                                                     {
                                                         try
                                                         {
-                                                            Keys key = _nat01Context.Keys.Single(k => Math.Round(k.Width, 4, MidpointRounding.AwayFromZero) == width && Math.Round(k.Length, 4, MidpointRounding.AwayFromZero) == length);
+                                                            Keys key = _nat01Context.Keys.Single(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length);
                                                             // Key is not standard
                                                             if (!string.IsNullOrEmpty(key.DrawingNo) && !App.StandardKeys.Contains(key.DrawingNo.Trim()))
                                                             {
