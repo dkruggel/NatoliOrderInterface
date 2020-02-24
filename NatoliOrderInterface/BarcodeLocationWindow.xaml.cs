@@ -13,7 +13,6 @@ namespace NatoliOrderInterface
     {
         public BarcodeLocationWindow(TravellerScansAudit travellerScansAudit, Window _parent)
         {
-            Owner = _parent;
 
             InitializeComponent();
 

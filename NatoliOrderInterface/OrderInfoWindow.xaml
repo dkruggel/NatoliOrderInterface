@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
-        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterOwner" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyUp="Order_Info_Window_PreviewKeyUp" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
+        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" WindowStartupLocation="CenterScreen" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyUp="Order_Info_Window_PreviewKeyUp" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
     <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
         <ScrollViewer DockPanel.Dock="Top" x:Name="Scroller" VerticalScrollBarVisibility="Auto"  Background="Transparent">
             <DockPanel x:Name="OrderDockPanel2" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
@@ -31,7 +31,7 @@
                     <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" />
                     <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" />
                     <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="35" Margin="0,0,0,20" Click="OpenBarcodeLocation_Click"/>
-                    <!--<Button x:Name="OpenWorkOrdersFolder" Content="L:\WorkOrders Folder" Height="35" Margin="0,0,0,20" Click="OpenWorkOrdersFolder_Click"/>-->
+                    <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="35" Margin="0,0,0,20" Click="NewCustomerNote_Click"/>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Left" x:Name="OrderPanel" >
                     <Grid DockPanel.Dock="Top" x:Name="OrderHeaderGrid" Height="330" Margin="0,0,10,0" >

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Edit Layout" Height="350" Width="800" Closing="Window_Closing" ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterOwner" UseLayoutRounding="True">
+        Title="Edit Layout" Height="350" Width="800" Closing="Window_Closing" ContentRendered="Window_ContentRendered" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
     <Grid x:Name="EditLayoutWindowGrid">
         <Menu x:Name="EditLayoutMenu" Height="30" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" >
             <MenuItem x:Name="TotalPanelsMenuItem"  Header="Total Panels" Height="30">

@@ -68,7 +68,6 @@ namespace NatoliOrderInterface
 
         public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, bool isCreating)
         {
-            Owner = parent;
             InitializeComponent();
             this.projectNumber = projectNumber;
             this.projectRevNumber = projectRevNumber;

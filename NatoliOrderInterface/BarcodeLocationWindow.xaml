@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="BarcodeLocationWindow" WindowStartupLocation="CenterOwner" UseLayoutRounding="True">
+        Title="BarcodeLocationWindow" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
     <Grid>
         <Border x:Name="ImageBorder">
             <Image x:Name="LocationImage" Stretch="Fill"/>

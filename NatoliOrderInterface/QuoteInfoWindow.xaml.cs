@@ -67,6 +67,23 @@ namespace NatoliOrderInterface
         private bool validData;
         private bool isFirstTimeEntering;
         private WorkOrder workOrder;
+        private List<EoiCustomerNotes> notes = new List<EoiCustomerNotes>();
+        public List<EoiCustomerNotes> Notes
+        { 
+            get 
+            { 
+                return notes; 
+            }
+            set 
+            {
+                if (value.Except(notes).Count() > 0 || notes.Except(value).Count() > 0)
+                {
+                    notes = value;
+                    NotesListBox.ItemsSource = null;
+                    NotesListBox.ItemsSource = notes;
+                }
+            } 
+        }
 
         public QuoteInfoWindow()
         {
@@ -75,13 +92,11 @@ namespace NatoliOrderInterface
 
         public QuoteInfoWindow(Quote quote, MainWindow parent, User user)
         {
-            //Owner = parent;
             InitializeComponent();
             this.user = user ?? new User("");
             this.quote = quote ?? new Quote(0,0);
             quoteNumber = this.quote.QuoteNumber;
             this.parent = parent ?? new MainWindow();
-
             if (quote.OrderNo != 0)
             {
                 OrderFolderButton1.IsEnabled = true;
@@ -169,6 +184,7 @@ namespace NatoliOrderInterface
                     IMethods.WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message, user);
                 }
             }
+            
             Show();
         }
 
@@ -203,6 +219,29 @@ namespace NatoliOrderInterface
             }
         }
 
+        private List<EoiCustomerNotes> GetCustomerNotes(string quoteNumber, string quoteRevNumber, string customerNumber = "-1", string shipToNumber = "-1", string endUserNumber = "-1")
+        {
+            List<EoiCustomerNotes> eoiCustomerNotes = new List<EoiCustomerNotes>();
+            try
+            {
+                using var _nat02Context = new NAT02Context();
+                eoiCustomerNotes = _nat02Context.EoiCustomerNotes.
+                    Where(cn => cn.QuoteNumbers.Contains(quoteNumber + "-" + quoteRevNumber) || cn.CustomerNumber == customerNumber || cn.ShipToNumber == shipToNumber || cn.EndUserNumber == endUserNumber).
+                    OrderBy(cn => cn.QuoteNumbers.Contains(quoteNumber + "-" + quoteRevNumber)).
+                    ThenBy(cn => cn.EndUserNumber == endUserNumber).
+                    ThenBy(cn => cn.ShipToNumber == shipToNumber).
+                    ThenBy(cn => cn.CustomerNumber == customerNumber).
+                    ThenBy(cn => cn.ID).
+                    ToList();
+                _nat02Context.Dispose();
+                return eoiCustomerNotes;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("QuoteInfoWindow.xaml.cs => GetCustomerNotes()", ex.Message + "  ---  Inner Exception Message: " + ex.InnerException.Message, user);
+                return new List<EoiCustomerNotes> { new EoiCustomerNotes { ID = 404, Note = "Error in retrieving the notes for this quote." } };
+            }
+        }
         #region QuoteInfoPage
         private void FillQuoteInfoPage()
         {
@@ -273,6 +312,10 @@ namespace NatoliOrderInterface
                 {
                     MachineDescription.Text = string.IsNullOrEmpty(quoteLineItem.MachineDescription) ? "" : quoteLineItem.MachineDescription.Trim() + " // (" + quoteLineItem.MachineNo + ")";
                     break;
+                }
+                else
+                {
+                    MachineDescription.Text = "";
                 }
             }
             QtyStackPanel.Children.Clear();
@@ -500,6 +543,7 @@ namespace NatoliOrderInterface
                 stackPanel.Children.Add(blank);
             }
         }
+        
 
         #region Events
         private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
@@ -530,7 +574,17 @@ namespace NatoliOrderInterface
                         OrderEntryTabItem.IsEnabled = true;
                     }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-
+                await Task.Factory.StartNew(() => 
+                {
+                    List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
+                    Dispatcher.Invoke(() =>
+                    {
+                        Notes = eoiCustomerNotes;
+                        NotesTabItem.Header = "Notes";
+                        NotesTabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
                 List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
                 if (errors.Count > 0)
                 {
@@ -949,14 +1003,14 @@ namespace NatoliOrderInterface
                                                                                  x.QuoteNo == quote.QuoteNumber &&
                                                                                  x.Revision == quote.QuoteRevNo))
                                 {
-                                    if (Math.Round(basePrice, 2, MidpointRounding.ToPositiveInfinity) != Math.Round((decimal)_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
+                                    if (Math.Round(basePrice, 2, MidpointRounding.AwayFromZero) != Math.Round((decimal)_nat02Context.EoiBasePriceList.Where(x => x.Category == category &&
                                                                                     x.MachineType == quoteLineItem.MachinePriceCode &&
                                                                                     x.SteelPriceCode == quoteLineItem.SteelPriceCode &&
                                                                                     x.Shape == quoteLineItem.ShapePriceCode &&
                                                                                     x.PunchType == lineItem.Value &&
                                                                                     x.QuantityOrdered >= x.OrderQty &&
                                                                                     x.QuoteNo == quote.QuoteNumber &&
-                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2, MidpointRounding.ToPositiveInfinity))
+                                                                                    x.Revision == quote.QuoteRevNo).OrderByDescending(x => x.OrderQty).First().BasePrice, 2, MidpointRounding.AwayFromZero))
                                     {
                                         priceChanged = true;
                                     }
@@ -1628,11 +1682,11 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.AwayFromZero));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.AwayFromZero));
                         //}
                     }
                 }
@@ -1752,12 +1806,12 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.AwayFromZero));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
 
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.AwayFromZero));
                         //}
                     }
                 }
@@ -1871,11 +1925,11 @@ namespace NatoliOrderInterface
                         }
                         if (textBox.Name == "UnitPrice" + keyValue)
                         {
-                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.ToPositiveInfinity));
+                            textBox.Text = string.Format("{0:0.00}", Math.Round(unitPrice + (unitPercent * unitPrice / (decimal)100), 2, MidpointRounding.AwayFromZero));
                         }
                         //if (textBox.Name == "ExtendedPrice" + keyValue)
                         //{
-                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.ToPositiveInfinity));
+                        //    textBox.Text = string.Format("{0:0.00}", QTY * Math.Round(unitPrice * (1.0 + (unitPercent / 100)), 2, MidpointRounding.AwayFromZero));
                         //}
                     }
                 }
@@ -1899,7 +1953,7 @@ namespace NatoliOrderInterface
                     {
                         if (decimal.TryParse(textBox.Text == null ? "0" : textBox.Text.ToString(), out decimal unitPrice))
                         {
-                            decimal extendedPrice = Math.Round(unitPrice * (decimal)qty, 2, MidpointRounding.ToPositiveInfinity);
+                            decimal extendedPrice = Math.Round(unitPrice * (decimal)qty, 2, MidpointRounding.AwayFromZero);
                             foreach (Grid grid1 in grid.Children.OfType<Grid>().Where(g => g.Tag.ToString() == "ExtendedPrice"))
                             {
                                 TextBox extendedPriceTextBox = grid1.Children.OfType<TextBox>().First(t => t.Tag.ToString() == "ExtendedPrice");
@@ -3287,6 +3341,31 @@ namespace NatoliOrderInterface
             DocumentTrackingWindow documentTrackingWindow = new DocumentTrackingWindow(quote, user);
             documentTrackingWindow.ShowDialog();
         }
+        private void NoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, quote.QuoteNumber, quote.QuoteRevNo ?? 0);
+            customerNoteWindow.Show();
+        }
+
         #endregion
+
+        private void NotesTabItem_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (NotesTabItem.IsEnabled)
+                {
+                    List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
+                    Dispatcher.Invoke(() =>
+                    {
+                       Notes = eoiCustomerNotes;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("QuoteInfoWindow.xaml.cs => NotesTabItem_MouseUp()", ex.Message, user);
+            }
+        }
     }
 }

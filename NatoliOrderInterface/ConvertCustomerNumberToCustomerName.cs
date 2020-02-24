@@ -13,6 +13,7 @@ namespace NatoliOrderInterface
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            
             string customerNumber = value.ToString().Trim();
             if (customerNumber.Length > 2)
             {
@@ -26,12 +27,12 @@ namespace NatoliOrderInterface
                 else
                 {
                     _necContext.Dispose();
-                    return "";
+                    return DependencyProperty.UnsetValue;
                 }
             }
             else
             {
-                return "";
+                return DependencyProperty.UnsetValue;
             }
 
             throw new NotImplementedException();
@@ -39,6 +40,8 @@ namespace NatoliOrderInterface
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            return Binding.DoNothing;
+
             throw new NotImplementedException();
         }
     }

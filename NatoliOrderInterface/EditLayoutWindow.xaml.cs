@@ -28,7 +28,6 @@ namespace NatoliOrderInterface
 
         public EditLayoutWindow(User usr, MainWindow parent)
         {
-            Owner = parent;
             InitializeComponent();
             this.parent = parent;
             user = usr;

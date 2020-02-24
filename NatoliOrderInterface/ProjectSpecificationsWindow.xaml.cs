@@ -16,7 +16,6 @@ namespace NatoliOrderInterface
             else
             {
                 this.projectWindow = projectWindow;
-                Owner = projectWindow;
                 InitializeComponent();
                 this.NewDrawing.IsChecked = NewDrawing;
                 this.NewDrawing.IsEnabled = isEnabled;

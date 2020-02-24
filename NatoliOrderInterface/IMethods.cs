@@ -697,7 +697,7 @@ namespace NatoliOrderInterface
                         finished.Csr = _CSRs[0];
                         _nat02Context.EoiProjectsFinished.Add(finished);
 
-                        SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
+                        SendProjectCompletedEmailToCSRAsync(_CSRs, projectNumber, projectRevNumber, user);
                     }
 
                     _projectsContext.SaveChanges();
@@ -735,7 +735,7 @@ namespace NatoliOrderInterface
                     finished.Csr = _CSRs[0];
                     _nat02Context.EoiProjectsFinished.Add(finished);
 
-                    SendProjectCompletedEmailToCSR(_CSRs, projectNumber, projectRevNumber, user);
+                    SendProjectCompletedEmailToCSRAsync(_CSRs, projectNumber, projectRevNumber, user);
 
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
@@ -1183,23 +1183,48 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
+        /// Checks to see if file is in use
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool IsFileInUse(string filename)
+        {
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+                        return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+        /// <summary>
         /// Sends project completed E-mail to CSRs
         /// </summary>
         /// <param name="CSRs"></param>
         /// <param name="_projectNumber"></param>
         /// <param name="_revNo"></param>
-        public static void SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
+        private static string SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
         {
             try
             {
+                string projectNumber = _projectNumber ?? "";
+                string revNo = _revNo ?? "";
+                string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                 if (CSRs != null)
                 {
-                    string projectNumber = _projectNumber ?? "";
-                    string revNo = _revNo ?? "";
                     EmailMessage emailMessage = new EmailMessage();
                     foreach (string CSR in CSRs)
                     {
-                        emailMessage.ToAddresses.Add(new EmailAddress(GetDisplayNameFromDWPrincipalID(CSR), GetEmailAddressFromDWPrincipalID(CSR)));
+                        emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
                     }
                     emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
 
@@ -1225,10 +1250,10 @@ namespace NatoliOrderInterface
                     multipart.Add(body);
 
                     string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
-                    string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
+
                     if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
-                        CreateZipFile(filesForCustomerDirectory, zipFile);
+                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
                         string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
                         MimePart attachment = new MimePart(mimetype[0], mimetype[1])
                         {
@@ -1242,13 +1267,14 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
+                        zipFile = null;
                         message.Body = body;
                     }
 
 
                     using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
                     {
-                        
+
                         emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
 
                         try
@@ -1260,6 +1286,7 @@ namespace NatoliOrderInterface
 
                             //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 
+                            emailClient.Send(message);
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
                             {
                                 var maxSize = emailClient.MaxSize;
@@ -1275,7 +1302,6 @@ namespace NatoliOrderInterface
 
                                     "This is an automated email and not monitored by any person(s)."
                                 };
-                                emailClient.Send(message);
                             }
 
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
@@ -1297,25 +1323,56 @@ namespace NatoliOrderInterface
                             {
                                 var text = "The SMTP server supports UTF-8 in message headers.";
                             }
-                            
                             emailClient.Disconnect(true);
-                            File.Delete(zipFile);
+                            emailClient.Dispose();
                         }
                         catch (Exception ex)
                         {
                             emailClient.Disconnect(true);
                             if (!ex.Message.StartsWith("5.3.4"))
                             {
-                                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
                             }
+                            return null;
                         }
                     }
+                }
+                return zipFile;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
+                //MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+        /// <summary>
+        /// Asynchronously sends project completed E-mail to CSRs. Waits some seconds and deletes the zip attachments
+        /// </summary>
+        /// <param name="CSRs"></param>
+        /// <param name="_projectNumber"></param>
+        /// <param name="_revNo"></param>
+        public static async void SendProjectCompletedEmailToCSRAsync(List<string> CSRs, string _projectNumber, string _revNo, User user)
+        {
+            try
+            {
+                string zipfile = await Task<string>.Factory.StartNew(() => SendProjectCompletedEmailToCSR(CSRs, _projectNumber, _revNo, user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                
+                if (zipfile != null)
+                {
+                    int totalTime = 0;
+                    while (IsFileInUse(zipfile) && totalTime / 60 < 5)
+                    {
+                        int seconds = 5;
+                        totalTime += seconds;
+                        System.Threading.Thread.Sleep(1000 * seconds);
+                    }
+                    System.IO.File.Delete(zipfile);
                 }
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
-                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSRAsync; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
             }
         }
         /// <summary>
@@ -2196,8 +2253,8 @@ namespace NatoliOrderInterface
                                                     {
                                                         errors.Add("'" + quoteLineItem.LineItemType + "' has option (215) without a value.");
                                                     }
-                                                    double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4);
-                                                    double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4);
+                                                    double width = Math.Round(keySizeOptionValue.Number1 ?? 0, 4, MidpointRounding.AwayFromZero);
+                                                    double length = Math.Round(keySizeOptionValue.Number2 ?? 0, 4, MidpointRounding.AwayFromZero);
                                                     // Key exists in table
                                                     if (!(width == .1865 && length == .75) && _nat01Context.Keys.Any(k => Math.Round(k.Width, 4) == width && Math.Round(k.Length, 4) == length))
                                                     {
@@ -2793,7 +2850,7 @@ namespace NatoliOrderInterface
                                                 dieWidth = dieWidth ?? die.WidthMinorAxis;
                                                 dieLength = dieLength ?? die.LengthMajorAxis;
                                                 // Less than .001" clearance
-                                                decimal clearance = Math.Round((decimal)dieWidth, 4) - Math.Round((decimal)punchWidth, 4);
+                                                decimal clearance = Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero);
                                                 if (clearance < (decimal).001)
                                                 {
                                                     // No hold low tip size toleracne

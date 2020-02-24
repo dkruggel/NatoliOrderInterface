@@ -29,7 +29,6 @@ namespace NatoliOrderInterface
 
         public InputBox(string prompt, string title, Window owner)
         {
-            this.Owner = owner;
             Title = title;
             InitializeComponent();
             InputTextLabel.Content = prompt;

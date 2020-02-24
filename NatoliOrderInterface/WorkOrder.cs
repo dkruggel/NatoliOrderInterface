@@ -1090,8 +1090,7 @@ namespace NatoliOrderInterface
         private void GetLineItemsToScan(Window owner)
         {
             Window LineItemChoices = new Window();
-            LineItemChoices.Owner = owner;
-            LineItemChoices.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            LineItemChoices.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             LineItemChoices.Width = 250;
             //LineItemChoices.Height = 200;
             Grid grid = new Grid();

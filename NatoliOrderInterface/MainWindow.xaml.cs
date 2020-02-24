@@ -25,6 +25,7 @@ using Windows.ApplicationModel;
 using WpfAnimatedGif;
 using NatoliOrderInterface.FolderIntegrity;
 using F23.StringSimilarity;
+using NatoliOrderInterface;
 
 namespace NatoliOrderInterface
 {
@@ -207,8 +208,7 @@ namespace NatoliOrderInterface
                 }
                 ConstructModules();
                 BuildMenus();
-                // ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false) { Owner = this };
-                // MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
+                //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
 
@@ -216,8 +216,10 @@ namespace NatoliOrderInterface
                 {
                     if (User.EmployeeCode == "E4754")
                     {
-                        CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
-                        customerNoteWindow.Show();
+                        //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User, "2000002");
+                        //customerNoteWindow.Show();
+                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "45879", "0", User);
+                        //ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false);
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
@@ -231,7 +233,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
         }
-
         private void MainRefresh()
         {
             BindData("Main");
@@ -499,73 +500,93 @@ namespace NatoliOrderInterface
                 Header = "File",
                 Height = MainMenu.Height
             };
+
+            MenuItem updateApp = new MenuItem
+            {
+                Header = "Update App",
+                ToolTip = "Updates the app to the most current version (if available)."
+            };
+            updateApp.Click += UpdateApp_Click;
+
+
+            MenuItem customerNote = new MenuItem
+            {
+                Header = "Customer Note",
+                ToolTip = "Opens a New Customer Note"
+            };
+            customerNote.Click += CustomerNote_Click;
+            if (User.ViewReports) { fileMenu.Items.Add(customerNote); }
+
             MenuItem createProject = new MenuItem()
             {
                 Header = "Create Project",
                 ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
+            createProject.Click += CreateProject_Click;
+            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
+            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
+
             MenuItem projectSearch = new MenuItem()
             {
                 Header = "Project Search",
                 ToolTip = "Search for old engineering projects."
             };
+            projectSearch.Click += ProjectSearch_Click;
+            fileMenu.Items.Add(projectSearch);
+
             MenuItem forceRefresh = new MenuItem
             {
                 Header = "Force Refresh",
                 ToolTip = "Bypass the refresh timer."
             };
+            forceRefresh.Click += ForceRefresh_Click;
+            fileMenu.Items.Add(forceRefresh);
+
             MenuItem editLayout = new MenuItem
             {
                 Header = "Edit Layout",
                 ToolTip = "Change which views are shown in the main window."
             };
+            editLayout.Click += EditLayout_Click;
+            fileMenu.Items.Add(editLayout);
+
             MenuItem reports = new MenuItem
             {
                 Header = "Reports",
                 ToolTip = "Opens reporting window."
             };
+            reports.Click += Reports_Click;
+            if (User.ViewReports) { fileMenu.Items.Add(reports); }
+
             MenuItem checkMissingVariables = new MenuItem
             {
                 Header = "Missing Automation Info",
                 ToolTip = "Checks for orders missing automation information."
             };
+            checkMissingVariables.Click += CheckMissingVariables_Click;
+            if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
+
             MenuItem filterProjects = new MenuItem
             {
                 Header = "Filter Active Projects",
                 IsChecked = User.FilterActiveProjects,
                 ToolTip = "Filters All Tablet Projects and All Tool Projects to just active projects (in engineering)."
             };
+            filterProjects.Click += FilterProjects_Click;
+            //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
+            fileMenu.Items.Add(filterProjects);
+
             MenuItem printDrawings = new MenuItem
             {
                 Header = "Print Drawings",
                 ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
             };
-            MenuItem updateApp = new MenuItem
-            {
-                Header = "Update App",
-                ToolTip = "Updates the app to the most current version (if available)."
-            };
-            createProject.Click += CreateProject_Click;
-            projectSearch.Click += ProjectSearch_Click;
-            forceRefresh.Click += ForceRefresh_Click;
-            editLayout.Click += EditLayout_Click;
-            reports.Click += Reports_Click;
-            checkMissingVariables.Click += CheckMissingVariables_Click;
-            filterProjects.Click += FilterProjects_Click;
             printDrawings.Click += PrintDrawings_Click;
-            updateApp.Click += UpdateApp_Click;
-            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
-            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
-            fileMenu.Items.Add(projectSearch);
-            fileMenu.Items.Add(forceRefresh);
-            fileMenu.Items.Add(editLayout);
-            if (User.ViewReports) { fileMenu.Items.Add(reports); }
-            if (User.Department == "Engineering") { fileMenu.Items.Add(checkMissingVariables); }
-            //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
-            fileMenu.Items.Add(filterProjects);
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
+
+
             #endregion
             #region SubsMenuRegion
             MenuItem subsMenu = new MenuItem();
@@ -917,6 +938,19 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void CustomerNote_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User);
+                customerNoteWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("MainWindow.xaml.cs => CustomerNote_Click()", ex.Message, User);
+            }
         }
 
         private void NotificationsMenu_Click(object sender, RoutedEventArgs e)
@@ -1332,7 +1366,6 @@ namespace NatoliOrderInterface
 
                 OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -1532,7 +1565,7 @@ namespace NatoliOrderInterface
                                     {
                                         _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
                                     }
-                                    IMethods.SendProjectCompletedEmailToCSR(_CSRs, project.Item1, project.Item2, User);
+                                    IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, User);
                                 }
                             }
                             catch
@@ -1916,7 +1949,7 @@ namespace NatoliOrderInterface
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                                 }
-                                IMethods.SendProjectCompletedEmailToCSR(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
+                                IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
 
                             }
                             // Save pending changes
@@ -1957,7 +1990,6 @@ namespace NatoliOrderInterface
             {
                 OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -2435,7 +2467,7 @@ namespace NatoliOrderInterface
             projectsContext.Dispose();
 
             // Create new project window/project
-            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true) { Owner = this};
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this, User, true);
 
             projectWindow.Show();
 
@@ -2446,8 +2478,7 @@ namespace NatoliOrderInterface
         {
             ProjectSearchWindow projectSearchWindow = new ProjectSearchWindow()
             {
-                Owner = this,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
             projectSearchWindow.Show();
             projectSearchWindow.Dispose();
@@ -2790,7 +2821,6 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -2879,7 +2909,7 @@ namespace NatoliOrderInterface
                 {
                     try
                     {
-                        ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false) { Owner = this };
+                        ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
                         projectWindow.Show();
                         // projectWindow.Dispose(); THIS STOPS THE TIMERS FROM WORKING
                     }
@@ -2994,7 +3024,6 @@ namespace NatoliOrderInterface
                 }
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, "", User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10410,7 +10439,6 @@ namespace NatoliOrderInterface
 
                 OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                 {
-                    // Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10474,7 +10502,6 @@ namespace NatoliOrderInterface
                     string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
                     OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
                     {
-                        // Owner = this,
                         Left = Left,
                         Top = Top
                     };
@@ -10523,7 +10550,6 @@ namespace NatoliOrderInterface
             {
                 QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                 {
-                    Owner = this,
                     Left = Left,
                     Top = Top
                 };
@@ -10572,7 +10598,6 @@ namespace NatoliOrderInterface
                 {
                     QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
                     {
-                        Owner = this,
                         Left = Left,
                         Top = Top
                     };
