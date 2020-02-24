@@ -82,7 +82,7 @@ namespace NatoliOrderInterface
             Left = windowRect.Left + 8;
             Width = parent.Width;
             Height = parent.Height;
-            
+
             //if (_parent.WindowState == WindowState.Maximized)
             //{
             //    WindowState = WindowState.Maximized;
@@ -94,7 +94,37 @@ namespace NatoliOrderInterface
             //    //Width = _parent.Width;
             //    //Height = _parent.Height;
             //}
-            
+
+            if (string.IsNullOrEmpty(_orderLocation))
+            {
+                using var _nat02Context = new NAT02Context();
+                if (_nat02Context.EoiOrdersBeingEnteredView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "BeingEntered";
+                }
+                else if (_nat02Context.EoiOrdersInOfficeView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "InTheOffice";
+                }
+                else if (_nat02Context.EoiOrdersEnteredAndUnscannedView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "EnteredUnscanned";
+                }
+                else if (_nat02Context.EoiOrdersInEngineeringUnprintedView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "InEngineering";
+                }
+                else if (_nat02Context.EoiOrdersReadyToPrintView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "ReadyToPrint";
+                }
+                else if (_nat02Context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo == workOrder.OrderNumber))
+                {
+                    _orderLocation = "PrintedInEngineering";
+                }
+                _nat02Context.Dispose();
+            }
+
             orderLocation = _orderLocation ?? "";
             isReferenceWO = _isReferenceWO;
             if (user.Department == "Customer Service")
