@@ -369,7 +369,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Height" Value="70"/>
             <Setter Property="Margin" Value="2,0"/>
-            <Setter Property="Width" Value="120"/>
+            <Setter Property="Width" Value="250"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
@@ -382,13 +382,9 @@
                                 <Border BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1">
 
                                 </Border>
-                                <TextBox x:Name="FuzzySearchTextBox" Style="{StaticResource TextBox}" TextChanged="FuzzySearchTextBox_TextChanged" Grid.Row="0"/>
+                                <TextBox x:Name="FuzzySearchTextBox" Style="{StaticResource TextBox}" TextChanged="FuzzySearchTextBox_TextChanged" Grid.Row="0" KeyUp="FuzzySearchTextBox_KeyUp"/>
                                 <Canvas Grid.Row="1">
-                                    <ListBox x:Name="FuzzySearchListBox" Height="Auto" Width="Auto" Visibility="Collapsed" ClipToBounds="False" Grid.Row="1">
-                                        <!--<ListBoxItem Content="Hello"/>
-                                        <ListBoxItem Content="Hello"/>
-                                        <ListBoxItem Content="Hello"/>-->
-                                    </ListBox>
+                                    <ListBox x:Name="FuzzySearchListBox" Height="Auto" Width="Auto" Visibility="Collapsed" ClipToBounds="False" Grid.Row="1" MouseDoubleClick="FuzzySearchListBox_MouseDoubleClick"/>
                                 </Canvas>
                             </Grid>
                         </Grid>
@@ -406,7 +402,7 @@
                 <Grid Margin="5,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="250"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Customer" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Grid.Column="0" Margin="5,0"/>
                     <Canvas Grid.Column="1" VerticalAlignment="Top">

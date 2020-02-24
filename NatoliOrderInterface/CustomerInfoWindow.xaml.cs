@@ -23,20 +23,32 @@ namespace NatoliOrderInterface
     public partial class CustomerInfoWindow : Window
     {
         private string CustomerNumber { get; set; }
+        private string CustomerName { get; set; }
         private User user;
         private MainWindow parent;
 
         public CustomerInfoWindow(User _user, MainWindow _parent, string _customerNumber)
         {
-            this.CustomerNumber = _customerNumber;
+            CustomerNumber = _customerNumber;
             user = _user;
             parent = _parent;
+
+            using var _ = new NECContext();
+            CustomerName = _.Rm00101.First(r => r.Custnmbr.Trim().ToLower() == CustomerNumber.Trim().ToLower()).Custname.Trim();
+            _.Dispose();
 
             InitializeComponent();
 
             FillQuoteList();
             FillOrderList();
             FillProjectList();
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            CustomerNameTextBlock.Text = CustomerNumber + " - " + CustomerName;
+
+            Title = CustomerName;
         }
 
         private void FillQuoteList()

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="CustomerInfoWindow" Height="1020" Width="1875" MinWidth="960" WindowStartupLocation="CenterOwner" >
+        Title="CustomerInfoWindow" Height="1020" Width="1875" MinWidth="960" WindowStartupLocation="CenterScreen" ContentRendered="Window_ContentRendered" >
     <Window.Resources>
         <Style x:Key="QuoteHeaderGrid" TargetType="{x:Type ContentControl}">
             <Setter Property="Background" Value="Transparent"/>
@@ -596,9 +596,11 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120" Grid.Column="0"/>
-                <Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120" Grid.Column="1"/>
+                <!--<Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120"/>-->
+                <TextBlock x:Name="CustomerNameTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" FontSize="20" FontWeight="Bold"/>
+                <!--<Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120" Grid.Column="2"/>-->
             </Grid>
         </Border>
 

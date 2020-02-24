@@ -3096,6 +3096,146 @@ namespace NatoliOrderInterface
                 OrderSearchButton_Click(sender, new RoutedEventArgs());
             }
         }
+        private void FuzzySearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ContentControl contentControl = MainMenu.FindName("CustomerSearchListBox") as ContentControl;
+            Canvas canvas = (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+                                                                                                      .Children.OfType<Canvas>().First();
+            ListBox listBox = canvas.Children.OfType<ListBox>().First();
+            string searchText = (sender as TextBox).Text;
+
+            if (searchText.Length > 0)
+            {
+                int i = 0;
+                while (!char.IsLetter(searchText[i]) && i < searchText.Length - 1) { i++; }
+                if ((i == 0 || i < searchText.Length - 1) && searchText.Length > 1)
+                {
+                    using var _ = new NECContext();
+
+                    List<Rm00101> customers = _.Rm00101.Where(r => r.Custname.Trim().ToLower().Contains(searchText.ToLower())).ToList();
+                    List<(string, double)> scores = new List<(string, double)>();
+
+                    var l = new NormalizedLevenshtein();
+                    double dist = 0.0;
+
+                    foreach (Rm00101 customer in customers)
+                    {
+                        dist = 1 - l.Distance(searchText.ToLower(), customer.Custname.ToLower());
+
+                        // If a customer is user's customer, rank it higher
+                        if (User.Department == "Customer Service")
+                        {
+                            using var __ = new NAT01Context();
+                            QuoteRepresentative qr = __.QuoteRepresentative.Single(r => r.Name.ToLower().Trim() == User.GetDWDisplayName().ToLower().Trim());
+
+                            if (!string.IsNullOrEmpty(qr.RepId))
+                            {
+                                var info = __.QuoteHeader.Where(q => q.UserAcctNo == customer.Custnmbr.ToLower() && q.QuoteDate > DateTime.Now.AddYears(-1).Date)
+                                                         .GroupBy(q => q.QuoteRepId)
+                                                         .Select(x => new { RepId = x.Key, Count = x.Count() })
+                                                         .OrderByDescending(a => a.Count);
+                                if (info.Count() > 0)
+                                {
+                                    if (info.First().RepId.Trim().ToLower() == qr.RepId.ToLower())
+                                    {
+                                        dist = dist * 25;
+                                    }
+                                }
+                            }
+                            __.Dispose();
+                        }
+
+                        scores.Add((customer.Custname, dist));
+                    }
+
+                    List<string> res = scores.OrderByDescending(s => s.Item2).Take(10).Select(s => s.Item1).ToList();
+
+                    listBox.ItemsSource = res;
+                    _.Dispose();
+                    listBox.SelectedIndex = 0;
+                    listBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                listBox.Visibility = Visibility.Collapsed;
+            }
+        }
+        private void FuzzySearchTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            bool isNumeric = true;
+            foreach (char c in textBox.Text)
+            {
+                if (char.IsLetter(c)) { isNumeric = false; break; }
+            }
+            if (e.Key == Key.Enter)
+            {
+                if (textBox.Text.Length > 0)
+                {
+                    if ((textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Visibility == Visibility.Visible)
+                    {
+                        // Get customer number for top name
+                        string customerName = (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Items[0].ToString();
+                        using var _ = new NECContext();
+                        string customerNumber = _.Rm00101.First(r => r.Custname.Trim().ToLower() == customerName.Trim().ToLower()).Custnmbr.Trim();
+                        _.Dispose();
+
+                        // Open customer window
+                        CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, customerNumber);
+                        customerInfoWindow.Show();
+
+                        (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Visibility = Visibility.Collapsed;
+                    }
+                    else if (isNumeric)
+                    {
+                        // Check if the text is a valid customer number
+                        using var _ = new NECContext();
+                        if (_.Rm00101.Any(r => r.Custnmbr.Trim() == textBox.Text))
+                        {
+                            // Open customer window
+                            CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, textBox.Text);
+                            customerInfoWindow.Show();
+
+                            (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Visibility = Visibility.Collapsed;
+                        }
+                        _.Dispose();
+                    }
+                }
+            }
+            else if (e.Key == Key.Down)
+            {
+                (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().SelectedIndex++;
+            }
+            else if (e.Key == Key.Up)
+            {
+                (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().SelectedIndex--;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                textBox.Text = "";
+            }
+        }
+        private void FuzzySearchListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBox listBox = sender as ListBox;
+
+            // Get customer number selected name
+            string customerName = listBox.SelectedItem.ToString();
+            using var _ = new NECContext();
+            string customerNumber = _.Rm00101.First(r => r.Custname.Trim().ToLower() == customerName.Trim().ToLower()).Custnmbr.Trim();
+            _.Dispose();
+
+            // Open customer window
+            CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, customerNumber);
+            customerInfoWindow.Show();
+
+            listBox.Visibility = Visibility.Collapsed;
+        }
         #endregion
 
         #region ModuleBuilding
@@ -10188,7 +10328,7 @@ namespace NatoliOrderInterface
         //    catch
         //    { }
         //}
-        //#endregion
+        //#endregion276138
 
         #region Folder Management
         private void QuotesAndOrders()
@@ -11849,51 +11989,5 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
-
-        private void FuzzySearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            ContentControl contentControl = MainMenu.FindName("CustomerSearchListBox") as ContentControl;
-            Canvas canvas = (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-                                                                                                      .Children.OfType<Canvas>().First();
-            ListBox listBox = canvas.Children.OfType<ListBox>().First();
-            string searchText = (sender as TextBox).Text;
-
-            if (searchText.Length > 0)
-            {
-                int i = 0;
-                while (!char.IsLetter(searchText[i]) && i < searchText.Length - 1) { i++; }
-                if (i == 0 || i < searchText.Length - 1)
-                {
-                    using var _ = new NECContext();
-
-                    List<string> customers = _.Rm00101.Where(r => r.Custname.ToLower().Contains(searchText.ToLower())).Select(r => r.Custname.Trim()).ToList();
-                    List<(string, double)> scores = new List<(string, double)>();
-
-                    var l = new NormalizedLevenshtein();
-                    double dist = 0.0;
-
-                    foreach (string customer in customers)
-                    {
-                        MessageBox.Show(l.Distance(searchText, customer).ToString());
-                        dist = 1 - l.Distance(searchText, customer);
-                        scores.Add((customer, dist));
-                    }
-
-                    List<string> res = scores.OrderByDescending(s => s.Item2).Take(10).Select(s => s.Item1).ToList();
-
-                    listBox.ItemsSource = res;
-                    _.Dispose();
-                    listBox.Visibility = Visibility.Visible;
-                }
-                else
-                {
-
-                }
-            }
-            else
-            {
-                listBox.Visibility = Visibility.Collapsed;
-            }
-        }
     }
 }
