@@ -5,10 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Name="Quote_Info_Window"
-        Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855" ContentRendered="Quote_Info_Window_ContentRendered_Async" Loaded="Quote_Info_Window_Loaded" UseLayoutRounding="True">
-    <Window.Background>
-        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
-    </Window.Background>
+        Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855" ContentRendered="Quote_Info_Window_ContentRendered_Async" Loaded="Quote_Info_Window_Loaded" UseLayoutRounding="True" Background="{StaticResource Background.Gradient}">
     <Grid x:Name="MasterGrid" SizeChanged="MasterGrid_SizeChanged" HorizontalAlignment="Center">
         <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteTabItem" Header="Quote" Height="22">
@@ -408,9 +405,9 @@
 
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="SMITabItem" Header="Loading Price/SMI Check" Height="22" IsEnabled="False">
                 <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}" -->
-                <Border Padding="0,0,0,0">
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="0,0,0,0">
-                        <Border x:Name="ButtonBorder2" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
+                <Border Padding="0,0,0,0" Background="{StaticResource Background.Gradient}">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="Transparent" Margin="0,0,0,0">
+                        <Border x:Name="ButtonBorder2" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -432,7 +429,7 @@
                                 <Button x:Name="NoteButton2" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
-                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White" Margin="0,0,2,0">
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0,0,2,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -530,9 +527,9 @@
             </TabItem>
 
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="FilesTabItem" Header="Files" Height="22">
-                <Border Padding="0,0,0,0">
-                    <DockPanel Name="FilesStackPanel" Background="WhiteSmoke" Margin="0,0,0,0">
-                        <Border DockPanel.Dock="Top" x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,15,0">
+                <Border Padding="0,0,0,0" Background="{StaticResource Background.Gradient}">
+                    <DockPanel Name="FilesStackPanel" Background="Transparent" Margin="0,0,0,0">
+                        <Border DockPanel.Dock="Top" x:Name="ButtonBorder3" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" Margin="0,0,15,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -555,7 +552,6 @@
                             </Grid>
                         </Border>
                         <Border DockPanel.Dock="Top" Padding="0,0,6,0">
-                            <!-- Height="{Binding Height, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 80}}"-->
                             <Grid VerticalAlignment="Stretch"  Margin="0,0,10,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -571,7 +567,11 @@
                                     <RowDefinition/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Border Grid.ColumnSpan="3" BorderBrush="LightGray" BorderThickness="0,0,0,2" Margin="0,0,0,0"/>
+                                <Border Grid.ColumnSpan="3" BorderBrush="{StaticResource Background.Solid}" BorderThickness="0,0,0,2" Margin="0,0,0,4" Opacity=".25">
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="2" BlurRadius="14" Opacity="1" Direction="270"/>
+                                    </Border.Effect>
+                                </Border>
                                 <Grid VerticalAlignment="Stretch" Grid.Column="0" Grid.ColumnSpan="3">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition MaxWidth="300"/>
@@ -599,7 +599,7 @@
                                     </Grid>
                                 </Grid>
                                 <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
-                                <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="White" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{StaticResource Secondary.MediumDark}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
                                     <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
                                 </Grid>
                                 <Grid x:Name="QuoteSentGrid" Margin="0,20,0,20" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
@@ -621,10 +621,10 @@
             </TabItem>
 
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="OrderEntryTabItem" Header="Loading Order Entry Instructions" Height="22">
-                <Border Padding="0,0,0,0">
+                <Border Padding="0,0,0,0" Background="{StaticResource Background.Gradient}">
                     <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}"-->
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
-                        <Border x:Name="ButtonBorder4" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="Transparent" Margin="-0,0,0,0">
+                        <Border x:Name="ButtonBorder4" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -669,7 +669,7 @@
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox x:Name="InstructionEnteringTextBox" Height="40" HorizontalAlignment="Stretch" Margin="2" TextWrapping="Wrap" MaxLength="1000"/>
+                                <TextBox x:Name="InstructionEnteringTextBox" Height="40" HorizontalAlignment="Stretch" Margin="2" TextWrapping="Wrap" MaxLength="1000" Background="Transparent"/>
                                 <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1,0,0,0">
                                     <TextBlock x:Name="InstructionEnteringUserTextBlock" Style="{StaticResource NormalTextBlock}" Text="jwillis" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
@@ -713,9 +713,9 @@
             </TabItem>
 
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="NotesTabItem" Header="Gathering Notes" Height="22" IsEnabled="False" >
-                <Border Padding="0,0,0,0">
-                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
-                        <Border x:Name="ButtonBorder5" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
+                <Border Background="{StaticResource Background.Gradient}" Padding="0,0,0,0">
+                    <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="Transparent" Margin="0,0,0,0">
+                        <Border x:Name="ButtonBorder5" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition/>
@@ -771,12 +771,13 @@
                                 <TextBlock Text="Timestamp" Style="{StaticResource BoldTextBlock}" Grid.Column="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                                 <TextBlock Text="Notif. Date" Style="{StaticResource BoldTextBlock}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                             </Grid>
-                            <Border x:Name="TopBorder" DockPanel.Dock="Top" Panel.ZIndex="3" BorderBrush="{StaticResource Border.MediumDark}" BorderThickness="0,0,0,1">
+                            <Border x:Name="TopBorder" Panel.ZIndex="3" DockPanel.Dock="Top" Margin="0,0" BorderBrush="{StaticResource Tertiary.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="2" BlurRadius="4" Direction="270"/>
+                                    <DropShadowEffect BlurRadius="5" ShadowDepth="2.5" Direction="270" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,-2" BorderThickness="0" Background="Transparent">
+                            
+                            <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,-1,-8,0" BorderThickness="0" Background="Transparent">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Template">
@@ -791,8 +792,8 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="6,0" Background="Transparent">
-                                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3" IsHitTestVisible="True" Margin="0,-0.5"/>
-                                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3" IsHitTestVisible="True" Margin="0,-0.5"/>
+                                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3" IsHitTestVisible="True" Margin="0,0"/>
+                                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3" IsHitTestVisible="True" Margin="0,0"/>
                                             <Grid Background="Transparent" ShowGridLines="False" HorizontalAlignment="Stretch" MaxHeight="30"  Margin="6,6,6,6">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition SharedSizeGroup="ID"/>
@@ -851,6 +852,9 @@
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
                                                             </ObjectAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
                                                             </ObjectAnimationUsingKeyFrames>
@@ -870,6 +874,9 @@
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
                                                             </ObjectAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                             </ObjectAnimationUsingKeyFrames>
@@ -888,6 +895,9 @@
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
                                                             </ObjectAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                             </ObjectAnimationUsingKeyFrames>
@@ -899,9 +909,9 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="4" BorderBrush="{StaticResource Border.MediumDark}" BorderThickness="0,1,0,0">
+                            <Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="4"  BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="2" BlurRadius="4" Direction="90"/>
+                                    <DropShadowEffect BlurRadius="4" ShadowDepth="2" Direction="90" Color="LightGray" Opacity=".9"/>
                                 </Border.Effect>
                             </Border>
                         </DockPanel>
@@ -910,8 +920,8 @@
             </TabItem>
 
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteErrorsTabItem" Header="Loading Errors" Height="22" IsEnabled="False">
-                <DockPanel LastChildFill="False" Margin="0,0,15,0">
-                    <Border DockPanel.Dock="Top" x:Name="ButtonBorder6" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" >
+                <DockPanel LastChildFill="False" Margin="0,0,15,0" Background="{StaticResource Background.Gradient}">
+                    <Border DockPanel.Dock="Top" x:Name="ButtonBorder6" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" >
                         <Grid Margin="0,2,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -954,8 +964,8 @@
             </TabItem>
             
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteOptionSuggestions" Header="Loading Suggested Options" Height="22" IsEnabled="False">
-                <DockPanel LastChildFill="False" Margin="0,0,15,0">
-                    <Border DockPanel.Dock="Top" x:Name="ButtonBorder7" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" >
+                <DockPanel LastChildFill="False" Margin="0,0,15,0" Background="{StaticResource Background.Gradient}">
+                    <Border DockPanel.Dock="Top" x:Name="ButtonBorder7" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="Transparent" >
                         <Grid Margin="0,2,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
