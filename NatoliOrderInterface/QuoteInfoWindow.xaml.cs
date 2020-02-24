@@ -85,6 +85,8 @@ namespace NatoliOrderInterface
             } 
         }
 
+        private string lastHeader = "Quote";
+
         public QuoteInfoWindow()
         {
             this.InitializeComponent();
@@ -234,6 +236,7 @@ namespace NatoliOrderInterface
                     ThenBy(cn => cn.ID).
                     ToList();
                 _nat02Context.Dispose();
+                eoiCustomerNotes.ForEach(cn => cn.Note = cn.Note.Replace(char.ConvertFromUtf32(13) + char.ConvertFromUtf32(10), "  "));
                 return eoiCustomerNotes;
             }
             catch (Exception ex)
@@ -543,151 +546,6 @@ namespace NatoliOrderInterface
                 stackPanel.Children.Add(blank);
             }
         }
-        
-
-        #region Events
-        private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            WindowState = parent.WindowState;
-        }
-        private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
-        {
-            try
-            {
-                await Task.Factory.StartNew(() =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        FillSMIAndScratchPadPage();
-                        ChangeSMIScrollHeights();
-                        SMITabItem.Header = "Price/SMI Check";
-                        SMITabItem.IsEnabled = true;
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-                await Task.Factory.StartNew(() =>
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        ResetInstructionEntering();
-                        FillOrderEntryInstructions();
-                        OrderEntryTabItem.Header = "Order Entry Instructions";
-                        OrderEntryTabItem.IsEnabled = true;
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-                await Task.Factory.StartNew(() => 
-                {
-                    List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
-                    Dispatcher.Invoke(() =>
-                    {
-                        Notes = eoiCustomerNotes;
-                        NotesTabItem.Header = "Notes";
-                        NotesTabItem.IsEnabled = true;
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                    
-                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                if (errors.Count > 0)
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        QuoteErrorsTabItem.Header = "Errors";
-                        QuoteErrorsTabItem.IsEnabled = true;
-                        ErrorsDockPanel.Children.Clear();
-                        foreach (string error in errors)
-                        {
-                            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
-                            TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                            bulletDecorator.Bullet = ellipse;
-                            bulletDecorator.Child = textBlock;
-                            ErrorsDockPanel.Children.Add(bulletDecorator);
-                        }
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-
-                }
-                else
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        QuoteErrorsTabItem.Header = "No Errors Found";
-                        QuoteErrorsTabItem.IsEnabled = false;
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }
-
-                bool first = true;
-                int percent = 0;
-                int j = 1;
-                if (quote.lineItems.Keys.Any(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
-                {
-                    foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
-                    {
-                        percent = (j * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
-                        j++;
-                        //(string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                        (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.GetLineItemSuggestionsFromUserAndMachine(quote, new QuoteLineItem(quote, (short)i), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                        Dispatcher.Invoke(() =>
-                        {
-                            if (first)
-                            {
-                                QuoteOptionSuggestions.IsEnabled = true;
-                                first = !first;
-                            }
-                            QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
-                            DockPanel dockPanel = new DockPanel();
-                            dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
-                            TextBlock headerTextBlock = new TextBlock
-                            {
-                                Text = firstOptionRecommendations.LineItemDescription,
-                                Style = (Style)Application.Current.Resources["BoldTextBlock"],
-                                HorizontalAlignment = HorizontalAlignment.Left,
-                                FontSize = 28,
-                                Margin = new Thickness(40, 0, 0, 0)
-                            };
-                            headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
-                            dockPanel.Children.Add(headerTextBlock);
-                            foreach (string suggestion in firstOptionRecommendations.Suggestions)
-                            {
-
-                                BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
-                                if (suggestion == firstOptionRecommendations.Suggestions.Last())
-                                {
-                                    bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
-                                }
-                                bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                                Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
-                                TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
-                                bulletDecorator.Bullet = ellipse;
-                                bulletDecorator.Child = textBlock;
-                                dockPanel.Children.Add(bulletDecorator);
-                            }
-                            OptionSuggestionsDockPanel.Children.Add(dockPanel);
-                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                    }
-                    Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }
-            }
-                
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
-            }
-        }
-        private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
-        {
-            ChangeLineItemScrollerHeight();
-            QuoteTopHeaderExpander.Background = Brushes.Silver;
-        }
-        private void QuoteTopHeaderExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            ChangeLineItemScrollerHeight();
-            QuoteTopHeaderExpander.Background = Brushes.White;
-        }
-        private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
-        }
-        #endregion
         #endregion
         
         #region SMI/Scratchpad
@@ -3015,6 +2873,147 @@ namespace NatoliOrderInterface
         #endregion
 
         #region Events
+        private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowState = parent.WindowState;
+        }
+        private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
+        {
+            try
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        FillSMIAndScratchPadPage();
+                        ChangeSMIScrollHeights();
+                        SMITabItem.Header = "Price/SMI Check";
+                        SMITabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ResetInstructionEntering();
+                        FillOrderEntryInstructions();
+                        OrderEntryTabItem.Header = "Order Entry Instructions";
+                        OrderEntryTabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                await Task.Factory.StartNew(() =>
+                {
+                    List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
+                    Dispatcher.Invoke(() =>
+                    {
+                        Notes = eoiCustomerNotes;
+                        NotesTabItem.Header = "Notes";
+                        NotesTabItem.IsEnabled = true;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                List<string> errors = await Task<List<string>>.Factory.StartNew(() => IMethods.QuoteErrors(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                if (errors.Count > 0)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        QuoteErrorsTabItem.Header = "Errors";
+                        QuoteErrorsTabItem.IsEnabled = true;
+                        ErrorsDockPanel.Children.Clear();
+                        foreach (string error in errors)
+                        {
+                            BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                            bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
+                            TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                            bulletDecorator.Bullet = ellipse;
+                            bulletDecorator.Child = textBlock;
+                            ErrorsDockPanel.Children.Add(bulletDecorator);
+                        }
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        QuoteErrorsTabItem.Header = "No Errors Found";
+                        QuoteErrorsTabItem.IsEnabled = false;
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+
+                bool first = true;
+                int percent = 0;
+                int j = 1;
+                if (quote.lineItems.Keys.Any(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
+                {
+                    foreach (int i in quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM"))
+                    {
+                        percent = (j * 100) / quote.lineItems.Keys.Where(k => quote.lineItems[k] != "Z" && quote.lineItems[k] != "E" && quote.lineItems[k] != "H" && quote.lineItems[k] != "K" && quote.lineItems[k] != "MC" && quote.lineItems[k] != "TM").Count();
+                        j++;
+                        //(string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.QuoteLineItemOptionSuggestions(quoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.lineItems[i], user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                        (string LineItemDescription, List<string> Suggestions) firstOptionRecommendations = await Task<(string, List<string>)>.Factory.StartNew(() => IMethods.GetLineItemSuggestionsFromUserAndMachine(quote, new QuoteLineItem(quote, (short)i), user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
+                        Dispatcher.Invoke(() =>
+                        {
+                            if (first)
+                            {
+                                QuoteOptionSuggestions.IsEnabled = true;
+                                first = !first;
+                            }
+                            QuoteOptionSuggestions.Header = "Suggested Options - " + percent + "%";
+                            DockPanel dockPanel = new DockPanel();
+                            dockPanel.SetValue(DockPanel.DockProperty, Dock.Top);
+                            TextBlock headerTextBlock = new TextBlock
+                            {
+                                Text = firstOptionRecommendations.LineItemDescription,
+                                Style = (Style)Application.Current.Resources["BoldTextBlock"],
+                                HorizontalAlignment = HorizontalAlignment.Left,
+                                FontSize = 28,
+                                Margin = new Thickness(40, 0, 0, 0)
+                            };
+                            headerTextBlock.SetValue(DockPanel.DockProperty, Dock.Top);
+                            dockPanel.Children.Add(headerTextBlock);
+                            foreach (string suggestion in firstOptionRecommendations.Suggestions)
+                            {
+
+                                BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
+                                if (suggestion == firstOptionRecommendations.Suggestions.Last())
+                                {
+                                    bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
+                                }
+                                bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
+                                Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
+                                TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
+                                bulletDecorator.Bullet = ellipse;
+                                bulletDecorator.Child = textBlock;
+                                dockPanel.Children.Add(bulletDecorator);
+                            }
+                            OptionSuggestionsDockPanel.Children.Add(dockPanel);
+                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    }
+                    Dispatcher.Invoke(() => QuoteOptionSuggestions.Header = "Suggested Options", System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
+            }
+
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
+            }
+        }
+        private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            ChangeLineItemScrollerHeight();
+            QuoteTopHeaderExpander.Background = Brushes.Silver;
+        }
+        private void QuoteTopHeaderExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            ChangeLineItemScrollerHeight();
+            QuoteTopHeaderExpander.Background = Brushes.White;
+        }
+        private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
+        }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
@@ -3219,22 +3218,42 @@ namespace NatoliOrderInterface
         }
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TabItem selectedTab = tabControl.SelectedItem as TabItem;
-            string header = selectedTab.Header.ToString();
-            if (header == "Quote")
+            try
             {
-                FillQuoteInfoPage();
-                ChangeLineItemScrollerHeight();
+                TabItem selectedTab = tabControl.SelectedItem as TabItem;
+                string header = selectedTab.Header.ToString();
+                if (header != lastHeader)
+                {
+                    lastHeader = header;
+                    if (header == "Quote")
+                    {
+                        FillQuoteInfoPage();
+                        ChangeLineItemScrollerHeight();
+                    }
+                    if (header == "Price/SMI Check")
+                    {
+                        //FillSMIAndScratchPadPage();
+                        ChangeSMIScrollHeights();
+                    }
+                    if (header == "Order Entry Instructions")
+                    {
+                        //ResetInstructionEntering();
+                        //FillOrderEntryInstructions();
+                    }
+
+                    if (NotesTabItem.IsEnabled && header == "Notes")
+                    {
+                        List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
+                        Dispatcher.Invoke(() =>
+                        {
+                            Notes = eoiCustomerNotes;
+                        }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    }
+                }
             }
-            if (header == "Price/SMI Check")
+            catch (Exception ex)
             {
-                //FillSMIAndScratchPadPage();
-                ChangeSMIScrollHeights();
-            }
-            if (header == "Order Entry Instructions")
-            {
-                //ResetInstructionEntering();
-                //FillOrderEntryInstructions();
+                IMethods.WriteToErrorLog("QuoteInfoWindow.xaml.cs => NotesTabItem_MouseUp()", ex.Message, user);
             }
         }
         private void BillToButton_Click(object sender, RoutedEventArgs e)
@@ -3346,26 +3365,18 @@ namespace NatoliOrderInterface
             CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, quote.QuoteNumber, quote.QuoteRevNo ?? 0);
             customerNoteWindow.Show();
         }
+        private void NoteListBoxButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            Grid childGrid = (Grid)button.Parent;
+            Grid grid = (Grid)childGrid.Parent;
 
+            int id = Convert.ToInt32(((TextBlock)grid.Children.OfType<TextBlock>().First(tb => tb.Tag.ToString() == "ID")).Text);
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, user);
+            customerNoteWindow.Show();
+        }
         #endregion
 
-        private void NotesTabItem_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (NotesTabItem.IsEnabled)
-                {
-                    List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
-                    Dispatcher.Invoke(() =>
-                    {
-                       Notes = eoiCustomerNotes;
-                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                }
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("QuoteInfoWindow.xaml.cs => NotesTabItem_MouseUp()", ex.Message, user);
-            }
-        }
+
     }
 }
