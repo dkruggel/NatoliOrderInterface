@@ -111,7 +111,9 @@
                             </Border>
                             <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="85"/>
+                                    <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -119,9 +121,11 @@
                                     <RowDefinition Height="28"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock x:Name="OrderNumberTextBlock" Text="Order Number" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
-                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
-                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="Order #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteNumberTextBlock" Text="Quote #" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="4" Margin="0,0,2,0" IsHitTestVisible="True">
                                     <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
@@ -229,7 +233,7 @@
                             <Grid x:Name="ProjectGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="175"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -237,10 +241,10 @@
                                     <RowDefinition Height="28"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock x:Name="ProjectNumberTextBlock" Text="Project #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
-                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
-                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
-                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                <TextBlock x:Name="ProjectNumberTextBlock" Text="Project #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" Visibility="Collapsed"/>
+                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" Visibility="Collapsed"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True" Visibility="Collapsed">
                                     <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
@@ -432,7 +436,9 @@
                             </Border>
                             <Grid x:Name="OrderGrid" IsHitTestVisible="True">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="85"/>
+                                    <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -441,8 +447,10 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock x:Name="OrderNumberTextBlock" Text="Order Number" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
-                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
-                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                <TextBlock x:Name="QuoteNumberTextBlock" Text="Quote #" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
                                     <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
@@ -517,7 +525,7 @@
                             <Grid x:Name="ProjectGrid" IsHitTestVisible="True">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="175"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -526,9 +534,9 @@
                                 </Grid.RowDefinitions>
 
                                 <TextBlock x:Name="ProjectNumberTextBlock" Text="Project #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
-                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
-                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True" Visibility="Collapsed">
                                     <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenProject_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Project Folder" Foreground="{StaticResource Foreground.Main}"/>

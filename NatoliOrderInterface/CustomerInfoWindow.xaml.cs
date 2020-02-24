@@ -54,7 +54,7 @@ namespace NatoliOrderInterface
         private void FillQuoteList()
         {
             using var _ = new NAT01Context();
-            List<QuoteHeader> quoteHeader = _.QuoteHeader.Where(q => q.UserAcctNo == CustomerNumber && q.OrderNo == 0 &&
+            List<QuoteHeader> quoteHeader = _.QuoteHeader.Where(q => (q.UserAcctNo.Trim() == CustomerNumber || q.ShipToAccountNo.Trim() == CustomerNumber || q.CustomerNo.Trim() == CustomerNumber) && q.OrderNo == 0 &&
                                                                 !_.OrderHeader.Where(o => o.UserAcctNo == CustomerNumber).Select(o => o.QuoteNumber).Contains((double)q.QuoteNo))
                                                          .OrderByDescending(q => q.QuoteNo).ToList();
 
@@ -68,7 +68,7 @@ namespace NatoliOrderInterface
                 };
 
                 using var __ = new NECContext();
-                string customerName = __.Rm00101.Single(r => r.Custnmbr == quote.UserAcctNo).Custname.Trim();
+                string customerName = __.Rm00101.First(r => r.Custnmbr == quote.UserAcctNo.Trim() || r.Custnmbr == quote.ShipToAccountNo.Trim() || r.Custnmbr == quote.CustomerNo.Trim()).Custname.Trim();
                 __.Dispose();
 
                 contentControl.ApplyTemplate();
@@ -83,10 +83,7 @@ namespace NatoliOrderInterface
         private void FillOrderList()
         {
             using var _ = new NAT01Context();
-            List<OrderHeader> orderHeader = _.OrderHeader.Where(o => o.UserAcctNo.Trim() == CustomerNumber && o.ShippedYn.Trim() != "Y" &&
-                                                                o.PostedtoGpasyn.Trim() != "Y" && o.PostedtoGpasyn.Trim() != "R" && o.PostedtoGpasyn.Trim() != "C" &&
-                                                                o.OnHold.Trim() != "Y" && o.RestrictShipmentDesc.Trim() != "CANCELED" && o.RestrictShipmentDesc.Trim() != "CANCELLED" &&
-                                                                o.RestrictShipmentDesc.Trim() != "ON HOLD")
+            List<OrderHeader> orderHeader = _.OrderHeader.Where(o => o.UserAcctNo.Trim() == CustomerNumber || o.CustomerNo.Trim() == CustomerNumber || o.ShipToAccountNo == CustomerNumber)
                                                          .OrderByDescending(o => o.OrderNo).ToList();
 
             _.Dispose();
@@ -98,12 +95,24 @@ namespace NatoliOrderInterface
                     Style = FindResource("OrderGrid") as Style
                 };
 
+                bool notShipped = order.ShippedYn.Trim() == "N";
+                bool rush = order.RushYorN == "Y" || order.PaidRushFee == "Y";
+
                 using var __ = new NECContext();
-                string customerName = __.Rm00101.Single(r => r.Custnmbr == order.UserAcctNo).Custname.Trim();
+                string customerName = __.Rm00101.First(r => r.Custnmbr == order.UserAcctNo || r.Custnmbr == order.CustomerNo || r.Custnmbr == order.ShipToAccountNo).Custname.Trim();
                 __.Dispose();
 
                 contentControl.ApplyTemplate();
+
+                foreach (TextBlock tb in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+                {
+                    if (notShipped) { tb.FontStyle = FontStyles.Oblique; }
+                    if (rush) { tb.Foreground = new SolidColorBrush(Colors.DarkRed); }
+                }
+
                 (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order.OrderNo / 100).ToString();
+                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteNumberTextBlock").Text = order.QuoteNumber.ToString();
+                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRevNumberTextBlock").Text = order.QuoteRevNo.ToString();
                 (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = customerName;
 
                 OrderDockPanel.Children.Add(contentControl);
@@ -299,28 +308,30 @@ namespace NatoliOrderInterface
 
                 if (onHold)
                 {
-                    back = new SolidColorBrush(Colors.MediumPurple);
+                    // back = new SolidColorBrush(Colors.MediumPurple);
                 }
                 else if (finished)
                 {
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFADFF2F"));
+                    // back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFADFF2F"));
                 }
                 else if (tabletSubmitted)
                 {
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF0A7DFF"));
+                    // back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF0A7DFF"));
                 }
                 else if (tabletDrawn || toolDrawn)
                 {
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF52A3FF"));
+                    // back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF52A3FF"));
                 }
                 else if (tabletStarted || toolStarted)
                 {
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFB2D6FF"));
+                    // back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFB2D6FF"));
                 }
                 else
                 {
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00FFFFFF"));
+                    // back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00FFFFFF"));
                 }
+
+                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00FFFFFF"));
 
                 using var __ = new NECContext();
                 string customerName = __.Rm00101.Single(r => r.Custnmbr == (project.InternationalId == "N/A" ? project.CustomerNumber : project.InternationalId)).Custname.Trim();

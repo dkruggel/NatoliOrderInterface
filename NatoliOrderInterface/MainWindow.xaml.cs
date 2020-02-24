@@ -284,6 +284,7 @@ namespace NatoliOrderInterface
             try
             {
                 User = new User(Environment.UserName);
+                // User = new User("jwillis");
                 // User = new User("mbouzitoun");
                 // User = new User("billt");
             }
@@ -3136,7 +3137,7 @@ namespace NatoliOrderInterface
                                                          .OrderByDescending(a => a.Count);
                                 if (info.Count() > 0)
                                 {
-                                    if (info.First().RepId.Trim().ToLower() == qr.RepId.ToLower())
+                                    if (info.First().RepId.Trim().ToLower() == qr.RepId.Trim().ToLower())
                                     {
                                         dist = dist * 25;
                                     }
@@ -3145,7 +3146,7 @@ namespace NatoliOrderInterface
                             __.Dispose();
                         }
 
-                        scores.Add((customer.Custname, dist));
+                        scores.Add((customer.Custname.Trim(), dist));
                     }
 
                     List<string> res = scores.OrderByDescending(s => s.Item2).Take(10).Select(s => s.Item1).ToList();
@@ -3180,7 +3181,8 @@ namespace NatoliOrderInterface
                     if ((textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Visibility == Visibility.Visible)
                     {
                         // Get customer number for top name
-                        string customerName = (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Items[0].ToString();
+                        int i = (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().SelectedIndex;
+                        string customerName = (textBox.Parent as Grid).Children.OfType<Canvas>().First().Children.OfType<ListBox>().First().Items[i].ToString();
                         using var _ = new NECContext();
                         string customerNumber = _.Rm00101.First(r => r.Custname.Trim().ToLower() == customerName.Trim().ToLower()).Custnmbr.Trim();
                         _.Dispose();
