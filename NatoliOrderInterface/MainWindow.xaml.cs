@@ -24,6 +24,7 @@ using Windows.Management.Deployment;
 using Windows.ApplicationModel;
 using WpfAnimatedGif;
 using NatoliOrderInterface.FolderIntegrity;
+using F23.StringSimilarity;
 
 namespace NatoliOrderInterface
 {
@@ -331,7 +332,10 @@ namespace NatoliOrderInterface
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+#if DEBUG
+            //CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, "1023902");
+            //customerInfoWindow.Show();
+#endif
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
@@ -3194,6 +3198,8 @@ namespace NatoliOrderInterface
                 for (i = 0; i < rowCount && k < User.VisiblePanels.Count; i++)
                 {
                     Border border = new Border();
+                    //ContentControl mainContentControl = new ContentControl();
+                    //mainContentControl.Style = App.Current.Resources["Orders" + User.VisiblePanels[k] + "Grid"] as Style;
                     if (User.VisiblePanels.Count == 5 && k == 4)
                     {
                         border = ConstructBorder();
@@ -3210,6 +3216,7 @@ namespace NatoliOrderInterface
                     try
                     {
                         MainGrid.Children.Add(border);
+                        // MainGrid.Children.Add(mainContentControl);
                     }
                     catch (Exception ex)
                     {
@@ -4172,6 +4179,11 @@ namespace NatoliOrderInterface
             }
         }
 
+        private static void OpenOrder_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         #region GetsAndBinds
         private void GetBeingEntered()
         {
@@ -4412,11 +4424,11 @@ namespace NatoliOrderInterface
                         fore = new SolidColorBrush(Colors.DarkRed);
                         weight = FontWeights.ExtraBold;
                     }
-                    else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
-                    {
-                        fore = new SolidColorBrush(Colors.White);
-                        weight = FontWeights.Normal;
-                    }
+                    //else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
+                    //{
+                    //    fore = new SolidColorBrush(Colors.White);
+                    //    weight = FontWeights.Normal;
+                    //}
                     else
                     {
                         fore = new SolidColorBrush(Colors.Black);
@@ -4429,7 +4441,7 @@ namespace NatoliOrderInterface
                     }
                     else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
                     {
-                        back = new SolidColorBrush(Colors.Black);
+                        back = new SolidColorBrush(Colors.DarkGray);
                     }
                     else
                     {
@@ -4599,6 +4611,8 @@ namespace NatoliOrderInterface
             }
 
             // Filter using search box so they don't lose a search just because of a refresh
+            //ContentControl footerContentControl = (VisualTreeHelper.GetChild((MainGrid.Children[i] as ContentControl) as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                                                              .Children.OfType<ContentControl>().Last();
             var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
             string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
             ordersInEngineeringUnprintedDict =
@@ -6981,6 +6995,90 @@ namespace NatoliOrderInterface
         private void OrdersEnteredUnscannedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> dict)
         {
             int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
+
+            // New style
+            //// Get main content control that houses all the rows
+            //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
+            //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
+
+            //// Get main content control children
+            //List <ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                                            .Children.OfType<ContentControl>().ToList();
+
+            //// See if there are any that need to be removed
+            //List<ContentControl> removeThese = new List<ContentControl>();
+            //foreach (ContentControl row in rows)
+            //{
+            //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+            //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+            //    {
+            //        removeThese.Add(row);
+            //        continue;
+            //    }
+            //    Dispatcher.Invoke(() =>
+            //    {
+            //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
+            //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+            //        {
+            //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
+            //        }
+            //    });
+
+            //}
+            //foreach (ContentControl row1 in removeThese) {
+            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                   .Children.Remove(row1); }
+
+            //// See if there are any that need to be added
+            //List<double> orders = new List<double>();
+            //foreach (ContentControl row in rows)
+            //{
+            //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
+            //}
+
+            //IEnumerable<double> newOrders = dict.Keys.Except(orders);
+
+            //foreach (double order in newOrders)
+            //{
+            //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+            //    ContentControl contentControl = new ContentControl()
+            //    {
+            //        Style = App.Current.Resources["OrdersEnteredUnscannedRows"] as Style
+            //    };
+
+            //    contentControl.ApplyTemplate();
+
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
+            //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+            //    {
+            //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
+            //    }
+
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysIn.ToString();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
+            //    Dispatcher.Invoke(() =>
+            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                   .Children.Insert(index, contentControl));
+            //}
+
+            //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
+
+
+
+
+
+
+
+
+            // Old style
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
             Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
             StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -7039,6 +7137,92 @@ namespace NatoliOrderInterface
         private void OrdersInEngineeringUnprintedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> dict)
         {
             int i = User.VisiblePanels.IndexOf("InEngineering");
+            // New style
+            //// Get main content control that houses all the rows
+            //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
+            //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
+
+            //// Get main content control children
+            //List<ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                                            .Children.OfType<ContentControl>().ToList();
+
+            //// See if there are any that need to be removed
+            //List<ContentControl> removeThese = new List<ContentControl>();
+            //foreach (ContentControl row in rows)
+            //{
+            //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+            //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+            //    {
+            //        removeThese.Add(row);
+            //        continue;
+            //    }
+            //    Dispatcher.Invoke(() =>
+            //    {
+            //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
+            //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+            //        {
+            //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
+            //        }
+            //    });
+
+            //}
+            //foreach (ContentControl row1 in removeThese)
+            //{
+            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                   .Children.Remove(row1);
+            //}
+
+            //// See if there are any that need to be added
+            //List<double> orders = new List<double>();
+            //foreach (ContentControl row in rows)
+            //{
+            //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
+            //}
+
+            //IEnumerable<double> newOrders = dict.Keys.Except(orders);
+
+            //foreach (double order in newOrders)
+            //{
+            //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+            //    ContentControl contentControl = new ContentControl()
+            //    {
+            //        Style = App.Current.Resources["OrdersInEngineeringRows"] as Style
+            //    };
+
+            //    contentControl.ApplyTemplate();
+
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
+            //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+            //    {
+            //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
+            //    }
+
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "EmployeeTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.employeeName;
+            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysInEng.ToString();
+            //    Dispatcher.Invoke(() =>
+            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+            //                                                                                   .Children.Insert(index, contentControl));
+            //}
+
+            //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+            //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
+
+
+
+
+
+
+
+
+            // Old style
             DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
             Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
             StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
@@ -11641,5 +11825,51 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        private void FuzzySearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ContentControl contentControl = MainMenu.FindName("CustomerSearchListBox") as ContentControl;
+            Canvas canvas = (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+                                                                                                      .Children.OfType<Canvas>().First();
+            ListBox listBox = canvas.Children.OfType<ListBox>().First();
+            string searchText = (sender as TextBox).Text;
+
+            if (searchText.Length > 0)
+            {
+                int i = 0;
+                while (!char.IsLetter(searchText[i]) && i < searchText.Length - 1) { i++; }
+                if (i == 0 || i < searchText.Length - 1)
+                {
+                    using var _ = new NECContext();
+
+                    List<string> customers = _.Rm00101.Where(r => r.Custname.ToLower().Contains(searchText.ToLower())).Select(r => r.Custname.Trim()).ToList();
+                    List<(string, double)> scores = new List<(string, double)>();
+
+                    var l = new NormalizedLevenshtein();
+                    double dist = 0.0;
+
+                    foreach (string customer in customers)
+                    {
+                        MessageBox.Show(l.Distance(searchText, customer).ToString());
+                        dist = 1 - l.Distance(searchText, customer);
+                        scores.Add((customer, dist));
+                    }
+
+                    List<string> res = scores.OrderByDescending(s => s.Item2).Take(10).Select(s => s.Item1).ToList();
+
+                    listBox.ItemsSource = res;
+                    _.Dispose();
+                    listBox.Visibility = Visibility.Visible;
+                }
+                else
+                {
+
+                }
+            }
+            else
+            {
+                listBox.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

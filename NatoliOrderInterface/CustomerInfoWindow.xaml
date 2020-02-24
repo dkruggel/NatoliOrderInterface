@@ -1,0 +1,697 @@
+﻿<Window x:Class="NatoliOrderInterface.CustomerInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="CustomerInfoWindow" Height="1020" Width="1875" MinWidth="960" WindowStartupLocation="CenterOwner" >
+    <Window.Resources>
+        <Style x:Key="QuoteHeaderGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="QuoteTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid x:Name="QuoteGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="QuoteNumberTextBlock" Text="Quote #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev #" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenQuote_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>-->
+                                </StackPanel>
+                            </Grid>
+                            <!--<Grid.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Grid.Triggers>-->
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="OrderHeaderGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="OrderTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="Order Number" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>-->
+                                </StackPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                                <!--<EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>-->
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ProjectHeaderGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="ProjectTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="LightGray" BorderThickness="0,0,0,1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid x:Name="ProjectGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="ProjectNumberTextBlock" Text="Project #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>-->
+                                </StackPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                                <!--<EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ArchiveNotificationImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>-->
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="QuoteGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="QuoteTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,0,1">
+
+                            </Border>
+                            <Grid x:Name="QuoteGrid" IsHitTestVisible="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="QuoteNumberTextBlock" Text="Quote Number" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev Number" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenQuote_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Quote" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="OrderGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="OrderTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,0,1">
+
+                            </Border>
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="OrderNumberTextBlock" Text="Order Number" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ProjectGrid" TargetType="{x:Type ContentControl}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="DockPanel.Dock" Value="Top"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate x:Name="ProjectTemplate" TargetType="{x:Type ContentControl}">
+                        <Grid IsHitTestVisible="True" Background="Transparent">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,0,1">
+
+                            </Border>
+                            <Grid x:Name="ProjectGrid" IsHitTestVisible="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="*" MinWidth="80"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="28"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock x:Name="ProjectNumberTextBlock" Text="Project #" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
+                                <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenProject_Click" Visibility="Collapsed">
+                                        <Image.ToolTip>
+                                            <TextBlock Text="Open Project Folder" Foreground="{StaticResource Foreground.Main}"/>
+                                        </Image.ToolTip>
+                                        <Image.Style>
+                                            <Style>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenOrderImage" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <!-- Top row of buttons for nav -->
+        <Border x:Name="NavButtonsBorder" HorizontalAlignment="Stretch" DockPanel.Dock="Top" Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120" Grid.Column="0"/>
+                <Button Style="{StaticResource Button}" Content="Nav Buttons" Width="120" Grid.Column="1"/>
+            </Grid>
+        </Border>
+
+        <!-- Grid for open quotes, orders, projects -->
+        <Border Margin="10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="550"/>
+                    <ColumnDefinition Width="*" MinWidth="550"/>
+                    <ColumnDefinition Width="*" MinWidth="550"/>
+                    <ColumnDefinition Width="250"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="500"/>
+                </Grid.RowDefinitions>
+                <Grid Margin="7,0" Grid.Column="0">
+                    <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                        </Border.Effect>
+                    </Border>
+                    <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                        </Border.Effect>
+                    </Border>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ContentControl Style="{StaticResource QuoteHeaderGrid}" Grid.Row="0"/>
+                        <ScrollViewer x:Name="QuoteScrollViewer" VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+                            <DockPanel x:Name="QuoteDockPanel" LastChildFill="False">
+                            </DockPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+                <Grid Margin="7,0" Grid.Column="1">
+                    <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                        </Border.Effect>
+                    </Border>
+                    <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                        </Border.Effect>
+                    </Border>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ContentControl Style="{StaticResource OrderHeaderGrid}" Grid.Row="0"/>
+                        <ScrollViewer x:Name="OrderScrollViewer" VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+                            <DockPanel x:Name="OrderDockPanel" LastChildFill="False">
+                            </DockPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+                <Grid Margin="7,0" Grid.Column="2">
+                    <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                        </Border.Effect>
+                    </Border>
+                    <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                        </Border.Effect>
+                    </Border>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ContentControl Style="{StaticResource ProjectHeaderGrid}" Grid.Row="0"/>
+                        <ScrollViewer x:Name="ProjectScrollViewer" VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+                            <DockPanel x:Name="ProjectDockPanel" LastChildFill="False">
+                            </DockPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- Grid for reports at bottom -->
+        <Border>
+            <Grid>
+                
+            </Grid>
+        </Border>
+        
+    </DockPanel>
+</Window>

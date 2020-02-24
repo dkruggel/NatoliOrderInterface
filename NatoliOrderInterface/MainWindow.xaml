@@ -360,13 +360,63 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="FuzzySearchWithSuggestions" TargetType="ContentControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="70"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid VerticalAlignment="Top" Margin="0,10,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Border BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1">
+
+                                </Border>
+                                <TextBox x:Name="FuzzySearchTextBox" Style="{StaticResource TextBox}" TextChanged="FuzzySearchTextBox_TextChanged" Grid.Row="0"/>
+                                <Canvas Grid.Row="1">
+                                    <ListBox x:Name="FuzzySearchListBox" Height="Auto" Width="Auto" Visibility="Collapsed" ClipToBounds="False" Grid.Row="1">
+                                        <!--<ListBoxItem Content="Hello"/>
+                                        <ListBoxItem Content="Hello"/>
+                                        <ListBoxItem Content="Hello"/>-->
+                                    </ListBox>
+                                </Canvas>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <DockPanel x:Name="MainDock">
-        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}">
+        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" DockPanel.ZIndex="2">
             <Menu x:Name="MainMenu" Height="40" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Primary.Dark}">
                 <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
             </Menu>
             <DockPanel HorizontalAlignment="Right">
+                <Grid Margin="5,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Customer" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Grid.Column="0" Margin="5,0"/>
+                    <Canvas Grid.Column="1" VerticalAlignment="Top">
+                        <ContentControl x:Name="CustomerSearchListBox" Style="{StaticResource FuzzySearchWithSuggestions}" Panel.ZIndex="1"/>
+                    </Canvas>
+                    <!--<TextBox x:Name="CustomerSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0" Width="120"/>-->
+                </Grid>
+                <Grid Width="110">
+                    <Button x:Name="CustomerSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="View Customer" Click="ProjectSearchButton_Click"/>
+                </Grid>
                 <StackPanel Orientation="Horizontal" Margin="5,0">
                     <TextBlock Text="Project#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
                     <TextBox x:Name="ProjectSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,2,0" Width="50" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" LostFocus="ProjectSearchTextBlock_LostFocus" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
@@ -397,7 +447,7 @@
             </DockPanel>
         </Grid>
 
-        <Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0">
+        <Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0" DockPanel.ZIndex="1">
             <!--<Image x:Name="LoadingAnimation" gif:ImageBehavior.AnimatedSource="/NATOLI_ANIMATION.gif" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="300" MaxWidth="{Binding ActualWidth, ElementName=GridWindow}"/>   xmlns:gif="http://wpfanimatedgif.codeplex.com"  WpfAnimatedGif -->
             <!--
             <Grid.ColumnDefinitions>
@@ -411,7 +461,7 @@
                 <RowDefinition Height="0"/>
             </Grid.RowDefinitions>
             -->
-            </Grid>
+        </Grid>
         
     </DockPanel>
 </Window>
