@@ -9,8 +9,6 @@
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlLightLightColorKey}}"/>
     </Window.Background>
-    <Window.Resources>
-    </Window.Resources>
     <Grid x:Name="MasterGrid" SizeChanged="MasterGrid_SizeChanged" HorizontalAlignment="Center">
         <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteTabItem" Header="Quote" Height="22">
@@ -714,9 +712,8 @@
                 </Border>
             </TabItem>
 
-            <TabItem Style="{StaticResource NormalTabItem}" x:Name="NotesTabItem" Header="Gathering Notes" Height="22" IsEnabled="False" MouseUp="NotesTabItem_MouseUp">
+            <TabItem Style="{StaticResource NormalTabItem}" x:Name="NotesTabItem" Header="Gathering Notes" Height="22" IsEnabled="False" >
                 <Border Padding="0,0,0,0">
-                    <!-- Width="{Binding ActualWidth, ElementName=Quote_Info_Window, Converter={con:ExpressionConverter {}{0} - 15}}"-->
                     <StackPanel Width="{Binding ActualWidth, ElementName=Quote_Info_Window}" Background="WhiteSmoke" Margin="-0,0,0,0">
                         <Border x:Name="ButtonBorder5" BorderBrush="Gray" BorderThickness="0,0,0,2" Background="White" Margin="0,0,21,0">
                             <Grid Margin="0,2,0,4">
@@ -740,8 +737,8 @@
                                 <Button x:Name="NoteButton5" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
-                        <StackPanel Margin="0,0,21,0" Grid.IsSharedSizeScope="True">
-                            <Grid Height="30" >
+                        <DockPanel Margin="6,0,27,0" Grid.IsSharedSizeScope="True">
+                            <Grid DockPanel.Dock="Top" Height="30" Margin="-6,0,-6,0" Background="Transparent">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="70"/>
@@ -757,6 +754,7 @@
                                     <ColumnDefinition SharedSizeGroup="User" Width="Auto"/>
                                     <ColumnDefinition SharedSizeGroup="Timestamp" Width="150"/>
                                     <ColumnDefinition SharedSizeGroup="NotifcationDate" Width="150"/>
+                                    <ColumnDefinition SharedSizeGroup="Buttons" Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="ID" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
                                 <TextBlock Text="Cust. No." Style="{StaticResource BoldTextBlock}" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
@@ -767,22 +765,35 @@
                                 <TextBlock Text="End User Name" Style="{StaticResource BoldTextBlock}" Grid.Column="6" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
                                 <TextBlock Text="Category" Style="{StaticResource BoldTextBlock}" Grid.Column="7" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
                                 <TextBlock Text="Note" Style="{StaticResource BoldTextBlock}" Grid.Column="8" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
-                                <TextBlock Text="Quote#s" Style="{StaticResource BoldTextBlock}" Grid.Column="9" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
-                                <TextBlock Text="Order#s" Style="{StaticResource BoldTextBlock}" Grid.Column="10" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                                <TextBlock Text="Quote #s" Style="{StaticResource BoldTextBlock}" Grid.Column="9" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                                <TextBlock Text="Order #s" Style="{StaticResource BoldTextBlock}" Grid.Column="10" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
                                 <TextBlock Text="User" Style="{StaticResource BoldTextBlock}" Grid.Column="11" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,8,0"/>
                                 <TextBlock Text="Timestamp" Style="{StaticResource BoldTextBlock}" Grid.Column="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
-                                <TextBlock Text="NotificationDate" Style="{StaticResource BoldTextBlock}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                                <TextBlock Text="Notif. Date" Style="{StaticResource BoldTextBlock}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                             </Grid>
-                            <Border Panel.ZIndex="3" BorderBrush="Black" BorderThickness="0,0,0,2">
+                            <Border x:Name="TopBorder" DockPanel.Dock="Top" Panel.ZIndex="3" BorderBrush="{StaticResource Border.MediumDark}" BorderThickness="0,0,0,1">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="3" BlurRadius="6" Direction="270"/>
+                                    <DropShadowEffect ShadowDepth="2" BlurRadius="4" Direction="270"/>
                                 </Border.Effect>
                             </Border>
-                            <ListBox Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch">
+                            <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,-2" BorderThickness="0" Background="Transparent">
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderBrush="{DynamicResource Border.MediumLight}" BorderThickness="0,0,0,2" Padding="10,2,10,4" Margin="-10,-4">
-                                            <Grid ShowGridLines="False" HorizontalAlignment="Stretch"  Margin="0,2">
+                                        <Grid Margin="6,0" Background="Transparent">
+                                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3" IsHitTestVisible="True" Margin="0,-0.5"/>
+                                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3" IsHitTestVisible="True" Margin="0,-0.5"/>
+                                            <Grid Background="Transparent" ShowGridLines="False" HorizontalAlignment="Stretch" MaxHeight="30"  Margin="6,6,6,6">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition SharedSizeGroup="ID"/>
                                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" />
@@ -799,26 +810,101 @@
                                                     <ColumnDefinition SharedSizeGroup="Timestamp" Width="Auto"/>
                                                     <ColumnDefinition SharedSizeGroup="NotifcationDate" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding ID}" Grid.Column="0" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="{Binding CustomerNumber}" Grid.Column="1" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="{Binding CustomerName}" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding ShipToNumber}" Grid.Column="3" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="{Binding ShipToName}" Grid.Column="4" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding EndUserNumber}" Grid.Column="5" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="{Binding EndUserName}" Grid.Column="6" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding Category}" Grid.Column="7" HorizontalAlignment="Left"/>
-                                                <TextBlock Text="{Binding Note}" Grid.Column="8" HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding QuoteNumbers}" Grid.Column="9" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding OrderNumbers}" Grid.Column="10" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding User}" Grid.Column="11" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding Timestamp}" Grid.Column="12" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Text="{Binding NotificationDate}" Grid.Column="13" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="ID" Text="{Binding ID}" Style="{StaticResource NormalTextBlock}" Grid.Column="0" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="CustomerNumber" Text="{Binding CustomerNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="1" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource NormalTextBlock}" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="ShipToNumber" Text="{Binding ShipToNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="3" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="ShipToName" Text="{Binding ShipToName}" Style="{StaticResource NormalTextBlock}" Grid.Column="4" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="EndUserNumber" Text="{Binding EndUserNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="5" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource NormalTextBlock}" Grid.Column="6" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="Category" Text="{Binding Category}" Style="{StaticResource NormalTextBlock}" Grid.Column="7" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="Note" Text="{Binding Note}" Grid.Column="8" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" Margin="10,0" TextWrapping="NoWrap" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="QuoteNumbers" Text="{Binding QuoteNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="9" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="OrderNumbers" Text="{Binding OrderNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="10" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="User" Text="{Binding User}" Style="{StaticResource NormalTextBlock}" Grid.Column="11" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="Timestamp" Text="{Binding Timestamp}" Style="{StaticResource NormalTextBlock}" Grid.Column="12" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <Grid Grid.Column="13">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Tag="NotificationDate" Text="{Binding NotificationDate}" Grid.Column="0" HorizontalAlignment="Left" Margin="10,0"/>
+                                                    <Button x:Name="OpenButton" Tag="Button" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" Click="NoteListBoxButton_Click">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Image Source="{DynamicResource OpenOrderDrawingImage}" Cursor="Hand" Visibility="Visible"/>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </Grid>
                                             </Grid>
-                                        </Border>
+                                            <Grid.Triggers>
+                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="MouseLeave">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="Loaded">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumLight}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Grid.Triggers>
+                                        </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                        </StackPanel>
+                            <Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="4" BorderBrush="{StaticResource Border.MediumDark}" BorderThickness="0,1,0,0">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="2" BlurRadius="4" Direction="90"/>
+                                </Border.Effect>
+                            </Border>
+                        </DockPanel>
                     </StackPanel>
                 </Border>
             </TabItem>
@@ -898,7 +984,6 @@
                     </DockPanel>
                     <TextBlock Width="520" HorizontalAlignment="Right" DockPanel.Dock="Bottom" TextWrapping="Wrap">
                         This is only meant to remind you of options that may be needed and is not to be followed blindly.
-                        This will suggest 5 more options regardless of whether the tooling actually needs it.
                     </TextBlock>
                 </DockPanel>
             </TabItem>
