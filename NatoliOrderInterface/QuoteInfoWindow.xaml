@@ -738,7 +738,7 @@
                             </Grid>
                         </Border>
                         <DockPanel Margin="6,0,27,0" Grid.IsSharedSizeScope="True">
-                            <Grid DockPanel.Dock="Top" Height="30" Margin="-6,0,-6,0" Background="Transparent">
+                            <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Margin="-6,0,-6,0" Background="{StaticResource Secondary.Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="70"/>
@@ -771,13 +771,13 @@
                                 <TextBlock Text="Timestamp" Style="{StaticResource BoldTextBlock}" Grid.Column="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                                 <TextBlock Text="Notif. Date" Style="{StaticResource BoldTextBlock}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                             </Grid>
-                            <Border x:Name="TopBorder" Panel.ZIndex="3" DockPanel.Dock="Top" Margin="0,0" BorderBrush="{StaticResource Tertiary.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3">
+                            <Border x:Name="TopBorder" Panel.ZIndex="3" DockPanel.Dock="Top" Margin="-8,0,-8,0" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,1,1" CornerRadius="0">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="5" ShadowDepth="2.5" Direction="270" Color="Black" Opacity="0.75"/>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="270" Color="black" Opacity=".75"/>
                                 </Border.Effect>
                             </Border>
                             
-                            <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,-1,-8,0" BorderThickness="0" Background="Transparent">
+                            <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,2,-8,0" BorderThickness="0" Background="Transparent">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
                                         <Setter Property="Template">
@@ -791,9 +791,9 @@
                                 </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="6,0" Background="Transparent">
-                                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,1,1" CornerRadius="3" IsHitTestVisible="True" Margin="0,0"/>
-                                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="1,1,0,0" CornerRadius="3" IsHitTestVisible="True" Margin="0,0"/>
+                                        <Grid Margin="0,0" Background="Transparent">
+                                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                            <Border x:Name="GridBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,1,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                             <Grid Background="Transparent" ShowGridLines="False" HorizontalAlignment="Stretch" MaxHeight="30"  Margin="6,6,6,6">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition SharedSizeGroup="ID"/>
@@ -811,19 +811,19 @@
                                                     <ColumnDefinition SharedSizeGroup="Timestamp" Width="Auto"/>
                                                     <ColumnDefinition SharedSizeGroup="NotifcationDate" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Tag="ID" Text="{Binding ID}" Style="{StaticResource NormalTextBlock}" Grid.Column="0" HorizontalAlignment="Left"/>
-                                                <TextBlock Tag="CustomerNumber" Text="{Binding CustomerNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="1" HorizontalAlignment="Left"/>
-                                                <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource NormalTextBlock}" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="ShipToNumber" Text="{Binding ShipToNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="3" HorizontalAlignment="Left"/>
-                                                <TextBlock Tag="ShipToName" Text="{Binding ShipToName}" Style="{StaticResource NormalTextBlock}" Grid.Column="4" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="EndUserNumber" Text="{Binding EndUserNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="5" HorizontalAlignment="Left"/>
-                                                <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource NormalTextBlock}" Grid.Column="6" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="Category" Text="{Binding Category}" Style="{StaticResource NormalTextBlock}" Grid.Column="7" HorizontalAlignment="Left"/>
+                                                <TextBlock Tag="ID" Text="{Binding ID}" Style="{StaticResource NormalTextBlock}" Grid.Column="0" HorizontalAlignment="Left" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="CustomerNumber" Text="{Binding CustomerNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="1" HorizontalAlignment="Left" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource NormalTextBlock}" Grid.Column="2" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis" TextWrapping="NoWrap"/>
+                                                <TextBlock Tag="ShipToNumber" Text="{Binding ShipToNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="3" HorizontalAlignment="Left" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="ShipToName" Text="{Binding ShipToName}" Style="{StaticResource NormalTextBlock}" Grid.Column="4" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="EndUserNumber" Text="{Binding EndUserNumber}" Style="{StaticResource NormalTextBlock}" Grid.Column="5" HorizontalAlignment="Left" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource NormalTextBlock}" Grid.Column="6" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="Category" Text="{Binding Category}" Style="{StaticResource NormalTextBlock}" Grid.Column="7" HorizontalAlignment="Left" TextTrimming="WordEllipsis"/>
                                                 <TextBlock Tag="Note" Text="{Binding Note}" Grid.Column="8" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Left" Margin="10,0" TextWrapping="NoWrap" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" TextTrimming="WordEllipsis"/>
-                                                <TextBlock Tag="QuoteNumbers" Text="{Binding QuoteNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="9" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="OrderNumbers" Text="{Binding OrderNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="10" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="User" Text="{Binding User}" Style="{StaticResource NormalTextBlock}" Grid.Column="11" HorizontalAlignment="Left" Margin="10,0"/>
-                                                <TextBlock Tag="Timestamp" Text="{Binding Timestamp}" Style="{StaticResource NormalTextBlock}" Grid.Column="12" HorizontalAlignment="Left" Margin="10,0"/>
+                                                <TextBlock Tag="QuoteNumbers" Text="{Binding QuoteNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="9" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="OrderNumbers" Text="{Binding OrderNumbers}" Style="{StaticResource NormalTextBlock}" Grid.Column="10" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="User" Text="{Binding User}" Style="{StaticResource NormalTextBlock}" Grid.Column="11" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
+                                                <TextBlock Tag="Timestamp" Text="{Binding Timestamp}" Style="{StaticResource NormalTextBlock}" Grid.Column="12" HorizontalAlignment="Left" Margin="10,0" TextTrimming="WordEllipsis"/>
                                                 <Grid Grid.Column="13">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition/>
@@ -852,6 +852,12 @@
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
                                                             </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Border.MediumDark}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
                                                                 <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
                                                             </ThicknessAnimationUsingKeyFrames>
@@ -877,6 +883,9 @@
                                                             <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
                                                                 <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                             </ThicknessAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                             </ObjectAnimationUsingKeyFrames>
@@ -898,6 +907,9 @@
                                                             <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
                                                                 <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                             </ThicknessAnimationUsingKeyFrames>
+                                                            <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                            </ThicknessAnimationUsingKeyFrames>
                                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
                                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                             </ObjectAnimationUsingKeyFrames>
@@ -909,9 +921,9 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                            <Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="4"  BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3">
+                            <Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="3" Margin="-8,0"  BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0">
                                 <Border.Effect>
-                                    <DropShadowEffect BlurRadius="4" ShadowDepth="2" Direction="90" Color="LightGray" Opacity=".9"/>
+                                    <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="90" Color="LightGray" Opacity=".75"/>
                                 </Border.Effect>
                             </Border>
                         </DockPanel>
