@@ -25,6 +25,7 @@ using Windows.ApplicationModel;
 using WpfAnimatedGif;
 using NatoliOrderInterface.FolderIntegrity;
 using F23.StringSimilarity;
+using NatoliOrderInterface;
 
 namespace NatoliOrderInterface
 {

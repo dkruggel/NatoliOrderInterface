@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Interop;
+using System.ComponentModel;
 
 namespace NatoliOrderInterface
 {
@@ -67,6 +68,7 @@ namespace NatoliOrderInterface
         private bool validData;
         private bool isFirstTimeEntering;
         private WorkOrder workOrder;
+        private ListBox NotesListBox = new ListBox();
         private List<EoiCustomerNotes> notes = new List<EoiCustomerNotes>();
         public List<EoiCustomerNotes> Notes
         { 
@@ -82,7 +84,7 @@ namespace NatoliOrderInterface
                     NotesListBox.ItemsSource = null;
                     NotesListBox.ItemsSource = notes;
                 }
-            } 
+            }
         }
 
         private string lastHeader = "Quote";
@@ -186,7 +188,6 @@ namespace NatoliOrderInterface
                     IMethods.WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message, user);
                 }
             }
-            
             Show();
         }
 
@@ -2885,6 +2886,15 @@ namespace NatoliOrderInterface
                 {
                     Dispatcher.Invoke(() =>
                     {
+                        FillQuoteInfoPage();
+                        ChangeLineItemScrollerHeight();
+                    }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
+                
+                await Task.Factory.StartNew(() =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
                         FillSMIAndScratchPadPage();
                         ChangeSMIScrollHeights();
                         SMITabItem.Header = "Price/SMI Check";
@@ -2906,6 +2916,9 @@ namespace NatoliOrderInterface
                     List<EoiCustomerNotes> eoiCustomerNotes = GetCustomerNotes(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), quote.CustomerNo, quote.ShipToAccountNo, quote.UserAcctNo);
                     Dispatcher.Invoke(() =>
                     {
+                        CustomerNotesModule.ApplyTemplate();
+                        DockPanel dockPanel = (VisualTreeHelper.GetChild(CustomerNotesModule as DependencyObject, 0) as DockPanel);
+                        NotesListBox = dockPanel.Children.OfType<ListBox>().First();
                         Notes = eoiCustomerNotes;
                         NotesTabItem.Header = "Notes";
                         NotesTabItem.IsEnabled = true;
@@ -3000,6 +3013,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("QuoteInfowWindow.cs => Quote_Info_Window_ContentRendered; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, user);
             }
         }
+
         private void QuoteTopHeaderExpander_Collapsed(object sender, RoutedEventArgs e)
         {
             ChangeLineItemScrollerHeight();
@@ -3363,16 +3377,6 @@ namespace NatoliOrderInterface
         private void NoteButton_Click(object sender, RoutedEventArgs e)
         {
             CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, quote.QuoteNumber, quote.QuoteRevNo ?? 0);
-            customerNoteWindow.Show();
-        }
-        private void NoteListBoxButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            Grid childGrid = (Grid)button.Parent;
-            Grid grid = (Grid)childGrid.Parent;
-
-            int id = Convert.ToInt32(((TextBlock)grid.Children.OfType<TextBlock>().First(tb => tb.Tag.ToString() == "ID")).Text);
-            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, user);
             customerNoteWindow.Show();
         }
         #endregion

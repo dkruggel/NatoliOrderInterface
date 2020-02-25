@@ -737,7 +737,9 @@
                                 <Button x:Name="NoteButton5" Content="Note" Style="{StaticResource Button}" Grid.Column="7" HorizontalAlignment="Stretch" ToolTip="Opens New Customer Note" Margin="4,0,8,0" Click="NoteButton_Click"/>
                             </Grid>
                         </Border>
-                        <DockPanel Margin="6,0,27,0" Grid.IsSharedSizeScope="True">
+                        <Label Style="{StaticResource CustomerNotesModule}" x:Name="CustomerNotesModule"/>
+                        <!--#region -->
+                        <!--<DockPanel Margin="6,0,27,0" Grid.IsSharedSizeScope="True">
                             <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Margin="-6,0,-6,0" Background="{StaticResource Secondary.Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
@@ -776,7 +778,6 @@
                                     <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="270" Color="black" Opacity=".75"/>
                                 </Border.Effect>
                             </Border>
-                            
                             <ListBox DockPanel.Dock="Top" Panel.ZIndex="2" x:Name="NotesListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="-8,2,-8,0" BorderThickness="0" Background="Transparent">
                                 <ListBox.ItemContainerStyle>
                                     <Style TargetType="ListBoxItem">
@@ -926,7 +927,8 @@
                                     <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="90" Color="LightGray" Opacity=".75"/>
                                 </Border.Effect>
                             </Border>
-                        </DockPanel>
+                        </DockPanel>-->
+                        <!--#endregion-->
                     </StackPanel>
                 </Border>
             </TabItem>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.FileExtensions;
 using System.IO;
 using System;
+using System.Windows.Controls;
 
 namespace NatoliOrderInterface
 {
@@ -23,8 +24,7 @@ namespace NatoliOrderInterface
         public static string SmtpServer;
         public static int? SmtpPort;
         public static List<string> StandardKeys = new List<string> { "N-6600-32M", "N-6600-01M", "N-6600-02M", "N-6600-03M", "N-7080-02M", "N-6010", "N-6441", "N-6441M", "N-6653", "N-6652", "N-6445", "N-6444" };
-        
-        
+
         public static void GetConnectionString()
         {
             try
@@ -97,6 +97,17 @@ namespace NatoliOrderInterface
             {
                 IMethods.WriteToErrorLog("App.Xaml.cs => GetEmailSettings()", ex.Message, null);
             }
+        }
+
+        private void OpenNotesButtonButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            Grid childGrid = (Grid)button.Parent;
+            Grid grid = (Grid)childGrid.Parent;
+
+            int id = Convert.ToInt32(((TextBlock)grid.Children.OfType<TextBlock>().First(tb => tb.Tag.ToString() == "ID")).Text);
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, new User(Environment.UserName));
+            customerNoteWindow.Show();
         }
     }
 }
