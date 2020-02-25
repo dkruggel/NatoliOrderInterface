@@ -39,7 +39,7 @@ namespace NatoliOrderInterface
 
             InitializeComponent();
 
-            FillQuoteList();
+            // FillQuoteList();
             FillOrderList();
             FillProjectList();
         }
@@ -76,7 +76,7 @@ namespace NatoliOrderInterface
                 (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRevNumberTextBlock").Text = quote.QuoteRevNo.ToString();
                 (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = customerName;
 
-                QuoteDockPanel.Children.Add(contentControl);
+                // QuoteDockPanel.Children.Add(contentControl);
             }
         }
 
