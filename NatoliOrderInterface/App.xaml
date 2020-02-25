@@ -7246,6 +7246,12 @@
         </DrawingImage>
         
         <!--#region Zwicon Icons-->
+        <!-- 
+        These icons are licensed under the
+        Creative Commons Attribution-NoDerivatives 4.0 International License.
+        Icons are from https://www.zwicon.com/
+        Any changes must be called out and originals must be unaltered
+        -->
         <DrawingImage x:Key="bellDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
