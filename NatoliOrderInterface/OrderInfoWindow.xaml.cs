@@ -1277,8 +1277,8 @@ namespace NatoliOrderInterface
         }
         private void Order_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
-            WindowState = parent.WindowState;
             
+
             if (!Environment.CurrentDirectory.Contains("Debug"))
             {
                 using var _nat02context = new NAT02Context();
@@ -1292,7 +1292,7 @@ namespace NatoliOrderInterface
                 _nat02context.SaveChanges();
                 _nat02context.Dispose();
             }
-
+            
             //using var _nat02context = new NAT02Context();
             //var orderBeingChecked = new EoiOrdersBeingChecked()
             //{
@@ -1303,7 +1303,12 @@ namespace NatoliOrderInterface
 
             //_nat02context.SaveChanges();
             //_nat02context.Dispose();
-            Dispatcher.Invoke(() => { ButtonRefresh(); });
+            Dispatcher.Invoke(() => {
+                WindowState = parent.WindowState;
+                this.Topmost = true;
+                this.Focus(); 
+                ButtonRefresh(); 
+            });
         }
         private void Order_Info_Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {

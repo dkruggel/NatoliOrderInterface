@@ -2877,6 +2877,8 @@ namespace NatoliOrderInterface
         private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowState = parent.WindowState;
+            this.Topmost = true;
+            this.Focus();
         }
         private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
         {
