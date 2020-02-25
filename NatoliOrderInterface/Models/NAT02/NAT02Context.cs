@@ -75,8 +75,6 @@ namespace NatoliOrderInterface.Models
 
                 entity.ToView("EOI_AllOrdersView");
 
-                entity.Property(e => e.BeingEntered).HasColumnName("Being Entered");
-
                 entity.Property(e => e.CheckedBy)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -94,14 +92,6 @@ namespace NatoliOrderInterface.Models
                     .HasMaxLength(75)
                     .IsUnicode(false);
 
-                entity.Property(e => e.EnteredUnscanned).HasColumnName("Entered Unscanned");
-
-                entity.Property(e => e.InEngineering).HasColumnName("In Engineering");
-
-                entity.Property(e => e.InTheOffice).HasColumnName("In The Office");
-
-                entity.Property(e => e.OrderNumber).HasColumnName("Order Number");
-
                 entity.Property(e => e.PaidRushFee)
                     .HasMaxLength(1)
                     .IsUnicode(false)
@@ -110,12 +100,6 @@ namespace NatoliOrderInterface.Models
                 entity.Property(e => e.ProcessState)
                     .HasMaxLength(25)
                     .IsUnicode(false);
-
-                entity.Property(e => e.QuoteNumber).HasColumnName("Quote Number");
-
-                entity.Property(e => e.QuoteRev).HasColumnName("Quote Rev");
-
-                entity.Property(e => e.ReadyToPrint).HasColumnName("Ready To Print");
 
                 entity.Property(e => e.RushYorN)
                     .HasMaxLength(1)

@@ -337,6 +337,9 @@ namespace NatoliOrderInterface
 #if DEBUG
             //CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, "1023902");
             //customerInfoWindow.Show();
+
+            TestWindow testWindow = new TestWindow();
+            testWindow.Show();
 #endif
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
