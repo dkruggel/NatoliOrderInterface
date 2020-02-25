@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using NatoliOrderInterface.Models.NAT01;
+using System.Windows;
 
 namespace NatoliOrderInterface
 {
@@ -219,181 +220,188 @@ namespace NatoliOrderInterface
             DieMajorDiameter = row.DieMajorDiameter;
             FinishedGood = bool.Parse(row.FinishedGood.ToString());
             BoreCircle = row.BoreCircle;
-            if (!(quoteDetailOptions is null))
+            try
             {
-                if (Quote.UnitOfMeasure != 'M')
+                if (!(quoteDetailOptions is null))
                 {
-                    short i = 0;
-                    foreach (QuoteDetailOptions option in quoteDetailOptions.Where(q => q.OptionCode.Trim().Length != 0))
+                    if (Quote.UnitOfMeasure != 'M')
                     {
-                        string optionNo = option.OptionCode.ToString().Trim();
-                        string optionText = option.OptionText.ToString().Trim();
-                        string[] printables = null;
-                        string letter = optionsList.Where(x => x.OptionCode.Trim() == optionNo).FirstOrDefault().ValueType.ToString().Trim();
-                        switch (letter)
+                        short i = 0;
+                        foreach (QuoteDetailOptions option in quoteDetailOptions.Where(q => q.OptionCode.Trim().Length != 0))
                         {
-                            case "A":
-                                printables = !optionValuesA.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "B":
-                                printables = !optionValuesB.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() == "Diameter" ? new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim(), " X ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text2.ToString().Trim() };
-                                break;
-                            case "C":
-                                printables = !optionValuesC.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "+", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopValue), "/-", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomValue) };
-                                break;
-                            case "D":
-                                printables = !optionValuesD.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees == 0 && optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value == 0 ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees X ", String.Format("{0:0.0000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value), " ", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "E":
-                                printables = !optionValuesE.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesE.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SmallText.ToString().Trim() };
-                                break;
-                            case "F":
-                                printables = !optionValuesF.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesF.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().LargeText.ToString().Trim() };
-                                break;
-                            case "G":
-                                printables = !optionValuesG.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees ", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "H":
-                                printables = !optionValuesH.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesH.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness.ToString().Trim() };
-                                break;
-                            case "I":
-                                printables = !optionValuesI.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness1.ToString().Trim(), "-", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness2.ToString().Trim() };
-                                break;
-                            case "J":
-                                printables = !optionValuesJ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "K":
-                                printables = !optionValuesK.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "L":
-                                printables = !optionValuesL.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SurfaceTreatment.ToString().Trim(), " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().VendorId.ToString().Trim() };
-                                break;
-                            case "M":
-                                printables = !optionValuesM.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesM.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Screw.ToString().Trim() };
-                                break;
-                            case "N":
-                                printables = !optionValuesN.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesN.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Color.ToString().Trim() };
-                                break;
-                            case "O":
-                                printables = !optionValuesO.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim(), " ", String.Format("{0:0.0000}", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BoreCircle), " Bore Circle" };
-                                break;
-                            case "P":
-                                printables = !optionValuesP.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().DegreesDecimal), " ", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "Q":
-                                printables = !optionValuesQ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "R":
-                                printables = !optionValuesR.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "S":
-                                printables = !optionValuesS.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "T":
-                                printables = !optionValuesT.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            default:
-                                printables = new string[] { optionText };
-                                break;
+                            string optionNo = option.OptionCode.ToString().Trim();
+                            string optionText = option.OptionText.ToString().Trim();
+                            string[] printables = null;
+                            string letter = optionsList.Where(x => x.OptionCode.Trim() == optionNo).FirstOrDefault().ValueType.ToString().Trim();
+                            switch (letter)
+                            {
+                                case "A":
+                                    printables = !optionValuesA.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "B":
+                                    printables = !optionValuesB.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() == "Diameter" ? new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim(), " X ", String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2), " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text2.ToString().Trim() };
+                                    break;
+                                case "C":
+                                    printables = !optionValuesC.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "+", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopValue), "/-", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomValue) };
+                                    break;
+                                case "D":
+                                    printables = !optionValuesD.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees == 0 && optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value == 0 ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees X ", String.Format("{0:0.0000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value), " ", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "E":
+                                    printables = !optionValuesE.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesE.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SmallText.ToString().Trim() };
+                                    break;
+                                case "F":
+                                    printables = !optionValuesF.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesF.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().LargeText.ToString().Trim() };
+                                    break;
+                                case "G":
+                                    printables = !optionValuesG.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees ", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "H":
+                                    printables = !optionValuesH.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesH.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness.ToString().Trim() };
+                                    break;
+                                case "I":
+                                    printables = !optionValuesI.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness1.ToString().Trim(), "-", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness2.ToString().Trim() };
+                                    break;
+                                case "J":
+                                    printables = !optionValuesJ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "K":
+                                    printables = !optionValuesK.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "L":
+                                    printables = !optionValuesL.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SurfaceTreatment.ToString().Trim(), " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().VendorId.ToString().Trim() };
+                                    break;
+                                case "M":
+                                    printables = !optionValuesM.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesM.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Screw.ToString().Trim() };
+                                    break;
+                                case "N":
+                                    printables = !optionValuesN.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesN.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Color.ToString().Trim() };
+                                    break;
+                                case "O":
+                                    printables = !optionValuesO.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim(), " ", String.Format("{0:0.0000}", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BoreCircle), " Bore Circle" };
+                                    break;
+                                case "P":
+                                    printables = !optionValuesP.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.0000}", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().DegreesDecimal), " ", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "Q":
+                                    printables = !optionValuesQ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "R":
+                                    printables = !optionValuesR.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "S":
+                                    printables = !optionValuesS.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "T":
+                                    printables = !optionValuesT.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                default:
+                                    printables = new string[] { optionText };
+                                    break;
+                            }
+                            if (!(printables is null) && printables.Length == 1 && printables[0] == "TIP LENGTH")
+                            {
+                                printables[0] = "TIP LENGTH FOR OIL SEALS";
+                            }
+                            OptionPrice.Add(optionNo, option.OptionType == "P" ? option.OrdDetOptPercnt : option.OrdDetOptPrice);
+                            OptionType.Add(optionNo, option.OptionType);
+                            OptionNumbers.Add(optionNo);
+                            Options.Add(i, printables is null ? new string[] { "" } : printables);
+                            i++;
                         }
-                        if (!(printables is null) && printables.Length == 1 && printables[0] == "TIP LENGTH")
-                        {
-                            printables[0] = "TIP LENGTH FOR OIL SEALS";
-                        }
-                        OptionPrice.Add(optionNo, option.OptionType == "P" ? option.OrdDetOptPercnt : option.OrdDetOptPrice);
-                        OptionType.Add(optionNo, option.OptionType);
-                        OptionNumbers.Add(optionNo);
-                        Options.Add(i, printables is null ? new string[] { "" } : printables);
-                        i++;
                     }
-                }
-                else
-                {
-                    short i = 0;
-                    foreach (QuoteDetailOptions option in quoteDetailOptions.Where(q => q.OptionCode.Trim().Length != 0))
+                    else
                     {
-                        string optionNo = option.OptionCode.ToString().Trim();
-                        string optionText = option.OptionText.ToString().Trim();
-                        string[] printables = null;
-                        string letter = optionsList.Where(x => x.OptionCode.Trim() == optionNo).FirstOrDefault().ValueType.ToString().Trim();
-                        switch (letter)
+                        short i = 0;
+                        foreach (QuoteDetailOptions option in quoteDetailOptions.Where(q => q.OptionCode.Trim().Length != 0))
                         {
-                            case "A":
-                                printables = !optionValuesA.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "B":
-                                printables = !optionValuesB.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() == "Diameter" ? new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() } : new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim(), " X ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text2.ToString().Trim() };
-                                break;
-                            case "C":
-                                printables = !optionValuesC.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "+", String.Format("{0:0.000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopMm), "/-", String.Format("{0:0.000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomMm) + "mm ", "(+", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopValue), "/-", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomValue) + "\")" };
-                                break;
-                            case "D":
-                                printables = !optionValuesD.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees == 0 && optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value == 0 ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees X ", String.Format("{0:0.000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().ValueMm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value) + "\")", " ", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "E":
-                                printables = !optionValuesE.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesE.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SmallText.ToString().Trim() };
-                                break;
-                            case "F":
-                                printables = !optionValuesF.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesF.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().LargeText.ToString().Trim() };
-                                break;
-                            case "G":
-                                printables = !optionValuesG.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees ", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "H":
-                                printables = !optionValuesH.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesH.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness.ToString().Trim() };
-                                break;
-                            case "I":
-                                printables = !optionValuesI.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness1.ToString().Trim(), "-", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness2.ToString().Trim() };
-                                break;
-                            case "J":
-                                printables = !optionValuesJ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "K":
-                                printables = !optionValuesK.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "L":
-                                printables = !optionValuesL.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SurfaceTreatment.ToString().Trim(), " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().VendorId.ToString().Trim() };
-                                break;
-                            case "M":
-                                printables = !optionValuesM.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesM.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Screw.ToString().Trim() };
-                                break;
-                            case "N":
-                                printables = !optionValuesN.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesN.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Color.ToString().Trim() };
-                                break;
-                            case "O":
-                                printables = !optionValuesO.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim(), " ", "(" + String.Format("{0:0.0000}", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BoreCircle) + "\")", " Bore Circle" };
-                                break;
-                            case "P":
-                                printables = !optionValuesP.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "(" + String.Format("{0:0.0000}", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().DegreesDecimal) + "\")", " ", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "Q":
-                                printables = !optionValuesQ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "R":
-                                printables = !optionValuesR.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
-                                break;
-                            case "S":
-                                printables = !optionValuesS.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            case "T":
-                                printables = !optionValuesT.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
-                                break;
-                            default:
-                                printables = new string[] { optionText };
-                                break;
+                            string optionNo = option.OptionCode.ToString().Trim();
+                            string optionText = option.OptionText.ToString().Trim();
+                            string[] printables = null;
+                            string letter = optionsList.Where(x => x.OptionCode.Trim() == optionNo).FirstOrDefault().ValueType.ToString().Trim();
+                            switch (letter)
+                            {
+                                case "A":
+                                    printables = !optionValuesA.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesA.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "B":
+                                    printables = !optionValuesB.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() == "Diameter" ? new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim() } : new string[] { optionText, " ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number1) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text1.ToString().Trim(), " X ", String.Format("{0:0.000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2Mm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Number2) + "\")", " ", optionValuesB.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text2.ToString().Trim() };
+                                    break;
+                                case "C":
+                                    printables = !optionValuesC.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "+", String.Format("{0:0.000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopMm), "/-", String.Format("{0:0.000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomMm) + "mm ", "(+", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().TopValue), "/-", String.Format("{0:0.0000}", optionValuesC.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BottomValue) + "\")" };
+                                    break;
+                                case "D":
+                                    printables = !optionValuesD.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees == 0 && optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value == 0 ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees X ", String.Format("{0:0.000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().ValueMm) + "mm ", "(" + String.Format("{0:0.0000}", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Value) + "\")", " ", optionValuesD.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "E":
+                                    printables = !optionValuesE.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesE.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SmallText.ToString().Trim() };
+                                    break;
+                                case "F":
+                                    printables = !optionValuesF.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesF.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().LargeText.ToString().Trim() };
+                                    break;
+                                case "G":
+                                    printables = !optionValuesG.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", String.Format("{0:0.####}", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Degrees), " Degrees ", optionValuesG.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "H":
+                                    printables = !optionValuesH.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesH.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness.ToString().Trim() };
+                                    break;
+                                case "I":
+                                    printables = !optionValuesI.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness1.ToString().Trim(), "-", optionValuesI.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Hardness2.ToString().Trim() };
+                                    break;
+                                case "J":
+                                    printables = !optionValuesJ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "K":
+                                    printables = !optionValuesK.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "L":
+                                    printables = !optionValuesL.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().SurfaceTreatment.ToString().Trim(), " ", optionValuesL.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().VendorId.ToString().Trim() };
+                                    break;
+                                case "M":
+                                    printables = !optionValuesM.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesM.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Screw.ToString().Trim() };
+                                    break;
+                                case "N":
+                                    printables = !optionValuesN.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesN.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Color.ToString().Trim() };
+                                    break;
+                                case "O":
+                                    printables = !optionValuesO.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim(), " ", "(" + String.Format("{0:0.0000}", optionValuesO.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().BoreCircle) + "\")", " Bore Circle" };
+                                    break;
+                                case "P":
+                                    printables = !optionValuesP.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", "(" + String.Format("{0:0.0000}", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().DegreesDecimal) + "\")", " ", optionValuesP.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "Q":
+                                    printables = !optionValuesQ.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "R":
+                                    printables = !optionValuesR.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText, " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Integer.ToString().Trim(), " ", optionValuesR.Where(o => o.OptionCode.ToString().Trim() == optionNo).FirstOrDefault().Text.ToString().Trim() };
+                                    break;
+                                case "S":
+                                    printables = !optionValuesS.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                case "T":
+                                    printables = !optionValuesT.Any(o => o.OptionCode.ToString().Trim() == optionNo) ? new string[] { optionText } : new string[] { optionText };
+                                    break;
+                                default:
+                                    printables = new string[] { optionText };
+                                    break;
+                            }
+                            if (!(printables is null) && printables.Length == 1 && printables[0] == "TIP LENGTH")
+                            {
+                                printables[0] = "TIP LENGTH FOR OIL SEALS";
+                            }
+                            OptionPrice.Add(optionNo, option.OptionType == "P" ? option.OrdDetOptPercnt : option.OrdDetOptPrice);
+                            OptionType.Add(optionNo, option.OptionType);
+                            OptionNumbers.Add(optionNo);
+                            Options.Add(i, printables is null ? new string[] { "" } : printables);
+                            i++;
                         }
-                        if (!(printables is null) && printables.Length == 1 && printables[0] == "TIP LENGTH")
-                        {
-                            printables[0] = "TIP LENGTH FOR OIL SEALS";
-                        }
-                        OptionPrice.Add(optionNo, option.OptionType == "P" ? option.OrdDetOptPercnt : option.OrdDetOptPrice);
-                        OptionType.Add(optionNo, option.OptionType);
-                        OptionNumbers.Add(optionNo);
-                        Options.Add(i, printables is null ? new string[] { "" } : printables);
-                        i++;
                     }
-                }
 
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         public void GetOptionValues(int quoteNo, short revNo, string lineType)
