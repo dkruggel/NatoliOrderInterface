@@ -1012,14 +1012,14 @@ namespace NatoliOrderInterface
                     if (active > 0)
                     {
                         MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                        var bell = App.Current.Resources["Bell_With_LayersDrawingImage_" + (active < 11 ? active : 11).ToString()] as DrawingImage;
+                        var bell = App.Current.Resources["bell_alt_ringDrawingImage"] as DrawingImage;
                         var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
                         image.Source = bell as ImageSource;
                     }
                     else
                     {
                         MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                        var bell = App.Current.Resources["Bell_With_LayersDrawingImage"] as DrawingImage;
+                        var bell = App.Current.Resources["bellDrawingImage"] as DrawingImage;
                         var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
                         image.Source = bell as ImageSource;
                     }
