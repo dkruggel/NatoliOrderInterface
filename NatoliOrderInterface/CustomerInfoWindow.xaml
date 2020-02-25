@@ -21,7 +21,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="QuoteGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="QuoteGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="80"/>
@@ -156,7 +156,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="85"/>
@@ -277,7 +277,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="ProjectGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="ProjectGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="175"/>

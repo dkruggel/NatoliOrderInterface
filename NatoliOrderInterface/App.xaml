@@ -6,44 +6,18 @@
     <Application.Resources>
         <!-- Colors -->
         <!--#region -->
-        <Color x:Key="Primary.Light.Color">#8A97A2</Color>
-        <Color x:Key="Primary.MediumLight.Color">#647786</Color>
-        <Color x:Key="Primary.Medium.Color">#485E70</Color>
-        <Color x:Key="Primary.MediumDark.Color">#324859</Color>
-        <Color x:Key="Primary.Dark.Color">#1E364A</Color>
+        <Color x:Key="Light.Color">#B3EFFF</Color>
+        <Color x:Key="Bright.Color">#00CFFF</Color>
+        <Color x:Key="Medium.Color">#046B99</Color>
+        <Color x:Key="Dark.Color">#1C304A</Color>
 
-        <Color x:Key="Secondary.Light.Color">#FBF1D4</Color>
-        <Color x:Key="Secondary.MediumLight.Color">#D0C298</Color>
-        <Color x:Key="Secondary.Medium.Color">#AD9D6B</Color>
-        <Color x:Key="Secondary.MediumDark.Color">#8A7A4A</Color>
-        <Color x:Key="Secondary.Dark.Color">#726029</Color>
-
-        <Color x:Key="Tertiary.Light.Color">#FBDFD4</Color>
-        <Color x:Key="Tertiary.MediumLight.Color">#D0A898</Color>
-        <Color x:Key="Tertiary.Medium.Color">#AD7E6B</Color>
-        <Color x:Key="Tertiary.MediumDark.Color">#8A5C4A</Color>
-        <Color x:Key="Tertiary.Dark.Color">#723E29</Color>
-
+        <SolidColorBrush x:Key="Light" Color="{StaticResource Light.Color}"/>
+        <SolidColorBrush x:Key="Bright" Color="{StaticResource Bright.Color}"/>
+        <SolidColorBrush x:Key="Medium" Color="{StaticResource Medium.Color}"/>
+        <SolidColorBrush x:Key="Dark" Color="{StaticResource Dark.Color}"/>
+        
         <SolidColorBrush x:Key="GridBorder.Top" Color="White" Opacity="1"/>
         <SolidColorBrush x:Key="GridBorder.Bottom" Color="LightGray" Opacity="1"/>
-
-        <SolidColorBrush x:Key="Primary.Light" Color="{StaticResource Primary.Light.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.MediumLight" Color="{StaticResource Primary.MediumLight.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.Medium" Color="{StaticResource Primary.Medium.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.MediumDark" Color="{StaticResource Primary.MediumDark.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Primary.Dark" Color="{StaticResource Primary.Dark.Color}" Opacity="1"/>
-
-        <SolidColorBrush x:Key="Secondary.Light" Color="{StaticResource Secondary.Light.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.MediumLight" Color="{StaticResource Secondary.MediumLight.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.Medium" Color="{StaticResource Secondary.Medium.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.MediumDark" Color="{StaticResource Secondary.MediumDark.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Secondary.Dark" Color="{StaticResource Secondary.Dark.Color}" Opacity="1"/>
-
-        <SolidColorBrush x:Key="Tertiary.Light" Color="{StaticResource Tertiary.Light.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.MediumLight" Color="{StaticResource Tertiary.MediumLight.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.Medium" Color="{StaticResource Tertiary.Medium.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.MediumDark" Color="{StaticResource Tertiary.MediumDark.Color}" Opacity="1"/>
-        <SolidColorBrush x:Key="Tertiary.Dark" Color="{StaticResource Tertiary.Dark.Color}" Opacity="1"/>
         <!--#endregion-->
         
         <Thickness x:Key="TopBorderThickness" Left="1" Top="1" Right="0" Bottom="0"/>
@@ -52,13 +26,13 @@
         <!-- Fonts -->
         <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/#ASansrounded</FontFamily>
 
-        <!-- Drawing Images -->
-        <!--#region -->
-        <DrawingImage x:Key="Bell_With_LayersDrawingImage">
+        <!--#region Drawing Images -->
+        <!--#region Old DWG Images -->
+        <!--<DrawingImage x:Key="Bell_With_LayersDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V640 H640 V0 H0 Z">
                     <GeometryDrawing Brush="#FF000000" Geometry="F0 M640,640z M0,0z M361.587,50.623C457.765,70.005 530.758,155.435 530.758,257.106 530.758,376.954 519.372,467.096 640,547.365L0,547.365C120.958,466.872 109.537,375.005 109.537,257.105 109.537,154.892 183.333,69.095 280.267,50.315 285.854,1.83100000000002 356.355,2.06700000000003 361.587,50.623z M406.954,553.283C399.524,594.586 363.418,625.91 319.988,625.91 276.57,625.91 240.463,594.586 233.034,553.283L406.954,553.283z" />
-                    <!--<DrawingGroup x:Name="Notification_Dot" Opacity="0">
+                    --><!--<DrawingGroup x:Name="Notification_Dot" Opacity="0">
                         <GeometryDrawing Brush="#FFC83737">
                             <GeometryDrawing.Geometry>
                                 <EllipseGeometry RadiusX="206.2659" RadiusY="206.2652" Center="412.7714,222.0788" />
@@ -207,7 +181,7 @@
                                 </GlyphRunDrawing.GlyphRun>
                             </GlyphRunDrawing>
                         </DrawingGroup>
-                    </DrawingGroup>-->
+                    </DrawingGroup>--><!--
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
@@ -7265,6 +7239,12 @@
         </DrawingImage>-->
         
         <!--#region Zwicon Icons-->
+        <!-- 
+        These icons are licensed under the
+        Creative Commons Attribution-NoDerivatives 4.0 International License.
+        Icons are from https://www.zwicon.com/
+        Any changes must be called out and originals must be unaltered
+        -->
         <DrawingImage x:Key="bellDrawingImage">
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
@@ -7373,12 +7353,6 @@
             <GradientStop Color="#BBBBBB" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- Borders -->
-        <SolidColorBrush x:Key="Border.Light" Color="#FFFBD5D4"/>
-        <SolidColorBrush x:Key="Border.MediumLight" Color="#FFD09998"/>
-        <SolidColorBrush x:Key="Border.Medium" Color="#FFAD6D6B"/>
-        <SolidColorBrush x:Key="Border.MediumDark" Color="#FF8A4B4A"/>
-        <SolidColorBrush x:Key="Border.Dark" Color="#FF722B29"/>
 
         <!-- Text -->
         <SolidColorBrush x:Key="Foreground.Main" Color="#FF212D4D"/>
@@ -7386,28 +7360,28 @@
 
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0"/>
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Tertiary.MediumLight.Color}" Offset="0"/>
-            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1.0"/>
+            <GradientStop Color="{StaticResource Bright.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Dark.Color}" Offset="1.0"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsMouseHover.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Tertiary.Medium.Color}" Offset="0"/>
-            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1.2"/>
+            <GradientStop Color="{StaticResource Light.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Dark.Color}" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="InactiveTab.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#FFAABBBF" Offset="0"/>
             <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsPressed.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Tertiary.MediumDark.Color}" Offset=".25"/>
-            <GradientStop Color="{StaticResource Tertiary.Dark.Color}" Offset="1"/>
+            <GradientStop Color="{StaticResource Medium.Color}" Offset=".25"/>
+            <GradientStop Color="{StaticResource Dark.Color}" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsEnabled.False.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
         <SolidColorBrush x:Key="Tab.Border" Color="#FF3A3838"/>
-        <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Primary.MediumLight.Color}"/>
-        <SolidColorBrush x:Key="Focused.Border" Color="{StaticResource Primary.Medium.Color}"/>
+        <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Light.Color}"/>
+        <SolidColorBrush x:Key="Focused.Border" Color="{StaticResource Medium.Color}"/>
         <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#e9e9e9"/>
         <SolidColorBrush x:Key="DisabledBorderBrush" Color="#808080"/>
         <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#707070" />
@@ -7482,10 +7456,10 @@
         </Style>
         <!-- Text Boxes-->
         <Style x:Key="TextBox" TargetType="{x:Type TextBox}">
-            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Medium}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="1"/>
             <Setter Property="AllowDrop" Value="true"/>
@@ -7620,10 +7594,10 @@
         </Style>
         <!-- Text Blocks -->
         <Style x:Key="NormalTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
         </Style>
         <Style x:Key="BoldTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style x:Key="PriorityTextBlock" TargetType="{x:Type TextBlock}">
@@ -7633,7 +7607,7 @@
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=Priority}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Bright}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7641,11 +7615,11 @@
         <Style x:Key="TabletsTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=TabletsRequired}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=TabletsRequired}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7653,11 +7627,11 @@
         <Style x:Key="ToolsTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=ToolsRequired}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=ToolsRequired}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7665,11 +7639,11 @@
         <Style x:Key="MultiTipSketchTextBlock" TargetType="{x:Type TextBlock}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=MultiTipSketch}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Bold"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=MultiTipSketch}" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Dark}"/>
                     <Setter Property="FontWeight" Value="Normal"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -7677,14 +7651,14 @@
         <Style x:Key="ModuleHeaderTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="22"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="ModuleTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="FontSize" Value="20"/>
-            <Setter Property="Foreground" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -7768,7 +7742,7 @@
             <Border x:Name="PART_ContentHost" Focusable="True"/>
         </ControlTemplate>
         <Style x:Key="ComboBoxAlignsLeft" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
+            <Setter Property="Foreground" Value="{StaticResource Dark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -7781,7 +7755,7 @@
             <Setter Property="Margin" Value="0,4,0,0"/>
             <Setter Property="IsEditable" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -7863,7 +7837,7 @@
             </Setter>
         </Style>
         <Style x:Key="ComboBoxAlignsCenter" TargetType="{x:Type ComboBox}">
-            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}" />
+            <Setter Property="Foreground" Value="{StaticResource Dark}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="SnapsToDevicePixels" Value="true"/>
             <Setter Property="OverridesDefaultStyle" Value="true"/>
@@ -7876,7 +7850,7 @@
             <Setter Property="Margin" Value="0,4,0,0"/>
             <Setter Property="IsEditable" Value="True"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -8277,7 +8251,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="90"/>
@@ -8327,7 +8301,7 @@
                                     <DropShadowEffect ShadowDepth="2" Direction="105" Color="LightGray" Opacity="0.5" BlurRadius="6"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="250"/>
@@ -8512,7 +8486,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="80"/>
@@ -8564,7 +8538,7 @@
                                     <DropShadowEffect ShadowDepth="2" Direction="105" Color="LightGray" Opacity="0.5" BlurRadius="6"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="250"/>
@@ -8738,7 +8712,7 @@
                                     <DropShadowEffect BlurRadius="4" ShadowDepth="1" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="OrderGrid" IsHitTestVisible="True" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="180"/>
                                     <ColumnDefinition Width="*" MinWidth="80"/>
@@ -8790,41 +8764,6 @@
         
 
 
-        <!--Control colors.-->
-        <Color x:Key="WindowColor">#FFE8EDF9</Color>
-        <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
-        <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
-
-        <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
-        <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
-        <Color x:Key="DisabledForegroundColor">#FF888888</Color>
-
-        <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
-        <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
-
-        <Color x:Key="ControlLightColor">White</Color>
-        <Color x:Key="ControlMediumColor">#FF7381F9</Color>
-        <Color x:Key="ControlDarkColor">#FF211AA9</Color>
-
-        <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
-        <Color x:Key="ControlPressedColor">#FF211AA9</Color>
-
-
-        <Color x:Key="GlyphColor">#FF444444</Color>
-        <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
-
-        <!--Border colors-->
-        <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
-        <Color x:Key="BorderMediumColor">#FF888888</Color>
-        <Color x:Key="BorderDarkColor">#FF444444</Color>
-
-        <Color x:Key="PressedBorderLightColor">#FF888888</Color>
-        <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
-
-        <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
-        <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
-
-        <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
 
         <!--Control-specific resources.-->
         <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
@@ -8860,7 +8799,7 @@
                 </GradientStopCollection>
             </LinearGradientBrush.GradientStops>
         </LinearGradientBrush>
-        <!-- List Box -->
+        <!--#region List Box Note Window -->
         <Style x:Key="ListBox" TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -8868,11 +8807,11 @@
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
             <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
             <Setter Property="SelectionMode" Value="Extended"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Primary.MediumDark}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Medium}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
-                        <Border Name="Border" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource Primary.MediumDark}" Background="Transparent">
+                        <Border Name="Border" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource Medium}" Background="Transparent">
                             <ScrollViewer Margin="0" Focusable="false">
                                 <StackPanel Margin="2" IsItemsHost="True"/>
                             </ScrollViewer>
@@ -8883,7 +8822,7 @@
                                 <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Primary.Dark}"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Dark}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -8896,7 +8835,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground">
                 <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource Primary.Dark.Color}" Opacity="1"/>
+                    <SolidColorBrush Color="{StaticResource Dark.Color}" Opacity="1"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -8915,16 +8854,16 @@
                                 <MultiTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.Light.Color}" />
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.EnterActions>
                                 <MultiTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}" />
-                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}" />
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.ExitActions>
@@ -8938,16 +8877,16 @@
                                 <MultiTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}"/>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.EnterActions>
                                 <MultiTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumDark.Color}" />
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="Transparent"/>
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.ExitActions>
@@ -8961,16 +8900,16 @@
                                 <MultiTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumDark.Color}" />
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="#FFFFFF"/>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.EnterActions>
                                 <MultiTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Primary.MediumLight.Color}" />
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Primary.Dark.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </MultiTrigger.ExitActions>
@@ -8980,7 +8919,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        <!--#endregion-->
 
         <Style x:Key="CustomerNotesModule" TargetType="Label">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
@@ -9132,7 +9071,7 @@
                                 </StackPanel>
                                 <TextBlock Text=""/>
                             </DockPanel>
-                            <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="0"/> <!--80-->
@@ -9634,7 +9573,7 @@
                                 </StackPanel>
                                 <TextBlock Text=""/>
                             </DockPanel>
-                            <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Secondary.Light}">
+                            <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
                                     <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>

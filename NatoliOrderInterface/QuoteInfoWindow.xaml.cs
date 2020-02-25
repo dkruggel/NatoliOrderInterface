@@ -2939,7 +2939,7 @@ namespace NatoliOrderInterface
                         {
                             BulletDecorator bulletDecorator = new BulletDecorator { HorizontalAlignment = HorizontalAlignment.Left };
                             bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
+                            Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Bright"] };
                             TextBlock textBlock = new TextBlock { Text = error, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                             bulletDecorator.Bullet = ellipse;
                             bulletDecorator.Child = textBlock;
@@ -2997,7 +2997,7 @@ namespace NatoliOrderInterface
                                     bulletDecorator.Margin = new Thickness(0, 0, 0, 20);
                                 }
                                 bulletDecorator.SetValue(DockPanel.DockProperty, Dock.Top);
-                                Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Secondary.Dark"] };
+                                Ellipse ellipse = new Ellipse { Width = 8, Height = 8, Margin = new Thickness(0, 4, 0, 4), Fill = (Brush)Application.Current.Resources["Bright"] };
                                 TextBlock textBlock = new TextBlock { Text = suggestion, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(8, 2, 8, 2), FontSize = 20, Style = (Style)Application.Current.Resources["NormalTextBlock"] };
                                 bulletDecorator.Bullet = ellipse;
                                 bulletDecorator.Child = textBlock;

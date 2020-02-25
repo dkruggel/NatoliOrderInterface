@@ -599,7 +599,7 @@
                                     </Grid>
                                 </Grid>
                                 <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Content="Drag and Drop Files Below" FontWeight="Bold" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Center" Margin="0,-4,0,0"/>
-                                <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{StaticResource Secondary.MediumDark}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
+                                <Grid x:Name="QuoteReqGrid" Margin="0,20,0,20" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{StaticResource Medium}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
                                     <Label Content="Quote Request" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="48" Foreground="LightGray"/>
                                 </Grid>
                                 <Grid x:Name="QuoteSentGrid" Margin="0,20,0,20" Grid.Row="3" Grid.RowSpan="2" Grid.Column="0" Drop="Grid_Drop" AllowDrop="True" Background="{Binding Background, ElementName=QuoteReqGrid}" DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
@@ -963,13 +963,13 @@
                     <DockPanel x:Name="ErrorsDockPanel" DockPanel.Dock="Top" LastChildFill="False">
                         <BulletDecorator DockPanel.Dock="Top">
                             <BulletDecorator.Bullet>
-                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Secondary.Dark}"/>
+                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Dark}"/>
                             </BulletDecorator.Bullet>
                             <TextBlock Text="First Error." VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource NormalTextBlock}" Margin="8,2" FontSize="20"/>
                         </BulletDecorator>
                         <BulletDecorator DockPanel.Dock="Top">
                             <BulletDecorator.Bullet>
-                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Secondary.Dark}"/>
+                                <Ellipse Height="8" Width="8" Margin="0,4,0,4" Fill="{StaticResource Dark}"/>
                             </BulletDecorator.Bullet>
                             <TextBlock Text="Second Error." VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource NormalTextBlock}" Margin="8,2" FontSize="20"/>
                         </BulletDecorator>

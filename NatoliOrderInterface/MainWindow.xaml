@@ -362,7 +362,7 @@
         </Style>
         <Style x:Key="FuzzySearchWithSuggestions" TargetType="ContentControl">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource Secondary.MediumDark}"/>
+            <Setter Property="Foreground" Value="{StaticResource Medium}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="1"/>
             <Setter Property="AllowDrop" Value="true"/>
@@ -379,7 +379,7 @@
                                     <RowDefinition Height="20"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Border BorderBrush="{StaticResource Primary.Dark}" BorderThickness="0,0,0,1">
+                                <Border BorderBrush="{StaticResource Dark}" BorderThickness="0,0,0,1">
 
                                 </Border>
                                 <TextBox x:Name="FuzzySearchTextBox" Style="{StaticResource TextBox}" TextChanged="FuzzySearchTextBox_TextChanged" Grid.Row="0" KeyUp="FuzzySearchTextBox_KeyUp"/>
@@ -395,7 +395,7 @@
     </Window.Resources>
     <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" DockPanel.ZIndex="2">
-            <Menu x:Name="MainMenu" Height="40" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Primary.Dark}">
+            <Menu x:Name="MainMenu" Height="40" HorizontalContentAlignment="Center" Grid.Column="0" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Dark}">
                 <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
             </Menu>
             <DockPanel HorizontalAlignment="Right">
