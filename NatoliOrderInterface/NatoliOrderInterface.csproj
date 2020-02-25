@@ -237,6 +237,7 @@
     <None Remove="Barcode Locations\No_Department.png" />
     <None Remove="Barcode Locations\Stock_Polish.png" />
     <None Remove="Fonts\ASansrounded.ttf" />
+    <None Remove="Fonts\VarelaRound-Regular.ttf" />
     <None Remove="greenplusadditionicon.png" />
     <None Remove="magnifying_glass.png" />
     <None Remove="NATOLI_ANIMATION.gif" />
@@ -320,6 +321,7 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Fonts\VarelaRound-Regular.ttf" />
   </ItemGroup>
 
   <ItemGroup>
