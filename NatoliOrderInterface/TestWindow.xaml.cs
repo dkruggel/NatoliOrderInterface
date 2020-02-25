@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using NatoliOrderInterface.Models;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace NatoliOrderInterface
 {
@@ -21,6 +22,7 @@ namespace NatoliOrderInterface
     {
         private ListBox OrdersListBox = new ListBox();
         private List<EoiOrdersEnteredAndUnscannedView> orders = new List<EoiOrdersEnteredAndUnscannedView>();
+        public ObservableCollection<EoiOrdersEnteredAndUnscannedView> ordersCollection;
         public List<EoiOrdersEnteredAndUnscannedView> Orders
         {
             get
@@ -48,6 +50,7 @@ namespace NatoliOrderInterface
             List<EoiOrdersEnteredAndUnscannedView> EoiOrdersEnteredAndUnscannedView = new List<EoiOrdersEnteredAndUnscannedView>();
             using var _ = new NAT02Context();
             EoiOrdersEnteredAndUnscannedView = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+            ordersCollection = new ObservableCollection<EoiOrdersEnteredAndUnscannedView>(EoiOrdersEnteredAndUnscannedView);
             _.Dispose();
 
             Orders = EoiOrdersEnteredAndUnscannedView;
