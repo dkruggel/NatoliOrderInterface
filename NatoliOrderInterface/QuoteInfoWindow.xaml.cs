@@ -780,13 +780,16 @@ namespace NatoliOrderInterface
                     tab.Name = lineItem.Value.ToString().ToUpper() + "_" + lineItem.Key.ToString();
                     tab.Header = quoteLineItem.Title;
                     tab.Style = FindResource("NormalTabItem") as Style;
+                    tab.Background = Brushes.Transparent;
                     //--------------------------------------------------------------------------------------------
                     ScrollViewer scrollViewer = new ScrollViewer();
                     scrollViewer.Name = "ScrollViewer" + lineItem.Value.ToString().ToUpper() + lineItem.Key.ToString();
                     scrollViewer.IsEnabled = true;
                     scrollViewer.CanContentScroll = true;
+                    scrollViewer.Background = Brushes.Transparent;
+                    scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
                     //--------------------------------------------------------------------------------------------
-                    Grid grid = new Grid();
+                    Grid grid = new Grid() {Background = Brushes.Transparent };
                     grid.Name = "Grid" + lineItem.Value.ToString().ToUpper() + lineItem.Key.ToString();
                     ColumnDefinition column1_ = new ColumnDefinition();
                     //column1_500.Width = new GridLength(500, GridUnitType.Pixel);
@@ -923,12 +926,12 @@ namespace NatoliOrderInterface
                     basePriceTextBlock.Text = "BASE PRICE";
                     if (priceChanged)
                     {
-                        basePriceTextBlock.Background = Brushes.GreenYellow;
+                        basePriceTextBlock.Background = Application.Current.Resources["Bright"] as Brush;
                         priceChanged = false;
                     }
                     else
                     {
-                        basePriceTextBlock.Background = Brushes.White;
+                        basePriceTextBlock.Background = Brushes.Transparent;
                         priceChanged = false;
                     }
                     basePriceTextBlock.HorizontalAlignment = HorizontalAlignment.Left;

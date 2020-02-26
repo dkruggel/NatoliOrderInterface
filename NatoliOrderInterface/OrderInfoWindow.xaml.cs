@@ -1365,7 +1365,7 @@ namespace NatoliOrderInterface
                 // Open window to set order
                 if (hasUnknownLineItemName)
                 {
-                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, user, null, this, workOrder);
+                    OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, user, this, workOrder);
                 }
                 else
                 {

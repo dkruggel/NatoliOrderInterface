@@ -2047,11 +2047,11 @@
 
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0"/>
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Bright.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Bright.Color}" Offset="-.3"/>
             <GradientStop Color="{StaticResource Dark.Color}" Offset="1.0"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsMouseHover.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Bright.Color}" Offset="0"/>
+            <GradientStop Color="{StaticResource Bright.Color}" Offset="-.1"/>
             <GradientStop Color="{StaticResource Dark.Color}" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="InactiveTab.Background" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -2059,7 +2059,7 @@
             <GradientStop Color="#FF3C3C3C" Offset="1.2"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsPressed.Background" StartPoint="0.5,0" EndPoint="0.5,1">
-            <GradientStop Color="{StaticResource Medium.Color}" Offset=".25"/>
+            <GradientStop Color="{StaticResource Medium.Color}" Offset="-.3"/>
             <GradientStop Color="{StaticResource Dark.Color}" Offset="1"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="Button.IsEnabled.False.Background" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -2122,7 +2122,7 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource Button.IsMouseHover.Background}"/>
                                 <Setter Property="Foreground" Value="White" />
-                                <Setter Property="LayoutTransform" Value="1.05,0,0,1,0,0"/>
+                                <!--<Setter Property="LayoutTransform" Value="1.05,0,0,1,0,0"/>-->
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="{StaticResource Button.IsPressed.Background}"/>
