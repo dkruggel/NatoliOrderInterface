@@ -44,8 +44,11 @@ namespace NatoliOrderInterface
             InitializeComponent();
 
             AllOrdersModule.ApplyTemplate();
-            DockPanel dockPanel = (VisualTreeHelper.GetChild(AllOrdersModule as DependencyObject, 0) as DockPanel);
-            OrdersListBox = dockPanel.Children.OfType<ListBox>().First();
+            //DockPanel dockPanel = (VisualTreeHelper.GetChild(AllOrdersModule as DependencyObject, 0) as DockPanel);
+            //OrdersListBox = dockPanel.Children.OfType<ListBox>().First();
+
+            Grid grid = (VisualTreeHelper.GetChild(AllOrdersModule as DependencyObject, 0) as Grid);
+            OrdersListBox = grid.Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
             List<EoiOrdersEnteredAndUnscannedView> EoiOrdersEnteredAndUnscannedView = new List<EoiOrdersEnteredAndUnscannedView>();
             using var _ = new NAT02Context();
