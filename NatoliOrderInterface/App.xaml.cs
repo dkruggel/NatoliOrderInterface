@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration.FileExtensions;
 using System.IO;
 using System;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace NatoliOrderInterface
 {
@@ -44,41 +46,6 @@ namespace NatoliOrderInterface
             {
                 IMethods.WriteToErrorLog("App.Xaml.cs => GetConnectionString()", ex.Message, null);
             }
-
-
-
-            //try
-            //{
-            //    var configFile = NatoliOrderInterface.Properties.Resources.NatoliOrderInterface;
-            //    string[] text = configFile.Split("\n");
-
-            //    foreach (string line in text)
-            //    {
-            //        if (line.First() != '#')
-            //        {
-            //            string key = line.Split(':')[0];
-            //            switch (key)
-            //            {
-            //                case "Server":
-            //                    Server = line.Split(':')[1].Trim();
-            //                    break;
-            //                case "Persist Security Info":
-            //                    PersistSecurityInfo = line.Split(':')[1].Trim();
-            //                    break;
-            //                case "User ID":
-            //                    UserID = line.Split(':')[1].Trim();
-            //                    break;
-            //                case "Password":
-            //                    Password = line.Split(':')[1].Trim();
-            //                    break;
-            //            }
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    IMethods.WriteToErrorLog("App.Xaml.cs => GetConnectionString()", ex.Message, null);
-            //}
         }
         public static void GetEmailSettings()
         {
@@ -108,6 +75,63 @@ namespace NatoliOrderInterface
             int id = Convert.ToInt32(((TextBlock)grid.Children.OfType<TextBlock>().First(tb => tb.Tag.ToString() == "ID")).Text);
             CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, new User(Environment.UserName));
             customerNoteWindow.Show();
+        }
+
+        private void SearchTextBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            
+            if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused)
+            {
+                Grid grid = textBox.Parent as Grid;
+                Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
+                textBox.Text = "";
+                xImage.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void xImage_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Image xImage = sender as Image;
+            Grid grid = xImage.Parent as Grid;
+            TextBox searchTextBox = grid.Children.OfType<TextBox>().First(i => i.Name.ToString() == "SearchTextBox") as TextBox;
+            xImage.Visibility = Visibility.Collapsed;
+            searchTextBox.Text = "";
+        }
+
+        private void MagImage_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Image magImage = sender as Image;
+            Grid grid = magImage.Parent as Grid;
+            Border border = grid.Parent as Border;
+            if (border.ActualWidth < 140)
+            {
+                DoubleAnimation doubleAnimation = new DoubleAnimation(150, TimeSpan.FromSeconds(.5));
+                border.BeginAnimation(Border.WidthProperty, doubleAnimation);
+            }
+            else
+            {
+                DoubleAnimation doubleAnimation = new DoubleAnimation(24, TimeSpan.FromSeconds(.5));
+                border.BeginAnimation(Border.WidthProperty, doubleAnimation);
+            }
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox.Text.Length > 0)
+            {
+                Grid grid = textBox.Parent as Grid;
+                Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
+                xImage.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Grid grid = textBox.Parent as Grid;
+                Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
+                xImage.Visibility = Visibility.Collapsed;
+            }
+            
         }
     }
 }

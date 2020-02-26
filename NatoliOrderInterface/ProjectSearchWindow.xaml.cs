@@ -420,13 +420,13 @@ namespace NatoliOrderInterface
 
             if (textBox.Text.Length > 0)
             {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.Source = ((Image)App.Current.Resources["closeDrawingImage"]).Source;
                 image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
                 textBlock.Visibility = Visibility.Collapsed;
             }
             else
             {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                image.Source = ((Image)App.Current.Resources["searchDrawingImage"]).Source;
                 textBlock.Visibility = Visibility.Visible;
             }
 

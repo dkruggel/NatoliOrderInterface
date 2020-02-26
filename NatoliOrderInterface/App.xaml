@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:NatoliOrderInterface"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <local:IsFocusedOrIsNotEmpty x:Key="isFocusedOrIsNotEmptyConverter"/>
         <!--#region Colors -->
         <Color x:Key="Light.Color">#B3EFFF</Color>
         <Color x:Key="Bright.Color">#00CFFF</Color>
@@ -2089,8 +2090,6 @@
         <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD"/>
         <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121"/>
         <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
-        <Image x:Key="MagnifyingGlassImage" Source="magnifying_glass.png"/>
-        <Image x:Key="xImage" Source="x.png"/>
         <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.85" BlurRadius="2"/>
         <DropShadowEffect x:Key="NoRowBorderEffect" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
         
@@ -2728,24 +2727,40 @@
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
-
             </Style.Triggers>
         </Style>
         <Style x:Key="SearchBox" TargetType="{x:Type TextBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
-                        <Border CornerRadius="6" BorderThickness="1" BorderBrush="Black" Margin="0,5,2,2" Background="White">
+                        <Border x:Name="Border" CornerRadius="20" BorderThickness="1" BorderBrush="{StaticResource Medium}" Margin="0,5,2,2" Background="Transparent" Width="24">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="4,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0"/>
-                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0"/>
-                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,0,1,0"/>
+                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="10,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource isFocusedOrIsNotEmptyConverter}" ConverterParameter="t2c_f2v">
+                                            <Binding ElementName="SearchTextBox" Path="IsFocused"/>
+                                            <Binding ElementName="SearchTextBox" Path="Text"/>
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
+                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="8,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
+                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp"/>
+                                <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed">
+                                </Image>
                             </Grid>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Collapsed}">
+                                <Setter TargetName="MagImage" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Visible}">
+                                <Setter TargetName="MagImage" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -3489,6 +3504,7 @@
                 </GradientStopCollection>
             </LinearGradientBrush.GradientStops>
         </LinearGradientBrush>
+        
         <!--#region List Box Note Window -->
         <Style x:Key="ListBox" TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -4591,8 +4607,8 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-
         </Style>
-
+        
+        
     </Application.Resources>
 </Application>

@@ -3561,8 +3561,8 @@ namespace NatoliOrderInterface
                 Name = name + "SearchBox",
                 Style = App.Current.Resources["SearchBox"] as Style
             };
-            searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
-            searchBox.TextChanged += SearchBox_TextChanged;
+            //searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
+            //searchBox.TextChanged += SearchBox_TextChanged;
 
             Grid.SetColumn(daysTextBox, 0);
             Grid.SetColumn(csvCreationButton, 1);
@@ -3574,7 +3574,7 @@ namespace NatoliOrderInterface
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
             headerLabelGrid.Children.Add(daysTextBox);
             headerLabelGrid.Children.Add(csvCreationButton);
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(150)), searchBox);
+            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Auto)), searchBox);
 
             return headerLabelGrid;
         }
@@ -3653,13 +3653,13 @@ namespace NatoliOrderInterface
 
             if (textBox.Text.Length > 0)
             {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.Source = ((DrawingImage)App.Current.Resources["closeDrawingImage"]);
                 image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
                 textBlock.Visibility = Visibility.Collapsed;
             }
             else
             {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                image.Source = ((DrawingImage)App.Current.Resources["searchDrawingImage"]);
                 textBlock.Visibility = Visibility.Visible;
             }
         }
