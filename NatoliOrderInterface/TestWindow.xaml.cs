@@ -22,7 +22,6 @@ namespace NatoliOrderInterface
     {
         private ListBox OrdersListBox = new ListBox();
         private List<EoiOrdersEnteredAndUnscannedView> orders = new List<EoiOrdersEnteredAndUnscannedView>();
-        public ObservableCollection<EoiOrdersEnteredAndUnscannedView> ordersCollection;
         public List<EoiOrdersEnteredAndUnscannedView> Orders
         {
             get
@@ -39,24 +38,45 @@ namespace NatoliOrderInterface
                 }
             }
         }
+        private ListBox OrdersInEngListBox = new ListBox();
+        private List<EoiOrdersInEngineeringUnprintedView> ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
+        public List<EoiOrdersInEngineeringUnprintedView> OrdersInEng
+        {
+            get
+            {
+                return ordersInEng;
+            }
+            set
+            {
+                if (value.Except(ordersInEng).Count() > 0 || ordersInEng.Except(value).Count() > 0)
+                {
+                    ordersInEng = value;
+                    OrdersInEngListBox.ItemsSource = null;
+                    OrdersInEngListBox.ItemsSource = ordersInEng;
+                }
+            }
+        }
         public TestWindow()
         {
             InitializeComponent();
 
-            AllOrdersModule.ApplyTemplate();
-            //DockPanel dockPanel = (VisualTreeHelper.GetChild(AllOrdersModule as DependencyObject, 0) as DockPanel);
-            //OrdersListBox = dockPanel.Children.OfType<ListBox>().First();
+            OrdersEnteredModule.ApplyTemplate();
+            OrdersInEngineeringModule.ApplyTemplate();
 
-            Grid grid = (VisualTreeHelper.GetChild(AllOrdersModule as DependencyObject, 0) as Grid);
+            Grid grid = (VisualTreeHelper.GetChild(OrdersEnteredModule as DependencyObject, 0) as Grid);
             OrdersListBox = grid.Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+            grid = (VisualTreeHelper.GetChild(OrdersInEngineeringModule as DependencyObject, 0) as Grid);
+            OrdersInEngListBox = grid.Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-            List<EoiOrdersEnteredAndUnscannedView> EoiOrdersEnteredAndUnscannedView = new List<EoiOrdersEnteredAndUnscannedView>();
+            List<EoiOrdersEnteredAndUnscannedView> eoiOrdersEnteredAndUnscannedView = new List<EoiOrdersEnteredAndUnscannedView>();
+            List<EoiOrdersInEngineeringUnprintedView> eoiOrdersInEngineeringUnprintedView = new List<EoiOrdersInEngineeringUnprintedView>();
             using var _ = new NAT02Context();
-            EoiOrdersEnteredAndUnscannedView = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
-            ordersCollection = new ObservableCollection<EoiOrdersEnteredAndUnscannedView>(EoiOrdersEnteredAndUnscannedView);
+            eoiOrdersEnteredAndUnscannedView = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+            eoiOrdersInEngineeringUnprintedView = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
             _.Dispose();
 
-            Orders = EoiOrdersEnteredAndUnscannedView;
+            Orders = eoiOrdersEnteredAndUnscannedView;
+            OrdersInEng = eoiOrdersInEngineeringUnprintedView;
         }
     }
 }

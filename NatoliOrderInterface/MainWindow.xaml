@@ -326,7 +326,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Content">
                 <Setter.Value>
-                    <Image Source="{StaticResource magnifying_glassDrawingImage}" Width="20"/>
+                    <Image Source="{StaticResource searchDrawingImage}" Width="20"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">
@@ -410,18 +410,20 @@
                     </Canvas>
                     <!--<TextBox x:Name="CustomerSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0" Width="120"/>-->
                 </Grid>
-                <Grid Width="110">
+                <Grid Width="110" Margin="8,0,5,0">
                     <Button x:Name="CustomerSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="View Customer" Click="ProjectSearchButton_Click"/>
                 </Grid>
-                <StackPanel Orientation="Horizontal" Margin="5,0">
-                    <TextBlock Text="Project#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                    <TextBox x:Name="ProjectSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,2,0" Width="50" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" LostFocus="ProjectSearchTextBlock_LostFocus" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
-                    <TextBlock Text="-" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                    <TextBox x:Name="ProjectRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
-                    <Grid Width="110">
-                        <Button x:Name="ProjectSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Project" Click="ProjectSearchButton_Click"/>
-                    </Grid>
-                </StackPanel>
+                <Border BorderBrush="LightGray" BorderThickness="1,0,0,0" Margin="0,2,0,2">
+                    <StackPanel Orientation="Horizontal" Margin="8,0,5,0">
+                        <TextBlock Text="Project#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                        <TextBox x:Name="ProjectSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,2,0" Width="50" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" LostFocus="ProjectSearchTextBlock_LostFocus" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
+                        <TextBlock Text="-" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
+                        <TextBox x:Name="ProjectRevNoSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0,-5,0" Width="20" PreviewKeyDown="ProjectSearchTextBlock_PreviewKeyDown" GotFocus="QuoterevNoSearchTextBlock_GotFocus" GotMouseCapture="QuoterevNoSearchTextBlock_GotMouseCapture" IsMouseCaptureWithinChanged="QuoterevNoSearchTextBlock_IsMouseCaptureWithinChanged"/>
+                        <Grid Width="110">
+                            <Button x:Name="ProjectSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="Open Project" Click="ProjectSearchButton_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
                 <Border BorderBrush="LightGray" BorderThickness="1,0,1,0" Margin="0,2,0,2">
                     <StackPanel Orientation="Horizontal" Margin="8,0,5,0">
                         <TextBlock Text="Quote#" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>

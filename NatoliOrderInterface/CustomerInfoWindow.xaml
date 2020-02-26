@@ -478,7 +478,7 @@
                 <Setter.Value>
                     <ControlTemplate x:Name="OrderTemplate" TargetType="{x:Type ContentControl}">
                         <Grid IsHitTestVisible="True" Background="Transparent">
-                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Border.MediumLight}" BorderThickness="0,0,0,1">
+                            <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Light}" BorderThickness="0,0,0,1">
 
                             </Border>
                             <Grid x:Name="OrderGrid" IsHitTestVisible="True">
