@@ -2589,39 +2589,84 @@ namespace NatoliOrderInterface
             using var necContext = new NECContext();
             // New list of projects that are in the same module that was right clicked inside of
             List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
-
+            List<Tuple<int, short>> quotes = new List<Tuple<int, short>>();
+            List<Quote> quoteItems = new List<Quote>();
+            List<string> quoteErrorNumbers = new List<string>();
             if (validQuotes.Any())
             {
+
                 for (int i = 0; i < validQuotes.Count; i++)
                 {
-                    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
-                    selectedQuote.Item3.IsChecked = false;
-
-                    quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
-
-                    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), User).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                    quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
+                }
+                OrderingWindow orderingWindow = new OrderingWindow(quotes, User);
+                if (orderingWindow.ShowDialog() == true)
+                {
+                    foreach (Tuple<int, short> quote in quotes)
+                    {
+                        if (IMethods.QuoteErrors(quote.Item1.ToString(), quote.Item2.ToString(), User).Count > 0)
+                        {
+                            quoteErrorNumbers.Add(quote.Item1.ToString() + "-" + quote.Item2.ToString());
+                        }
+                        quoteItems.Add(new Quote(quote.Item1, quote.Item2));
+                    }
+                    if (quoteErrorNumbers.Any() && MessageBoxResult.Yes != MessageBox.Show((quoteErrorNumbers.Count == 1 ? "Quote" : "Quotes") + string.Concat(quoteErrorNumbers.Select(q => q + ", ")).TrimEnd().TrimEnd(',') + (quoteErrorNumbers.Count == 1 ? " has" : " have") + " quote check errors.\n\nWould you still like to submit these quotes?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
                     {
                         // Do nothing
                     }
                     else
                     {
-                        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                        foreach (Quote quote in quoteItems)
                         {
-                            QuoteNo = quote.QuoteNumber,
-                            QuoteRevNo = quote.QuoteRevNo,
-                            CustomerName = customerName,
-                            Csr = csr,
-                            CsrMarked = User.GetUserName(),
-                            TimeSubmitted = DateTime.Now,
-                            Rush = r.RushYorN
-                        };
-                        nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                            QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                            string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                            string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                            EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                            {
+                                QuoteNo = quote.QuoteNumber,
+                                QuoteRevNo = quote.QuoteRevNo,
+                                CustomerName = customerName,
+                                Csr = csr,
+                                CsrMarked = User.GetUserName(),
+                                TimeSubmitted = DateTime.Now,
+                                Rush = r.RushYorN
+                            };
+                            nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                            quote.Dispose();
+                        }
                     }
-
                 }
+
+                //for (int i = 0; i < validQuotes.Count; i++)
+                //{
+                //    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
+                //    selectedQuote.Item3.IsChecked = false;
+
+                //    Quote quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
+
+                //    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), User).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                //    {
+                //        // Do nothing
+                //    }
+                //    else
+                //    {
+                //        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                //        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                //        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                //        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                //        {
+                //            QuoteNo = quote.QuoteNumber,
+                //            QuoteRevNo = quote.QuoteRevNo,
+                //            CustomerName = customerName,
+                //            Csr = csr,
+                //            CsrMarked = User.GetUserName(),
+                //            TimeSubmitted = DateTime.Now,
+                //            Rush = r.RushYorN
+                //        };
+                //        nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                //    }
+                //}
+
 
                 // Uncheck Check All CheckBox
                 var x = MainGrid.Children;
@@ -2633,25 +2678,8 @@ namespace NatoliOrderInterface
                         ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
                     }
                 }
+
             }
-            //else
-            //{
-            //    quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
-            //    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-            //    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-            //    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-            //    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-            //    {
-            //        QuoteNo = quote.QuoteNumber,
-            //        QuoteRevNo = quote.QuoteRevNo,
-            //        CustomerName = customerName,
-            //        Csr = csr,
-            //        CsrMarked = User.GetUserName(),
-            //        TimeSubmitted = DateTime.Now,
-            //        Rush = r.RushYorN
-            //    };
-            //    nat02Context.EoiQuotesMarkedForConversion.Add(q);
-            //}
 
             nat02Context.SaveChanges();
             nat02Context.Dispose();
@@ -3533,8 +3561,8 @@ namespace NatoliOrderInterface
                 Name = name + "SearchBox",
                 Style = App.Current.Resources["SearchBox"] as Style
             };
-            searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
-            searchBox.TextChanged += SearchBox_TextChanged;
+            //searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
+            //searchBox.TextChanged += SearchBox_TextChanged;
 
             Grid.SetColumn(daysTextBox, 0);
             Grid.SetColumn(csvCreationButton, 1);
@@ -3546,7 +3574,7 @@ namespace NatoliOrderInterface
             AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
             headerLabelGrid.Children.Add(daysTextBox);
             headerLabelGrid.Children.Add(csvCreationButton);
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(150)), searchBox);
+            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Auto)), searchBox);
 
             return headerLabelGrid;
         }
@@ -3625,13 +3653,13 @@ namespace NatoliOrderInterface
 
             if (textBox.Text.Length > 0)
             {
-                image.Source = ((Image)App.Current.Resources["xImage"]).Source;
+                image.Source = ((DrawingImage)App.Current.Resources["closeDrawingImage"]);
                 image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
                 textBlock.Visibility = Visibility.Collapsed;
             }
             else
             {
-                image.Source = ((Image)App.Current.Resources["MagnifyingGlassImage"]).Source;
+                image.Source = ((DrawingImage)App.Current.Resources["searchDrawingImage"]);
                 textBlock.Visibility = Visibility.Visible;
             }
         }
@@ -11946,7 +11974,7 @@ namespace NatoliOrderInterface
                 List<string> filePaths = filePathArray.ToList();
                 if (filePaths[0].Contains("WorkOrdersToPrint"))
                 {
-                    PDFOrderingWindow pDFOrderingWindow = new PDFOrderingWindow(filePaths, User, this);
+                    OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, User, this);
                 }
             }
             catch (Exception ex)

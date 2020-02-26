@@ -326,7 +326,7 @@
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="Content">
                 <Setter.Value>
-                    <Image Source="{StaticResource searchDrawingImage}" Width="20"/>
+                    <Image Source="{DynamicResource searchDrawingImage}" Width="20"/>
                 </Setter.Value>
             </Setter>
             <Setter Property="Template">

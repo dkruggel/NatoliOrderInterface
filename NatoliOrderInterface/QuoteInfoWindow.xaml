@@ -456,7 +456,7 @@
                                 </ScrollViewer>
                             </Expander>
                             <StackPanel VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1">
-                                <TabControl x:Name="ScratchPadTabs" Margin="0,0,15,0">
+                                <TabControl x:Name="ScratchPadTabs" Margin="0,0,15,0" Background="Transparent">
                                 </TabControl>
                                 <Grid x:Name="QuoteSubtotalGrid" Margin="2,0,0,0" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
