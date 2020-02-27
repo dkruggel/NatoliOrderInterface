@@ -2075,6 +2075,7 @@
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
+        <SolidColorBrush x:Key="Icon.Hover" Color="LightGray" Opacity=".3"/>
         <SolidColorBrush x:Key="Tab.Border" Color="#FF3A3838"/>
         <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Medium.Color}"/>
         <SolidColorBrush x:Key="Focused.Border" Color="{StaticResource Bright.Color}"/>
@@ -2883,6 +2884,7 @@
             <Setter Property="Focusable" Value="True"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -2902,15 +2904,29 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="10,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0">
+                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="18,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0" IsEnabled="False">
                                     <TextBlock.Visibility>
                                         <MultiBinding Converter="{StaticResource isFocusedOrIsNotEmptyConverter}" ConverterParameter="t2c_f2v">
                                             <Binding ElementName="SearchTextBox" Path="IsFocused"/>
                                             <Binding ElementName="SearchTextBox" Path="Text"/>
                                         </MultiBinding>
                                     </TextBlock.Visibility>
+                                    <TextBlock.Triggers>
+                                        <EventTrigger RoutedEvent="TextBlock.Loaded" SourceName="SearchTextBlock">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <StringAnimationUsingKeyFrames Storyboard.TargetName="SearchTextBlock" Storyboard.TargetProperty="(TextBlock.Text)" Duration="0:0:1.5" RepeatBehavior="Forever">
+                                                        <DiscreteStringKeyFrame Value="Search here" KeyTime="0:0:0"/>
+                                                        <DiscreteStringKeyFrame Value="Search here." KeyTime="0:0:.3"/>
+                                                        <DiscreteStringKeyFrame Value="Search here.." KeyTime="0:0:.6"/>
+                                                        <DiscreteStringKeyFrame Value="Search here..." KeyTime="0:0:.9"/>
+                                                    </StringAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </TextBlock.Triggers>
                                 </TextBlock>
-                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="8,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
+                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
                                 <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp"/>
                                 <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed">
                                 </Image>
@@ -2937,25 +2953,40 @@
                         <Border x:Name="Border"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid Margin="8,1,8,1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <!--<TextBlock Text="Notifications" Grid.Column="0" VerticalAlignment="Center"/>-->
-                                <Image x:Name="Notification_Bell_Image" Source="{StaticResource bellDrawingImage}" Width="Auto" Height="Auto"/>
-                                <!--<Image Source="" Grid.Column="1" VerticalAlignment="Top"/>-->
-                            </Grid>
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="0,0,0,0">
+                            <ContentPresenter Margin="8,1,8,1">
+                                <ContentPresenter.Content>
+                                    <Image x:Name="Notification_Bell_Image" Source="{StaticResource bellDrawingImage}" Width="Auto" Height="Auto"/>
+                                </ContentPresenter.Content>
+                                <ContentPresenter.RenderTransform>
+                                    <TransformGroup>
+                                        <TranslateTransform x:Name="Position"/>
+                                    </TransformGroup>
+                                </ContentPresenter.RenderTransform>
+                            </ContentPresenter>
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard x:Name="ShakeIt">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Position" Storyboard.TargetProperty="X" RepeatBehavior="2x">
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.035" Value="0"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:0.07" Value="1"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:.105" Value="0"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:.14" Value="-1"/>
+                                                <EasingDoubleKeyFrame KeyTime="0:0:.175" Value="0"/>
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="{StaticResource Medium}"/>
-                    <Setter Property="Background" Value="#BBCFD097"/>
-                    <!--<Setter Property="Opacity" Value="0.5"/>-->
+                    <Setter Property="Background" Value="{StaticResource Icon.Hover}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

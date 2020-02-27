@@ -92,7 +92,7 @@ namespace NatoliOrderInterface
             }
         }
 
-        private void xImage_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void xImage_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Image xImage = sender as Image;
             Grid grid = xImage.Parent as Grid;
