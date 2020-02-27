@@ -21,12 +21,15 @@
         <SolidColorBrush x:Key="GridBorder.Bottom" Color="LightGray" Opacity="1"/>
         <!--#endregion-->
         
+        <!--#region Thicknesses-->
         <Thickness x:Key="TopBorderThickness" Left="1" Top="1" Right="0" Bottom="0"/>
         <Thickness x:Key="TopBorderNoThickness" Left="0" Top="0" Right="0" Bottom="0"/>
+        <!--#endregion-->
 
         <!--#region Fonts -->
         <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/#ASansrounded</FontFamily>
         <!--#endregion-->
+        
         <!--#region Drawing Images -->
         <!--#region Zwicon Icons
         These icons are licensed under the
@@ -2152,20 +2155,22 @@
             </Setter>
         </Style>
         <!--#endregion-->
-        
-        <!-- Backgrounds -->
+
+
+        <!--#region Brushes -->
+
+        <!--#region Backgrounds -->
         <SolidColorBrush x:Key="Background.Solid" Color="#DFDFDF"/>
         <LinearGradientBrush x:Key="Background.Gradient" StartPoint="0.5,0" EndPoint="0.5,1.25">
             <GradientStop Color="#DFDFDF" Offset="0"/>
             <GradientStop Color="#BBBBBB" Offset="1"/>
         </LinearGradientBrush>
-
-
-        <!-- Text -->
-        <SolidColorBrush x:Key="Foreground.Main" Color="#FF212D4D"/>
-
-
         <SolidColorBrush x:Key="BackgroundBrush" Color="#FFF0F0F0"/>
+
+        <SolidColorBrush x:Key="Foreground.Main" Color="#FF212D4D"/>
+        <!--#endregion-->
+
+        
         <LinearGradientBrush x:Key="Button.Background" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="{StaticResource Bright.Color}" Offset="-.3"/>
             <GradientStop Color="{StaticResource Dark.Color}" Offset="1.0"/>
@@ -2186,6 +2191,34 @@
             <GradientStop Color="#43717c" Offset="-.8"/>
             <GradientStop Color="#8a8a8a" Offset="1"/>
         </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="MenuPopupBrush"
+                     EndPoint="0.5,1"
+                     StartPoint="0.5,0">
+            <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="0" />
+            <GradientStop Color="{DynamicResource ControlMediumColor}"
+                Offset="0.5" />
+            <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="1" />
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
+                     StartPoint="0,0"
+                     EndPoint="1,0">
+            <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#000000FF"
+                    Offset="0" />
+                    <GradientStop Color="#600000FF"
+                    Offset="0.4" />
+                    <GradientStop Color="#600000FF"
+                    Offset="0.6" />
+                    <GradientStop Color="#000000FF"
+                    Offset="1" />
+                </GradientStopCollection>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
         <SolidColorBrush x:Key="Icon.Hover" Color="LightGray" Opacity=".3"/>
         <SolidColorBrush x:Key="Tab.Border" Color="#FF3A3838"/>
         <SolidColorBrush x:Key="MouseOver.Border" Color="{StaticResource Medium.Color}"/>
@@ -2203,13 +2236,17 @@
         <SolidColorBrush x:Key="OptionMark.Pressed.Border" Color="#FF3C77DD"/>
         <SolidColorBrush x:Key="OptionMark.Pressed.Glyph" Color="#FF212121"/>
         <SolidColorBrush x:Key="OptionMark.Static.Glyph" Color="#FF212121"/>
+        <!--#endregion-->
+        
+        <!--#region ShadowDrops -->
         <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.85" BlurRadius="2"/>
         <DropShadowEffect x:Key="NoRowBorderEffect" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
-        
         <DropShadowEffect x:Key="NotificationRowBorderEffectBottom" ShadowDepth="2" Direction="315" Color="Black" Opacity="0.75" BlurRadius="8"/>
         <DropShadowEffect x:Key="NoRowBorderEffectBottom" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
         <DropShadowEffect x:Key="NotificationRowBorderEffectTop" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5" BlurRadius="6"/>
         <DropShadowEffect x:Key="NoRowBorderEffectTop" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
+        <!--#endregion-->
+        
         <!--#region Buttons -->
         <Style x:Key="Button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource Button.Background}"/>
@@ -2423,6 +2460,7 @@
             </Setter>
         </Style>
         <!--#endregion-->
+        
         <!--#region Text Boxes-->
         <Style x:Key="TextBox" TargetType="{x:Type TextBox}">
             <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
@@ -2534,6 +2572,7 @@
         </Style>
         <!--#endregion-->
         <!--#endregion-->
+        
         <!--#region Check Boxes -->
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -2632,6 +2671,7 @@
             </Setter>
         </Style>
         <!--#endregion-->
+        
         <!--#region Text Blocks -->
         <Style x:Key="NormalTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{StaticResource Dark}"/>
@@ -2704,6 +2744,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <!--#endregion-->
+        
         <!--#region Combo Boxes -->
         <Style TargetType="{x:Type ComboBoxItem}">
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -2973,6 +3014,7 @@
             </Setter>
         </Style>
         <!--#endregion-->
+        
         <!--#region Tabs -->
         <Style x:Key="TabItem" TargetType="{x:Type TabItem}">
             <Setter Property="Foreground" Value="White"/>
@@ -3081,7 +3123,7 @@
             </Style.Triggers>
         </Style>-->
         
-        <!-- Module Grids -->
+        <!--#region Module Grids -->
         <Style x:Key="AllTabletProjectsGrid" TargetType="{x:Type ContentControl}">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -3110,7 +3152,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
+        
         <!-- Orders Entered and Unscanned Grid -->
         <Style x:Key="OrdersEnteredUnscannedRows" TargetType="{x:Type ContentControl}">
             <Setter Property="Background" Value="Transparent"/>
@@ -3751,166 +3793,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
 
-
-
-        <!--Control-specific resources.-->
-        <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
-        <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
-        <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
-
-        <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
-
-        <LinearGradientBrush x:Key="MenuPopupBrush"
-                     EndPoint="0.5,1"
-                     StartPoint="0.5,0">
-            <GradientStop Color="{DynamicResource ControlLightColor}"
-                Offset="0" />
-            <GradientStop Color="{DynamicResource ControlMediumColor}"
-                Offset="0.5" />
-            <GradientStop Color="{DynamicResource ControlLightColor}"
-                Offset="1" />
-        </LinearGradientBrush>
-
-        <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
-                     StartPoint="0,0"
-                     EndPoint="1,0">
-            <LinearGradientBrush.GradientStops>
-                <GradientStopCollection>
-                    <GradientStop Color="#000000FF"
-                    Offset="0" />
-                    <GradientStop Color="#600000FF"
-                    Offset="0.4" />
-                    <GradientStop Color="#600000FF"
-                    Offset="0.6" />
-                    <GradientStop Color="#000000FF"
-                    Offset="1" />
-                </GradientStopCollection>
-            </LinearGradientBrush.GradientStops>
-        </LinearGradientBrush>
-        
-        <!--#region List Box Note Window -->
-        <Style x:Key="ListBox" TargetType="ListBox">
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            <Setter Property="SelectionMode" Value="Extended"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Medium}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBox">
-                        <Border Name="Border" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource Medium}" Background="Transparent">
-                            <ScrollViewer Margin="0" Focusable="false">
-                                <StackPanel Margin="2" IsItemsHost="True"/>
-                            </ScrollViewer>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}"/>
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Dark}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="ListBoxItem" TargetType="ListBoxItem">
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground">
-                <Setter.Value>
-                    <SolidColorBrush Color="{StaticResource Dark.Color}" Opacity="1"/>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Label x:Name="label" Padding="2" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}">
-                            <ContentPresenter/>
-                        </Label>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <!-- MouseOver and not Selected  -->
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True" />
-                                    <Condition Property="IsSelected" Value="False" />
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
-                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <!-- Selected and not focused  -->
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True" />
-                                    <Condition Property="IsFocused" Value="False" />
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}"/>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="Transparent"/>
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.ExitActions>
-                                <!-- Selected and focused  -->
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                    <Condition Property="IsFocused" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <MultiTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
-                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.EnterActions>
-                                <MultiTrigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard FillBehavior="Stop">
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
-                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </MultiTrigger.ExitActions>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!--#endregion-->
 
         <Style x:Key="CustomerNotesModule" TargetType="Label">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
@@ -4065,18 +3948,22 @@
                             <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
-                                    <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="0"/> <!--80-->
+                                    <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="0"/>
+                                    <!--80-->
                                     <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>
-                                    <ColumnDefinition SharedSizeGroup="ShipToNumber" Width="0"/> <!--76-->
+                                    <ColumnDefinition SharedSizeGroup="ShipToNumber" Width="0"/>
+                                    <!--76-->
                                     <ColumnDefinition SharedSizeGroup="ShipToName" Width="Auto"/>
-                                    <ColumnDefinition SharedSizeGroup="EndUserNumber" Width="0"/> <!--80-->
+                                    <ColumnDefinition SharedSizeGroup="EndUserNumber" Width="0"/>
+                                    <!--80-->
                                     <ColumnDefinition SharedSizeGroup="EndUserName" Width="Auto"/>
                                     <ColumnDefinition SharedSizeGroup="Category" Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition SharedSizeGroup="QuoteNumbers" Width="Auto" MinWidth="60"/>
                                     <ColumnDefinition SharedSizeGroup="OrderNumbers" Width="Auto" MinWidth="60"/>
                                     <ColumnDefinition SharedSizeGroup="User" Width="Auto"/>
-                                    <ColumnDefinition SharedSizeGroup="Timestamp" Width="0"/> <!--Auto-->
+                                    <ColumnDefinition SharedSizeGroup="Timestamp" Width="0"/>
+                                    <!--Auto-->
                                     <ColumnDefinition SharedSizeGroup="NotifcationDate" Width="180"/>
                                     <ColumnDefinition SharedSizeGroup="Buttons" Width="Auto"/>
                                 </Grid.ColumnDefinitions>
@@ -4411,7 +4298,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            
+
         </Style>
 
         <Style x:Key="OrdersEnteredModule" TargetType="Label" x:Name="OrdersEnteredModule">
@@ -4938,7 +4825,130 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
+        <!--#endregion-->
+
+
+        <!--#region List Box Note Window -->
+        <Style x:Key="ListBox" TargetType="ListBox">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="SelectionMode" Value="Extended"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Medium}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Name="Border" BorderThickness="1" CornerRadius="3" BorderBrush="{StaticResource Medium}" Background="Transparent">
+                            <ScrollViewer Margin="0" Focusable="false">
+                                <StackPanel Margin="2" IsItemsHost="True"/>
+                            </ScrollViewer>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Dark}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ListBoxItem" TargetType="ListBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush Color="{StaticResource Dark.Color}" Opacity="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Label x:Name="label" Padding="2" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}">
+                            <ContentPresenter/>
+                        </Label>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <!-- MouseOver and not Selected  -->
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
+                                            <ColorAnimation Duration="0:0:0.08" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <!-- Selected and not focused  -->
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="IsFocused" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}"/>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="Transparent"/>
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                                <!-- Selected and focused  -->
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                    <Condition Property="IsFocused" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Light.Color}" />
+                                            <ColorAnimation Duration="0:0:0.02" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.EnterActions>
+                                <MultiTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard FillBehavior="Stop">
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Background.Color" To="{StaticResource Bright.Color}" />
+                                            <ColorAnimation Duration="0:0:0.10" Storyboard.TargetName="label" Storyboard.TargetProperty="Foreground.Color" To="{StaticResource Dark.Color}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiTrigger.ExitActions>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion-->
+
     </Application.Resources>
 </Application>
