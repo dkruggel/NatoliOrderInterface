@@ -133,7 +133,6 @@ namespace NatoliOrderInterface
                 Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
                 xImage.Visibility = Visibility.Collapsed;
             }
-            
         }
     }
 }

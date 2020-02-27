@@ -5112,13 +5112,63 @@ namespace NatoliOrderInterface
             // Filter using search box so they don't lose a search just because of a refresh
             var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
             string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            ordersPrintedInEngineeringDict =
-                ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                          p.Value.customerName.ToLower().Contains(searchString) ||
-                                                          p.Value.employeeName.ToLower().Contains(searchString) ||
-                                                          p.Value.checkedBy.ToLower().Contains(searchString))
-                                              .OrderBy(kvp => kvp.Key)
-                                              .ToDictionary(x => x.Key, x => x.Value);
+            string column;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1];
+                switch (column)
+                {
+                    case "Order No":
+
+                        ordersPrintedInEngineeringDict =
+                            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString))
+                                                          .OrderBy(kvp => kvp.Key)
+                                                          .ToDictionary(x => x.Key, x => x.Value);
+                        break;
+                    case "Customer Name":
+
+                        ordersPrintedInEngineeringDict =
+                            ordersPrintedInEngineeringDict.Where(p => p.Value.customerName.ToLower().Contains(searchString))
+                                                          .OrderBy(kvp => kvp.Key)
+                                                          .ToDictionary(x => x.Key, x => x.Value);
+                        break;
+                    case "Employee Name":
+
+                        ordersPrintedInEngineeringDict =
+                            ordersPrintedInEngineeringDict.Where(p => p.Value.employeeName.ToLower().Contains(searchString))
+                                                          .OrderBy(kvp => kvp.Key)
+                                                          .ToDictionary(x => x.Key, x => x.Value);
+                        break;
+                    case "Checker":
+
+                        ordersPrintedInEngineeringDict =
+                            ordersPrintedInEngineeringDict.Where(p => p.Value.checkedBy.ToLower().Contains(searchString))
+                                                          .OrderBy(kvp => kvp.Key)
+                                                          .ToDictionary(x => x.Key, x => x.Value);
+                        break;
+                    default:
+
+                        ordersPrintedInEngineeringDict =
+                            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                                      p.Value.customerName.ToLower().Contains(searchString) ||
+                                                                      p.Value.employeeName.ToLower().Contains(searchString) ||
+                                                                      p.Value.checkedBy.ToLower().Contains(searchString))
+                                                          .OrderBy(kvp => kvp.Key)
+                                                          .ToDictionary(x => x.Key, x => x.Value);
+                        break;
+                }
+            }
+            else
+            {
+                ordersPrintedInEngineeringDict =
+                    ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+                                                              p.Value.customerName.ToLower().Contains(searchString) ||
+                                                              p.Value.employeeName.ToLower().Contains(searchString) ||
+                                                              p.Value.checkedBy.ToLower().Contains(searchString))
+                                                  .OrderBy(kvp => kvp.Key)
+                                                  .ToDictionary(x => x.Key, x => x.Value);
+            }
 
             OrdersPrintedInEngineeringExpanders(ordersPrintedInEngineeringDict);
 
