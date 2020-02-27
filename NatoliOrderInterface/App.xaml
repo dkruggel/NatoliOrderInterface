@@ -5,7 +5,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="isFocusedOrIsNotEmptyConverter"/>
-        <!--#region Colors -->
+        <!--#region Main Colors -->
         <Color x:Key="Light.Color">#B3EFFF</Color>
         <Color x:Key="Bright.Color">#00CFFF</Color>
         <Color x:Key="Medium.Color">#046B99</Color>
@@ -24,9 +24,9 @@
         <Thickness x:Key="TopBorderThickness" Left="1" Top="1" Right="0" Bottom="0"/>
         <Thickness x:Key="TopBorderNoThickness" Left="0" Top="0" Right="0" Bottom="0"/>
 
-        <!-- Fonts -->
+        <!--#region Fonts -->
         <FontFamily x:Key="ASansrounded">pack://application:,,,/Fonts/#ASansrounded</FontFamily>
-
+        <!--#endregion-->
         <!--#region Drawing Images -->
         <!--#region Zwicon Icons
         These icons are licensed under the
@@ -136,13 +136,6 @@
             <DrawingImage.Drawing>
                 <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
                     <GeometryDrawing Brush="#FF000000" Geometry="F1 M24,24z M0,0z M12,11.2928932L16.1464466,7.14644661C16.3417088,6.95118446 16.6582912,6.95118446 16.8535534,7.14644661 17.0488155,7.34170876 17.0488155,7.65829124 16.8535534,7.85355339L12.7071068,12 16.8535534,16.1464466C17.0488155,16.3417088 17.0488155,16.6582912 16.8535534,16.8535534 16.6582912,17.0488155 16.3417088,17.0488155 16.1464466,16.8535534L12,12.7071068 7.85355339,16.8535534C7.65829124,17.0488155 7.34170876,17.0488155 7.14644661,16.8535534 6.95118446,16.6582912 6.95118446,16.3417088 7.14644661,16.1464466L11.2928932,12 7.14644661,7.85355339C6.95118446,7.65829124 6.95118446,7.34170876 7.14644661,7.14644661 7.34170876,6.95118446 7.65829124,6.95118446 7.85355339,7.14644661L12,11.2928932z" />
-                </DrawingGroup>
-            </DrawingImage.Drawing>
-        </DrawingImage>
-        <DrawingImage x:Key="window_plusDrawingImage">
-            <DrawingImage.Drawing>
-                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M24,24z M0,0z M19,17L20.5,17C20.7761424,17 21,17.2238576 21,17.5 21,17.7761424 20.7761424,18 20.5,18L19,18 19,19.5C19,19.7761424 18.7761424,20 18.5,20 18.2238576,20 18,19.7761424 18,19.5L18,18 16.5,18C16.2238576,18 16,17.7761424 16,17.5 16,17.2238576 16.2238576,17 16.5,17L18,17 18,15.5C18,15.2238576 18.2238576,15 18.5,15 18.7761424,15 19,15.2238576 19,15.5L19,17z M20.0071085,8L4,8 4,17.508331C4,18.3367581,4.67157288,19.008331,5.5,19.008331L13.5,19.008331C13.7761424,19.008331 14,19.2321886 14,19.508331 14,19.7844734 13.7761424,20.008331 13.5,20.008331L5.5,20.008331C4.11928813,20.008331,3,18.8890429,3,17.508331L3,6.5C3,5.11928813,4.11928813,4,5.5,4L18.5071085,4C19.8878203,4,21.0071085,5.11928813,21.0071085,6.5L21.0071085,7.48426505C21.00727,7.48949024 21.0073514,7.49473562 21.0073514,7.5 21.0073514,7.50526438 21.00727,7.51050976 21.0071085,7.51573495L21.0071085,12.5C21.0071085,12.7761424 20.7832508,13 20.5071085,13 20.2309661,13 20.0071085,12.7761424 20.0071085,12.5L20.0071085,8z M20.0071085,7L20.0071085,6.5C20.0071085,5.67157288,19.3355356,5,18.5071085,5L5.5,5C4.67157288,5,4,5.67157288,4,6.5L4,7 20.0071085,7z" />
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
@@ -2217,7 +2210,7 @@
         <DropShadowEffect x:Key="NoRowBorderEffectBottom" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
         <DropShadowEffect x:Key="NotificationRowBorderEffectTop" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5" BlurRadius="6"/>
         <DropShadowEffect x:Key="NoRowBorderEffectTop" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
-        <!-- Buttons -->
+        <!--#region Buttons -->
         <Style x:Key="Button" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="{StaticResource Button.Background}"/>
             <Setter Property="Foreground" Value="White"/>
@@ -2429,7 +2422,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Text Boxes-->
+        <!--#endregion-->
+        <!--#region Text Boxes-->
         <Style x:Key="TextBox" TargetType="{x:Type TextBox}">
             <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
@@ -2470,7 +2464,77 @@
         <Style x:Key="NormalTextBox" TargetType="{x:Type TextBox}">
             <Setter Property="Background" Value="{StaticResource BackgroundBrush}"/>
         </Style>
-        <!-- Check Boxes -->
+        <!--#region Search Box -->
+        <Style x:Key="SearchBoxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SearchBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Border" CornerRadius="20" BorderThickness="1" BorderBrush="{StaticResource Medium}" Margin="0,5,2,2" Background="Transparent" Width="24">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="18,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0" IsEnabled="False">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource isFocusedOrIsNotEmptyConverter}" ConverterParameter="t2c_f2v">
+                                            <Binding ElementName="SearchTextBox" Path="IsFocused"/>
+                                            <Binding ElementName="SearchTextBox" Path="Text"/>
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                    <TextBlock.Triggers>
+                                        <EventTrigger RoutedEvent="TextBlock.Loaded" SourceName="SearchTextBlock">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <StringAnimationUsingKeyFrames Storyboard.TargetName="SearchTextBlock" Storyboard.TargetProperty="(TextBlock.Text)" Duration="0:0:1.5" RepeatBehavior="Forever">
+                                                        <DiscreteStringKeyFrame Value="Search here" KeyTime="0:0:0"/>
+                                                        <DiscreteStringKeyFrame Value="Search here." KeyTime="0:0:.3"/>
+                                                        <DiscreteStringKeyFrame Value="Search here.." KeyTime="0:0:.6"/>
+                                                        <DiscreteStringKeyFrame Value="Search here..." KeyTime="0:0:.9"/>
+                                                    </StringAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </TextBlock.Triggers>
+                                </TextBlock>
+                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
+                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp"/>
+                                <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed">
+                                </Image>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Collapsed}">
+                                <Setter TargetName="MagImage" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Visible}">
+                                <Setter TargetName="MagImage" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion-->
+        <!--#endregion-->
+        <!--#region Check Boxes -->
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -2567,7 +2631,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Text Blocks -->
+        <!--#endregion-->
+        <!--#region Text Blocks -->
         <Style x:Key="NormalTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{StaticResource Dark}"/>
         </Style>
@@ -2638,7 +2703,8 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <!-- Combo Boxes -->
+        <!--#endregion-->
+        <!--#region Combo Boxes -->
         <Style TargetType="{x:Type ComboBoxItem}">
             <Setter Property="SnapsToDevicePixels" Value="true" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -2906,7 +2972,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Tabs -->
+        <!--#endregion-->
+        <!--#region Tabs -->
         <Style x:Key="TabItem" TargetType="{x:Type TabItem}">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -2994,76 +3061,10 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <!-- Search Box -->
-        <Style x:Key="SearchBoxStyle" TargetType="{x:Type TextBox}">
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Focusable" Value="True"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Margin" Value="2,0"/>
-            <Setter Property="Foreground" Value="{StaticResource Dark}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="SearchBox" TargetType="{x:Type TextBox}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="Border" CornerRadius="20" BorderThickness="1" BorderBrush="{StaticResource Medium}" Margin="0,5,2,2" Background="Transparent" Width="24">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock x:Name="SearchTextBlock" Text="Search here..." Foreground="Gray" Margin="18,0" VerticalAlignment="Center" Background="Transparent" Cursor="IBeam" Grid.Column="0" IsEnabled="False">
-                                    <TextBlock.Visibility>
-                                        <MultiBinding Converter="{StaticResource isFocusedOrIsNotEmptyConverter}" ConverterParameter="t2c_f2v">
-                                            <Binding ElementName="SearchTextBox" Path="IsFocused"/>
-                                            <Binding ElementName="SearchTextBox" Path="Text"/>
-                                        </MultiBinding>
-                                    </TextBlock.Visibility>
-                                    <TextBlock.Triggers>
-                                        <EventTrigger RoutedEvent="TextBlock.Loaded" SourceName="SearchTextBlock">
-                                            <BeginStoryboard>
-                                                <Storyboard>
-                                                    <StringAnimationUsingKeyFrames Storyboard.TargetName="SearchTextBlock" Storyboard.TargetProperty="(TextBlock.Text)" Duration="0:0:1.5" RepeatBehavior="Forever">
-                                                        <DiscreteStringKeyFrame Value="Search here" KeyTime="0:0:0"/>
-                                                        <DiscreteStringKeyFrame Value="Search here." KeyTime="0:0:.3"/>
-                                                        <DiscreteStringKeyFrame Value="Search here.." KeyTime="0:0:.6"/>
-                                                        <DiscreteStringKeyFrame Value="Search here..." KeyTime="0:0:.9"/>
-                                                    </StringAnimationUsingKeyFrames>
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger>
-                                    </TextBlock.Triggers>
-                                </TextBlock>
-                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
-                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp"/>
-                                <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed">
-                                </Image>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Collapsed}">
-                                <Setter TargetName="MagImage" Property="Visibility" Value="Visible"/>
-                            </Trigger>
-                            <Trigger SourceName="xImage" Property="Visibility" Value="{x:Static Visibility.Visible}">
-                                <Setter TargetName="MagImage" Property="Visibility" Value="Collapsed"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <!--#endregion-->
+        
         <!-- Notification Menu Item -->
-        <Style x:Key="NotificationMenuStyle" TargetType="{x:Type MenuItem}">
+        <!--<Style x:Key="NotificationMenuStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
             <Setter Property="Tag" Value="{StaticResource bellDrawingImage}"/>
             <Setter Property="Template">
@@ -3078,7 +3079,8 @@
                     <Setter Property="Background" Value="{StaticResource Icon.Hover}"/>
                 </Trigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
+        
         <!-- Module Grids -->
         <Style x:Key="AllTabletProjectsGrid" TargetType="{x:Type ContentControl}">
             <Setter Property="Background" Value="Transparent"/>
