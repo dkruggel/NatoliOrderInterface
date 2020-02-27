@@ -921,43 +921,6 @@ namespace NatoliOrderInterface
             }
 
             #endregion
-            #region NotificationsRegion
-            //MenuItem notificationsMenu = new MenuItem()
-            //{
-            //    //Header = "Notifications",
-            //    //Height = MainMenu.Height
-            //    Name = "notificationsMenu",
-            //    Style = App.Current.Resources["NotificationMenuStyle"] as Style
-            //};
-            //notificationsMenu.Click += NotificationsMenu_Click;
-            //notificationsMenu.ApplyTemplate();
-            // Add menu item to open active notifications window
-            //MainMenu.Items.Add(notificationsMenu);
-
-            //Button notificationButton = new Button 
-            //{ 
-            //    Style = App.Current.Resources["ShakeButtonIcon"] as Style ,
-            //    Background=Brushes.Transparent, 
-            //    Tag = App.Current.Resources["bellDrawingImage"] as DrawingImage, 
-            //    BorderThickness = new Thickness(0),
-            //};
-            //notificationButton.SetValue(DockPanel.DockProperty, Dock.Left);
-            //notificationButton.Click += NotificationsMenu_Click;
-            //MenuDock.Children.Add(notificationButton);
-            #endregion
-            #region RefreshRegion
-            //Button refreshButton = new Button
-            //{
-            //    Style = App.Current.Resources["RotateButtonIcon"] as Style,
-            //    Background = Brushes.Transparent,
-            //    Tag = App.Current.Resources["refresh_doubleDrawingImage"] as DrawingImage,
-            //    BorderThickness = new Thickness(0),
-            //};
-            //refreshButton.SetValue(DockPanel.DockProperty, Dock.Left);
-            //refreshButton.Click += ForceRefresh_Click;
-            //MenuDock.Children.Add(refreshButton);
-            #endregion
-
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
