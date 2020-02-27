@@ -4383,10 +4383,10 @@
                                         <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
                                         <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Days In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="8,0,0,0"/>
+                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="5,0,0,0"/>
+                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Days In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -4642,13 +4642,13 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
                                         <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
-                                        <ColumnDefinition SharedSizeGroup="Employee" MinWidth="120"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" MinWidth="180"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="8,0,0,0"/>
-                                    <TextBlock Text="In Eng" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="8,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="8,0,0,0"/>
+                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="5,0,0,0"/>
+                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="0,0,0,0"/>
+                                    <TextBlock Text="In Eng" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -4672,13 +4672,13 @@
                                             <Grid Margin="0,0" Background="Transparent">
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" MaxHeight="35" MinHeight="35" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="35" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
                                                         <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="Auto"/>
+                                                        <ColumnDefinition SharedSizeGroup="Employee"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Tag="OrderNumber" Text="{Binding OrderNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
                                                     <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1" TextWrapping="NoWrap"/>
@@ -4686,39 +4686,35 @@
                                                     <TextBlock Tag="DaysInArea" Text="{Binding DaysInEng}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                     <Grid Grid.Column="4">
                                                         <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition Width="*" MinWidth="100"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="10,0"/>
-                                                        <Button x:Name="OpenButton" Tag="Open" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" ToolTip="Open Work Order">
-                                                            <Button.Template>
-                                                                <ControlTemplate TargetType="Button">
-                                                                    <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                                        <Image.Style>
-                                                                            <Style>
-                                                                                <Style.Triggers>
-                                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                                    </Trigger>
-                                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                                    </Trigger>
-                                                                                </Style.Triggers>
-                                                                            </Style>
-                                                                        </Image.Style>
-                                                                    </Image>
-                                                                </ControlTemplate>
-                                                            </Button.Template>
-                                                        </Button>
+                                                        <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis"/>
+                                                        <StackPanel Grid.Column="1" Grid.ColumnSpan="2">
+                                                            <Image x:Name="OpenImage" Height="Auto" Width="Auto" Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
+                                                                <Image.Style>
+                                                                    <Style>
+                                                                        <Style.Triggers>
+                                                                            <Trigger Property="Image.IsMouseOver" Value="True">
+                                                                                <Setter Property="Image.Opacity" Value="1"/>
+                                                                                <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                            </Trigger>
+                                                                            <Trigger Property="Image.IsMouseOver" Value="False">
+                                                                                <Setter Property="Image.Opacity" Value="0.4"/>
+                                                                                <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                            </Trigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+                                                        </StackPanel>
                                                     </Grid>
                                                 </Grid>
                                                 <Grid.Triggers>
                                                     <EventTrigger RoutedEvent="MouseEnter">
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenImage" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
@@ -4743,7 +4739,7 @@
                                                     <EventTrigger RoutedEvent="MouseLeave">
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenImage" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
@@ -4767,7 +4763,7 @@
                                                     <EventTrigger RoutedEvent="Loaded">
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenImage" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
@@ -4801,7 +4797,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" MinWidth="120" Width="250"/>
+                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
