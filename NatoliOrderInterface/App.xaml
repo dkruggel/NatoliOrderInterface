@@ -198,6 +198,13 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="activityDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M24,24z M0,0z M6.21690481,12L2.5,12C2.22385763,12 2,11.7761424 2,11.5 2,11.2238576 2.22385763,11 2.5,11L6.5,11C6.67563143,11,6.83838484,11.0921494,6.92874646,11.2427521L9.43884157,15.426244 14.0448168,5.29309853C14.2188617,4.91019956,14.7591161,4.90019827,14.9472136,5.2763932L17.809017,11 21.5,11C21.7761424,11 22,11.2238576 22,11.5 22,11.7761424 21.7761424,12 21.5,12L17.5,12C17.310614,12,17.1374824,11.8929988,17.0527864,11.7236068L14.521493,6.66101999 9.95518324,16.7069015C9.7884528,17.0737084,9.27855536,17.1027509,9.07125354,16.7572479L6.21690481,12z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <!--#endregion-->
 
         <DrawingImage x:Key="greenplusadditioniconDrawingImage">
@@ -2198,6 +2205,7 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
+        <!-- Pass in drawingimage source as tag -->
         <Style x:Key="ButtonIcon" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
@@ -2211,7 +2219,6 @@
             </Setter>
         </Style>
         <!--#endregion-->
-
 
         <!--#region Brushes -->
 
@@ -3160,8 +3167,6 @@
             </Setter>
         </Style>
         <!--#endregion-->
-        
-        
         
         <!--#region Module Grids -->
         <Style x:Key="AllTabletProjectsGrid" TargetType="{x:Type ContentControl}">
@@ -4867,7 +4872,6 @@
         </Style>
         <!--#endregion-->
 
-
         <!--#region List Box Note Window -->
         <Style x:Key="ListBox" TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -4989,8 +4993,7 @@
             </Setter>
         </Style>
         <!--#endregion-->
-
-
+        
         <!-- Notification Menu Item -->
         <!--<Style x:Key="NotificationMenuStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"/>
