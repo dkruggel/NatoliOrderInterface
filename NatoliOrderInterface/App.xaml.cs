@@ -11,6 +11,8 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using NatoliOrderInterface.Models;
+using System.Windows.Input;
 
 namespace NatoliOrderInterface
 {
@@ -26,7 +28,7 @@ namespace NatoliOrderInterface
         public static string SmtpServer;
         public static int? SmtpPort;
         public static List<string> StandardKeys = new List<string> { "N-6600-32M", "N-6600-01M", "N-6600-02M", "N-6600-03M", "N-7080-02M", "N-6010", "N-6441", "N-6441M", "N-6653", "N-6652", "N-6445", "N-6444" };
-
+        
         public static void GetConnectionString()
         {
             try

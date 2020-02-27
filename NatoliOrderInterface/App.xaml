@@ -10,12 +10,13 @@
         <Color x:Key="Bright.Color">#00CFFF</Color>
         <Color x:Key="Medium.Color">#046B99</Color>
         <Color x:Key="Dark.Color">#1C304A</Color>
-
+        
         <SolidColorBrush x:Key="Light" Color="{StaticResource Light.Color}"/>
         <SolidColorBrush x:Key="Bright" Color="{StaticResource Bright.Color}"/>
         <SolidColorBrush x:Key="Medium" Color="{StaticResource Medium.Color}"/>
         <SolidColorBrush x:Key="Dark" Color="{StaticResource Dark.Color}"/>
-        
+        <SolidColorBrush x:Key="Transparent" Color="Transparent" Opacity="0.0"/>
+
         <SolidColorBrush x:Key="GridBorder.Top" Color="White" Opacity="1"/>
         <SolidColorBrush x:Key="GridBorder.Bottom" Color="LightGray" Opacity="1"/>
         <!--#endregion-->
@@ -2147,6 +2148,168 @@
 
             </Style.Triggers>
         </Style>
+        <Style x:Key="SearchButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource searchDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="WindowButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ExportButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource exportDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ArchiveButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource archiveDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ExpandButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource expandDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CollapseButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource collapseDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <!-- Text Boxes-->
         <Style x:Key="TextBox" TargetType="{x:Type TextBox}">
             <Setter Property="BorderBrush" Value="{StaticResource Dark}"/>
@@ -4129,9 +4292,12 @@
             
         </Style>
 
-        <Style x:Key="OrdersEnteredModule" TargetType="Label">
+        <Style x:Key="OrdersEnteredModule" TargetType="Label" x:Name="OrdersEnteredModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
-            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MinHeight" Value="200"/>
+            <Setter Property="MinWidth" Value="400"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -4147,7 +4313,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
                                 </Border.Effect>
                             </Border>
-                            <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0,0,3,3" Background="White">
+                            <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3" Background="White">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
@@ -4159,163 +4325,75 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0">
-                                    <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24"/>
+                                <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0">
+                                    <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource searchDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
+                                        <Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ArchiveButton" Style="{StaticResource ArchiveButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right">
+                                            <Button.Triggers>
+                                                <EventTrigger RoutedEvent="Button.Click">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CollapseButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="MinHeight" From="200" To="500" Duration="0:0:0.5"/>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="Height" From="200" To="1500" Duration="0:0:0.5"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Button.Triggers>
                                         </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource exportDrawingImage}" Cursor="Hand">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource archiveDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource expandDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource collapseDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible">
+                                            <Button.Triggers>
+                                                <EventTrigger RoutedEvent="Button.Click">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CollapseButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="MinHeight" From="500" To="200" Duration="0:0:0.5"/>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="Height" From="1500" To="200" Duration="0:0:0.5"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Button.Triggers>
                                         </Button>
                                     </StackPanel>
                                     <TextBlock Text=""/>
                                 </DockPanel>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Border BorderBrush="{StaticResource Medium}" BorderThickness="0,0,0,3">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
-                                        <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
                                         <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
                                         <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
-                                        <ColumnDefinition SharedSizeGroup="Buttons" Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="8,0,0,0"/>
                                     <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="8,0,0,0"/>
                                     <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="8,0,0,0"/>
                                     <TextBlock Text="Days In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="8,0,0,0"/>
                                 </Grid>
-                                <!--<Border x:Name="TopBorder" Panel.ZIndex="3" DockPanel.Dock="Top" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,1,1" CornerRadius="0">
+                                <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
-                                        <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="270" Color="black" Opacity=".75"/>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
-                                </Border>-->
-                                <ListBox DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                </Border>
+                                <ListBox x:Name="ListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -4330,14 +4408,14 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Margin="0,0" Background="Transparent">
-                                                <Border x:Name="ActiveBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Border x:Name="GridBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,1,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" HorizontalAlignment="Stretch" MaxHeight="35" MinHeight="35" Margin="6,0">
+                                                <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                <Grid Background="Transparent" ShowGridLines="False" MaxHeight="35" MinHeight="35" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber"/>
-                                                        <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysInArea"/>
+                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Tag="OrderNumber" Text="{Binding OrderNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
                                                     <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1" TextWrapping="NoWrap"/>
@@ -4348,7 +4426,7 @@
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
                                                         <TextBlock Tag="DaysInArea" Text="{Binding NumDaysIn}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="10,0"/>
-                                                        <Button x:Name="OpenButton" Tag="Open" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" Click="OpenNotesButtonButton_Click">
+                                                        <Button x:Name="OpenButton" Tag="Open" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" ToolTip="Open Work Order">
                                                             <Button.Template>
                                                                 <ControlTemplate TargetType="Button">
                                                                     <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
@@ -4379,25 +4457,22 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Medium}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Medium}"/>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Transparent}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
-                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Medium}"/>
-                                                                </ObjectAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,1,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
                                                                     <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
                                                                 </ThicknessAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
-                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
-                                                                </ThicknessAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <DoubleAnimation Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                                                <DoubleAnimation Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
                                                             </Storyboard>
                                                         </BeginStoryboard>
                                                     </EventTrigger>
@@ -4407,19 +4482,19 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
                                                                     <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                                 </ThicknessAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
                                                                     <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                                 </ThicknessAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
@@ -4431,19 +4506,19 @@
                                                                 <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="GridBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Margin">
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
                                                                     <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                                 </ThicknessAnimationUsingKeyFrames>
-                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
                                                                     <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
                                                                 </ThicknessAnimationUsingKeyFrames>
-                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ActiveBorder" Storyboard.TargetProperty="Effect">
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect">
                                                                     <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
                                                                 </ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
@@ -4454,155 +4529,292 @@
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
-                                <!--<Border x:Name="BottomBorder" DockPanel.Dock="Bottom" Panel.ZIndex="3" BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0">
-                                    <Border.Effect>
-                                        <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="90" Color="LightGray" Opacity=".75"/>
-                                    </Border.Effect>
-                                </Border>-->
-                                <!--<Border Panel.ZIndex="3" DockPanel.Dock="Top" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,1,1" CornerRadius="0">
-                                    <Border.Effect>
-                                        <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="270" Color="Black" Opacity=".75"/>
-                                    </Border.Effect>
-                                </Border>-->
+                                <Border Grid.Row="3">
+                                    <Border Panel.ZIndex="3" BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="135" Color="LightGray" Opacity=".75"/>
+                                        </Border.Effect>
+                                    </Border>
+                                </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
                                     <TextBox Style="{StaticResource SearchBox}" MinWidth="120" Width="250"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource searchDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource exportDrawingImage}" Cursor="Hand">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource archiveDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource expandDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
-                                        <Button Margin="2,0" HorizontalAlignment="Right">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Image Source="{DynamicResource collapseDrawingImage}" Cursor="Hand" Visibility="Visible">
-                                                        <Image.Style>
-                                                            <Style>
-                                                                <Style.Triggers>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                        <Setter Property="Image.Opacity" Value="1"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                    </Trigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </Image.Style>
-                                                    </Image>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                        </Button>
+                                        <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ArchiveButton" Style="{StaticResource ArchiveButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible"/>-->
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Path=ordersCollection.Count}" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ElementName=ListBox, Path=Items.Count, StringFormat='Count: {0}'}" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center"/>
                                 </DockPanel>
                             </Grid>
+                            <Grid.Triggers>
+                            </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <Style x:Key="OrdersInEngineeringModule" TargetType="Label" x:Name="OrdersInEngineeringModule">
+            <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MinHeight" Value="200"/>
+            <Setter Property="MinWidth" Value="400"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Grid>
+                            <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0">
+                                    <TextBlock Text="Orders Being Processed In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ArchiveButton" Style="{StaticResource ArchiveButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right">
+                                            <Button.Triggers>
+                                                <EventTrigger RoutedEvent="Button.Click">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CollapseButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="MinHeight" From="200" To="500" Duration="0:0:0.5"/>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="Height" From="200" To="1500" Duration="0:0:0.5"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible">
+                                            <Button.Triggers>
+                                                <EventTrigger RoutedEvent="Button.Click">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CollapseButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ExpandButton" Storyboard.TargetProperty="Visibility">
+                                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                            </ObjectAnimationUsingKeyFrames>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="MinHeight" From="500" To="200" Duration="0:0:0.5"/>
+                                                            <DoubleAnimation Storyboard.Target="{Binding RelativeSource={RelativeSource TemplatedParent}}" Storyboard.TargetProperty="Height" From="1500" To="200" Duration="0:0:0.5"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBlock Text=""/>
+                                </DockPanel>
+                                <Border BorderBrush="{StaticResource Medium}" BorderThickness="0,0,0,3">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" MinWidth="120"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="8,0,0,0"/>
+                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="8,0,0,0"/>
+                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="8,0,0,0"/>
+                                    <TextBlock Text="In Eng" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="8,0,0,0"/>
+                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="8,0,0,0"/>
+                                </Grid>
+                                <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <ListBox x:Name="ListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <ContentPresenter/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0" Background="Transparent">
+                                                <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                <Grid Background="Transparent" ShowGridLines="False" MaxHeight="35" MinHeight="35" Margin="6,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="100"/>
+                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Tag="OrderNumber" Text="{Binding OrderNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
+                                                    <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1" TextWrapping="NoWrap"/>
+                                                    <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" Margin="10,0"/>
+                                                    <TextBlock Tag="DaysInArea" Text="{Binding DaysInEng}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
+                                                    <Grid Grid.Column="4">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="10,0"/>
+                                                        <Button x:Name="OpenButton" Tag="Open" Grid.Column="1" HorizontalAlignment="Center" Margin="10,0" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}" ToolTip="Open Work Order">
+                                                            <Button.Template>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Image Source="{DynamicResource windowDrawingImage}" Cursor="Hand" Visibility="Visible">
+                                                                        <Image.Style>
+                                                                            <Style>
+                                                                                <Style.Triggers>
+                                                                                    <Trigger Property="Image.IsMouseOver" Value="True">
+                                                                                        <Setter Property="Image.Opacity" Value="1"/>
+                                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                                    </Trigger>
+                                                                                    <Trigger Property="Image.IsMouseOver" Value="False">
+                                                                                        <Setter Property="Image.Opacity" Value="0.4"/>
+                                                                                        <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                                    </Trigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </Image.Style>
+                                                                    </Image>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid.Triggers>
+                                                    <EventTrigger RoutedEvent="MouseEnter">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Medium}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Transparent}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,1,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,1"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <DoubleAnimation Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                    <EventTrigger RoutedEvent="MouseLeave">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                    <EventTrigger RoutedEvent="Loaded">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="OpenButton" Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Margin">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
+                                                                    <SplineThicknessKeyFrame KeyTime="0" Value="0,0,0,0"/>
+                                                                </ThicknessAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect">
+                                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NoRowBorderEffect}"/>
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                </Grid.Triggers>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Border Grid.Row="3">
+                                    <Border Panel.ZIndex="3" BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="135" Color="LightGray" Opacity=".75"/>
+                                        </Border.Effect>
+                                    </Border>
+                                </Border>
+                                <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
+                                    <TextBox Style="{StaticResource SearchBox}" MinWidth="120" Width="250"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ArchiveButton" Style="{StaticResource ArchiveButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible"/>-->
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding ElementName=ListBox, Path=Items.Count, StringFormat='Count: {0}'}" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center"/>
+                                </DockPanel>
+                            </Grid>
+                            <Grid.Triggers>
+                            </Grid.Triggers>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
