@@ -2165,8 +2165,8 @@ namespace NatoliOrderInterface
                                         {
                                             errors.Add("'" + quoteLineItem.LineItemType + "' has option (155) without a value.");
                                         }
-                                short? angle = quoteOptionValueG.Degrees;
-                                        string text = (quoteOptionValueG.Text ?? "").Trim();
+                                        short? angle = quoteOptionValueG == null ? null : quoteOptionValueG.Degrees;
+                                        string text = quoteOptionValueG == null ? "" : (quoteOptionValueG.Text ?? "").Trim();
                                         if (angle == null)
                                         {
                                             errors.Add("'" + quoteLineItem.LineItemType + "' needs a key angle value.");

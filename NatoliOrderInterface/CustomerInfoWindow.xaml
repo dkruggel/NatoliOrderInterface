@@ -287,7 +287,7 @@
                                 <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" Visibility="Collapsed"/>
                                 <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True" Visibility="Collapsed">
-                                    <!--<Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                    <!--<Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -493,7 +493,7 @@
                                 <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" Visibility="Collapsed"/>
                                 <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True" Visibility="Collapsed">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource windowDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -579,7 +579,7 @@
                                 <TextBlock x:Name="ProjectStageTextBlock" Text="Stage" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                 <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis" Visibility="Collapsed"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True" Visibility="Collapsed">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource windowDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenProject_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenProject_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Project Folder" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>

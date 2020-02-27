@@ -921,21 +921,6 @@ namespace NatoliOrderInterface
             }
 
             #endregion
-            #region NotificationsRegion
-            MenuItem notificationsMenu = new MenuItem()
-            {
-                //Header = "Notifications",
-                //Height = MainMenu.Height
-                Name = "notificationsMenu",
-                Style = App.Current.Resources["NotificationMenuStyle"] as Style
-            };
-            notificationsMenu.Click += NotificationsMenu_Click;
-
-            notificationsMenu.ApplyTemplate();
-
-            // Add menu item to open active notifications window
-            MainMenu.Items.Add(notificationsMenu);
-#endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
@@ -943,6 +928,7 @@ namespace NatoliOrderInterface
             };
             #endregion
         }
+
 
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {

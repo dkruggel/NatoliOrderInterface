@@ -43,7 +43,7 @@
                                 <TextBlock x:Name="CustomerNameTextBlock" Text="CUSTOMER NAME" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock x:Name="NotificationMessageTextBlock" Text="Order has been sent to production" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -168,7 +168,7 @@
                                 <TextBlock x:Name="CustomerNameTextBlock" Opacity="0.5" Text="CUSTOMER NAME" Grid.Column="2" VerticalAlignment="Center" FontSize="20" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock x:Name="NotificationMessageTextBlock" Opacity="0.5" Text="Order has been sent to production" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="4" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -306,7 +306,7 @@
                                 <TextBlock x:Name="LocationTextBlock" Text="Engineering - Haden Willmuth" Padding="0,0,10,0" Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <TextBlock x:Name="StateTextBlock" Text="Being Drawn" Grid.Column="9" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontSize="20" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="10" Grid.ColumnSpan="2" Margin="0,0,2,0">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource OpenOrderDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenOrder_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Work Order" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
