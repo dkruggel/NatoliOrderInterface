@@ -7,19 +7,7 @@
         mc:Ignorable="d"
         Title="TestWindow" Height="1020" Width="1875" WindowStartupLocation="CenterScreen">
     <Border>
-        <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="WrapWidth" Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Style="{StaticResource OrdersEnteredModule}" x:Name="OrdersEnteredModule"/>
-            </Grid>
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="WrapWidth" Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label Style="{StaticResource OrdersInEngineeringModule}" x:Name="OrdersInEngineeringModule"/>
-            </Grid>
+        <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel">
         </WrapPanel>
     </Border>
 </Window>

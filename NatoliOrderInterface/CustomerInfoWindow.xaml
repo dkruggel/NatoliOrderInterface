@@ -405,7 +405,7 @@
                                 <TextBlock x:Name="QuoteRevNumberTextBlock" Text="Rev Number" Grid.Column="1" VerticalAlignment="Center" FontSize="20" Margin="5,0,0,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf"/>
                                 <TextBlock x:Name="CustomerNameTextBlock" Text="Customer Name" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="20" Margin="0,0,5,0" Foreground="{StaticResource Foreground.Main}" FontFamily=".\Fonts\ASansrounded.ttf" TextTrimming="CharacterEllipsis"/>
                                 <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,2,0" IsHitTestVisible="True">
-                                    <Image x:Name="OpenOrderImage" Source="{StaticResource windowDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenQuote_Click" Visibility="Collapsed">
+                                    <Image x:Name="OpenOrderImage" Source="{StaticResource window_plusDrawingImage}" Height="Auto" Width="Auto" MouseUp="OpenQuote_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Open Quote" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
