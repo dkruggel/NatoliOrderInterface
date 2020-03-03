@@ -1190,7 +1190,7 @@ namespace NatoliOrderInterface
         //    lineItemNumber = itemNo;
         //    LineItemsDataGrid.SelectedItem = LineItemsDataGrid.Items[itemNo - 1];
         //}
-        private void Order_Info_Window_PreviewKeyUp(object sender, KeyEventArgs e)
+        private void Order_Info_Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             short itemNo = lineItemNumber;
             if (e.Key == Key.Up || e.Key == Key.Left || e.Key == Key.PageUp)
@@ -1305,7 +1305,7 @@ namespace NatoliOrderInterface
             //_nat02context.Dispose();
             Dispatcher.Invoke(() => {
                 WindowState = parent.WindowState;
-                this.Topmost = true;
+                //this.Topmost = true;
                 this.Focus(); 
                 ButtonRefresh(); 
             });

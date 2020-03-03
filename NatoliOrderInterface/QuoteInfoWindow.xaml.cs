@@ -2880,7 +2880,7 @@ namespace NatoliOrderInterface
         private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowState = parent.WindowState;
-            this.Topmost = true;
+            //this.Topmost = true;
             this.Focus();
         }
         private async void Quote_Info_Window_ContentRendered_Async(object sender, EventArgs e)
@@ -2895,7 +2895,6 @@ namespace NatoliOrderInterface
                         ChangeLineItemScrollerHeight();
                     }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-                
                 await Task.Factory.StartNew(() =>
                 {
                     Dispatcher.Invoke(() =>
