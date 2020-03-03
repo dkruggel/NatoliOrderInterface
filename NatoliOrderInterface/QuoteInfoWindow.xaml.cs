@@ -2895,7 +2895,6 @@ namespace NatoliOrderInterface
                         ChangeLineItemScrollerHeight();
                     }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }, System.Threading.CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ConfigureAwait(false);
-                
                 await Task.Factory.StartNew(() =>
                 {
                     Dispatcher.Invoke(() =>
