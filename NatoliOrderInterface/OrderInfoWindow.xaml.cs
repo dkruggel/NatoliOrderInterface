@@ -1305,7 +1305,7 @@ namespace NatoliOrderInterface
             //_nat02context.Dispose();
             Dispatcher.Invoke(() => {
                 WindowState = parent.WindowState;
-                this.Topmost = true;
+                //this.Topmost = true;
                 this.Focus(); 
                 ButtonRefresh(); 
             });
