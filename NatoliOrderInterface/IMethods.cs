@@ -127,14 +127,15 @@ namespace NatoliOrderInterface
         public static void WriteToErrantFoldersLog(List<string> errantFolders, User user)
         {
             string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Errant_Folders_Log.txt";
-            System.IO.StreamReader sr = new System.IO.StreamReader(path);
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-            string existing = sr.ReadToEnd();
-            sr.Close();
-            string dateLine = DateTime.Now + "\r\n" + "\r\n";
-            string newText = dateLine;
             try
             {
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string existing = sr.ReadToEnd();
+                sr.Close();
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
+
                 foreach (string folder in errantFolders)
                 {
                     newText += " - " + folder + "\r\n";
@@ -151,16 +152,16 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    newText +=  "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                    newText += "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
                 }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
             }
             catch (Exception ex)
             {
                 WriteToErrorLog("IMethods.cs => WriteToErrantFoldersLog()", ex.Message, user);
             }
-            sw.Write(newText + existing);
-            sw.Flush();
-            sw.Close();
         }
         /// <summary>
         /// Writes to @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt"
@@ -170,15 +171,16 @@ namespace NatoliOrderInterface
         public static void WriteToFoldersRenamedLog(List<Tuple<string,string>> renamedFolders, User user)
         {
             string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt";
-            System.IO.StreamReader sr = new System.IO.StreamReader(path);
-            string existing = sr.ReadToEnd();
-            existing = existing;
-            sr.Close();
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-            string dateLine = DateTime.Now + "\r\n" + "\r\n";
-            string newText = dateLine;
+            
             try
             {
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                string existing = sr.ReadToEnd();
+                existing = existing;
+                sr.Close();
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
                 foreach (Tuple<string, string> folder in renamedFolders)
                 {
                     newText += " - " + folder.Item1 + " => " + folder.Item2 + "\r\n";
@@ -197,14 +199,14 @@ namespace NatoliOrderInterface
                 {
                     newText += "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
                 }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
             }
             catch (Exception ex)
             {
                 WriteToErrorLog("IMethods.cs => WriteToFoldersRenamedLog()", ex.Message, user);
             }
-            sw.Write(newText + existing);
-            sw.Flush();
-            sw.Close();
         }
         /// <summary>
         /// Checks if string 'input' contains any strings 'containsKeywords' using Default StringComparison.InvariantCulture. Returns bool.

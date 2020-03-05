@@ -407,25 +407,31 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("GridWindow_Closing - Save Settings", ex.Message, User);
             }
             context.Dispose();
-
-            if (System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Length < 2)
+            try
             {
-                using var nat02context = new NAT02Context();
-                try
+                if (System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetEntryAssembly().Location)).Length < 2)
                 {
-                    if (nat02context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()).Any())
+                    using var nat02context = new NAT02Context();
+                    try
                     {
-                        var ordersBeingChecked = nat02context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName());
-                        nat02context.EoiOrdersBeingChecked.RemoveRange(ordersBeingChecked);
-                        nat02context.SaveChanges();
+                        if (nat02context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName()).Any())
+                        {
+                            var ordersBeingChecked = nat02context.EoiOrdersBeingChecked.Where(o => o.User == User.GetUserName());
+                            nat02context.EoiOrdersBeingChecked.RemoveRange(ordersBeingChecked);
+                            nat02context.SaveChanges();
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        // MessageBox.Show(ex.Message);
+                        IMethods.WriteToErrorLog("GridWindow_Closing - Remove from OrdersBeingChecked", ex.Message, User);
+                    }
+                    nat02context.Dispose();
                 }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show(ex.Message);
-                    IMethods.WriteToErrorLog("GridWindow_Closing - Remove from OrdersBeingChecked", ex.Message, User);
-                }
-                nat02context.Dispose();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("GridWindow_Closing - Remove from Checking", ex.Message, User);
             }
             Dispose();
             System.Environment.Exit(0);
