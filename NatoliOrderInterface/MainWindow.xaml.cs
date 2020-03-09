@@ -9120,9 +9120,9 @@ namespace NatoliOrderInterface
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
 
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Key.Trim(), 0, 0, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(170)), CreateLabel(kvp.Value.releasedBy.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.tag.Trim(), 0, 2, FontWeights.Normal, null, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(string.IsNullOrWhiteSpace(kvp.Key) ? "" : kvp.Key.Trim(), 0, 0, FontWeights.Normal, null, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(170)), CreateLabel(string.IsNullOrWhiteSpace(kvp.Value.releasedBy) ? "" : kvp.Value.releasedBy.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.IsNullOrWhiteSpace(kvp.Value.tag) ? "" : kvp.Value.tag.Trim() , 0, 2, FontWeights.Normal, null, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.releaseTime, 0, 3, FontWeights.Normal, null, null, 14, true));
 
             Expander expander = new Expander()
