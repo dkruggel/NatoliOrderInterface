@@ -1405,7 +1405,10 @@ namespace NatoliOrderInterface
                         try
                         {
                             File.Move(tempFile, _file, true);
-                            File.Delete(file);
+                            if (file != _file)
+                            {
+                                File.Delete(file);
+                            }
                         }
                         catch (Exception ex)
                         {
