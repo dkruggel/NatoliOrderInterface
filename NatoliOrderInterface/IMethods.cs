@@ -2382,6 +2382,11 @@ namespace NatoliOrderInterface
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' has a 441 style head but the machine is a normal 'D' machine.");
                                             }
+                                            // Has special head flat .775 & does not have gauge number in engineering notes
+                                            if(quoteLineItem.optionValuesA.Any(o=>o.OptionCode == "020" && o.Number1 == 0.775) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
+                                            {
+                                                errors.Add("Engineering Note needs to specify head gauge number to differentiate between gauges of the same head flat (11185, HG-00023-SH001, HG-00147-SH001).");
+                                            }
                                         }
                                         // Machine is D and EU1-441
                                         else if ((machine.MachineTypePrCode.Trim() == "D" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") || machine.MachineNo == 1015) &&
@@ -2403,6 +2408,12 @@ namespace NatoliOrderInterface
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' has an FS-19 style head but the machine is a normal 'B' machine.");
                                             }
+                                            // Has special head flat .525 & does not have gauge number in engineering notes
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "020" && o.Number1 == 0.525) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "00042", "42", "000136", "136" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
+                                            {
+                                                errors.Add("Engineering Note needs to specify head gauge number to differentiate between gauges of the same head flat (11185, HG-00023-SH001, HG-00147-SH001).");
+                                            }
+
                                         }
                                         // Machine is B and FS-19
                                         else if (((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))) &&
