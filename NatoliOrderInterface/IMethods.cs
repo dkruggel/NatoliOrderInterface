@@ -1767,7 +1767,6 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-
                                     // Upper
                                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "R")
                                     {
@@ -1846,6 +1845,66 @@ namespace NatoliOrderInterface
                                             }
                                         }
                                     }
+                                    // Is Solid Multi-Tip
+                                    if (quoteLineItem.OptionNumbers.Contains("270"))
+                                    {
+                                        // Has Special Tip Width 
+                                        if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204"))
+                                        {
+                                            // Not 4mm tip width
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204" && o.Number1 != 0.1575))
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' may need special tip width (204) to be changed to 4.00mm (0.1575\") because it is a solid multi-tip.");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // No Groove
+                                            if (!quoteLineItem.OptionNumbers.Contains("110") && !quoteLineItem.OptionNumbers.Contains("111") && !quoteLineItem.OptionNumbers.Contains("112") && !quoteLineItem.OptionNumbers.Contains("115") && !quoteLineItem.OptionNumbers.Contains("116"))
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added because it is a solid multi-tip.");
+                                            }
+                                            else
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added IF the groove does not have 4mm standard tip width (check with engineering) because it is a solid multi-tip.");
+                                            }
+                                        }
+                                    }
+                                    if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                                    {
+                                        HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+
+                                        // Semi-Exotic || Exotic
+                                        if (hob.Class == "SX" || hob.Class == "EX")
+                                        {
+                                            // Has Special Tip Width
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204"))
+                                            {
+                                                // Not 4mm tip width
+                                                if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204" && o.Number1 != 0.1575))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' may need special tip width (204) to be changed to 4.00mm (0.1575\") because it is Exotic or Semi-Exotic class.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // No Groove
+                                                if (!quoteLineItem.OptionNumbers.Contains("110") && !quoteLineItem.OptionNumbers.Contains("111") && !quoteLineItem.OptionNumbers.Contains("112") && !quoteLineItem.OptionNumbers.Contains("115") && !quoteLineItem.OptionNumbers.Contains("116"))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added because it is of Exotic or Semi-Exotic class.");
+                                                }
+                                                else
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added IF the groove does not have 4mm standard tip width (check with engineering) because it is of Exotic or Semi-Exotic class.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                    }
+                                   
                                 }
                                 catch (Exception ex)
                                 {
@@ -2617,6 +2676,7 @@ namespace NatoliOrderInterface
                                         }
 
                                     }
+                                    
                                     // Has HobNo in HobList
                                     if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                                     {
