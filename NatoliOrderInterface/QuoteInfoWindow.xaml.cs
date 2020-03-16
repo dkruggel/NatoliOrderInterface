@@ -354,7 +354,7 @@ namespace NatoliOrderInterface
             QuoteRepresentative representativeRow = quote.Nat01Context.QuoteRepresentative.Where(q => q.RepId.Trim() == quote.QuoteRepID.ToString().Trim()).FirstOrDefault();
             try
             {
-                BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Absolute));
+                BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Relative));
                 Signature.Source = image;
                 SignaturePlainText.Text = representativeRow.Name.ToString().Trim() + " / NATOLI ENGINEERING";
             }
@@ -3035,6 +3035,7 @@ namespace NatoliOrderInterface
         }
         private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
+            Signature.Source = new BitmapImage();
             IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
         }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
