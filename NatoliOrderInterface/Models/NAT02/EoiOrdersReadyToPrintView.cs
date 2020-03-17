@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace NatoliOrderInterface.Models
 {
-    public partial class EoiOrdersReadyToPrintView
+    public partial class EoiOrdersReadyToPrintView : IEquatable<EoiOrdersReadyToPrintView>
     {
         public double OrderNo { get; set; }
         public string CustomerName { get; set; }
@@ -16,5 +16,26 @@ namespace NatoliOrderInterface.Models
         public int TM2 { get; set; }
         public int Tablet { get; set; }
         public int Tool { get; set; }
+
+        public bool Equals(EoiOrdersReadyToPrintView other)
+        {
+            if (other is null)
+                return false;
+
+            return this.OrderNo == other.OrderNo &&
+                   this.CustomerName == other.CustomerName &&
+                   this.NumDaysToShip == other.NumDaysToShip &&
+                   this.EmployeeName == other.EmployeeName &&
+                   this.DepartmentDesc == other.DepartmentDesc &&
+                   this.CheckedBy == other.CheckedBy &&
+                   this.RushYorN == other.RushYorN &&
+                   this.PaidRushFee == other.PaidRushFee &&
+                   this.TM2 == other.TM2 &&
+                   this.Tablet == other.Tablet &&
+                   this.Tool == other.Tool;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as EoiOrdersReadyToPrintView);
+        public override int GetHashCode() => (OrderNo, CustomerName, NumDaysToShip, EmployeeName, DepartmentDesc, CheckedBy, RushYorN, PaidRushFee, TM2, Tablet, Tool).GetHashCode();
     }
 }

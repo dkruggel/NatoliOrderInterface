@@ -138,6 +138,7 @@ namespace NatoliOrderInterface
         private double notificationNumber10 = 0.0;
         private double notificationNumber11 = 0.0;
 
+
         #region View Dictionaries
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
         Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
@@ -163,6 +164,261 @@ namespace NatoliOrderInterface
         List<object> dictList;
         #endregion
 
+        #region New Style ListBox
+        #region Orders Being Entered
+        private ListBox OrdersBeingEnteredListBox { get; set; }
+        private List<EoiOrdersBeingEnteredView> ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
+        private List<EoiOrdersBeingEnteredView> _ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
+        public List<EoiOrdersBeingEnteredView> OrdersBeingEntered
+        {
+            get
+            {
+                return ordersBeingEntered;
+            }
+            set
+            {
+                if (value.Except(ordersBeingEntered).Count() > 0 || ordersBeingEntered.Except(value).Count() > 0)
+                {
+                    ordersBeingEntered = value;
+                    OrdersBeingEnteredListBox.ItemsSource = null;
+                    OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
+                }
+            }
+        }
+        #endregion
+        #region Orders In The Office
+        private ListBox OrdersInTheOfficeListBox = new ListBox();
+        private List<EoiOrdersInOfficeView> ordersInTheOffice = new List<EoiOrdersInOfficeView>();
+        private List<EoiOrdersInOfficeView> _ordersInTheOffice = new List<EoiOrdersInOfficeView>();
+        public List<EoiOrdersInOfficeView> OrdersInTheOffice
+        {
+            get
+            {
+                return ordersInTheOffice;
+            }
+            set
+            {
+                if (value.Except(ordersInTheOffice).Count() > 0 || ordersInTheOffice.Except(value).Count() > 0)
+                {
+                    ordersInTheOffice = value;
+                    OrdersInTheOfficeListBox.ItemsSource = null;
+                    OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
+                }
+            }
+        }
+        #endregion
+        #region Orders Entered Unscanned
+        private ListBox OrdersEnteredListBox = new ListBox();
+        private List<EoiOrdersEnteredAndUnscannedView> ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
+        private List<EoiOrdersEnteredAndUnscannedView> _ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
+        public List<EoiOrdersEnteredAndUnscannedView> OrdersEntered
+        {
+            get
+            {
+                return ordersEntered;
+            }
+            set
+            {
+                if (value.Except(ordersEntered).Count() > 0 || ordersEntered.Except(value).Count() > 0)
+                {
+                    ordersEntered = value;
+                    OrdersEnteredListBox.ItemsSource = null;
+                    OrdersEnteredListBox.ItemsSource = ordersEntered;
+                }
+            }
+        }
+        #endregion
+        #region Orders In Engineering
+        private ListBox OrdersInEngListBox = new ListBox();
+        private List<EoiOrdersInEngineeringUnprintedView> ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
+        private List<EoiOrdersInEngineeringUnprintedView> _ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
+        public List<EoiOrdersInEngineeringUnprintedView> OrdersInEng
+        {
+            get
+            {
+                return ordersInEng;
+            }
+            set
+            {
+                if (value.Except(ordersInEng).Count() > 0 || ordersInEng.Except(value).Count() > 0)
+                {
+                    ordersInEng = value;
+                    OrdersInEngListBox.ItemsSource = null;
+                    OrdersInEngListBox.ItemsSource = ordersInEng;
+                }
+            }
+        }
+        #endregion
+        #region Orders Ready To Print
+        private ListBox OrdersReadyToPrintListBox = new ListBox();
+        private List<EoiOrdersReadyToPrintView> ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
+        private List<EoiOrdersReadyToPrintView> _ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
+        public List<EoiOrdersReadyToPrintView> OrdersReadyToPrint
+        {
+            get
+            {
+                return ordersReadyToPrint;
+            }
+            set
+            {
+                if (value.Except(ordersReadyToPrint).Count() > 0 || ordersReadyToPrint.Except(value).Count() > 0)
+                {
+                    ordersReadyToPrint = value;
+                    OrdersReadyToPrintListBox.ItemsSource = null;
+                    OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
+                }
+            }
+        }
+        #endregion
+        #region Orders Printed In Engineering
+        private ListBox OrdersPrintedListBox = new ListBox();
+        private List<EoiOrdersPrintedInEngineeringView> ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
+        private List<EoiOrdersPrintedInEngineeringView> _ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
+        public List<EoiOrdersPrintedInEngineeringView> OrdersPrinted
+        {
+            get
+            {
+                return ordersPrinted;
+            }
+            set
+            {
+                if (value.Except(ordersPrinted).Count() > 0 || ordersPrinted.Except(value).Count() > 0)
+                {
+                    ordersPrinted = value;
+                    OrdersPrintedListBox.ItemsSource = null;
+                    OrdersPrintedListBox.ItemsSource = ordersPrinted;
+                }
+            }
+        }
+        #endregion
+        #region Quotes Not Converted
+        private ListBox QuotesNotConvertedListBox = new ListBox();
+        private List<EoiQuotesNotConvertedView> quotesNotConverted = new List<EoiQuotesNotConvertedView>();
+        private List<EoiQuotesNotConvertedView> _quotesNotConverted = new List<EoiQuotesNotConvertedView>();
+        public List<EoiQuotesNotConvertedView> QuotesNotConverted
+        {
+            get
+            {
+                return quotesNotConverted;
+            }
+            set
+            {
+                if (value.Except(quotesNotConverted).Count() > 0 || quotesNotConverted.Except(value).Count() > 0)
+                {
+                    quotesNotConverted = value;
+                    QuotesNotConvertedListBox.ItemsSource = null;
+                    QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
+                }
+            }
+        }
+        #endregion
+        #region Quotes To Convert
+        private ListBox QuotesToConvertListBox = new ListBox();
+        private List<EoiQuotesMarkedForConversionView> quotesToConvert = new List<EoiQuotesMarkedForConversionView>();
+        private List<EoiQuotesMarkedForConversionView> _quotesToConvert = new List<EoiQuotesMarkedForConversionView>();
+        public List<EoiQuotesMarkedForConversionView> QuotesToConvert
+        {
+            get
+            {
+                return quotesToConvert;
+            }
+            set
+            {
+                if (value.Except(quotesToConvert).Count() > 0 || quotesToConvert.Except(value).Count() > 0)
+                {
+                    quotesToConvert = value;
+                    QuotesToConvertListBox.ItemsSource = null;
+                    QuotesToConvertListBox.ItemsSource = quotesToConvert;
+                }
+            }
+        }
+        #endregion
+        #region All Tablet Projects
+        private ListBox AllTabletProjectsListBox = new ListBox();
+        private List<EoiAllTabletProjectsView> allTabletProjects = new List<EoiAllTabletProjectsView>();
+        private List<EoiAllTabletProjectsView> _allTabletProjects = new List<EoiAllTabletProjectsView>();
+        public List<EoiAllTabletProjectsView> AllTabletProjects
+        {
+            get
+            {
+                return allTabletProjects;
+            }
+            set
+            {
+                if (value.Except(allTabletProjects).Count() > 0 || allTabletProjects.Except(value).Count() > 0)
+                {
+                    allTabletProjects = value;
+                    AllTabletProjectsListBox.ItemsSource = null;
+                    AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                }
+            }
+        }
+        #endregion
+        #region All Tool Projects
+        private ListBox AllToolProjectsListBox = new ListBox();
+        private List<EoiAllToolProjectsView> allToolProjects = new List<EoiAllToolProjectsView>();
+        private List<EoiAllToolProjectsView> _allToolProjects = new List<EoiAllToolProjectsView>();
+        public List<EoiAllToolProjectsView> AllToolProjects
+        {
+            get
+            {
+                return allToolProjects;
+            }
+            set
+            {
+                if (value.Except(allToolProjects).Count() > 0 || allToolProjects.Except(value).Count() > 0)
+                {
+                    allToolProjects = value;
+                    AllToolProjectsListBox.ItemsSource = null;
+                    AllToolProjectsListBox.ItemsSource = allToolProjects;
+                }
+            }
+        }
+        #endregion
+        #region DriveWorks Queue
+        private ListBox DriveWorksQueueListBox = new ListBox();
+        private List<QueueView> driveWorksQueue = new List<QueueView>();
+        private List<QueueView> _driveWorksQueue = new List<QueueView>();
+        public List<QueueView> DriveWorksQueue
+        {
+            get
+            {
+                return driveWorksQueue;
+            }
+            set
+            {
+                if (value.Except(driveWorksQueue).Count() > 0 || driveWorksQueue.Except(value).Count() > 0)
+                {
+                    driveWorksQueue = value;
+                    DriveWorksQueueListBox.ItemsSource = null;
+                    DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
+                }
+            }
+        }
+        #endregion
+        #region Natoli Order List
+        private ListBox NatoliOrderListListBox = new ListBox();
+        private List<NatoliOrderListFinal> natoliOrderList = new List<NatoliOrderListFinal>();
+        private List<NatoliOrderListFinal> _natoliOrderList = new List<NatoliOrderListFinal>();
+        public List<NatoliOrderListFinal> NatoliOrderList
+        {
+            get
+            {
+                return natoliOrderList;
+            }
+            set
+            {
+                if (value.Except(natoliOrderList).Count() > 0 || natoliOrderList.Except(value).Count() > 0)
+                {
+                    natoliOrderList = value;
+                    NatoliOrderListListBox.ItemsSource = null;
+                    NatoliOrderListListBox.ItemsSource = natoliOrderList;
+                }
+            }
+        }
+        #endregion
+        #endregion
+
         Dictionary<string, string> oeDetailTypes = new Dictionary<string, string>() { { "U", "Upper" }, { "L", "Lower" }, { "D", "Die" }, { "DS", "Die" }, { "R", "Reject" }, { "A", "Alignment" } };
         #endregion
 
@@ -178,6 +434,7 @@ namespace NatoliOrderInterface
                 InitializeComponent();
                 App.GetConnectionString();
                 App.GetEmailSettings();
+                ((App)Application.Current as App).InitializeTimers();
                 UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
@@ -206,7 +463,8 @@ namespace NatoliOrderInterface
                 {
                     originalProps.Add(s);
                 }
-                ConstructModules();
+                // ConstructModules();
+                BuildPanels();
                 BuildMenus();
                 //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
@@ -233,11 +491,13 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
         }
-        private void MainRefresh()
+        public void MainRefresh()
         {
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
+
+            UpdateUI();
 
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
         }
@@ -268,14 +528,14 @@ namespace NatoliOrderInterface
         /// </summary>
         private void IfAppIsRunningSwitchToItAndShutdown()
         {
-            var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
-            if (currentlyRunningProcesses.Any())
-            {
-                var process = currentlyRunningProcesses.First();
-                var id = process.Id;
-                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
-                Application.Current.Shutdown();
-            }
+            //var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
+            //if (currentlyRunningProcesses.Any())
+            //{
+            //    var process = currentlyRunningProcesses.First();
+            //    var id = process.Id;
+            //    IMethods.BringProcessToFront(currentlyRunningProcesses.First());
+            //    Application.Current.Shutdown();
+            //}
         }
         /// <summary>
         /// Binds a user to User.
@@ -336,29 +596,29 @@ namespace NatoliOrderInterface
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            //CustomerInfoWindow customerInfoWindow = new CustomerInfoWindow(User, this, "1023902");
-            //customerInfoWindow.Show();
-
-            TestWindow testWindow = new TestWindow();
-            testWindow.Show();
+            //TestWindow testWindow = new TestWindow();
+            //testWindow.Show();
 #endif
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
-            ConstructExpanders();
+            // ConstructExpanders();
             BindData("Main");
             BindData("QuotesNotConverted");
             BindData("NatoliOrderList");
+            UpdateUI();
 
             SetNotificationPicture();
         }
         private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("Main");
+            UpdateUI();
         }
         private void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("QuotesNotConverted");
+            UpdateUI();
 
             SetNotificationPicture();
         }
@@ -378,6 +638,7 @@ namespace NatoliOrderInterface
         private void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             BindData("NatoliOrderList");
+            UpdateUI();
         }
         private void OQTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -462,30 +723,30 @@ namespace NatoliOrderInterface
         {
             try
             {
-                foreach (string VisiblePanel in User.VisiblePanels)
-                {
-                    int i = User.VisiblePanels.IndexOf(VisiblePanel);
-                    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-                    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-                    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+                //foreach (string VisiblePanel in User.VisiblePanels)
+                //{
+                //    int i = User.VisiblePanels.IndexOf(VisiblePanel);
+                //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+                //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+                //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-                    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-                    {
-                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width != new GridLength(22))
-                        {
-                            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                        }
-                    }
-                    else
-                    {
-                        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width == new GridLength(22))
-                        {
-                            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                        }
-                    }
-                }
+                //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+                //    {
+                //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width != new GridLength(22))
+                //        {
+                //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Last().Width == new GridLength(22))
+                //        {
+                //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+                //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+                //        }
+                //    }
+                //}
             }
             catch
             {
@@ -539,21 +800,21 @@ namespace NatoliOrderInterface
             projectSearch.Click += ProjectSearch_Click;
             fileMenu.Items.Add(projectSearch);
 
-            MenuItem forceRefresh = new MenuItem
-            {
-                Header = "Force Refresh",
-                ToolTip = "Bypass the refresh timer."
-            };
-            forceRefresh.Click += ForceRefresh_Click;
-            fileMenu.Items.Add(forceRefresh);
+            //MenuItem forceRefresh = new MenuItem
+            //{
+            //    Header = "Force Refresh",
+            //    ToolTip = "Bypass the refresh timer."
+            //};
+            //forceRefresh.Click += ForceRefresh_Click;
+            //fileMenu.Items.Add(forceRefresh);
 
-            MenuItem editLayout = new MenuItem
-            {
-                Header = "Edit Layout",
-                ToolTip = "Change which views are shown in the main window."
-            };
-            editLayout.Click += EditLayout_Click;
-            fileMenu.Items.Add(editLayout);
+            //MenuItem editLayout = new MenuItem
+            //{
+            //    Header = "Edit Layout",
+            //    ToolTip = "Change which views are shown in the main window."
+            //};
+            //editLayout.Click += EditLayout_Click;
+            //fileMenu.Items.Add(editLayout);
 
             MenuItem reports = new MenuItem
             {
@@ -929,8 +1190,6 @@ namespace NatoliOrderInterface
             };
             #endregion
         }
-
-
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -943,19 +1202,16 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow.xaml.cs => CustomerNote_Click()", ex.Message, User);
             }
         }
-
         private void NotificationsMenu_Click(object sender, RoutedEventArgs e)
         {
             NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
             notificationManagementWindow.Show();
         }
-
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
             ReportingWindow reportingWindow = new ReportingWindow(this);
             reportingWindow.Show();
         }
-
         private void UpdateApp_Click(object sender, RoutedEventArgs e)
         {
             // CheckForAvailableUpdatesAndLaunchAsync()
@@ -1055,7 +1311,7 @@ namespace NatoliOrderInterface
                     break;
             }
         }
-        private void DeleteMachineVariables(string orderNo, int lineNumber = 0)
+        public void DeleteMachineVariables(string orderNo, int lineNumber = 0)
         {
             if (lineNumber != 0)
             {
@@ -1146,15 +1402,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 MainRefresh();
             }
@@ -1234,15 +1490,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 MainRefresh();
             }
@@ -1334,15 +1590,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 selectedProjects.Clear();
                 MainRefresh();
@@ -1463,15 +1719,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
@@ -1583,15 +1839,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 MainRefresh();
             }
@@ -1669,15 +1925,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 MainRefresh();
             }
@@ -1766,15 +2022,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 selectedProjects.Clear();
                 MainRefresh();
@@ -1854,15 +2110,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 selectedProjects.Clear();
                 MainRefresh();
@@ -1961,15 +2217,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 selectedProjects.Clear();
                 MainRefresh();
@@ -2085,15 +2341,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();
@@ -2174,15 +2430,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
                 MainRefresh();
             }
@@ -2273,15 +2529,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
             }
             // Scan just the order that was right clicked if nothing else has been selected
             else
@@ -2353,15 +2609,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
             }
 
             MainRefresh();
@@ -2424,15 +2680,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
             }
 
             MainRefresh();
@@ -2538,15 +2794,15 @@ namespace NatoliOrderInterface
                     }
 
                     // Uncheck Check All CheckBox
-                    var x = MainGrid.Children;
-                    foreach (Border border in x.OfType<Border>())
-                    {
-                        string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                        if (headers.Single(h => h.Value == header).Key == rClickModule)
-                        {
-                            ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                        }
-                    }
+                    //var x = MainGrid.Children;
+                    //foreach (Border border in x.OfType<Border>())
+                    //{
+                    //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                    //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                    //    {
+                    //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                    //    }
+                    //}
                 }
                 else
                 {
@@ -2656,15 +2912,15 @@ namespace NatoliOrderInterface
 
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
 
             }
 
@@ -2709,15 +2965,15 @@ namespace NatoliOrderInterface
                 }
 
                 // Uncheck Check All CheckBox
-                var x = MainGrid.Children;
-                foreach (Border border in x.OfType<Border>())
-                {
-                    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    {
-                        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    }
-                }
+                //var x = MainGrid.Children;
+                //foreach (Border border in x.OfType<Border>())
+                //{
+                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+                //    {
+                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+                //    }
+                //}
             }
             else
             {
@@ -2749,6 +3005,11 @@ namespace NatoliOrderInterface
             _filterProjects = !_filterProjects;
             MenuItem menuItem = sender as MenuItem;
             menuItem.IsChecked = _filterProjects;
+            using var _ = new NAT02Context();
+            _.EoiSettings.Single(u => u.DomainName == User.DomainName).FilterActiveProjects = _filterProjects;
+            _.SaveChanges();
+            _.Dispose();
+            User.FilterActiveProjects = _filterProjects;
             MainRefresh();
         }
         private void LineItemCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -3259,1001 +3520,383 @@ namespace NatoliOrderInterface
         }
         #endregion
 
-        #region ModuleBuilding
-
-        #region Panel Construction
-        private void ConstructModules()
+        #region New Modules
+        private void BuildPanels()
         {
-            int panel_count = User.VisiblePanels.Count;
-            ColumnDefinition colDef;
-            RowDefinition rowDef;
-            int colCount = 0;
-            int rowCount = 0;
-
-            if (User.VisiblePanels.Count == 1)
+            try
             {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else if (User.VisiblePanels.Count == 2)
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else if (User.VisiblePanels.Count == 3)
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else if (User.VisiblePanels.Count == 4)
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else if (User.VisiblePanels.Count == 5)
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else if (User.VisiblePanels.Count == 6)
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-            else
-            {
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
-                MainGrid.ColumnDefinitions.Add(colDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-                rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
-                MainGrid.RowDefinitions.Add(rowDef);
-            }
-
-            int i = 0;
-            colCount = MainGrid.ColumnDefinitions.Count;
-            int j = 0;
-            rowCount = MainGrid.RowDefinitions.Count;
-            int k = 0;
-            for (j = 0; j < colCount && k < User.VisiblePanels.Count; j++)
-            {
-                for (i = 0; i < rowCount && k < User.VisiblePanels.Count; i++)
+                foreach (string panel in User.VisiblePanels)
                 {
-                    Border border = new Border();
-                    //ContentControl mainContentControl = new ContentControl();
-                    //mainContentControl.Style = App.Current.Resources["Orders" + User.VisiblePanels[k] + "Grid"] as Style;
-                    if (User.VisiblePanels.Count == 5 && k == 4)
+                    AddModule(panel);
+                }
+            }
+            catch
+            {
+
+            }
+        }
+        public Grid AddModule(string name, int index = -1)
+        {
+            ColumnDefinition columnDefinition = new ColumnDefinition
+            {
+                SharedSizeGroup = "WrapWidth",
+                Width = GridLength.Auto
+            };
+
+            Grid grid = new Grid
+            {
+                Margin = new Thickness(10)
+            };
+
+            grid.ColumnDefinitions.Add(columnDefinition);
+
+            Label label = null;
+
+            switch (name, "Main")
+            {
+                case ("BeingEntered", "Main"):
+                    label = new Label
                     {
-                        border = ConstructBorder();
-                        Grid.SetRow(border, i);
-                        Grid.SetColumn(border, j);
-                        border.SetValue(Grid.RowSpanProperty, 2);
+                        Style = App.Current.Resources["OrdersBeingEnteredModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
                     }
                     else
                     {
-                        border = ConstructBorder();
-                        Grid.SetRow(border, i);
-                        Grid.SetColumn(border, j);
+                        MainWrapPanel.Children.Insert(index, grid);
                     }
-                    try
+
+                    OrdersBeingEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()));
+
+                    OrdersBeingEnteredListBox.ItemsSource = null;
+                    OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
+                    return grid;
+                case ("InTheOffice", "Main"):
+                    label = new Label
                     {
-                        MainGrid.Children.Add(border);
-                        // MainGrid.Children.Add(mainContentControl);
-                    }
-                    catch (Exception ex)
+                        Style = App.Current.Resources["OrdersInTheOfficeModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
                     {
-                        MessageBox.Show(ex.Message);
+                        MainWrapPanel.Children.Add(grid);
                     }
-                    k++;
-                }
-            }
-        }
-
-        private Border ConstructBorder()
-        {
-            Border border = new Border()
-            {
-                Name = "Border_" + MainGrid.Children.Count.ToString(),
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                BorderThickness = new Thickness(1)
-            };
-
-            // Count label
-            Label countLabel = new Label()
-            {
-                Name = "TotalLabel",
-                Content = "Total: ", // + interiorStackPanel.Children.Count,
-                HorizontalContentAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom,
-                BorderThickness = new Thickness(0, 1, 0, 0),
-                Height = 20,
-                Padding = new Thickness(0, 0, 5, 0),
-                Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFF0F0F0")),
-                BorderBrush = new SolidColorBrush(SystemColors.ControlDarkDarkColor)
-            };
-
-            DockPanel dockPanel = ConstructDockPanel("DockPanel_" + MainGrid.Children.Count.ToString(),
-                                                     CreateHeaderGrid("A_" + MainGrid.Children.Count.ToString() + "_", "Test"),
-                                                     ConstructScrollViewer(),
-                                                     countLabel);
-            border.Child = dockPanel;
-
-            return border;
-        }
-
-        private static DockPanel ConstructDockPanel(string name, Grid headerGrid, ScrollViewer scrollViewer, Label countLabel)
-        {
-            DockPanel dockPanel = new DockPanel()
-            {
-                Name = name,
-                LastChildFill = true
-            };
-
-            DockPanel.SetDock(headerGrid, Dock.Top);
-            dockPanel.Children.Add(headerGrid);
-
-            DockPanel.SetDock(countLabel, Dock.Bottom);
-            dockPanel.Children.Add(countLabel);
-
-            dockPanel.Children.Add(scrollViewer);
-            Image image = new Image()
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                MaxWidth = 200,
-                MinWidth = 100
-            };
-            var bitImage = new BitmapImage();
-            bitImage.BeginInit();
-            bitImage.UriSource = new Uri("NATOLI_ANIMATION.gif", UriKind.Relative);
-            bitImage.EndInit();
-            //AnimationBehavior.SetSourceUri(image, new Uri("NATOLI_ANIMATION.gif", UriKind.Relative));
-            ImageBehavior.SetAnimatedSource(image, bitImage);
-            dockPanel.Children.Add(image);
-
-            return dockPanel;
-        }
-
-        private Grid CreateHeaderGrid(string name, string title)
-        {
-            Grid headerLabelGrid = new Grid()
-            {
-                Name = name + "HeaderLabelGrid",
-                Height = 31,
-                Background = new SolidColorBrush(SystemColors.GradientActiveCaptionColor),
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            TextBox daysTextBox = new TextBox()
-            {
-                Name = name + "DateTextBox",
-                VerticalAlignment = VerticalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(1, 2, 0, 2),
-                Text = User.QuoteDays.ToString(),
-                Visibility = Visibility.Collapsed
-            };
-            daysTextBox.TextChanged += DaysTextBox_TextChanged;
-            daysTextBox.PreviewKeyUp += DaysTextBox_PreviewKeyUp;
-
-            Button csvCreationButton = new Button()
-            {
-                Name = name + "CSVButton",
-                Content = "Export to CSV",
-                VerticalAlignment = VerticalAlignment.Center,
-                VerticalContentAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(2, 0, 0, 0),
-                Visibility = Visibility.Collapsed,
-                Style = App.Current.Resources["Button"] as Style
-            };
-            csvCreationButton.Click += CsvCreationButton_Click;
-
-            if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower().Contains("notconverted"))
-            {
-                daysTextBox.Visibility = Visibility.Visible;
-                csvCreationButton.Visibility = Visibility.Visible;
-            }
-
-            if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower() == "natoliorderlist")
-            {
-                csvCreationButton.Visibility = Visibility.Visible;
-            }
-
-            // Header label
-            Label headerLabel = new Label()
-            {
-                Name = name + "Label",
-                Content = title,
-                HorizontalContentAlignment = HorizontalAlignment.Center,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                BorderThickness = new Thickness(0, 3, 0, 1),
-                Height = 31,
-                FontWeight = FontWeights.Bold,
-                FontSize = 14,
-                Padding = new Thickness(0),
-                Background = new SolidColorBrush(SystemColors.GradientActiveCaptionColor),
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            // Header search filter
-            TextBox searchBox = new TextBox()
-            {
-                Name = name + "SearchBox",
-                Style = App.Current.Resources["SearchBox"] as Style
-            };
-            //searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
-            //searchBox.TextChanged += SearchBox_TextChanged;
-
-            Grid.SetColumn(daysTextBox, 0);
-            Grid.SetColumn(csvCreationButton, 1);
-            Grid.SetColumn(headerLabel, 0);
-            Grid.SetColumnSpan(headerLabel, 4);
-            Grid.SetColumn(searchBox, 3);
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(30)));
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(120)));
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
-            headerLabelGrid.Children.Add(daysTextBox);
-            headerLabelGrid.Children.Add(csvCreationButton);
-            AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Auto)), searchBox);
-
-            return headerLabelGrid;
-        }
-
-        private void CsvCreationButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (((sender as Button).Parent as Grid).Children.OfType<Label>().First().Content.ToString().Contains("Quote"))
-            {
-                string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
-                using var stream = new System.IO.StreamWriter(filePath, false);
-
-                // Quote Number, Rev Number, Customer Name, Quote Date
-                // Get info from currently filtered list in QuotesNotConverted
-                var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
-
-                // Write headers
-                stream.Write("Sales Rep ID,Quote Number,Rev Number,Customer Name,Quote Date\n");
-
-                foreach (Expander expander in expanders)
-                {
-                    int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-                    short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-                    string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
-                    using var _ = new NAT01Context();
-                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).UserAcctNo;
-                    using var __ = new NECContext();
-                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
-                    __.Dispose();
-                    DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
-                    _.Dispose();
-                    stream.Write("{0},{1},{2},{3},{4}\n", repId, quoteNumber, revNumber, customerName, quoteDate.ToShortDateString());
-                }
-
-                stream.Flush();
-                stream.Dispose();
-            }
-            else
-            {
-                string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\OrderList.csv";
-                using var stream = new System.IO.StreamWriter(filePath, false);
-
-                // Order Number, Quote Number, Rev Number, Customer Name, Order Date, Ship Date, PO Number
-                // Get info from currently filtered list in NatoliOrderList
-                var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
-
-                // Write headers
-                stream.Write("Order Number,Quote Number,Rev Number,Customer Name,Order Date,Ship Date,PO Number\n");
-
-                foreach (Expander expander in expanders)
-                {
-                    int orderNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-                    using var _ = new NAT01Context();
-                    OrderHeader orderHeader = _.OrderHeader.Single(q => q.OrderNo == orderNumber * 100);
-                    _.Dispose();
-                    double? quoteNumber = orderHeader.QuoteNumber;
-                    short? revNumber = orderHeader.QuoteRevNo;
-                    string customerName = (expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString().Replace(',', '\0');
-                    DateTime orderDate = (DateTime)orderHeader.OrderDate;
-                    string shipDate = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString();
-                    string poNumber = orderHeader.Ponumber.Trim() + (string.IsNullOrEmpty(orderHeader.Poextension.Trim()) ? "" : '-' + orderHeader.Poextension);
-                    stream.Write("{0},{1},{2},{3},{4},{5},{6}\n", orderNumber, quoteNumber, revNumber, customerName, orderDate.ToShortDateString(), shipDate, poNumber);
-                }
-
-                stream.Flush();
-                stream.Dispose();
-            }
-
-            MessageBox.Show("Your file is ready.");
-        }
-
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
-            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
-
-            if (textBox.Text.Length > 0)
-            {
-                image.Source = ((DrawingImage)App.Current.Resources["closeDrawingImage"]);
-                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
-                textBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                image.Source = ((DrawingImage)App.Current.Resources["searchDrawingImage"]);
-                textBlock.Visibility = Visibility.Visible;
-            }
-        }
-        private void DaysTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            using var _ = new NAT02Context();
-            try
-            {
-                EoiSettings eoiSettings = _.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
-                eoiSettings.QuoteDays = short.Parse(textBox.Text);
-                _.EoiSettings.Update(eoiSettings);
-                User.QuoteDays = eoiSettings.QuoteDays;
-            }
-            catch
-            {
-
-            }
-            finally
-            {
-                _.SaveChanges();
-                _.Dispose();
-            }
-        }
-        private void DaysTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            MainRefresh();
-        }
-
-        private void SearchBox_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-                textBox.Text = "";
-            }
-        }
-
-        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Image image = sender as Image;
-            TextBox textBox = (image.Parent as Grid).Children.OfType<TextBox>().First();
-            textBox.Text = "";
-        }
-
-        private ScrollViewer ConstructScrollViewer()
-        {
-            ScrollViewer scrollViewer = new ScrollViewer()
-            {
-                Style = FindResource("ScrollViewerStyle") as Style,
-                Visibility = Visibility.Collapsed
-            };
-
-            StackPanel stackPanel = new StackPanel();
-            scrollViewer.Content = stackPanel;
-
-            return scrollViewer;
-        }
-
-        // Build expanders
-        private void ConstructExpanders()
-        {
-            for (int i = 0; i < User.VisiblePanels.Count; i++)
-            {
-                DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel;
-
-                Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-                string panel = User.VisiblePanels[i];
-
-                BuildPanel(dockPanel, sp, panel);
-
-                Label countLabel = dockPanel.Children.OfType<Label>().First();
-
-                countLabel.Content = "Total: " + sp.Children.OfType<Expander>().Count();
-            }
-        }
-
-        private void BuildPanel(DockPanel dockPanel, StackPanel sp, string panel)
-        {
-            Border headerBorder = new Border()
-            {
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                BorderThickness = new Thickness(0, 1, 0, 1)
-            };
-
-            Grid headerGrid = new Grid()
-            {
-                Background = MainMenu.Background,
-                Height = 30,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            // Check all checkbox
-            CheckBox checkBox = new CheckBox()
-            {
-                IsChecked = false,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(20, 0, 0, 0),
-                LayoutTransform = new ScaleTransform(0.65, 0.65)
-            };
-            checkBox.Checked += CheckBox_Checked;
-            checkBox.Unchecked += CheckBox_Checked;
-
-            switch (panel)
-            {
-                case "BeingEntered":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(30)), CreateLabel("Rev", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 5, FontWeights.Normal));
-                    // if (ordersBeingEnteredDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
-
-                    break;
-                case "InTheOffice":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("In Office", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(100)), CreateLabel("Employee Name", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("CSR", 0, 6, FontWeights.Normal));
-                    // if (ordersInTheOfficeDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
-
-                    break;
-                case "QuotesNotConverted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
-                    //if (quotesNotConvertedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesNotConvertedSearchBox_TextChanged;
-
-                    break;
-                case "EnteredUnscanned":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Days In", 0, 4, FontWeights.Normal));
-                    // if (ordersEnteredUnscannedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
-
-                    break;
-                case "InEngineering":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("In Eng", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(125)), CreateLabel("Employee Name", 0, 5, FontWeights.Normal));
-                    // if (ordersInEngineeringUnprintedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
-
-                    break;
-                case "QuotesToConvert":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(148)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Days In", 0, 5, FontWeights.Normal));
-                    // if (quotesToConvertDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesToConvertSearchBox_TextChanged;
-
-                    break;
-                case "ReadyToPrint":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(110)), CreateLabel("Checker", 0, 5, FontWeights.Normal));
-                    // if (ordersReadyToPrintDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersReadyToPrintSearchBox_TextChanged;
-
-                    break;
-                case "PrintedInEngineering":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Checker", 0, 5, FontWeights.Normal));
-                    // if (ordersPrintedInEngineeringDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersPrintedInEngineeringSearchBox_TextChanged;
-
-                    break;
-                case "AllTabletProjects":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (allTabletProjectsDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllTabletProjectsSearchBox_TextChanged;
-
-                    break;
-                case "TabletProjectsNotStarted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 5, FontWeights.Normal));
-                    // if (tabletProjectsNotStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsNotStartedSearchBox_TextChanged;
-
-                    break;
-                case "TabletProjectsStarted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (tabletProjectsStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsStartedSearchBox_TextChanged;
-
-                    break;
-                case "TabletProjectsDrawn":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (tabletProjectsDrawnDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsDrawnSearchBox_TextChanged;
-
-                    break;
-                case "TabletProjectsSubmitted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (tabletProjectsSubmittedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsSubmittedSearchBox_TextChanged;
-
-                    break;
-                case "TabletProjectsOnHold":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (tabletProjectsOnHoldDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsOnHoldSearchBox_TextChanged;
-
-                    break;
-                case "AllToolProjects":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (allToolProjectsDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllToolProjectsSearchBox_TextChanged;
-
-                    break;
-                case "ToolProjectsNotStarted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 5, FontWeights.Normal));
-                    // if (toolProjectsNotStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsNotStartedSearchBox_TextChanged;
-
-                    break;
-                case "ToolProjectsStarted":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (toolProjectsStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsStartedSearchBox_TextChanged;
-
-                    break;
-                case "ToolProjectsDrawn":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (toolProjectsDrawnDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsDrawnSearchBox_TextChanged;
-
-                    break;
-                case "ToolProjectsOnHold":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
-                    // if (toolProjectsOnHoldDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsOnHoldSearchBox_TextChanged;
-
-                    break;
-                case "DriveWorksQueue":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Model Name", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(170)), CreateLabel("Released By", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Tag", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(85)), CreateLabel("Release Time", 0, 4, FontWeights.Normal));
-                    // if (driveWorksQueueDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += DriveWorksQueueSearchBox_TextChanged;
-
-                    break;
-                case "NatoliOrderList":
-                    // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
-                    Grid.SetColumn(checkBox, 0);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order #", 0, 1, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer", 0, 2, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Ship Date", 0, 3, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rush", 0, 4, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("On Hold", 0, 5, FontWeights.Normal));
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rep", 0, 6, FontWeights.Normal));
-                    // if (natoliOrderListDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
-
-                    headerBorder.Child = headerGrid;
-                    DockPanel.SetDock(headerBorder, Dock.Top);
-                    dockPanel.Children.Insert(1, headerBorder);
-
-                    dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += NatoliOrderListSearchBox_TextChanged;
-
-                    break;
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    OrdersInTheOfficeListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()));
+
+                    OrdersInTheOfficeListBox.ItemsSource = null;
+                    OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
+                    return grid;
+                case ("QuotesNotConverted", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["QuotesNotConvertedModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    QuotesNotConvertedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()));
+
+                    QuotesNotConvertedListBox.ItemsSource = null;
+                    QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
+                    return grid;
+                case ("EnteredUnscanned", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["OrdersEnteredModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    OrdersEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()));
+
+                    OrdersEnteredListBox.ItemsSource = null;
+                    OrdersEnteredListBox.ItemsSource = ordersEntered;
+                    return grid;
+                case ("InEngineering", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["OrdersInEngineeringModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    OrdersInEngListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()));
+
+                    OrdersInEngListBox.ItemsSource = null;
+                    OrdersInEngListBox.ItemsSource = ordersInEng;
+                    return grid;
+                case ("QuotesToConvert", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["QuotesToConvertModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    QuotesToConvertListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()));
+
+                    QuotesToConvertListBox.ItemsSource = null;
+                    QuotesToConvertListBox.ItemsSource = quotesToConvert;
+                    return grid;
+                case ("ReadyToPrint", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["OrdersReadyToPrintModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    OrdersReadyToPrintListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()));
+
+                    OrdersReadyToPrintListBox.ItemsSource = null;
+                    OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
+                    return grid;
+                case ("PrintedInEngineering", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["OrdersPrintedInEngineeringModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    OrdersPrintedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()));
+
+                    OrdersPrintedListBox.ItemsSource = null;
+                    OrdersPrintedListBox.ItemsSource = ordersPrinted;
+                    return grid;
+                case ("AllTabletProjects", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["AllTabletProjectsModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    AllTabletProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()));
+
+                    AllTabletProjectsListBox.ItemsSource = null;
+                    AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                    return grid;
+                //case ("TabletProjectsNotStarted", "Main"):
+                //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsStarted", "Main"):
+                //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsDrawn", "Main"):
+                //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsSubmitted", "Main"):
+                //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsOnHold", "Main"):
+                //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+                //    break;
+                case ("AllToolProjects", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["AllToolProjectsModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    AllToolProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()));
+
+                    AllToolProjectsListBox.ItemsSource = null;
+                    AllToolProjectsListBox.ItemsSource = allToolProjects;
+                    return grid;
+                //case ("ToolProjectsNotStarted", "Main"):
+                //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsStarted", "Main"):
+                //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsDrawn", "Main"):
+                //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsOnHold", "Main"):
+                //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+                //    break;
+                case ("DriveWorksQueue", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["DriveWorksQueueModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    DriveWorksQueueListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()));
+
+                    DriveWorksQueueListBox.ItemsSource = null;
+                    DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
+                    return grid;
+                case ("NatoliOrderList", "Main"):
+                    label = new Label
+                    {
+                        Style = App.Current.Resources["NatoliOrderListModule"] as Style
+                    };
+
+                    label.ApplyTemplate();
+
+                    grid.Children.Add(label);
+
+                    if (index == -1)
+                    {
+                        MainWrapPanel.Children.Add(grid);
+                    }
+                    else
+                    {
+                        MainWrapPanel.Children.Insert(index, grid);
+                    }
+
+                    NatoliOrderListListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+
+                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()));
+
+                    NatoliOrderListListBox.ItemsSource = null;
+                    NatoliOrderListListBox.ItemsSource = natoliOrderList;
+                    return grid;
                 default:
-                    break;
+                    return grid;
             }
         }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            var expanders = ((((checkBox.Parent as Grid).Parent as Border).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.OfType<Expander>();
-            foreach (Expander expander in expanders)
-            {
-                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = checkBox.IsChecked;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        private ColumnDefinition CreateColumnDefinition(GridLength width)
-        {
-            ColumnDefinition colDef = new ColumnDefinition();
-            try
-            {
-                colDef.Width = width;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return colDef;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        private Label CreateLabel(string content, int row, int column, FontWeight weight, SolidColorBrush textColor = null, FontStyle? fontStyle = null, double fontSize = 12, bool addPadding = false)
-        {
-            Label label = new Label();
-            try
-            {
-                label.Content = content;
-                label.HorizontalAlignment = HorizontalAlignment.Stretch;
-                label.HorizontalContentAlignment = HorizontalAlignment.Left;
-                label.VerticalAlignment = VerticalAlignment.Top;
-                label.VerticalContentAlignment = VerticalAlignment.Center;
-                label.FontSize = fontSize;
-                if (addPadding) { label.Padding = new Thickness(0, 0, 0, 0); }
-                if (!(textColor is null))
-                {
-                    label.Foreground = textColor;
-                }
-                label.FontWeight = weight;
-                label.FontStyle = !(fontStyle is null) ? (FontStyle)fontStyle : FontStyles.Normal;
-                Grid.SetRow(label, row);
-                Grid.SetColumn(label, column);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return label;
-        }
-
-        private CheckBox CreateCheckBox(int row, int column, bool isChecked)
-        {
-            CheckBox checkBox = new CheckBox();
-            try
-            {
-                checkBox.IsChecked = isChecked;
-                checkBox.VerticalAlignment = VerticalAlignment.Center;
-                checkBox.LayoutTransform = new ScaleTransform(0.7, 0.7, 0, 0);
-                checkBox.Checked += LineItemCheckBox_Checked;
-                checkBox.Unchecked += LineItemCheckBox_Unchecked;
-                Grid.SetRow(checkBox, row);
-                Grid.SetColumn(checkBox, column);
-            }
-            catch
-            {
-                return null;
-            }
-            return checkBox;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="columnDefinition"></param>
-        /// <param name="label"></param>
-        private static void AddColumn(Grid grid, ColumnDefinition columnDefinition = null, UIElement element = null)
-        {
-            try
-            {
-                grid.ColumnDefinitions.Add(columnDefinition);
-                if (!(element is null)) { grid.Children.Add(element); };
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        #endregion
-
-        //Handle refreshes
         private void BindData(string timer)
         {
             try
@@ -4263,67 +3906,73 @@ namespace NatoliOrderInterface
                     switch (panel, timer)
                     {
                         case ("BeingEntered", "Main"):
-                            Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+                            //Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+                            Task.Run(() => GetBeingEntered());
                             break;
                         case ("InTheOffice", "Main"):
-                            Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+                            //Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+                            Task.Run(() => GetInTheOffice());
                             break;
                         case ("QuotesNotConverted", "QuotesNotConverted"):
-                            Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+                            Dispatcher.Invoke(() => GetQuotesNotConverted());
                             break;
                         case ("EnteredUnscanned", "Main"):
-                            Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+                            //Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+                            Task.Run(() => GetEnteredUnscanned());
                             break;
                         case ("InEngineering", "Main"):
-                            Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+                            //Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+                            Task.Run(() => GetInEngineering());
                             break;
                         case ("QuotesToConvert", "Main"):
-                            Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+                            Dispatcher.Invoke(() => GetQuotesToConvert());
                             break;
                         case ("ReadyToPrint", "Main"):
-                            Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+                            //Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+                            Task.Run(() => GetReadyToPrint());
                             break;
                         case ("PrintedInEngineering", "Main"):
-                            Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+                            //Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+                            Task.Run(() => GetPrintedInEngineering());
                             break;
                         case ("AllTabletProjects", "Main"):
-                            Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+                            Task.Run(() => GetAllTabletProjects());
                             break;
-                        case ("TabletProjectsNotStarted", "Main"):
-                            Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-                            break;
-                        case ("TabletProjectsStarted", "Main"):
-                            Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-                            break;
-                        case ("TabletProjectsDrawn", "Main"):
-                            Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-                            break;
-                        case ("TabletProjectsSubmitted", "Main"):
-                            Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-                            break;
-                        case ("TabletProjectsOnHold", "Main"):
-                            Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-                            break;
+                        //case ("TabletProjectsNotStarted", "Main"):
+                        //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+                        //    break;
+                        //case ("TabletProjectsStarted", "Main"):
+                        //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+                        //    break;
+                        //case ("TabletProjectsDrawn", "Main"):
+                        //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+                        //    break;
+                        //case ("TabletProjectsSubmitted", "Main"):
+                        //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+                        //    break;
+                        //case ("TabletProjectsOnHold", "Main"):
+                        //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+                        //    break;
                         case ("AllToolProjects", "Main"):
-                            Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+                            Task.Run(() => GetAllToolProjects());
                             break;
-                        case ("ToolProjectsNotStarted", "Main"):
-                            Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-                            break;
-                        case ("ToolProjectsStarted", "Main"):
-                            Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-                            break;
-                        case ("ToolProjectsDrawn", "Main"):
-                            Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-                            break;
-                        case ("ToolProjectsOnHold", "Main"):
-                            Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-                            break;
+                        //case ("ToolProjectsNotStarted", "Main"):
+                        //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+                        //    break;
+                        //case ("ToolProjectsStarted", "Main"):
+                        //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+                        //    break;
+                        //case ("ToolProjectsDrawn", "Main"):
+                        //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+                        //    break;
+                        //case ("ToolProjectsOnHold", "Main"):
+                        //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+                        //    break;
                         case ("DriveWorksQueue", "Main"):
-                            Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+                            Task.Run(() => GetDriveWorksQueue());
                             break;
                         case ("NatoliOrderList", "NatoliOrderList"):
-                            Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+                            Task.Run(() => GetNatoliOrderList());
                             break;
                         default:
                             break;
@@ -4335,197 +3984,45 @@ namespace NatoliOrderInterface
 
             }
         }
-        private static int GetNumberOfDays(string csr)
+        private void UpdateUI()
         {
-            switch (csr)
-            {
-                case "Alex Heimberger":
-                    return 14;
-                case "Anna King":
-                    return 7;
-                case "Bryan Foy":
-                    return 7;
-                case "David Nelson":
-                    return 7;
-                case "Gregory Lyle":
-                    return 14;
-                case "Heather Lane":
-                    return 7;
-                case "Humberto Zamora":
-                    return 14;
-                case "James Willis":
-                    return 14;
-                case "Miral Bouzitoun":
-                    return 14;
-                case "Nicholas Tarte":
-                    return 14;
-                case "Samantha Bowman":
-                    return 7;
-                case "Tiffany Simonpietri":
-                    return 7;
-                default:
-                    return 14;
-            }
+            Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
+            Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
+            Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
+            Task.Run(() => Dispatcher.Invoke(() => BindInEngineering()));
+            Task.Run(() => Dispatcher.Invoke(() => BindReadyToPrint()));
+            Task.Run(() => Dispatcher.Invoke(() => BindPrintedInEngineering()));
+            Task.Run(() => Dispatcher.Invoke(() => BindAllTabletProjects()));
+            Task.Run(() => Dispatcher.Invoke(() => BindAllToolProjects()));
+            Task.Run(() => Dispatcher.Invoke(() => BindDriveWorksQueue()));
+            Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
         }
 
-        private static void OpenOrder_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        #region GetsAndBinds
+        #region Gets And Binds
         private void GetBeingEntered()
         {
             try
             {
-                using var _nat02context = new NAT02Context();
-                List<EoiOrdersBeingEnteredView> eoiOrdersBeingEnteredView = _nat02context.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
-
-                ordersBeingEnteredDict = new Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersBeingEnteredView order in eoiOrdersBeingEnteredView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
-                        {
-                            back = new SolidColorBrush(Colors.DodgerBlue);
-                        }
-                        else
-                        {
-                            back = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF");
-                        }
-                    }
-                    ordersBeingEnteredDict.Add(order.OrderNo, ((double)order.QuoteNo, (short)order.Rev, order.CustomerName, (int)order.NumDaysToShip, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                dictList.Add(ordersBeingEnteredDict);
-                eoiOrdersBeingEnteredView.Clear();
-                _nat02context.Dispose();
+                using var _ = new NAT02Context();
+                _ordersBeingEntered = _.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
+                _.Dispose();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindBeingEntered()
         {
-            int i = User.VisiblePanels.IndexOf("BeingEntered");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "BeingEntered");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            ordersBeingEnteredDict =
-                ordersBeingEnteredDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
-                                                  o.Value.quoteNumber.ToString().Contains(searchString) ||
-                                                  o.Value.customerName.ToLower().Contains(searchString))
-                                      .OrderBy(kvp => kvp.Key)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            BeingEnteredExpanders(ordersBeingEnteredDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
+            OrdersBeingEntered = _ordersBeingEntered;
         }
         private void GetInTheOffice()
         {
             try
             {
-                using var _nat02context = new NAT02Context();
-                List<EoiOrdersInOfficeView> eoiOrdersInOfficeView = new List<EoiOrdersInOfficeView>();
-                if (User.Department == "Customer Service" && !(User.GetUserName().StartsWith("Tiffany") || User.GetUserName().StartsWith("James W")))
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiOrdersInOfficeView = _nat02context.EoiOrdersInOfficeView.Where(o => o.Csr.StartsWith(usrName)).OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
-                }
-                else
-                {
-                    eoiOrdersInOfficeView = _nat02context.EoiOrdersInOfficeView.OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
-                }
-
-                ordersInTheOfficeDict = new Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersInOfficeView order in eoiOrdersInOfficeView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    ordersInTheOfficeDict.Add((double)order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.DaysInOffice, order.EmployeeName, order.Csr, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-
-                eoiOrdersInOfficeView.Clear();
-                _nat02context.Dispose();
+                using var _ = new NAT02Context();
+                _ordersInTheOffice = _.EoiOrdersInOfficeView.OrderBy(o => o.OrderNo).ToList();
+                _.Dispose();
             }
             catch (Exception ex)
             {
@@ -4535,664 +4032,32 @@ namespace NatoliOrderInterface
         private void BindInTheOffice()
         {
             int i = User.VisiblePanels.IndexOf("InTheOffice");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
 
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "InTheOffice");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+            var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
             string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            ordersInTheOfficeDict =
-                ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
-                                                 o.Value.customerName.ToString().Contains(searchString) ||
-                                                 o.Value.employeeName.ToLower().Contains(searchString) ||
-                                                 o.Value.csr.ToLower().Contains(searchString))
-                                     .OrderBy(kvp => kvp.Value.daysToShip)
-                                     .ThenBy(kvp => kvp.Value.daysInOffice)
-                                     .ThenBy(kvp => kvp.Key)
-                                     .ToDictionary(x => x.Key, x => x.Value);
 
-            InTheOfficeExpanders(ordersInTheOfficeDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetEnteredUnscanned()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiOrdersEnteredAndUnscannedView> eoiOrdersEnteredAndUnscannedView = _nat02context.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
-
-                ordersEnteredUnscannedDict = new Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersEnteredAndUnscannedView order in eoiOrdersEnteredAndUnscannedView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    bool doNotProcess = Convert.ToBoolean(order.DoNotProcess);
-                    string[] errRes;
-                    errRes = new string[2] { order.ProcessState,
-                                         order.TransitionName };
-
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    //else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
-                    //{
-                    //    fore = new SolidColorBrush(Colors.White);
-                    //    weight = FontWeights.Normal;
-                    //}
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.DarkGray);
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    ordersEnteredUnscannedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.NumDaysIn, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiOrdersEnteredAndUnscannedView.Clear();
-                _nat02context.Dispose();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindEnteredUnscanned()
-        {
-            int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "EnteredUnscanned");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            ordersEnteredUnscannedDict =
-                ordersEnteredUnscannedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                      p.Value.customerName.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.Key)
-                                          .ToDictionary(x => x.Key, x => x.Value);
-
-            OrdersEnteredUnscannedExpanders(ordersEnteredUnscannedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetInEngineering()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                using var nat01context = new NAT01Context();
-                List<EoiOrdersInEngineeringUnprintedView> eoiOrdersInEngineeringUnprintedView = _nat02context.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
-
-                ordersInEngineeringUnprintedDict = new Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersInEngineeringUnprintedView order in eoiOrdersInEngineeringUnprintedView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        int count = _nat02context.MaMachineVariables.Where(o => o.WorkOrderNumber == order.OrderNo.ToString()).Count();
-                        string machineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).FirstOrDefault().MachinePriceCode.Trim();
-                        short machineNo = (short)nat01context.OrderDetails.First(o => o.OrderNo == order.OrderNo * 100).MachineNo;
-                        string stockSize = machineNo == 0 ? "" : nat01context.MachineList.Single(m => m.MachineNo == machineNo).UpperSize;
-                        bool rework = nat01context.OrderDetails.Any(o => o.Desc1.Contains("<REWORK>"));
-                        var lineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100 && (o.DetailTypeId == "U" || o.DetailTypeId == "L" || o.DetailTypeId == "R")).ToList();
-                        if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
-                        {
-                            back = new SolidColorBrush(Colors.DodgerBlue);
-                        }
-                        else if (count == 0 && (machineType == "BB" ||
-                                               (machineType == "B" && !stockSize.StartsWith("3/4") && !stockSize.StartsWith("1-1/4")) ||
-                                                machineType == "D" && !stockSize.StartsWith("1-1/2")) && lineType.Count != 0)
-                        {
-                            back = new SolidColorBrush(Colors.Red);
-                        }
-                        else if (_nat02context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == order.OrderNo).Any())
-                        {
-                            back = new SolidColorBrush(Colors.GreenYellow);
-                        }
-                        else
-                        {
-                            back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                        }
-                    }
-                    ordersInEngineeringUnprintedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.DaysInEng, order.EmployeeName, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiOrdersInEngineeringUnprintedView.Clear();
-                _nat02context.Dispose();
-                nat01context.Dispose();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindInEngineering()
-        {
-            int i = User.VisiblePanels.IndexOf("InEngineering");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "InEngineering");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            //ContentControl footerContentControl = (VisualTreeHelper.GetChild((MainGrid.Children[i] as ContentControl) as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                                                              .Children.OfType<ContentControl>().Last();
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            ordersInEngineeringUnprintedDict =
-                ordersInEngineeringUnprintedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                            p.Value.customerName.ToLower().Contains(searchString) ||
-                                                            p.Value.employeeName.ToLower().Contains(searchString))
-                                                .OrderByDescending(kvp => kvp.Value.daysInEng)
-                                                .ThenBy(kvp => kvp.Value.daysToShip)
-                                                .ThenBy(kvp => kvp.Key)
-                                                .ToDictionary(x => x.Key, x => x.Value);
-
-            OrdersInEngineeringUnprintedExpanders(ordersInEngineeringUnprintedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetReadyToPrint()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                using var nat01context = new NAT01Context();
-                List<EoiOrdersReadyToPrintView> eoiOrdersReadyToPrintView = _nat02context.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
-
-                ordersReadyToPrintDict = new Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersReadyToPrintView order in eoiOrdersReadyToPrintView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        bool tm2 = Convert.ToBoolean(order.TM2);
-                        bool tabletPrints = Convert.ToBoolean(order.Tablet);
-                        bool toolPrints = Convert.ToBoolean(order.Tool);
-                        List<OrderDetails> orderDetails;
-                        List<OrderHeader> orderHeader;
-                        orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
-                        orderHeader = nat01context.OrderHeader.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
-
-                        if (tm2 || tabletPrints)
-                        {
-                            foreach (OrderDetails od in orderDetails)
-                            {
-                                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
-                                {
-                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                                    if (!System.IO.File.Exists(path))
-                                    {
-                                        goto Missing;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (tm2 || toolPrints)
-                        {
-                            foreach (OrderDetails od in orderDetails)
-                            {
-                                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                                {
-                                    string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                                    detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                    string international = orderHeader.FirstOrDefault().UnitOfMeasure;
-                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + detailType + ".pdf";
-                                    if (!System.IO.File.Exists(path))
-                                    {
-                                        goto Missing;
-                                    }
-                                    if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                                    {
-                                        goto Missing;
-                                    }
-                                }
-                            }
-                        }
-
-                        goto NotMissing;
-
-                    Missing:;
-                        if (User.Department == "Engineering")
-                        {
-                            back = new SolidColorBrush(Colors.MediumPurple);
-                        }
-                        else
-                        {
-                            back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                        }
-                        goto Finished;
-
-                    NotMissing:;
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-
-                    Finished:;
-                    }
-                    ordersReadyToPrintDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, order.EmployeeName, order.CheckedBy, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiOrdersReadyToPrintView.Clear();
-                _nat02context.Dispose();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindReadyToPrint()
-        {
-            int i = User.VisiblePanels.IndexOf("ReadyToPrint");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "ReadyToPrint");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            ordersReadyToPrintDict =
-                ordersReadyToPrintDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString) ||
-                                                  p.Value.employeeName.ToLower().Contains(searchString) ||
-                                                  p.Value.checkedBy.ToLower().Contains(searchString))
-                                      .OrderBy(kvp => kvp.Key)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            OrdersReadyToPrintExpanders(ordersReadyToPrintDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetPrintedInEngineering()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                using var nat01context = new NAT01Context();
-                List<EoiOrdersPrintedInEngineeringView> eoiOrdersPrintedInEngineeringView = _nat02context.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
-
-                ordersPrintedInEngineeringDict = new Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiOrdersPrintedInEngineeringView order in eoiOrdersPrintedInEngineeringView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else
-                    {
-                        bool tm2 = Convert.ToBoolean(order.TM2);
-                        bool tabletPrints = Convert.ToBoolean(order.Tablet);
-                        bool toolPrints = Convert.ToBoolean(order.Tool);
-                        List<OrderDetails> orderDetails;
-                        List<OrderHeader> orderHeader;
-                        orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
-                        orderHeader = nat01context.OrderHeader.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
-
-                        if (tm2 || tabletPrints)
-                        {
-                            foreach (OrderDetails od in orderDetails)
-                            {
-                                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
-                                {
-                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                                    if (!System.IO.File.Exists(path))
-                                    {
-                                        goto Missing;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (tm2 || toolPrints)
-                        {
-                            foreach (OrderDetails od in orderDetails)
-                            {
-                                if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                                {
-                                    string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                                    detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                    string international = orderHeader.FirstOrDefault().UnitOfMeasure;
-                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + detailType + ".pdf";
-                                    if (!System.IO.File.Exists(path))
-                                    {
-                                        goto Missing;
-                                    }
-                                    if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                                    {
-                                        goto Missing;
-                                    }
-                                }
-                            }
-                        }
-
-                        goto NotMissing;
-
-                    Missing:;
-                        if (User.Department == "Engineering")
-                        {
-                            back = new SolidColorBrush(Colors.MediumPurple);
-                        }
-                        else
-                        {
-                            back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                        }
-                        goto Finished;
-
-                    NotMissing:;
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-
-                    Finished:;
-                    }
-                    ordersPrintedInEngineeringDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, order.EmployeeName, order.CheckedBy, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiOrdersPrintedInEngineeringView.Clear();
-                _nat02context.Dispose();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindPrintedInEngineering()
-        {
-            int i = User.VisiblePanels.IndexOf("PrintedInEngineering");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "PrintedInEngineering");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            string column;
-            if (searchString.Contains(":"))
-            {
-                column = searchString.Split(':')[0];
-                searchString = searchString.Split(':')[1];
-                switch (column)
-                {
-                    case "Order No":
-
-                        ordersPrintedInEngineeringDict =
-                            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString))
-                                                          .OrderBy(kvp => kvp.Key)
-                                                          .ToDictionary(x => x.Key, x => x.Value);
-                        break;
-                    case "Customer Name":
-
-                        ordersPrintedInEngineeringDict =
-                            ordersPrintedInEngineeringDict.Where(p => p.Value.customerName.ToLower().Contains(searchString))
-                                                          .OrderBy(kvp => kvp.Key)
-                                                          .ToDictionary(x => x.Key, x => x.Value);
-                        break;
-                    case "Employee Name":
-
-                        ordersPrintedInEngineeringDict =
-                            ordersPrintedInEngineeringDict.Where(p => p.Value.employeeName.ToLower().Contains(searchString))
-                                                          .OrderBy(kvp => kvp.Key)
-                                                          .ToDictionary(x => x.Key, x => x.Value);
-                        break;
-                    case "Checker":
-
-                        ordersPrintedInEngineeringDict =
-                            ordersPrintedInEngineeringDict.Where(p => p.Value.checkedBy.ToLower().Contains(searchString))
-                                                          .OrderBy(kvp => kvp.Key)
-                                                          .ToDictionary(x => x.Key, x => x.Value);
-                        break;
-                    default:
-
-                        ordersPrintedInEngineeringDict =
-                            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                                      p.Value.customerName.ToLower().Contains(searchString) ||
-                                                                      p.Value.employeeName.ToLower().Contains(searchString) ||
-                                                                      p.Value.checkedBy.ToLower().Contains(searchString))
-                                                          .OrderBy(kvp => kvp.Key)
-                                                          .ToDictionary(x => x.Key, x => x.Value);
-                        break;
-                }
-            }
-            else
-            {
-                ordersPrintedInEngineeringDict =
-                    ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                              p.Value.customerName.ToLower().Contains(searchString) ||
-                                                              p.Value.employeeName.ToLower().Contains(searchString) ||
-                                                              p.Value.checkedBy.ToLower().Contains(searchString))
-                                                  .OrderBy(kvp => kvp.Key)
-                                                  .ToDictionary(x => x.Key, x => x.Value);
-            }
-
-            OrdersPrintedInEngineeringExpanders(ordersPrintedInEngineeringDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
+            _ordersInTheOffice =
+                _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                              o.CustomerName.ToLower().ToString().Contains(searchString) ||
+                                              o.EmployeeName.ToLower().Contains(searchString) ||
+                                              o.Csr.ToLower().Contains(searchString))
+                                  .OrderBy(o => o.NumDaysToShip)
+                                  .ThenBy(o => o.DaysInOffice)
+                                  .ThenBy(o => o.OrderNo)
+                                  .ToList();
+
+            OrdersInTheOffice = _ordersInTheOffice;
         }
         private void GetQuotesNotConverted()
         {
             try
             {
-                using var _nat02context = new NAT02Context();
-                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                using var _ = new NAT02Context();
+                IQueryable<string> subList = _.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
                                                          .Select(e => e.Subscribed);
                 string[] subs = subList.First().Split(',');
-                quotesCompletedChanged = (quotesCompletedCount != _nat02context.EoiQuotesOneWeekCompleted.Count());
-                quotesCompletedCount = _nat02context.EoiQuotesOneWeekCompleted.Count();
+                //quotesCompletedChanged = (quotesCompletedCount != _.EoiQuotesOneWeekCompleted.Count());
+                //quotesCompletedCount = _.EoiQuotesOneWeekCompleted.Count();
                 short quoteDays = User.QuoteDays;
                 List<EoiQuotesNotConvertedView> _eoiQuotesNotConvertedView = new List<EoiQuotesNotConvertedView>();
                 foreach (string sub in subs)
@@ -5202,145 +4067,62 @@ namespace NatoliOrderInterface
                     {
                         s = "Nick";
                     }
-                    _eoiQuotesNotConvertedView.AddRange(_nat02context.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s) && q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).ToList());
+                    _eoiQuotesNotConvertedView.AddRange(_.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s) && q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).ToList());
                 }
-                List<EoiQuotesNotConvertedView> eoiQuotesNotConvertedView = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
-
-                quotesNotConvertedDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiQuotesNotConvertedView quote in eoiQuotesNotConvertedView)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (quote.RushYorN == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    using var _ = new NAT01Context();
-                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).UserAcctNo;
-                    _.Dispose();
-                    using var __ = new NECContext();
-                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
-                    __.Dispose();
-
-                    int days = GetNumberOfDays(quote.Csr);
-
-                    bool needs_followup_4 = DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
-                                            GetNumberOfDays(quote.Csr) == 14;
-                    bool needs_followup = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
-                                          DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&
-                                          !needs_followup_4;
-
-                    if (needs_followup)
-                    {
-                        back = new SolidColorBrush(Colors.Pink);
-                    }
-                    else if (needs_followup_4)
-                    {
-                        back = new SolidColorBrush(Colors.OrangeRed);
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-
-                    ExpanderAttributes expanderAttributes = new ExpanderAttributes(back, fore, weight);
-                    quotesNotConvertedDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, repId, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiQuotesNotConvertedView.Clear();
-                _nat02context.Dispose();
+                _quotesNotConverted = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
+                _.Dispose();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindQuotesNotConverted()
         {
-            int i = User.VisiblePanels.IndexOf("QuotesNotConverted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+            QuotesNotConverted = _quotesNotConverted;
+        }
+        private void GetEnteredUnscanned()
+        {
+            try
             {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Visible;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Visible;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += QuotesNotConvertedSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "QuotesNotConverted");
+                using var _ = new NAT02Context();
+                _ordersEntered = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+                _.Dispose();
             }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            if (searchString.ToLower().StartsWith("rep:"))
+            catch (Exception ex)
             {
-                searchString = searchString.Substring(4);
-                var _filtered =
-                quotesNotConvertedDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
-                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                QuotesNotConvertedExpanders(_filtered);
+                MessageBox.Show(ex.Message);
             }
-            else
+        }
+        private void BindEnteredUnscanned()
+        {
+            OrdersEntered = _ordersEntered;
+        }
+        private void GetInEngineering()
+        {
+            try
             {
-                var _filtered =
-                quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString) ||
-                                                  p.Value.csr.ToLower().Contains(searchString))
-                                      .OrderByDescending(kvp => kvp.Key.quoteNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                QuotesNotConvertedExpanders(_filtered);
+                using var _ = new NAT02Context();
+                _ordersInEng = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
+                _.Dispose();
             }
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
+            catch (Exception ex)
             {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+                MessageBox.Show(ex.Message);
             }
+        }
+        private void BindInEngineering()
+        {
+            OrdersInEng = _ordersInEng;
         }
         private void GetQuotesToConvert()
         {
             try
             {
-                using var _nat02context = new NAT02Context();
+                using var _ = new NAT02Context();
                 List<EoiQuotesMarkedForConversionView> eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
 
-                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                IQueryable<string> subList = _.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
                                                         .Select(e => e.Subscribed);
                 string[] subs = subList.First().Split(',');
                 List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
@@ -5351,90 +4133,53 @@ namespace NatoliOrderInterface
                     {
                         s = "Nick";
                     }
-                    _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
+                    _eoiQuotesMarkedForConversion.AddRange(_.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
                 }
-                eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion;
-
-                quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
-
-                foreach (EoiQuotesMarkedForConversionView quote in eoiQuotesMarkedForConversion)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (quote.Rush.Trim() == "Y")
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    using var nAT01Context = new NAT01Context();
-                    string shipment = nAT01Context.QuoteHeader.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Shipment ?? "";
-                    nAT01Context.Dispose();
-                    quotesToConvertDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, (int)quote.DaysMarked, (DateTime)quote.TimeSubmitted, shipment.Trim(), back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-                eoiQuotesMarkedForConversion.Clear();
-                _nat02context.Dispose();
+                _quotesToConvert = _eoiQuotesMarkedForConversion;
+                _.Dispose();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindQuotesToConvert()
         {
-            int i = User.VisiblePanels.IndexOf("QuotesToConvert");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+            QuotesToConvert = _quotesToConvert;
+        }
+        private void GetReadyToPrint()
+        {
+            try
             {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "QuotesToConvert");
+                using var _ = new NAT02Context();
+                _ordersReadyToPrint = _.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
+                _.Dispose();
             }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            quotesToConvertDict =
-                quotesToConvertDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                               p.Value.customerName.ToLower().Contains(searchString) ||
-                                               p.Value.csr.ToLower().Contains(searchString))
-                                   .OrderBy(kvp => kvp.Key.quoteNumber)
-                                   .ToDictionary(x => x.Key, x => x.Value);
-
-            QuotesToConvertExpanders(quotesToConvertDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
+            catch (Exception ex)
             {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+                MessageBox.Show(ex.Message);
             }
+        }
+        private void BindReadyToPrint()
+        {
+            OrdersReadyToPrint = _ordersReadyToPrint;
+        }
+        private void GetPrintedInEngineering()
+        {
+            try
+            {
+                using var _ = new NAT02Context();
+                _ordersPrinted = _.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
+                _.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void BindPrintedInEngineering()
+        {
+            OrdersPrinted = _ordersPrinted;
         }
         private void GetAllTabletProjects()
         {
@@ -5454,758 +4199,26 @@ namespace NatoliOrderInterface
                     if (sub == "Nicholas") { s = "Nick"; }
                     eoiAllTabletProjects.AddRange(_nat02context.EoiAllTabletProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
                 }
-                if (_filterProjects)
+                if (User.FilterActiveProjects)
                 {
-                    eoiAllTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
+                    _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
                                            !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                            .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                 }
                 else
                 {
-                    eoiAllTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    _allTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                 }
                 _nat02context.Dispose();
-
-                allTabletProjectsDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiAllTabletProjectsView project in eoiAllTabletProjects)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    using var nat02context = new NAT02Context();
-                    bool finished = nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
-                    nat02context.Dispose();
-                    bool onHold = project.HoldStatus == "On Hold";
-                    bool submitted = project.TabletSubmittedBy is null ? false : project.TabletSubmittedBy.Length > 0;
-                    bool drawn = project.TabletDrawnBy.Length > 0;
-                    bool started = project.ProjectStartedTablet.Length > 0;
-
-                    if ((bool)project.Tools)
-                    {
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (onHold)
-                    {
-                        back = new SolidColorBrush(Colors.MediumPurple);
-                    }
-                    else if (finished)
-                    {
-                        back = new SolidColorBrush(Colors.GreenYellow);
-                    }
-                    else if (submitted)
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF"));
-                    }
-                    else if (drawn)
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF"));
-                    }
-                    else if (started)
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    allTabletProjectsDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.Drafter, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                dictList.Add(allTabletProjectsDict);
-                eoiAllTabletProjects.Clear();
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindAllTabletProjects()
         {
-            int i = User.VisiblePanels.IndexOf("AllTabletProjects");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += AllTabletProjectsSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "AllTabletProjects");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            allTabletProjectsDict =
-                allTabletProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Value.customerName.ToLower().Contains(searchString) ||
-                                                 p.Value.csr.ToLower().Contains(searchString) ||
-                                                 p.Value.drafter.ToLower().Contains(searchString))
-                                     .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                     .ThenBy(kvp => kvp.Key.projectNumber)
-                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            AllTabletProjectsExpanders(allTabletProjectsDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetTabletProjectsNotStarted()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiTabletProjectsNotStarted> eoiTabletProjectsNotStarted = new List<EoiTabletProjectsNotStarted>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiTabletProjectsNotStarted = _nat02context.EoiTabletProjectsNotStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiTabletProjectsNotStarted = _nat02context.EoiTabletProjectsNotStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                tabletProjectsNotStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiTabletProjectsNotStarted project in eoiTabletProjectsNotStarted)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    if ((bool)project.Tools)
-                    {
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    tabletProjectsNotStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindTabletProjectsNotStarted()
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsNotStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsNotStarted");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            tabletProjectsNotStartedDict =
-                tabletProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                        p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                        p.Value.customerName.ToLower().Contains(searchString) ||
-                                                        p.Value.csr.ToLower().Contains(searchString))
-                                            .OrderByDescending(kvp => kvp.Value.priority)
-                                            .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                            .ThenBy(kvp => kvp.Key.projectNumber)
-                                            .ToDictionary(x => x.Key, x => x.Value);
-
-            TabletProjectsNotStartedExpanders(tabletProjectsNotStartedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetTabletProjectsStarted()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiTabletProjectsStarted> eoiTabletProjectsStarted = new List<EoiTabletProjectsStarted>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiTabletProjectsStarted = _nat02context.EoiTabletProjectsStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiTabletProjectsStarted = _nat02context.EoiTabletProjectsStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                tabletProjectsStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiTabletProjectsStarted project in eoiTabletProjectsStarted)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    if ((bool)project.Tools)
-                    {
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    tabletProjectsStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ProjectStartedTablet, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiTabletProjectsStarted.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindTabletProjectsStarted()
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsStarted");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            tabletProjectsStartedDict =
-                tabletProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                     p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                     p.Value.customerName.ToLower().Contains(searchString) ||
-                                                     p.Value.csr.ToLower().Contains(searchString) ||
-                                                     p.Value.drafter.ToLower().Contains(searchString))
-                                         .OrderByDescending(kvp => kvp.Value.priority)
-                                         .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                         .ThenBy(kvp => kvp.Key.projectNumber)
-                                         .ToDictionary(x => x.Key, x => x.Value);
-
-            TabletProjectsStartedExpanders(tabletProjectsStartedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetTabletProjectsDrawn()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiTabletProjectsDrawn> eoiTabletProjectsDrawn = new List<EoiTabletProjectsDrawn>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiTabletProjectsDrawn = _nat02context.EoiTabletProjectsDrawn.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiTabletProjectsDrawn = _nat02context.EoiTabletProjectsDrawn.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                tabletProjectsDrawnDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiTabletProjectsDrawn project in eoiTabletProjectsDrawn)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    if ((bool)project.Tools)
-                    {
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    tabletProjectsDrawnDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiTabletProjectsDrawn.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindTabletProjectsDrawn()
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsDrawn");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsDrawn");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            tabletProjectsDrawnDict =
-                tabletProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Value.customerName.ToLower().Contains(searchString) ||
-                                                   p.Value.csr.ToLower().Contains(searchString) ||
-                                                   p.Value.drafter.ToLower().Contains(searchString))
-                                       .OrderByDescending(kvp => kvp.Value.priority)
-                                       .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                       .ThenBy(kvp => kvp.Key.projectNumber)
-                                       .ToDictionary(x => x.Key, x => x.Value);
-
-            TabletProjectsDrawnExpanders(tabletProjectsDrawnDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetTabletProjectsSubmitted()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiTabletProjectsSubmitted> eoiTabletProjectsSubmitted = new List<EoiTabletProjectsSubmitted>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiTabletProjectsSubmitted = _nat02context.EoiTabletProjectsSubmitted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiTabletProjectsSubmitted = _nat02context.EoiTabletProjectsSubmitted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                tabletProjectsSubmittedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiTabletProjectsSubmitted project in eoiTabletProjectsSubmitted)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    if ((bool)project.Tools)
-                    {
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy ?? project.ProjectStartedTablet ?? project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiTabletProjectsSubmitted.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindTabletProjectsSubmitted()
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsSubmitted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsSubmitted");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            tabletProjectsSubmittedDict =
-                tabletProjectsSubmittedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                      p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                      p.Value.customerName.ToLower().Contains(searchString) ||
-                                                      p.Value.csr.ToLower().Contains(searchString) ||
-                                                      p.Value.drafter.ToLower().Contains(searchString))
-                                          .OrderByDescending(kvp => kvp.Value.priority)
-                                          .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                          .ThenBy(kvp => kvp.Key.projectNumber)
-                                          .ToDictionary(x => x.Key, x => x.Value);
-
-            TabletProjectsSubmittedExpanders(tabletProjectsSubmittedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetTabletProjectsOnHold()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiProjectsOnHold> eoiTabletProjectsOnHold = new List<EoiProjectsOnHold>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    if (usrName == "Gregory") { usrName = "Greg"; }
-                    if (usrName == "Nicholas") { usrName = "Nick"; }
-                    eoiTabletProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Csr.StartsWith(usrName) && p.Tablet == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiTabletProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Tablet == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                tabletProjectsOnHoldDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiProjectsOnHold project in eoiTabletProjectsOnHold)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    if ((bool)project.Tools)
-                    {
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Oblique;
-                    }
-                    else
-                    {
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    tabletProjectsOnHoldDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiTabletProjectsOnHold.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindTabletProjectsOnHold()
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsOnHold");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsOnHold");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            tabletProjectsOnHoldDict =
-                tabletProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString) ||
-                                                  p.Value.csr.ToLower().Contains(searchString))
-                                      .OrderByDescending(kvp => kvp.Value.priority)
-                                      .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                      .ThenBy(kvp => kvp.Key.projectNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            TabletProjectsOnHoldExpanders(tabletProjectsOnHoldDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
+            AllTabletProjects = _allTabletProjects;
         }
         private void GetAllToolProjects()
         {
@@ -6213,3258 +4226,6402 @@ namespace NatoliOrderInterface
             {
                 using var _nat02context = new NAT02Context();
                 List<EoiAllToolProjectsView> eoiAllToolProjects = new List<EoiAllToolProjectsView>();
-                try
-                {
-                    IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
                                                                      .Select(e => e.Subscribed);
-                    string[] subs = subList.First().Split(',');
-                    if (string.IsNullOrEmpty(subs[0]))
-                    {
-                        eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.ToList());
-                    }
-                    else
-                    {
-                        foreach (string sub in subs)
-                        {
-                            string s = sub;
-                            if (sub == "Gregory") { s = "Greg"; }
-                            if (sub == "Nicholas") { s = "Nick"; }
-                            eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
-                        }
-                    }
-                }
-                catch (Exception ex)
+
+                string[] subs = subList.First().Split(',');
+                foreach (string sub in subs)
                 {
-                    MessageBox.Show(ex.Message);
+                    string s = sub;
+                    if (sub == "Gregory") { s = "Greg"; }
+                    if (sub == "Nicholas") { s = "Nick"; }
+                    eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
                 }
-                if (_filterProjects)
+                if (User.FilterActiveProjects)
                 {
-                    eoiAllToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber)).ToList();
+
+                    _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                           .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                }
+                else
+                {
+                    _allToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                 }
                 _nat02context.Dispose();
-
-                eoiAllToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
-
-                allToolProjectsDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiAllToolProjectsView project in eoiAllToolProjects)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    using var nat02context = new NAT02Context();
-                    bool finished = nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
-                    nat02context.Dispose();
-                    bool onHold = project.HoldStatus == "On Hold";
-                    using var projectsContext = new ProjectsContext();
-                    bool tablets = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Tablet &&
-                                   string.IsNullOrEmpty(projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).TabletCheckedBy);
-                    bool multitip = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).MultiTipSketch;
-                    projectsContext.Dispose();
-                    bool drawn = project.ToolDrawnBy.Length > 0;
-                    bool started = project.ProjectStartedTool.Length > 0;
-
-                    fontStyle = FontStyles.Normal;
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                    }
-
-                    if (onHold)
-                    {
-                        back = new SolidColorBrush(Colors.MediumPurple);
-                    }
-                    else if (finished)
-                    {
-                        back = new SolidColorBrush(Colors.GreenYellow);
-                    }
-                    else if (drawn)
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3594FF"));
-                    }
-                    else if (started)
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
-                    }
-                    else if (multitip)
-                    {
-                        back = new SolidColorBrush(Colors.Gray);
-                    }
-                    else if (tablets)
-                    {
-                        back = new SolidColorBrush(Colors.Yellow);
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    allToolProjectsDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.Drafter, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiAllToolProjects.Clear();
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindAllToolProjects()
         {
-            int i = User.VisiblePanels.IndexOf("AllToolProjects");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "AllToolProjects");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            allToolProjectsDict = allToolProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                                 p.Value.customerName.ToLower().Contains(searchString) ||
-                                                                 p.Value.csr.ToLower().Contains(searchString) ||
-                                                                 p.Value.drafter.ToLower().Contains(searchString))
-                                                     .OrderByDescending(kvp => kvp.Value.priority)
-                                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                                     .ThenBy(kvp => kvp.Key.projectNumber)
-                                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            AllToolProjectsExpanders(allToolProjectsDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetToolProjectsNotStarted()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiToolProjectsNotStarted> eoiToolProjectsNotStarted = new List<EoiToolProjectsNotStarted>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiToolProjectsNotStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.Csr.StartsWith(usrName) && (p.Tablet == false || (p.Tablet == true && p.TabletCheckedBy.Length > 0))).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiToolProjectsNotStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.Tablet == false || (p.Tablet == true && p.TabletCheckedBy.Length > 0)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                toolProjectsNotStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiToolProjectsNotStarted project in eoiToolProjectsNotStarted)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    fontWeight = FontWeights.Normal;
-                    fontStyle = FontStyles.Normal;
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    toolProjectsNotStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiToolProjectsNotStarted.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindToolProjectsNotStarted()
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsNotStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsNotStarted");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            toolProjectsNotStartedDict =
-                toolProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                      p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                      p.Value.customerName.ToLower().Contains(searchString) ||
-                                                      p.Value.csr.ToLower().Contains(searchString))
-                                          .OrderByDescending(kvp => kvp.Value.priority)
-                                          .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                          .ThenBy(kvp => kvp.Key.projectNumber)
-                                          .ToDictionary(x => x.Key, x => x.Value);
-
-            ToolProjectsNotStartedExpanders(toolProjectsNotStartedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetToolProjectsStarted()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiToolProjectsStarted> eoiToolProjectsStarted = new List<EoiToolProjectsStarted>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiToolProjectsStarted = _nat02context.EoiToolProjectsStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiToolProjectsStarted = _nat02context.EoiToolProjectsStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                toolProjectsStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiToolProjectsStarted project in eoiToolProjectsStarted)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    fontWeight = FontWeights.Normal;
-                    fontStyle = FontStyles.Normal;
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    toolProjectsStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ProjectStartedTool, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiToolProjectsStarted.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindToolProjectsStarted()
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsStarted");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            toolProjectsStartedDict =
-                toolProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                   p.Value.customerName.ToLower().Contains(searchString) ||
-                                                   p.Value.csr.ToLower().Contains(searchString) ||
-                                                   p.Value.drafter.ToLower().Contains(searchString))
-                                       .OrderByDescending(kvp => kvp.Value.priority)
-                                       .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                       .ThenBy(kvp => kvp.Key.projectNumber)
-                                       .ToDictionary(x => x.Key, x => x.Value);
-
-            ToolProjectsStartedExpanders(toolProjectsStartedDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetToolProjectsDrawn()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiToolProjectsDrawn> eoiToolProjectsDrawn = new List<EoiToolProjectsDrawn>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    eoiToolProjectsDrawn = _nat02context.EoiToolProjectsDrawn.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiToolProjectsDrawn = _nat02context.EoiToolProjectsDrawn.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                toolProjectsDrawnDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiToolProjectsDrawn project in eoiToolProjectsDrawn)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    fontWeight = FontWeights.Normal;
-                    fontStyle = FontStyles.Normal;
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    toolProjectsDrawnDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ToolDrawnBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiToolProjectsDrawn.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindToolProjectsDrawn()
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsDrawn");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsDrawn");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            toolProjectsDrawnDict =
-                toolProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                 p.Value.customerName.ToLower().Contains(searchString) ||
-                                                 p.Value.csr.ToLower().Contains(searchString) ||
-                                                 p.Value.drafter.ToLower().Contains(searchString))
-                                     .OrderByDescending(kvp => kvp.Value.priority)
-                                     .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                     .ThenBy(kvp => kvp.Key.projectNumber)
-                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            ToolProjectsDrawnExpanders(toolProjectsDrawnDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-        private void GetToolProjectsOnHold()
-        {
-            try
-            {
-                using var _nat02context = new NAT02Context();
-                List<EoiProjectsOnHold> eoiToolProjectsOnHold = new List<EoiProjectsOnHold>();
-                if (User.Department == "Customer Service")
-                {
-                    string usrName = User.GetUserName().Split(' ')[0];
-                    if (usrName == "Gregory") { usrName = "Greg"; }
-                    if (usrName == "Nicholas") { usrName = "Nick"; }
-                    eoiToolProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Csr.StartsWith(usrName) && p.Tools == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                else
-                {
-                    eoiToolProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Tools == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
-                }
-                _nat02context.Dispose();
-
-                toolProjectsOnHoldDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
-
-                foreach (EoiProjectsOnHold project in eoiToolProjectsOnHold)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight fontWeight;
-                    FontStyle fontStyle;
-                    bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                    bool late = project.DueDate < DateTime.Now.Date;
-                    using var nat02context = new NAT02Context();
-                    nat02context.Dispose();
-
-                    fontWeight = FontWeights.Normal;
-                    fontStyle = FontStyles.Normal;
-
-                    if (priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                        fontStyle = FontStyles.Normal;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        fontWeight = FontWeights.Normal;
-                        fontStyle = FontStyles.Normal;
-                    }
-
-                    if (late && User.Department == "Engineering")
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        fontWeight = FontWeights.Bold;
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-                    toolProjectsOnHoldDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
-                }
-                eoiToolProjectsOnHold.Clear();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private void BindToolProjectsOnHold()
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsOnHold");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsOnHold");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            toolProjectsOnHoldDict =
-                toolProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.Value.customerName.ToLower().Contains(searchString) ||
-                                                  p.Value.csr.ToLower().Contains(searchString))
-                                      .OrderByDescending(kvp => kvp.Value.priority)
-                                      .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
-                                      .ThenBy(kvp => kvp.Key.projectNumber)
-                                      .ToDictionary(x => x.Key, x => x.Value);
-
-            ToolProjectsOnHoldExpanders(toolProjectsOnHoldDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
+            AllToolProjects = _allToolProjects;
         }
         private void GetDriveWorksQueue()
         {
             try
             {
                 using var _driveworkscontext = new DriveWorksContext();
-                List<QueueView> queueView = _driveworkscontext.QueueView.OrderBy(t => t.Priority).ThenBy(t => t.DateReleased).ToList();
+                _driveWorksQueue = _driveworkscontext.QueueView.OrderBy(t => t.Priority).ThenBy(t => t.DateReleased).ToList();
                 _driveworkscontext.Dispose();
-
-                driveWorksQueueDict = new Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)>();
-
-                foreach (QueueView queueItem in queueView)
-                {
-                    driveWorksQueueDict.Add(queueItem.TargetName, (queueItem.DisplayName, queueItem.Tags, queueItem.DateReleased.Value.ToShortTimeString(), queueItem.Priority));
-                }
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
             }
         }
         private void BindDriveWorksQueue()
         {
-            int i = User.VisiblePanels.IndexOf("DriveWorksQueue");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Collapsed;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "DriveWorksQueue");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
-            driveWorksQueueDict = driveWorksQueueDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                                                 p.Value.releasedBy.ToLower().Contains(searchString) ||
-                                                                 p.Value.tag.ToLower().Contains(searchString))
-                                                     .OrderBy(kvp => kvp.Value.priority)
-                                                     .ThenBy(kvp => kvp.Value.releaseTime)
-                                                     .ToDictionary(x => x.Key, x => x.Value);
-
-            DriveWorksQueueExpanders(driveWorksQueueDict);
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
+            DriveWorksQueue = _driveWorksQueue;
         }
         private void GetNatoliOrderList()
         {
-            try
+            using var _natbcContext = new NATBCContext();
+            string username = Environment.UserDomainName + "\\" + Environment.UserName;
+            List<NatoliOrderList> _nol = new List<NatoliOrderList>();
+            if (User.Department == "D1133")
             {
-                using var _natbcContext = new NATBCContext();
-                List<NatoliOrderList> natoliOrderList = new List<NatoliOrderList>();
-                string username = Environment.UserDomainName + "\\" + Environment.UserName;
-                if (User.Department == "D1133")
-                {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
-                }
-                else if (User.EmployeeCode == "E4408")
-                {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", @"NATOLI\dnelson").ToList();
-                    natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
-                }
-                else
-                {
-                    natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
-                    natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
-                }
-                _natbcContext.Dispose();
-
-                natoliOrderListDict = new Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)>();
-
-                foreach (NatoliOrderList order in natoliOrderList)
-                {
-                    int daysToShip = (order.ShipDate.Date - DateTime.Now.Date).Days;
-                    SolidColorBrush back;
-
-                    if (daysToShip < 0)
-                    {
-                        back = new SolidColorBrush(Colors.Red);
-                    }
-                    else if (daysToShip == 0)
-                    {
-                        back = new SolidColorBrush(Colors.Orange);
-                    }
-                    else if (daysToShip > 0 && daysToShip < 4)
-                    {
-                        back = new SolidColorBrush(Colors.Yellow);
-                    }
-                    else
-                    {
-                        back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
-                    }
-
-                    // Get repId from quote header
-                    OrderHeader orderHeader = _nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNo);
-                    using var _ = new NAT01Context();
-                    string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).UserAcctNo;
-                    _.Dispose();
-                    using var __ = new NECContext();
-                    string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
-                    __.Dispose();
-
-                    natoliOrderListDict.Add((order.OrderNo / 100).ToString(), (order.Customer, order.ShipDate, order.Rush, order.OnHold, order.RepInitials, repId, back.Color.ToString()));
-                }
-                natoliOrderList.Clear();
+                _nol = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
             }
-            catch (Exception ex)
+            else if (User.EmployeeCode == "E4408")
             {
-
+                _nol = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", @"NATOLI\dnelson").ToList();
+                _nol = _nol.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
             }
+            else
+            {
+                _nol = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
+                _nol = _nol.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+            }
+
+            using var _ = new NAT01Context();
+            _natoliOrderList.Clear();
+            foreach (NatoliOrderList nol in _nol)
+            {
+                // Get repId from quote header
+                OrderHeader orderHeader = _nat01context.OrderHeader.Single(o => o.OrderNo == nol.OrderNo);
+                
+                string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).UserAcctNo;
+                using var __ = new NECContext();
+                string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+
+                NatoliOrderListFinal nolf = new NatoliOrderListFinal()
+                {
+                    OrderNo = nol.OrderNo / 100,
+                    Customer = nol.Customer,
+                    ShipDate = nol.ShipDate,
+                    Rush = nol.Rush,
+                    OnHold = nol.OnHold,
+                    RepInitials = nol.RepInitials,
+                    RepId = repId
+                };
+                _natoliOrderList.Add(nolf);
+            }
+
+            _.Dispose();
+            _natbcContext.Dispose();
         }
         private void BindNatoliOrderList()
         {
-            int i = User.VisiblePanels.IndexOf("NatoliOrderList");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
-            {
-                moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
-
-                Button button = moduleHeader.Children.OfType<Button>().First();
-
-                button.Visibility = Visibility.Visible;
-
-                TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
-
-                textBox0.Visibility = Visibility.Collapsed;
-
-                TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
-
-                RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
-
-                textBox.TextChanged += NatoliOrderListSearchBox_TextChanged;
-
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
-
-                (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
-
-                BuildPanel(dockPanel, interiorStackPanel, "NatoliOrderList");
-            }
-
-            // Filter using search box so they don't lose a search just because of a refresh
-            var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
-            if (searchString.ToLower().StartsWith("rep:"))
-            {
-                searchString = searchString.Substring(4);
-                var _filtered =
-                natoliOrderListDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
-                                   .OrderBy(kvp => kvp.Value.shipDate)
-                                   .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                NatoliOrderListExpanders(_filtered);
-            }
-            else
-            {
-                var _filtered =
-                natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
-                                               p.Value.customerName.ToLower().Contains(searchString))
-                                   .OrderBy(kvp => kvp.Value.shipDate)
-                                   .ToDictionary(x => x.Key, x => x.Value);
-
-                // Remove/Add expanders based on filtering
-                NatoliOrderListExpanders(_filtered);
-            }
-
-            StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            ScrollViewer sv = sp.Parent as ScrollViewer;
-            if (sv.Visibility != Visibility.Visible)
-            {
-                sv.Visibility = Visibility.Visible;
-                Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
-                (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
-            }
-        }
-
-        /// <summary>
-        /// Removes all event handlers subscribed to the specified routed event from the specified element.
-        /// </summary>
-        /// <param name="element">The UI element on which the routed event is defined.</param>
-        /// <param name="routedEvent">The routed event for which to remove the event handlers.</param>
-        public static void RemoveRoutedEventHandlers(UIElement element, RoutedEvent routedEvent)
-        {
-            // Get the EventHandlersStore instance which holds event handlers for the specified element.
-            // The EventHandlersStore class is declared as internal.
-            var eventHandlersStoreProperty = typeof(UIElement).GetProperty(
-                "EventHandlersStore", BindingFlags.Instance | BindingFlags.NonPublic);
-            object eventHandlersStore = eventHandlersStoreProperty.GetValue(element, null);
-
-            if (eventHandlersStore == null) return;
-
-            // Invoke the GetRoutedEventHandlers method on the EventHandlersStore instance 
-            // for getting an array of the subscribed event handlers.
-            var getRoutedEventHandlers = eventHandlersStore.GetType().GetMethod(
-                "GetRoutedEventHandlers", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            var routedEventHandlers = (RoutedEventHandlerInfo[])getRoutedEventHandlers.Invoke(
-                eventHandlersStore, new object[] { routedEvent });
-
-            // Iteratively remove all routed event handlers from the element.
-            try
-            {
-                foreach (var routedEventHandler in routedEventHandlers)
-                    element.RemoveHandler(routedEvent, routedEventHandler.Handler);
-            }
-            catch
-            {
-
-            }
+            NatoliOrderList = _natoliOrderList;
         }
         #endregion
-
-        #region Expander Addition/Subtraction
-        private void BeingEnteredExpanders(Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("BeingEntered");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.Keys.ToList().IndexOf(dict.First(kvp => kvp.Key == order).Key);
-                Expander expander = CreateBeingEnteredExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key == double.Parse(_order)).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "BeingEntered").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
-        }
-        private void InTheOfficeExpanders(Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("InTheOffice");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreateInTheOfficeExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InTheOffice").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
-        }
-        private void QuotesNotConvertedExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("QuotesNotConverted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                               , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(q => (q.quoteNumber, (short)q.revNumber)).Except(quotes);
-            foreach ((double, short?) quote in newQuotes)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Expander expander = CreateQuotesNotConvertedExpander(dict.First(x => (x.Key.quoteNumber, (short)x.Key.revNumber) == (quote.Item1, quote.Item2)));
-                Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesNotConverted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void OrdersEnteredUnscannedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
-
-            // New style
-            //// Get main content control that houses all the rows
-            //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
-            //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
-
-            //// Get main content control children
-            //List <ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                                            .Children.OfType<ContentControl>().ToList();
-
-            //// See if there are any that need to be removed
-            //List<ContentControl> removeThese = new List<ContentControl>();
-            //foreach (ContentControl row in rows)
-            //{
-            //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
-            //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-            //    {
-            //        removeThese.Add(row);
-            //        continue;
-            //    }
-            //    Dispatcher.Invoke(() =>
-            //    {
-            //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
-            //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
-            //        {
-            //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
-            //        }
-            //    });
-
-            //}
-            //foreach (ContentControl row1 in removeThese) {
-            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                   .Children.Remove(row1); }
-
-            //// See if there are any that need to be added
-            //List<double> orders = new List<double>();
-            //foreach (ContentControl row in rows)
-            //{
-            //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
-            //}
-
-            //IEnumerable<double> newOrders = dict.Keys.Except(orders);
-
-            //foreach (double order in newOrders)
-            //{
-            //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-            //    ContentControl contentControl = new ContentControl()
-            //    {
-            //        Style = App.Current.Resources["OrdersEnteredUnscannedRows"] as Style
-            //    };
-
-            //    contentControl.ApplyTemplate();
-
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
-            //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
-            //    {
-            //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
-            //    }
-
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysIn.ToString();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
-            //    Dispatcher.Invoke(() =>
-            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                   .Children.Insert(index, contentControl));
-            //}
-
-            //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
-
-
-
-
-
-
-
-
-            // Old style
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreateEnteredUnscannedExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                {
-                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background));
-                    foreach (Label label in (expander.Header as Grid).Children.OfType<Label>())
-                    {
-                        label.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
-                    }
-                });
-
-            }
-            foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "EnteredUnscanned").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
-        }
-        private void OrdersInEngineeringUnprintedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("InEngineering");
-            // New style
-            //// Get main content control that houses all the rows
-            //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
-            //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
-
-            //// Get main content control children
-            //List<ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                                            .Children.OfType<ContentControl>().ToList();
-
-            //// See if there are any that need to be removed
-            //List<ContentControl> removeThese = new List<ContentControl>();
-            //foreach (ContentControl row in rows)
-            //{
-            //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
-            //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-            //    {
-            //        removeThese.Add(row);
-            //        continue;
-            //    }
-            //    Dispatcher.Invoke(() =>
-            //    {
-            //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
-            //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
-            //        {
-            //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
-            //        }
-            //    });
-
-            //}
-            //foreach (ContentControl row1 in removeThese)
-            //{
-            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                   .Children.Remove(row1);
-            //}
-
-            //// See if there are any that need to be added
-            //List<double> orders = new List<double>();
-            //foreach (ContentControl row in rows)
-            //{
-            //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
-            //}
-
-            //IEnumerable<double> newOrders = dict.Keys.Except(orders);
-
-            //foreach (double order in newOrders)
-            //{
-            //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-            //    ContentControl contentControl = new ContentControl()
-            //    {
-            //        Style = App.Current.Resources["OrdersInEngineeringRows"] as Style
-            //    };
-
-            //    contentControl.ApplyTemplate();
-
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
-            //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
-            //    {
-            //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
-            //    }
-
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "EmployeeTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.employeeName;
-            //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysInEng.ToString();
-            //    Dispatcher.Invoke(() =>
-            //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
-            //                                                                                   .Children.Insert(index, contentControl));
-            //}
-
-            //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
-            //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
-
-
-
-
-
-
-
-
-            // Old style
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreateInEngineeringUnprintedExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InEngineering").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> dict)
-        {
-            try
-            {
-                int i = User.VisiblePanels.IndexOf("QuotesToConvert");
-                DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-                Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-                StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-                IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
-                                                                                                                  short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-                Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> newQuotes = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
-
-                foreach (var quote in dict)
-                {
-                    if (!quotes.Any(q => q.Item1 == quote.Key.quoteNumber && q.Item2 == (short)quote.Key.revNumber))
-                    {
-                        // Add to newQuotes
-                        newQuotes.Add(quote.Key, quote.Value);
-                    }
-                }
-
-                newQuotes = newQuotes.OrderBy(kvp => kvp.Value.timeSubmitted).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-                //IEnumerable<(double, short)> newQuotes = dict.AsEnumerable().Select(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber)).Except(quotes)
-                //                                             .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
-                foreach (var quote in newQuotes)
-                {
-                    int index = dict.OrderBy(d => d.Value.timeSubmitted).ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
-                    Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
-                    Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-                }
-
-                List<Expander> removeThese = new List<Expander>();
-                foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-                {
-                    double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                    short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                    if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
-                    {
-                        removeThese.Add(expander);
-                        continue;
-                    }
-                    Dispatcher.Invoke(() =>
-                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
-                }
-                foreach (Expander expander1 in removeThese)
-                {
-                    interiorStackPanel.Children.Remove(expander1);
-                }
-                
-                if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-                {
-                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                    {
-                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                        AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                    }
-                }
-                else
-                {
-                    if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                    {
-                        Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                        headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                    }
-                }
-
-                dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
-                dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        private void OrdersReadyToPrintExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("ReadyToPrint");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreateReadyToPrintExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ReadyToPrint").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void OrdersPrintedInEngineeringExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("PrintedInEngineering");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
-
-            IEnumerable<double> newOrders = dict.Keys.Except(orders);
-            foreach (double order in newOrders)
-            {
-                int index = dict.OrderBy(o => o.Key).ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreatePrintedInEngineeringExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "PrintedInEngineering").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void AllTabletProjectsExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("AllTabletProjects");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateAllTabletProjectsExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                try
-                {
-                    Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-                }
-                catch
-                {
-
-                }
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                {
-                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict
-                                                                                   .First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.background));
-                    (expander.Header as Grid).Children[4].SetValue(ContentProperty, dict.First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.drafter);
-                });
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "AllTabletProjects").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void TabletProjectsNotStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsNotStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateTabletProjectsNotStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsNotStarted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void TabletProjectsStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateTabletProjectsStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsStarted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void TabletProjectsDrawnExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsDrawn");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateTabletProjectsDrawnExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsDrawn").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void TabletProjectsSubmittedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsSubmitted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateTabletProjectsSubmittedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsSubmitted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void TabletProjectsOnHoldExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("TabletProjectsOnHold");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateTabletProjectsOnHoldExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsOnHold").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void AllToolProjectsExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("AllToolProjects");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateAllToolProjectsExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                try
-                {
-                    Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                {
-                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict
-                                                                                   .First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.background));
-                    (expander.Header as Grid).Children[4].SetValue(ContentProperty, dict.First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.drafter);
-                });
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "AllToolProjects").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void ToolProjectsNotStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsNotStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateToolProjectsNotStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsNotStarted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void ToolProjectsStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsStarted");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateToolProjectsStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-            if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
-                }
-            }
-            else
-            {
-                if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
-                {
-                    Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
-                    headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
-                }
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsStarted").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void ToolProjectsDrawnExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsDrawn");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateToolProjectsDrawnExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsDrawn").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void ToolProjectsOnHoldExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("ToolProjectsOnHold");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
-                                                                                                          , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-            IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
-
-            foreach ((int, int?) project in newProjects)
-            {
-                int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Expander expander = CreateToolProjectsOnHoldExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-                int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
-                if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-                Dispatcher.Invoke(() =>
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsOnHold").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void DriveWorksQueueExpanders(Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("DriveWorksQueue");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<string> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => (e.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-
-            IEnumerable<string> newModels = dict.Keys.Except(orders);
-            foreach (string model in newModels)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == model));
-                Expander expander = CreateDriveWorksQueueExpander(dict.First(x => x.Key == model));
-                Dispatcher.Invoke(() =>
-                interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string modelName = ((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString();
-                if (!dict.Any(kvp => kvp.Key == modelName))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "DriveWorksQueue").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        private void NatoliOrderListExpanders(Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> dict)
-        {
-            int i = User.VisiblePanels.IndexOf("NatoliOrderList");
-            DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
-            Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
-            StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
-
-            IEnumerable<string> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => (e.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-
-            IEnumerable<string> newOrders = dict.Keys.Except(orders).OrderBy(o => dict.First(ol => ol.Key == o).Value.shipDate);
-            foreach (string order in newOrders)
-            {
-                int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
-                Expander expander = CreateNatoliOrderListExpander(dict.First(x => x.Key == order));
-                Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
-            }
-
-            List<Expander> removeThese = new List<Expander>();
-            foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
-            {
-                string order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString();
-                if (!dict.Any(kvp => kvp.Key == order))
-                {
-                    removeThese.Add(expander);
-                    continue;
-                }
-            }
-            foreach (Expander expander1 in removeThese)
-            {
-                interiorStackPanel.Children.Remove(expander1);
-            }
-
-            dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "NatoliOrderList").First().Value;
-            dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
-        }
-        #endregion
-
-        #region Expander Creation
-        private Expander CreateBeingEnteredExpander(KeyValuePair<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Value.quoteNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(30)), CreateLabel(kvp.Value.revNumber.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 3, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.numDaysToShip.ToString(), 0, 4, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black)
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrdersBeingEnteredExpander_MouseRightButtonUp;
-            return expander;
-        }
-        private Expander CreateInTheOfficeExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Value.daysInOffice.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(100)), CreateLabel(kvp.Value.employeeName, 0, 4, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.csr, 0, 5, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black)
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrdersInTheOfficeExpander_MouseRightButtonUp;
-
-            // expander.Expanded += InTheOfficeExpander_Expanded;
-            return expander;
-        }
-        private Expander CreateEnteredUnscannedExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysIn.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black)
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrdersEnteredUnscannedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += EnteredUnscannedExpander_Expanded;
-            return expander;
-        }
-        private Expander CreateInEngineeringUnprintedExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Top
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysInEng.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 4, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrdersInEngineeringUnprintedExpander_MouseRightButtonUp;
-
-            expander.Expanded += InEngineeringExpander_Expanded;
-            return expander;
-        }
-        private Expander CreateReadyToPrintExpander(KeyValuePair<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            try
-            {
-                AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 3, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(105)), CreateLabel(kvp.Value.checkedBy, 0, 4, fontWeight, foreground, null, 14, true));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrdersReadyToPrintExpander_MouseRightButtonUp;
-
-            //expander.Expanded += ReadyToPrintExpander_Expanded;
-            return expander;
-        }
-        private Expander CreatePrintedInEngineeringExpander(KeyValuePair<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 3, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.checkedBy, 0, 4, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += OrderPrintedInEngineeringDataGrid_MouseRightButtonUp;
-
-            //expander.Expanded += PrintedInEngineeringExpander_Expanded;
-            return expander;
-        }
-        private Expander CreateQuotesNotConvertedExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> kvp)
-        {
-            try
-            {
-                Grid grid = new Grid
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-
-                SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-                FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-                AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Key.quoteNumber.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName, 0, 2, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.csr, 0, 3, fontWeight, foreground, null, 14, true));
-
-                Expander expander = new Expander()
-                {
-                    IsExpanded = false,
-                    Header = grid,
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-                expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
-                expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
-                expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
-                expander.MouseRightButtonUp += QuotesNotConverted_MouseRightButtonUp;
-
-                expander.Expanded += QuotesNotConvertedExpander_Expanded;
-                return expander;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new Expander();
-            }
-        }
-        private Expander CreateQuotesToConvertExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> kvp)
-        {
-            try
-            {
-                Grid grid = new Grid
-                {
-                    HorizontalAlignment = HorizontalAlignment.Stretch
-                };
-
-                SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-                FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-                AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Key.quoteNumber.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName, 0, 2, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(150)), CreateLabel(kvp.Value.csr, 0, 3, fontWeight, foreground, null, 14, true));
-                AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Value.daysIn.ToString(), 0, 4, fontWeight, foreground, null, 14, true));
-
-                Expander expander = new Expander()
-                {
-                    IsExpanded = false,
-                    Header = grid,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    ToolTip = kvp.Value.shipment
-                };
-
-                expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-                expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
-                expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
-                expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
-                expander.MouseRightButtonUp += QuotesToConvert_MouseRightButtonUp;
-
-                //expander.Expanded += QuotesNotConvertedExpander_Expanded;
-                return expander;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return new Expander();
-            }
-        }
-        private Expander CreateAllTabletProjectsExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate.Trim(), 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += AllTabletProjectsDataGrid_MouseRightButtonUp;
-
-            expander.Expanded += AllTabletProjectsExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateTabletProjectsNotStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += TabletProjectNotStartedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += TabletProjectsNotStartedExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateTabletProjectsStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += TabletProjectStartedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += TabletProjectsStartedExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateTabletProjectsDrawnExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += TabletProjectDrawnDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += TabletProjectsDrawnExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateTabletProjectsSubmittedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += TabletProjectSubmittedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += TabletProjectsSubmittedExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateTabletProjectsOnHoldExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.priority.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += TabletProjectOnHoldDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += TabletProjectsOnHoldExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateAllToolProjectsExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate.Trim(), 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += AllToolProjectsDataGrid_MouseRightButtonUp;
-
-            expander.Expanded += AllToolProjectsExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateToolProjectsNotStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += ToolProjectNotStartedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += ToolProjectsNotStartedExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateToolProjectsStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += ToolProjectStartedDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += ToolProjectsStartedExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateToolProjectsDrawnExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += ToolProjectDrawnDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += ToolProjectsDrawnExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateToolProjectsOnHoldExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.priority.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += ToolProjectsOnHoldExpander_Expanded;
-            using var __nat02context = new NAT02Context();
-            if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
-            {
-                expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
-            }
-            __nat02context.Dispose();
-            return expander;
-        }
-        private Expander CreateDriveWorksQueueExpander(KeyValuePair<string, (string releasedBy, string tag, string releaseTime, int priority)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Key.Trim(), 0, 0, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(170)), CreateLabel(kvp.Value.releasedBy.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.tag.Trim(), 0, 2, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.releaseTime, 0, 3, FontWeights.Normal, null, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null,
-                Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF")
-            };
-
-            // expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
-            // expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
-            // expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
-            // expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
-
-            // expander.Expanded += DriveWorksQueueExpander_Expanded;
-            return expander;
-        }
-        private Expander CreateNatoliOrderListExpander(KeyValuePair<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.shipDate.ToShortDateString(), 0, 2, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Value.rush.Trim(), 0, 3, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Value.onHold, 0, 4, FontWeights.Normal, null, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Value.rep, 0, 5, FontWeights.Normal, null, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black),
-                ToolTip = null
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.Expanded += OrderListExpander_Expanded;
-            expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
-
-            return expander;
-        }
-        #endregion
-
         #region Module Search Box Text Changed Events
-        private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
-        }
-        private void OrdersInTheOfficeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+        //}
+        public void OrdersInTheOfficeSearchBox_TextChanged()
         {
             Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
         }
-        private void QuotesNotConvertedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
-        }
-        private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
-        }
-        private void OrdersInEngineeringUnprintedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
-        }
-        private void QuotesToConvertSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
-        }
-        private void OrdersReadyToPrintSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
-        }
-        private void OrdersPrintedInEngineeringSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
-        }
-        private void AllTabletProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
-        }
-        private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-        }
-        private void TabletProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-        }
-        private void TabletProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-        }
-        private void TabletProjectsSubmittedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-        }
-        private void TabletProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-        }
-        private void AllToolProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
-        }
-        private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-        }
-        private void ToolProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-        }
-        private void ToolProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-        }
-        private void ToolProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-        }
-        private void DriveWorksQueueSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
-        }
-        private void NatoliOrderListSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
-        }
-        #endregion
-
-        #region Expanders Expanding Events
-        private void OrderListExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander expander = (Expander)sender;
-            Grid grid = (Grid)expander.Header;
-            UIElementCollection collection = grid.Children;
-            string orderNumber = collection[0].GetValue(ContentProperty).ToString() + "00";
-            using var _natbcContext = new NATBCContext();
-
-            List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' AND TSA.DepartmentDesc <> 'Production Mgmnt' ORDER BY OrderLineNumber", orderNumber).ToList();
-            _natbcContext.Dispose();
-
-            StackPanel lineItemsStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-
-            foreach (LineItemLastScan lineItem in lines)
-            {
-                Grid lineItemGrid = new Grid();
-                // lineItemGrid.Width = expander.Width - 30 - 22;
-                lineItemGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.OrderDetailTypeDescription, 0, 0, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(string.Format("{0:d} {0:t}", lineItem.ScanTimeStamp), 0, 1, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.Department, 0, 2, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.Employee, 0, 3, FontWeights.Normal));
-
-                lineItemsStackPanel.Children.Add(lineItemGrid);
-            }
-
-            expander.Content = lineItemsStackPanel;
-        }
-        private void InEngineeringExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander expander = sender as Expander;
-            string orderNumber = (expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString() + "00";
-            using var _natbcContext = new NATBCContext();
-
-            List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' AND TSA.DepartmentDesc <> 'Production Mgmnt' ORDER BY OrderLineNumber", orderNumber).ToList();
-            _natbcContext.Dispose();
-
-            StackPanel lineItemsStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-
-            foreach (LineItemLastScan lineItem in lines)
-            {
-                Grid lineItemGrid = new Grid();
-                // lineItemGrid.Width = expander.Width - 30 - 22;
-                lineItemGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-                bool isChecked = selectedOrders.Any(o => o.Item1.Contains((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString())) ||
-                                 selectedLineItems.Any(o => o.Contains(orderNumber) && o.Substring(1, 2) == lineItem.OrderLineNumber.ToString("00"));
-
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(36)));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(18)), CreateCheckBox(0, 1, isChecked));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.OrderDetailTypeDescription, 0, 2, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", lineItem.ScanTimeStamp), 0, 3, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(lineItem.Department, 0, 4, FontWeights.Normal));
-                AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(150)), CreateLabel(lineItem.Employee, 0, 5, FontWeights.Normal));
-
-                lineItemGrid.Tag = lineItem.OrderLineNumber;
-
-                lineItemsStackPanel.Children.Add(lineItemGrid);
-            }
-
-            expander.Content = lineItemsStackPanel;
-        }
-        private void AllTabletProjectsExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander expander = sender as Expander;
-            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-            using var _projectsContext = new ProjectsContext();
-            ProjectSpecSheet eoiAllTabletProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
-
-            StackPanel stagesStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-
-            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
-            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.ProjectStartedTablet)) { stages.Add(("Started", eoiAllTabletProjectsView.ProjectStartedTablet,
-                _projectsContext.ProjectStartedTablet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted)); }
-            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletDrawnBy)) { stages.Add(("Drawn", eoiAllTabletProjectsView.TabletDrawnBy,
-                _projectsContext.TabletDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletSubmittedBy)) { stages.Add(("Submitted", eoiAllTabletProjectsView.TabletSubmittedBy,
-                _projectsContext.TabletSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletCheckedBy)) { stages.Add(("Checked", eoiAllTabletProjectsView.TabletCheckedBy,
-                _projectsContext.TabletCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            _projectsContext.Dispose();
-
-            foreach ((string, string, DateTime?) stage in stages)
-            {
-                Grid stagesGrid = new Grid();
-                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
-                
-                stagesStackPanel.Children.Add(stagesGrid);
-            }
-
-            expander.Content = stagesStackPanel;
-        }
-        private void AllToolProjectsExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander expander = sender as Expander;
-            int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-            using var _projectsContext = new ProjectsContext();
-            ProjectSpecSheet eoiAllToolProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
-
-            StackPanel stagesStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-
-            List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
-            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ProjectStartedTool))
-            {
-                stages.Add(("Started", eoiAllToolProjectsView.ProjectStartedTool,
-                    _projectsContext.ProjectStartedTool.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolDrawnBy))
-            {
-                stages.Add(("Drawn", eoiAllToolProjectsView.ToolDrawnBy,
-                    _projectsContext.ToolDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolSubmittedBy))
-            {
-                stages.Add(("Submitted", eoiAllToolProjectsView.ToolSubmittedBy,
-                    _projectsContext.ToolSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolCheckedBy))
-            {
-                stages.Add(("Checked", eoiAllToolProjectsView.ToolCheckedBy,
-                    _projectsContext.ToolCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
-            }
-            _projectsContext.Dispose();
-
-            foreach ((string, string, DateTime?) stage in stages)
-            {
-                Grid stagesGrid = new Grid();
-                stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
-                AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
-
-                stagesStackPanel.Children.Add(stagesGrid);
-            }
-
-            expander.Content = stagesStackPanel;
-        }
-        private void QuotesNotConvertedExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander expander = sender as Expander;
-            int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-            int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-
-            // Get the quote date/revision date
-            using var _nat01Context = new NAT01Context();
-            DateTime quoteDate = _nat01Context.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
-            _nat01Context.Dispose();
-
-            // Get the follow-up date(s)
-            using var _nat02Context = new NAT02Context();
-            List<DateTime?> followUps = _nat02Context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber)
-                                                                               .OrderBy(q => q.TimeSubmitted)
-                                                                               .Select(q => q.TimeSubmitted).ToList();
-            _nat02Context.Dispose();
-
-            StackPanel infoStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-
-            Grid infoGrid = new Grid();
-            infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
-            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("The last saved date of this quote is: " + quoteDate.ToShortDateString(), 0, 1, FontWeights.Normal));
-            infoStackPanel.Children.Add(infoGrid);
-
-            if (followUps.Any())
-            {
-                foreach (DateTime date in followUps)
-                {
-                    infoGrid = new Grid();
-                    infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-                    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
-                    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Follow-up was completed on: " + date.ToShortDateString(), 0, 1, FontWeights.Normal));
-                    infoStackPanel.Children.Add(infoGrid);
-                }
-            }
-
-            expander.Content = infoStackPanel;
-        }
+        //private void QuotesNotConvertedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+        //}
+        //private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+        //}
+        //private void OrdersInEngineeringUnprintedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+        //}
+        //private void QuotesToConvertSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+        //}
+        //private void OrdersReadyToPrintSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+        //}
+        //private void OrdersPrintedInEngineeringSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+        //}
+        //private void AllTabletProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsSubmittedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+        //}
+        //private void AllToolProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+        //}
+        //private void DriveWorksQueueSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+        //}
+        //private void NatoliOrderListSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+        //}
         #endregion
         #endregion
+
+        //#region ModuleBuilding
+
+        //#region Panel Construction
+        //private void ConstructModules()
+        //{
+        //    int panel_count = User.VisiblePanels.Count;
+        //    ColumnDefinition colDef;
+        //    RowDefinition rowDef;
+        //    int colCount = 0;
+        //    int rowCount = 0;
+
+        //    if (User.VisiblePanels.Count == 1)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else if (User.VisiblePanels.Count == 2)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else if (User.VisiblePanels.Count == 3)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else if (User.VisiblePanels.Count == 4)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else if (User.VisiblePanels.Count == 5)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else if (User.VisiblePanels.Count == 6)
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    else
+        //    {
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.ColumnDefinitions.Add(colDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //        rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //        MainGrid.RowDefinitions.Add(rowDef);
+        //    }
+
+        //    int i = 0;
+        //    colCount = MainGrid.ColumnDefinitions.Count;
+        //    int j = 0;
+        //    rowCount = MainGrid.RowDefinitions.Count;
+        //    int k = 0;
+        //    for (j = 0; j < colCount && k < User.VisiblePanels.Count; j++)
+        //    {
+        //        for (i = 0; i < rowCount && k < User.VisiblePanels.Count; i++)
+        //        {
+        //            Border border = new Border();
+        //            //ContentControl mainContentControl = new ContentControl();
+        //            //mainContentControl.Style = App.Current.Resources["Orders" + User.VisiblePanels[k] + "Grid"] as Style;
+        //            if (User.VisiblePanels.Count == 5 && k == 4)
+        //            {
+        //                border = ConstructBorder();
+        //                Grid.SetRow(border, i);
+        //                Grid.SetColumn(border, j);
+        //                border.SetValue(Grid.RowSpanProperty, 2);
+        //            }
+        //            else
+        //            {
+        //                border = ConstructBorder();
+        //                Grid.SetRow(border, i);
+        //                Grid.SetColumn(border, j);
+        //            }
+        //            try
+        //            {
+        //                MainGrid.Children.Add(border);
+        //                // MainGrid.Children.Add(mainContentControl);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message);
+        //            }
+        //            k++;
+        //        }
+        //    }
+        //}
+
+        //private Border ConstructBorder()
+        //{
+        //    Border border = new Border()
+        //    {
+        //        Name = "Border_" + MainGrid.Children.Count.ToString(),
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        BorderThickness = new Thickness(1)
+        //    };
+
+        //    // Count label
+        //    Label countLabel = new Label()
+        //    {
+        //        Name = "TotalLabel",
+        //        Content = "Total: ", // + interiorStackPanel.Children.Count,
+        //        HorizontalContentAlignment = HorizontalAlignment.Right,
+        //        VerticalAlignment = VerticalAlignment.Bottom,
+        //        BorderThickness = new Thickness(0, 1, 0, 0),
+        //        Height = 20,
+        //        Padding = new Thickness(0, 0, 5, 0),
+        //        Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFF0F0F0")),
+        //        BorderBrush = new SolidColorBrush(SystemColors.ControlDarkDarkColor)
+        //    };
+
+        //    DockPanel dockPanel = ConstructDockPanel("DockPanel_" + MainGrid.Children.Count.ToString(),
+        //                                             CreateHeaderGrid("A_" + MainGrid.Children.Count.ToString() + "_", "Test"),
+        //                                             ConstructScrollViewer(),
+        //                                             countLabel);
+        //    border.Child = dockPanel;
+
+        //    return border;
+        //}
+
+        //private static DockPanel ConstructDockPanel(string name, Grid headerGrid, ScrollViewer scrollViewer, Label countLabel)
+        //{
+        //    DockPanel dockPanel = new DockPanel()
+        //    {
+        //        Name = name,
+        //        LastChildFill = true
+        //    };
+
+        //    DockPanel.SetDock(headerGrid, Dock.Top);
+        //    dockPanel.Children.Add(headerGrid);
+
+        //    DockPanel.SetDock(countLabel, Dock.Bottom);
+        //    dockPanel.Children.Add(countLabel);
+
+        //    dockPanel.Children.Add(scrollViewer);
+        //    Image image = new Image()
+        //    {
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        HorizontalAlignment = HorizontalAlignment.Center,
+        //        MaxWidth = 200,
+        //        MinWidth = 100
+        //    };
+        //    var bitImage = new BitmapImage();
+        //    bitImage.BeginInit();
+        //    bitImage.UriSource = new Uri("NATOLI_ANIMATION.gif", UriKind.Relative);
+        //    bitImage.EndInit();
+        //    //AnimationBehavior.SetSourceUri(image, new Uri("NATOLI_ANIMATION.gif", UriKind.Relative));
+        //    ImageBehavior.SetAnimatedSource(image, bitImage);
+        //    dockPanel.Children.Add(image);
+
+        //    return dockPanel;
+        //}
+
+        //private Grid CreateHeaderGrid(string name, string title)
+        //{
+        //    Grid headerLabelGrid = new Grid()
+        //    {
+        //        Name = name + "HeaderLabelGrid",
+        //        Height = 31,
+        //        Background = new SolidColorBrush(SystemColors.GradientActiveCaptionColor),
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    TextBox daysTextBox = new TextBox()
+        //    {
+        //        Name = name + "DateTextBox",
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        VerticalContentAlignment = VerticalAlignment.Center,
+        //        Margin = new Thickness(1, 2, 0, 2),
+        //        Text = User.QuoteDays.ToString(),
+        //        Visibility = Visibility.Collapsed
+        //    };
+        //    daysTextBox.TextChanged += DaysTextBox_TextChanged;
+        //    daysTextBox.PreviewKeyUp += DaysTextBox_PreviewKeyUp;
+
+        //    Button csvCreationButton = new Button()
+        //    {
+        //        Name = name + "CSVButton",
+        //        Content = "Export to CSV",
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        VerticalContentAlignment = VerticalAlignment.Center,
+        //        Margin = new Thickness(2, 0, 0, 0),
+        //        Visibility = Visibility.Collapsed,
+        //        Style = App.Current.Resources["Button"] as Style
+        //    };
+        //    csvCreationButton.Click += CsvCreationButton_Click;
+
+        //    if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower().Contains("notconverted"))
+        //    {
+        //        daysTextBox.Visibility = Visibility.Visible;
+        //        csvCreationButton.Visibility = Visibility.Visible;
+        //    }
+
+        //    if (User.VisiblePanels[int.Parse(name.Substring(2, 1))].ToLower() == "natoliorderlist")
+        //    {
+        //        csvCreationButton.Visibility = Visibility.Visible;
+        //    }
+
+        //    // Header label
+        //    Label headerLabel = new Label()
+        //    {
+        //        Name = name + "Label",
+        //        Content = title,
+        //        HorizontalContentAlignment = HorizontalAlignment.Center,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        BorderThickness = new Thickness(0, 3, 0, 1),
+        //        Height = 31,
+        //        FontWeight = FontWeights.Bold,
+        //        FontSize = 14,
+        //        Padding = new Thickness(0),
+        //        Background = new SolidColorBrush(SystemColors.GradientActiveCaptionColor),
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    // Header search filter
+        //    TextBox searchBox = new TextBox()
+        //    {
+        //        Name = name + "SearchBox",
+        //        Style = App.Current.Resources["SearchBox"] as Style
+        //    };
+        //    //searchBox.PreviewKeyUp += SearchBox_PreviewKeyUp;
+        //    //searchBox.TextChanged += SearchBox_TextChanged;
+
+        //    Grid.SetColumn(daysTextBox, 0);
+        //    Grid.SetColumn(csvCreationButton, 1);
+        //    Grid.SetColumn(headerLabel, 0);
+        //    Grid.SetColumnSpan(headerLabel, 4);
+        //    Grid.SetColumn(searchBox, 3);
+        //    AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(30)));
+        //    AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(120)));
+        //    AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), headerLabel);
+        //    headerLabelGrid.Children.Add(daysTextBox);
+        //    headerLabelGrid.Children.Add(csvCreationButton);
+        //    AddColumn(headerLabelGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Auto)), searchBox);
+
+        //    return headerLabelGrid;
+        //}
+
+        //private void CsvCreationButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (((sender as Button).Parent as Grid).Children.OfType<Label>().First().Content.ToString().Contains("Quote"))
+        //    {
+        //        string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\QuoteList.csv";
+        //        using var stream = new System.IO.StreamWriter(filePath, false);
+
+        //        // Quote Number, Rev Number, Customer Name, Quote Date
+        //        // Get info from currently filtered list in QuotesNotConverted
+        //        var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+
+        //        // Write headers
+        //        stream.Write("Sales Rep ID,Quote Number,Rev Number,Customer Name,Quote Date\n");
+
+        //        foreach (Expander expander in expanders)
+        //        {
+        //            int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //            short revNumber = short.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+        //            string customerName = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString().Replace(',', '\0');
+        //            using var _ = new NAT01Context();
+        //            string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).UserAcctNo;
+        //            using var __ = new NECContext();
+        //            string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+        //            __.Dispose();
+        //            DateTime quoteDate = _.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+        //            _.Dispose();
+        //            stream.Write("{0},{1},{2},{3},{4}\n", repId, quoteNumber, revNumber, customerName, quoteDate.ToShortDateString());
+        //        }
+
+        //        stream.Flush();
+        //        stream.Dispose();
+        //    }
+        //    else
+        //    {
+        //        string filePath = @"C:\Users\" + User.DomainName + @"\Desktop\OrderList.csv";
+        //        using var stream = new System.IO.StreamWriter(filePath, false);
+
+        //        // Order Number, Quote Number, Rev Number, Customer Name, Order Date, Ship Date, PO Number
+        //        // Get info from currently filtered list in NatoliOrderList
+        //        var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
+
+        //        // Write headers
+        //        stream.Write("Order Number,Quote Number,Rev Number,Customer Name,Order Date,Ship Date,PO Number\n");
+
+        //        foreach (Expander expander in expanders)
+        //        {
+        //            int orderNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //            using var _ = new NAT01Context();
+        //            OrderHeader orderHeader = _.OrderHeader.Single(q => q.OrderNo == orderNumber * 100);
+        //            _.Dispose();
+        //            double? quoteNumber = orderHeader.QuoteNumber;
+        //            short? revNumber = orderHeader.QuoteRevNo;
+        //            string customerName = (expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString().Replace(',', '\0');
+        //            DateTime orderDate = (DateTime)orderHeader.OrderDate;
+        //            string shipDate = (expander.Header as Grid).Children[2].GetValue(ContentProperty).ToString();
+        //            string poNumber = orderHeader.Ponumber.Trim() + (string.IsNullOrEmpty(orderHeader.Poextension.Trim()) ? "" : '-' + orderHeader.Poextension);
+        //            stream.Write("{0},{1},{2},{3},{4},{5},{6}\n", orderNumber, quoteNumber, revNumber, customerName, orderDate.ToShortDateString(), shipDate, poNumber);
+        //        }
+
+        //        stream.Flush();
+        //        stream.Dispose();
+        //    }
+
+        //    MessageBox.Show("Your file is ready.");
+        //}
+
+        //private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+        //    TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
+        //    Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
+
+        //    if (textBox.Text.Length > 0)
+        //    {
+        //        image.Source = ((DrawingImage)App.Current.Resources["closeDrawingImage"]);
+        //        image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
+        //        textBlock.Visibility = Visibility.Collapsed;
+        //    }
+        //    else
+        //    {
+        //        image.Source = ((DrawingImage)App.Current.Resources["searchDrawingImage"]);
+        //        textBlock.Visibility = Visibility.Visible;
+        //    }
+        //}
+        //private void DaysTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    TextBox textBox = sender as TextBox;
+        //    using var _ = new NAT02Context();
+        //    try
+        //    {
+        //        EoiSettings eoiSettings = _.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
+        //        eoiSettings.QuoteDays = short.Parse(textBox.Text);
+        //        _.EoiSettings.Update(eoiSettings);
+        //        User.QuoteDays = eoiSettings.QuoteDays;
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //    finally
+        //    {
+        //        _.SaveChanges();
+        //        _.Dispose();
+        //    }
+        //}
+        //private void DaysTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        //{
+        //    MainRefresh();
+        //}
+
+        //private void SearchBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Escape)
+        //    {
+        //        TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
+        //        textBox.Text = "";
+        //    }
+        //}
+
+        //private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    Image image = sender as Image;
+        //    TextBox textBox = (image.Parent as Grid).Children.OfType<TextBox>().First();
+        //    textBox.Text = "";
+        //}
+
+        //private ScrollViewer ConstructScrollViewer()
+        //{
+        //    ScrollViewer scrollViewer = new ScrollViewer()
+        //    {
+        //        Style = FindResource("ScrollViewerStyle") as Style,
+        //        Visibility = Visibility.Collapsed
+        //    };
+
+        //    StackPanel stackPanel = new StackPanel();
+        //    scrollViewer.Content = stackPanel;
+
+        //    return scrollViewer;
+        //}
+
+        //// Build expanders
+        //private void ConstructExpanders()
+        //{
+        //    for (int i = 0; i < User.VisiblePanels.Count; i++)
+        //    {
+        //        DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel;
+
+        //        Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //        string panel = User.VisiblePanels[i];
+
+        //        BuildPanel(dockPanel, sp, panel);
+
+        //        Label countLabel = dockPanel.Children.OfType<Label>().First();
+
+        //        countLabel.Content = "Total: " + sp.Children.OfType<Expander>().Count();
+        //    }
+        //}
+
+        //private void BuildPanel(DockPanel dockPanel, StackPanel sp, string panel)
+        //{
+        //    Border headerBorder = new Border()
+        //    {
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        BorderThickness = new Thickness(0, 1, 0, 1)
+        //    };
+
+        //    Grid headerGrid = new Grid()
+        //    {
+        //        Background = MainMenu.Background,
+        //        Height = 30,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    // Check all checkbox
+        //    CheckBox checkBox = new CheckBox()
+        //    {
+        //        IsChecked = false,
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        Margin = new Thickness(20, 0, 0, 0),
+        //        LayoutTransform = new ScaleTransform(0.65, 0.65)
+        //    };
+        //    checkBox.Checked += CheckBox_Checked;
+        //    checkBox.Unchecked += CheckBox_Checked;
+
+        //    switch (panel)
+        //    {
+        //        case "BeingEntered":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(30)), CreateLabel("Rev", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 5, FontWeights.Normal));
+        //            // if (ordersBeingEnteredDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
+
+        //            break;
+        //        case "InTheOffice":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("In Office", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(100)), CreateLabel("Employee Name", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("CSR", 0, 6, FontWeights.Normal));
+        //            // if (ordersInTheOfficeDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
+
+        //            break;
+        //        case "QuotesNotConverted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
+        //            //if (quotesNotConvertedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesNotConvertedSearchBox_TextChanged;
+
+        //            break;
+        //        case "EnteredUnscanned":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Days In", 0, 4, FontWeights.Normal));
+        //            // if (ordersEnteredUnscannedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
+
+        //            break;
+        //        case "InEngineering":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("In Eng", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(125)), CreateLabel("Employee Name", 0, 5, FontWeights.Normal));
+        //            // if (ordersInEngineeringUnprintedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
+
+        //            break;
+        //        case "QuotesToConvert":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(65)), CreateLabel("Quote No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Rev No", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(148)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(50)), CreateLabel("Days In", 0, 5, FontWeights.Normal));
+        //            // if (quotesToConvertDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += QuotesToConvertSearchBox_TextChanged;
+
+        //            break;
+        //        case "ReadyToPrint":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(110)), CreateLabel("Checker", 0, 5, FontWeights.Normal));
+        //            // if (ordersReadyToPrintDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersReadyToPrintSearchBox_TextChanged;
+
+        //            break;
+        //        case "PrintedInEngineering":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order No", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(45)), CreateLabel("Ships", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Employee Name", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Checker", 0, 5, FontWeights.Normal));
+        //            // if (ordersPrintedInEngineeringDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += OrdersPrintedInEngineeringSearchBox_TextChanged;
+
+        //            break;
+        //        case "AllTabletProjects":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (allTabletProjectsDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllTabletProjectsSearchBox_TextChanged;
+
+        //            break;
+        //        case "TabletProjectsNotStarted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 5, FontWeights.Normal));
+        //            // if (tabletProjectsNotStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsNotStartedSearchBox_TextChanged;
+
+        //            break;
+        //        case "TabletProjectsStarted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (tabletProjectsStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsStartedSearchBox_TextChanged;
+
+        //            break;
+        //        case "TabletProjectsDrawn":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (tabletProjectsDrawnDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsDrawnSearchBox_TextChanged;
+
+        //            break;
+        //        case "TabletProjectsSubmitted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (tabletProjectsSubmittedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsSubmittedSearchBox_TextChanged;
+
+        //            break;
+        //        case "TabletProjectsOnHold":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (tabletProjectsOnHoldDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += TabletProjectsOnHoldSearchBox_TextChanged;
+
+        //            break;
+        //        case "AllToolProjects":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (allToolProjectsDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += AllToolProjectsSearchBox_TextChanged;
+
+        //            break;
+        //        case "ToolProjectsNotStarted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 5, FontWeights.Normal));
+        //            // if (toolProjectsNotStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsNotStartedSearchBox_TextChanged;
+
+        //            break;
+        //        case "ToolProjectsStarted":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (toolProjectsStartedDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsStartedSearchBox_TextChanged;
+
+        //            break;
+        //        case "ToolProjectsDrawn":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (toolProjectsDrawnDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsDrawnSearchBox_TextChanged;
+
+        //            break;
+        //        case "ToolProjectsOnHold":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("Proj #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rev", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer Name", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("CSR", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(70)), CreateLabel("Drafter", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Due Date", 0, 6, FontWeights.Normal));
+        //            // if (toolProjectsOnHoldDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += ToolProjectsOnHoldSearchBox_TextChanged;
+
+        //            break;
+        //        case "DriveWorksQueue":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Model Name", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(170)), CreateLabel("Released By", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel("Tag", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(85)), CreateLabel("Release Time", 0, 4, FontWeights.Normal));
+        //            // if (driveWorksQueueDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += DriveWorksQueueSearchBox_TextChanged;
+
+        //            break;
+        //        case "NatoliOrderList":
+        //            // AddColumn(headerGrid, CreateColumnDefinition(new GridLength(18))); // Blank space to account for expander arrow
+        //            Grid.SetColumn(checkBox, 0);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(36)), checkBox);
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(60)), CreateLabel("Order #", 0, 1, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Customer", 0, 2, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(80)), CreateLabel("Ship Date", 0, 3, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rush", 0, 4, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(55)), CreateLabel("On Hold", 0, 5, FontWeights.Normal));
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(40)), CreateLabel("Rep", 0, 6, FontWeights.Normal));
+        //            // if (natoliOrderListDict.Keys.Count > 16) { AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22))); } // Blank space to account for scrollbar
+
+        //            headerBorder.Child = headerGrid;
+        //            DockPanel.SetDock(headerBorder, Dock.Top);
+        //            dockPanel.Children.Insert(1, headerBorder);
+
+        //            dockPanel.Children.OfType<Grid>().First().Children.OfType<TextBox>().Single(t => t.Name.Contains("Search")).TextChanged += NatoliOrderListSearchBox_TextChanged;
+
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
+
+        //private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    CheckBox checkBox = sender as CheckBox;
+        //    var expanders = ((((checkBox.Parent as Grid).Parent as Border).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.OfType<Expander>();
+        //    foreach (Expander expander in expanders)
+        //    {
+        //        var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //        ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = checkBox.IsChecked;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="width"></param>
+        ///// <returns></returns>
+        //private ColumnDefinition CreateColumnDefinition(GridLength width)
+        //{
+        //    ColumnDefinition colDef = new ColumnDefinition();
+        //    try
+        //    {
+        //        colDef.Width = width;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    return colDef;
+        //}
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="content"></param>
+        ///// <param name="row"></param>
+        ///// <param name="column"></param>
+        ///// <returns></returns>
+        //private Label CreateLabel(string content, int row, int column, FontWeight weight, SolidColorBrush textColor = null, FontStyle? fontStyle = null, double fontSize = 12, bool addPadding = false)
+        //{
+        //    Label label = new Label();
+        //    try
+        //    {
+        //        label.Content = content;
+        //        label.HorizontalAlignment = HorizontalAlignment.Stretch;
+        //        label.HorizontalContentAlignment = HorizontalAlignment.Left;
+        //        label.VerticalAlignment = VerticalAlignment.Top;
+        //        label.VerticalContentAlignment = VerticalAlignment.Center;
+        //        label.FontSize = fontSize;
+        //        if (addPadding) { label.Padding = new Thickness(0, 0, 0, 0); }
+        //        if (!(textColor is null))
+        //        {
+        //            label.Foreground = textColor;
+        //        }
+        //        label.FontWeight = weight;
+        //        label.FontStyle = !(fontStyle is null) ? (FontStyle)fontStyle : FontStyles.Normal;
+        //        Grid.SetRow(label, row);
+        //        Grid.SetColumn(label, column);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    return label;
+        //}
+
+        //private CheckBox CreateCheckBox(int row, int column, bool isChecked)
+        //{
+        //    CheckBox checkBox = new CheckBox();
+        //    try
+        //    {
+        //        checkBox.IsChecked = isChecked;
+        //        checkBox.VerticalAlignment = VerticalAlignment.Center;
+        //        checkBox.LayoutTransform = new ScaleTransform(0.7, 0.7, 0, 0);
+        //        checkBox.Checked += LineItemCheckBox_Checked;
+        //        checkBox.Unchecked += LineItemCheckBox_Unchecked;
+        //        Grid.SetRow(checkBox, row);
+        //        Grid.SetColumn(checkBox, column);
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //    return checkBox;
+        //}
+
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="grid"></param>
+        ///// <param name="columnDefinition"></param>
+        ///// <param name="label"></param>
+        //private static void AddColumn(Grid grid, ColumnDefinition columnDefinition = null, UIElement element = null)
+        //{
+        //    try
+        //    {
+        //        grid.ColumnDefinitions.Add(columnDefinition);
+        //        if (!(element is null)) { grid.Children.Add(element); };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
+        //#endregion
+
+        ////Handle refreshes
+        //private void BindData(string timer)
+        //{
+        //    try
+        //    {
+        //        foreach (string panel in User.VisiblePanels)
+        //        {
+        //            switch (panel, timer)
+        //            {
+        //                case ("BeingEntered", "Main"):
+        //                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+        //                    break;
+        //                case ("InTheOffice", "Main"):
+        //                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+        //                    break;
+        //                case ("QuotesNotConverted", "QuotesNotConverted"):
+        //                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("EnteredUnscanned", "Main"):
+        //                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+        //                    break;
+        //                case ("InEngineering", "Main"):
+        //                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+        //                    break;
+        //                case ("QuotesToConvert", "Main"):
+        //                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+        //                    break;
+        //                case ("ReadyToPrint", "Main"):
+        //                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+        //                    break;
+        //                case ("PrintedInEngineering", "Main"):
+        //                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+        //                    break;
+        //                case ("AllTabletProjects", "Main"):
+        //                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+        //                    break;
+        //                case ("TabletProjectsNotStarted", "Main"):
+        //                    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("TabletProjectsStarted", "Main"):
+        //                    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("TabletProjectsDrawn", "Main"):
+        //                    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+        //                    break;
+        //                case ("TabletProjectsSubmitted", "Main"):
+        //                    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("TabletProjectsOnHold", "Main"):
+        //                    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+        //                    break;
+        //                case ("AllToolProjects", "Main"):
+        //                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+        //                    break;
+        //                case ("ToolProjectsNotStarted", "Main"):
+        //                    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("ToolProjectsStarted", "Main"):
+        //                    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+        //                    break;
+        //                case ("ToolProjectsDrawn", "Main"):
+        //                    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+        //                    break;
+        //                case ("ToolProjectsOnHold", "Main"):
+        //                    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+        //                    break;
+        //                case ("DriveWorksQueue", "Main"):
+        //                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+        //                    break;
+        //                case ("NatoliOrderList", "NatoliOrderList"):
+        //                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //}
+        //private static int GetNumberOfDays(string csr)
+        //{
+        //    switch (csr)
+        //    {
+        //        case "Alex Heimberger":
+        //            return 14;
+        //        case "Anna King":
+        //            return 7;
+        //        case "Bryan Foy":
+        //            return 7;
+        //        case "David Nelson":
+        //            return 7;
+        //        case "Gregory Lyle":
+        //            return 14;
+        //        case "Heather Lane":
+        //            return 7;
+        //        case "Humberto Zamora":
+        //            return 14;
+        //        case "James Willis":
+        //            return 14;
+        //        case "Miral Bouzitoun":
+        //            return 14;
+        //        case "Nicholas Tarte":
+        //            return 14;
+        //        case "Samantha Bowman":
+        //            return 7;
+        //        case "Tiffany Simonpietri":
+        //            return 7;
+        //        default:
+        //            return 14;
+        //    }
+        //}
+
+        //private static void OpenOrder_Click(object sender, RoutedEventArgs e)
+        //{
+
+        //}
+
+        //#region GetsAndBinds
+        //private void GetBeingEntered()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiOrdersBeingEnteredView> eoiOrdersBeingEnteredView = _nat02context.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
+
+        //        ordersBeingEnteredDict = new Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersBeingEnteredView order in eoiOrdersBeingEnteredView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
+        //                {
+        //                    back = new SolidColorBrush(Colors.DodgerBlue);
+        //                }
+        //                else
+        //                {
+        //                    back = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF");
+        //                }
+        //            }
+        //            ordersBeingEnteredDict.Add(order.OrderNo, ((double)order.QuoteNo, (short)order.Rev, order.CustomerName, (int)order.NumDaysToShip, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        dictList.Add(ordersBeingEnteredDict);
+        //        eoiOrdersBeingEnteredView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindBeingEntered()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("BeingEntered");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += OrdersBeingEnteredSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "BeingEntered");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    ordersBeingEnteredDict =
+        //        ordersBeingEnteredDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
+        //                                          o.Value.quoteNumber.ToString().Contains(searchString) ||
+        //                                          o.Value.customerName.ToLower().Contains(searchString))
+        //                              .OrderBy(kvp => kvp.Key)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //    BeingEnteredExpanders(ordersBeingEnteredDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetInTheOffice()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiOrdersInOfficeView> eoiOrdersInOfficeView = new List<EoiOrdersInOfficeView>();
+        //        if (User.Department == "Customer Service" && !(User.GetUserName().StartsWith("Tiffany") || User.GetUserName().StartsWith("James W")))
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiOrdersInOfficeView = _nat02context.EoiOrdersInOfficeView.Where(o => o.Csr.StartsWith(usrName)).OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiOrdersInOfficeView = _nat02context.EoiOrdersInOfficeView.OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
+        //        }
+
+        //        ordersInTheOfficeDict = new Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersInOfficeView order in eoiOrdersInOfficeView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            ordersInTheOfficeDict.Add((double)order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.DaysInOffice, order.EmployeeName, order.Csr, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+
+        //        eoiOrdersInOfficeView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
+        //private void BindInTheOffice()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("InTheOffice");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += OrdersInTheOfficeSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "InTheOffice");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    ordersInTheOfficeDict =
+        //        ordersInTheOfficeDict.Where(o => o.Key.ToString().ToLower().Contains(searchString) ||
+        //                                         o.Value.customerName.ToString().Contains(searchString) ||
+        //                                         o.Value.employeeName.ToLower().Contains(searchString) ||
+        //                                         o.Value.csr.ToLower().Contains(searchString))
+        //                             .OrderBy(kvp => kvp.Value.daysToShip)
+        //                             .ThenBy(kvp => kvp.Value.daysInOffice)
+        //                             .ThenBy(kvp => kvp.Key)
+        //                             .ToDictionary(x => x.Key, x => x.Value);
+
+        //    InTheOfficeExpanders(ordersInTheOfficeDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetEnteredUnscanned()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiOrdersEnteredAndUnscannedView> eoiOrdersEnteredAndUnscannedView = _nat02context.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+
+        //        ordersEnteredUnscannedDict = new Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersEnteredAndUnscannedView order in eoiOrdersEnteredAndUnscannedView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            bool doNotProcess = Convert.ToBoolean(order.DoNotProcess);
+        //            string[] errRes;
+        //            errRes = new string[2] { order.ProcessState,
+        //                                 order.TransitionName };
+
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            //else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
+        //            //{
+        //            //    fore = new SolidColorBrush(Colors.White);
+        //            //    weight = FontWeights.Normal;
+        //            //}
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else if (((errRes[0] == "Failed" && errRes[0] != "Complete") || errRes[1] == "NeedInfo") && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.DarkGray);
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            ordersEnteredUnscannedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.NumDaysIn, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiOrdersEnteredAndUnscannedView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindEnteredUnscanned()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += OrdersEnteredUnscannedSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "EnteredUnscanned");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    ordersEnteredUnscannedDict =
+        //        ordersEnteredUnscannedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                              p.Value.customerName.ToLower().Contains(searchString))
+        //                                  .OrderBy(kvp => kvp.Key)
+        //                                  .ToDictionary(x => x.Key, x => x.Value);
+
+        //    OrdersEnteredUnscannedExpanders(ordersEnteredUnscannedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetInEngineering()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        using var nat01context = new NAT01Context();
+        //        List<EoiOrdersInEngineeringUnprintedView> eoiOrdersInEngineeringUnprintedView = _nat02context.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
+
+        //        ordersInEngineeringUnprintedDict = new Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersInEngineeringUnprintedView order in eoiOrdersInEngineeringUnprintedView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                int count = _nat02context.MaMachineVariables.Where(o => o.WorkOrderNumber == order.OrderNo.ToString()).Count();
+        //                string machineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).FirstOrDefault().MachinePriceCode.Trim();
+        //                short machineNo = (short)nat01context.OrderDetails.First(o => o.OrderNo == order.OrderNo * 100).MachineNo;
+        //                string stockSize = machineNo == 0 ? "" : nat01context.MachineList.Single(m => m.MachineNo == machineNo).UpperSize;
+        //                bool rework = nat01context.OrderDetails.Any(o => o.Desc1.Contains("<REWORK>"));
+        //                var lineType = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100 && (o.DetailTypeId == "U" || o.DetailTypeId == "L" || o.DetailTypeId == "R")).ToList();
+        //                if (_nat02context.EoiOrdersBeingChecked.Where(o => o.OrderNo == order.OrderNo).Any())
+        //                {
+        //                    back = new SolidColorBrush(Colors.DodgerBlue);
+        //                }
+        //                else if (count == 0 && (machineType == "BB" ||
+        //                                       (machineType == "B" && !stockSize.StartsWith("3/4") && !stockSize.StartsWith("1-1/4")) ||
+        //                                        machineType == "D" && !stockSize.StartsWith("1-1/2")) && lineType.Count != 0)
+        //                {
+        //                    back = new SolidColorBrush(Colors.Red);
+        //                }
+        //                else if (_nat02context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == order.OrderNo).Any())
+        //                {
+        //                    back = new SolidColorBrush(Colors.GreenYellow);
+        //                }
+        //                else
+        //                {
+        //                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //                }
+        //            }
+        //            ordersInEngineeringUnprintedDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, (int)order.DaysInEng, order.EmployeeName, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiOrdersInEngineeringUnprintedView.Clear();
+        //        _nat02context.Dispose();
+        //        nat01context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindInEngineering()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("InEngineering");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += OrdersInEngineeringUnprintedSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "InEngineering");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    //ContentControl footerContentControl = (VisualTreeHelper.GetChild((MainGrid.Children[i] as ContentControl) as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                                                              .Children.OfType<ContentControl>().Last();
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    ordersInEngineeringUnprintedDict =
+        //        ordersInEngineeringUnprintedDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                                    p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                                    p.Value.employeeName.ToLower().Contains(searchString))
+        //                                        .OrderByDescending(kvp => kvp.Value.daysInEng)
+        //                                        .ThenBy(kvp => kvp.Value.daysToShip)
+        //                                        .ThenBy(kvp => kvp.Key)
+        //                                        .ToDictionary(x => x.Key, x => x.Value);
+
+        //    OrdersInEngineeringUnprintedExpanders(ordersInEngineeringUnprintedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetReadyToPrint()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        using var nat01context = new NAT01Context();
+        //        List<EoiOrdersReadyToPrintView> eoiOrdersReadyToPrintView = _nat02context.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
+
+        //        ordersReadyToPrintDict = new Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersReadyToPrintView order in eoiOrdersReadyToPrintView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                bool tm2 = Convert.ToBoolean(order.TM2);
+        //                bool tabletPrints = Convert.ToBoolean(order.Tablet);
+        //                bool toolPrints = Convert.ToBoolean(order.Tool);
+        //                List<OrderDetails> orderDetails;
+        //                OrderHeader orderHeader;
+        //                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
+        //                orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNo * 100);
+
+        //                if (tm2 || tabletPrints)
+        //                {
+        //                    foreach (OrderDetails od in orderDetails)
+        //                    {
+        //                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+        //                        {
+        //                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+        //                            if (!System.IO.File.Exists(path))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                if (tm2 || toolPrints)
+        //                {
+        //                    foreach (OrderDetails od in orderDetails)
+        //                    {
+        //                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+        //                        {
+        //                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+        //                            detailType = detailType == "MISC" ? "REJECT" : detailType;
+        //                            string international = orderHeader.UnitOfMeasure;
+        //                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + detailType + ".pdf";
+        //                            if (!System.IO.File.Exists(path))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                goto NotMissing;
+
+        //            Missing:;
+        //                if (User.Department == "Engineering")
+        //                {
+        //                    back = new SolidColorBrush(Colors.MediumPurple);
+        //                }
+        //                else
+        //                {
+        //                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //                }
+        //                goto Finished;
+
+        //            NotMissing:;
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+
+        //            Finished:;
+        //            }
+        //            ordersReadyToPrintDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, order.EmployeeName, order.CheckedBy, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiOrdersReadyToPrintView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindReadyToPrint()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ReadyToPrint");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "ReadyToPrint");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    ordersReadyToPrintDict =
+        //        ordersReadyToPrintDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                          p.Value.employeeName.ToLower().Contains(searchString) ||
+        //                                          p.Value.checkedBy.ToLower().Contains(searchString))
+        //                              .OrderBy(kvp => kvp.Key)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //    OrdersReadyToPrintExpanders(ordersReadyToPrintDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetPrintedInEngineering()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        using var nat01context = new NAT01Context();
+        //        List<EoiOrdersPrintedInEngineeringView> eoiOrdersPrintedInEngineeringView = _nat02context.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
+
+        //        ordersPrintedInEngineeringDict = new Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiOrdersPrintedInEngineeringView order in eoiOrdersPrintedInEngineeringView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (order.RushYorN == "Y" || order.PaidRushFee == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            if (_nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == order.OrderNo).Any())
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else
+        //            {
+        //                bool tm2 = Convert.ToBoolean(order.TM2);
+        //                bool tabletPrints = Convert.ToBoolean(order.Tablet);
+        //                bool toolPrints = Convert.ToBoolean(order.Tool);
+        //                List<OrderDetails> orderDetails;
+        //                List<OrderHeader> orderHeader;
+        //                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
+        //                orderHeader = nat01context.OrderHeader.Where(o => o.OrderNo == order.OrderNo * 100).ToList();
+
+        //                if (tm2 || tabletPrints)
+        //                {
+        //                    foreach (OrderDetails od in orderDetails)
+        //                    {
+        //                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+        //                        {
+        //                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+        //                            if (!System.IO.File.Exists(path))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                if (tm2 || toolPrints)
+        //                {
+        //                    foreach (OrderDetails od in orderDetails)
+        //                    {
+        //                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+        //                        {
+        //                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+        //                            detailType = detailType == "MISC" ? "REJECT" : detailType;
+        //                            string international = orderHeader.FirstOrDefault().UnitOfMeasure;
+        //                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNo + @"\" + detailType + ".pdf";
+        //                            if (!System.IO.File.Exists(path))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+        //                            {
+        //                                goto Missing;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                goto NotMissing;
+
+        //            Missing:;
+        //                if (User.Department == "Engineering")
+        //                {
+        //                    back = new SolidColorBrush(Colors.MediumPurple);
+        //                }
+        //                else
+        //                {
+        //                    back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //                }
+        //                goto Finished;
+
+        //            NotMissing:;
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+
+        //            Finished:;
+        //            }
+        //            ordersPrintedInEngineeringDict.Add(order.OrderNo, (order.CustomerName, (int)order.NumDaysToShip, order.EmployeeName, order.CheckedBy, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiOrdersPrintedInEngineeringView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindPrintedInEngineering()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("PrintedInEngineering");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "PrintedInEngineering");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    string column;
+        //    if (searchString.Contains(":"))
+        //    {
+        //        column = searchString.Split(':')[0];
+        //        searchString = searchString.Split(':')[1];
+        //        switch (column)
+        //        {
+        //            case "Order No":
+
+        //                ordersPrintedInEngineeringDict =
+        //                    ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString))
+        //                                                  .OrderBy(kvp => kvp.Key)
+        //                                                  .ToDictionary(x => x.Key, x => x.Value);
+        //                break;
+        //            case "Customer Name":
+
+        //                ordersPrintedInEngineeringDict =
+        //                    ordersPrintedInEngineeringDict.Where(p => p.Value.customerName.ToLower().Contains(searchString))
+        //                                                  .OrderBy(kvp => kvp.Key)
+        //                                                  .ToDictionary(x => x.Key, x => x.Value);
+        //                break;
+        //            case "Employee Name":
+
+        //                ordersPrintedInEngineeringDict =
+        //                    ordersPrintedInEngineeringDict.Where(p => p.Value.employeeName.ToLower().Contains(searchString))
+        //                                                  .OrderBy(kvp => kvp.Key)
+        //                                                  .ToDictionary(x => x.Key, x => x.Value);
+        //                break;
+        //            case "Checker":
+
+        //                ordersPrintedInEngineeringDict =
+        //                    ordersPrintedInEngineeringDict.Where(p => p.Value.checkedBy.ToLower().Contains(searchString))
+        //                                                  .OrderBy(kvp => kvp.Key)
+        //                                                  .ToDictionary(x => x.Key, x => x.Value);
+        //                break;
+        //            default:
+
+        //                ordersPrintedInEngineeringDict =
+        //                    ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                                              p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                                              p.Value.employeeName.ToLower().Contains(searchString) ||
+        //                                                              p.Value.checkedBy.ToLower().Contains(searchString))
+        //                                                  .OrderBy(kvp => kvp.Key)
+        //                                                  .ToDictionary(x => x.Key, x => x.Value);
+        //                break;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ordersPrintedInEngineeringDict =
+        //            ordersPrintedInEngineeringDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                                      p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                                      p.Value.employeeName.ToLower().Contains(searchString) ||
+        //                                                      p.Value.checkedBy.ToLower().Contains(searchString))
+        //                                          .OrderBy(kvp => kvp.Key)
+        //                                          .ToDictionary(x => x.Key, x => x.Value);
+        //    }
+
+        //    OrdersPrintedInEngineeringExpanders(ordersPrintedInEngineeringDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetQuotesNotConverted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+        //                                                 .Select(e => e.Subscribed);
+        //        string[] subs = subList.First().Split(',');
+        //        quotesCompletedChanged = (quotesCompletedCount != _nat02context.EoiQuotesOneWeekCompleted.Count());
+        //        quotesCompletedCount = _nat02context.EoiQuotesOneWeekCompleted.Count();
+        //        short quoteDays = User.QuoteDays;
+        //        List<EoiQuotesNotConvertedView> _eoiQuotesNotConvertedView = new List<EoiQuotesNotConvertedView>();
+        //        foreach (string sub in subs)
+        //        {
+        //            string s = sub;
+        //            if (sub == "Nicholas")
+        //            {
+        //                s = "Nick";
+        //            }
+        //            _eoiQuotesNotConvertedView.AddRange(_nat02context.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s) && q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).ToList());
+        //        }
+        //        List<EoiQuotesNotConvertedView> eoiQuotesNotConvertedView = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
+
+        //        quotesNotConvertedDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiQuotesNotConvertedView quote in eoiQuotesNotConvertedView)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (quote.RushYorN == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            using var _ = new NAT01Context();
+        //            string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).UserAcctNo;
+        //            _.Dispose();
+        //            using var __ = new NECContext();
+        //            string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+        //            __.Dispose();
+
+        //            int days = GetNumberOfDays(quote.Csr);
+
+        //            bool needs_followup_4 = DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
+        //                                    GetNumberOfDays(quote.Csr) == 14;
+        //            bool needs_followup = !_nat02context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
+        //                                  DateTime.Today.Subtract(_nat02context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&
+        //                                  !needs_followup_4;
+
+        //            if (needs_followup)
+        //            {
+        //                back = new SolidColorBrush(Colors.Pink);
+        //            }
+        //            else if (needs_followup_4)
+        //            {
+        //                back = new SolidColorBrush(Colors.OrangeRed);
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+
+        //            ExpanderAttributes expanderAttributes = new ExpanderAttributes(back, fore, weight);
+        //            quotesNotConvertedDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, repId, back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiQuotesNotConvertedView.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindQuotesNotConverted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("QuotesNotConverted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Visible;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Visible;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += QuotesNotConvertedSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "QuotesNotConverted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    if (searchString.ToLower().StartsWith("rep:"))
+        //    {
+        //        searchString = searchString.Substring(4);
+        //        var _filtered =
+        //        quotesNotConvertedDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+        //                              .OrderByDescending(kvp => kvp.Key.quoteNumber)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //        // Remove/Add expanders based on filtering
+        //        QuotesNotConvertedExpanders(_filtered);
+        //    }
+        //    else
+        //    {
+        //        var _filtered =
+        //        quotesNotConvertedDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                          p.Value.csr.ToLower().Contains(searchString))
+        //                              .OrderByDescending(kvp => kvp.Key.quoteNumber)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //        // Remove/Add expanders based on filtering
+        //        QuotesNotConvertedExpanders(_filtered);
+        //    }
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetQuotesToConvert()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiQuotesMarkedForConversionView> eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
+
+        //        IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+        //                                                .Select(e => e.Subscribed);
+        //        string[] subs = subList.First().Split(',');
+        //        List<EoiQuotesMarkedForConversionView> _eoiQuotesMarkedForConversion = new List<EoiQuotesMarkedForConversionView>();
+        //        foreach (string sub in subs)
+        //        {
+        //            string s = sub;
+        //            if (sub == "Nicholas")
+        //            {
+        //                s = "Nick";
+        //            }
+        //            _eoiQuotesMarkedForConversion.AddRange(_nat02context.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
+        //        }
+        //        eoiQuotesMarkedForConversion = _eoiQuotesMarkedForConversion;
+
+        //        quotesToConvertDict = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
+
+        //        foreach (EoiQuotesMarkedForConversionView quote in eoiQuotesMarkedForConversion)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight weight;
+        //            if (quote.Rush.Trim() == "Y")
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                weight = FontWeights.ExtraBold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                weight = FontWeights.Normal;
+        //            }
+
+        //            back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            using var nAT01Context = new NAT01Context();
+        //            string shipment = nAT01Context.QuoteHeader.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Shipment ?? "";
+        //            nAT01Context.Dispose();
+        //            quotesToConvertDict.Add((quote.QuoteNo, quote.QuoteRevNo), (quote.CustomerName, quote.Csr, (int)quote.DaysMarked, (DateTime)quote.TimeSubmitted, shipment.Trim(), back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
+        //        }
+        //        eoiQuotesMarkedForConversion.Clear();
+        //        _nat02context.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindQuotesToConvert()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("QuotesToConvert");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "QuotesToConvert");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    quotesToConvertDict =
+        //        quotesToConvertDict.Where(p => p.Key.quoteNumber.ToString().ToLower().Contains(searchString) ||
+        //                                       p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                       p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                       p.Value.csr.ToLower().Contains(searchString))
+        //                           .OrderBy(kvp => kvp.Key.quoteNumber)
+        //                           .ToDictionary(x => x.Key, x => x.Value);
+
+        //    QuotesToConvertExpanders(quotesToConvertDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetAllTabletProjects()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiAllTabletProjectsView> eoiAllTabletProjects = new List<EoiAllTabletProjectsView>();
+        //        IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+        //                                                             .Select(e => e.Subscribed);
+        //        eoiAllTabletProjects = new List<EoiAllTabletProjectsView>();
+        //        string[] subs = subList.First().Split(',');
+        //        List<EoiAllTabletProjectsView> projects = new List<EoiAllTabletProjectsView>();
+        //        foreach (string sub in subs)
+        //        {
+        //            string s = sub;
+        //            if (sub == "Gregory") { s = "Greg"; }
+        //            if (sub == "Nicholas") { s = "Nick"; }
+        //            eoiAllTabletProjects.AddRange(_nat02context.EoiAllTabletProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
+        //        }
+        //        if (_filterProjects)
+        //        {
+        //            eoiAllTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
+        //                                   !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+        //                                   .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiAllTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        allTabletProjectsDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiAllTabletProjectsView project in eoiAllTabletProjects)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            using var nat02context = new NAT02Context();
+        //            bool finished = nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
+        //            nat02context.Dispose();
+        //            bool onHold = project.HoldStatus == "On Hold";
+        //            bool submitted = project.TabletSubmittedBy is null ? false : project.TabletSubmittedBy.Length > 0;
+        //            bool drawn = project.TabletDrawnBy.Length > 0;
+        //            bool started = project.ProjectStartedTablet.Length > 0;
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (onHold)
+        //            {
+        //                back = new SolidColorBrush(Colors.MediumPurple);
+        //            }
+        //            else if (finished)
+        //            {
+        //                back = new SolidColorBrush(Colors.GreenYellow);
+        //            }
+        //            else if (submitted)
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF"));
+        //            }
+        //            else if (drawn)
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF"));
+        //            }
+        //            else if (started)
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            allTabletProjectsDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.Drafter, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        dictList.Add(allTabletProjectsDict);
+        //        eoiAllTabletProjects.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindAllTabletProjects()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("AllTabletProjects");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += AllTabletProjectsSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "AllTabletProjects");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    allTabletProjectsDict =
+        //        allTabletProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                         p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                         p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                         p.Value.csr.ToLower().Contains(searchString) ||
+        //                                         p.Value.drafter.ToLower().Contains(searchString))
+        //                             .OrderByDescending(kvp => kvp.Value.priority)
+        //                             .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                             .ThenBy(kvp => kvp.Key.projectNumber)
+        //                             .ToDictionary(x => x.Key, x => x.Value);
+
+        //    AllTabletProjectsExpanders(allTabletProjectsDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetTabletProjectsNotStarted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiTabletProjectsNotStarted> eoiTabletProjectsNotStarted = new List<EoiTabletProjectsNotStarted>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiTabletProjectsNotStarted = _nat02context.EoiTabletProjectsNotStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiTabletProjectsNotStarted = _nat02context.EoiTabletProjectsNotStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        tabletProjectsNotStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiTabletProjectsNotStarted project in eoiTabletProjectsNotStarted)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            tabletProjectsNotStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindTabletProjectsNotStarted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsNotStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsNotStarted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    tabletProjectsNotStartedDict =
+        //        tabletProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                                p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                                p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                                p.Value.csr.ToLower().Contains(searchString))
+        //                                    .OrderByDescending(kvp => kvp.Value.priority)
+        //                                    .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                                    .ThenBy(kvp => kvp.Key.projectNumber)
+        //                                    .ToDictionary(x => x.Key, x => x.Value);
+
+        //    TabletProjectsNotStartedExpanders(tabletProjectsNotStartedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetTabletProjectsStarted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiTabletProjectsStarted> eoiTabletProjectsStarted = new List<EoiTabletProjectsStarted>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiTabletProjectsStarted = _nat02context.EoiTabletProjectsStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiTabletProjectsStarted = _nat02context.EoiTabletProjectsStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        tabletProjectsStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiTabletProjectsStarted project in eoiTabletProjectsStarted)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            tabletProjectsStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ProjectStartedTablet, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiTabletProjectsStarted.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindTabletProjectsStarted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsStarted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    tabletProjectsStartedDict =
+        //        tabletProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                             p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                             p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                             p.Value.csr.ToLower().Contains(searchString) ||
+        //                                             p.Value.drafter.ToLower().Contains(searchString))
+        //                                 .OrderByDescending(kvp => kvp.Value.priority)
+        //                                 .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                                 .ThenBy(kvp => kvp.Key.projectNumber)
+        //                                 .ToDictionary(x => x.Key, x => x.Value);
+
+        //    TabletProjectsStartedExpanders(tabletProjectsStartedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetTabletProjectsDrawn()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiTabletProjectsDrawn> eoiTabletProjectsDrawn = new List<EoiTabletProjectsDrawn>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiTabletProjectsDrawn = _nat02context.EoiTabletProjectsDrawn.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiTabletProjectsDrawn = _nat02context.EoiTabletProjectsDrawn.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        tabletProjectsDrawnDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiTabletProjectsDrawn project in eoiTabletProjectsDrawn)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            tabletProjectsDrawnDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiTabletProjectsDrawn.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindTabletProjectsDrawn()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsDrawn");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsDrawn");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    tabletProjectsDrawnDict =
+        //        tabletProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                           p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                           p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                           p.Value.csr.ToLower().Contains(searchString) ||
+        //                                           p.Value.drafter.ToLower().Contains(searchString))
+        //                               .OrderByDescending(kvp => kvp.Value.priority)
+        //                               .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                               .ThenBy(kvp => kvp.Key.projectNumber)
+        //                               .ToDictionary(x => x.Key, x => x.Value);
+
+        //    TabletProjectsDrawnExpanders(tabletProjectsDrawnDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetTabletProjectsSubmitted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiTabletProjectsSubmitted> eoiTabletProjectsSubmitted = new List<EoiTabletProjectsSubmitted>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiTabletProjectsSubmitted = _nat02context.EoiTabletProjectsSubmitted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiTabletProjectsSubmitted = _nat02context.EoiTabletProjectsSubmitted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        tabletProjectsSubmittedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiTabletProjectsSubmitted project in eoiTabletProjectsSubmitted)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            tabletProjectsSubmittedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.TabletDrawnBy ?? project.ProjectStartedTablet ?? project.TabletSubmittedBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiTabletProjectsSubmitted.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindTabletProjectsSubmitted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsSubmitted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsSubmitted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    tabletProjectsSubmittedDict =
+        //        tabletProjectsSubmittedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                              p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                              p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                              p.Value.csr.ToLower().Contains(searchString) ||
+        //                                              p.Value.drafter.ToLower().Contains(searchString))
+        //                                  .OrderByDescending(kvp => kvp.Value.priority)
+        //                                  .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                                  .ThenBy(kvp => kvp.Key.projectNumber)
+        //                                  .ToDictionary(x => x.Key, x => x.Value);
+
+        //    TabletProjectsSubmittedExpanders(tabletProjectsSubmittedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetTabletProjectsOnHold()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiProjectsOnHold> eoiTabletProjectsOnHold = new List<EoiProjectsOnHold>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            if (usrName == "Gregory") { usrName = "Greg"; }
+        //            if (usrName == "Nicholas") { usrName = "Nick"; }
+        //            eoiTabletProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Csr.StartsWith(usrName) && p.Tablet == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiTabletProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Tablet == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        tabletProjectsOnHoldDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiProjectsOnHold project in eoiTabletProjectsOnHold)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            if ((bool)project.Tools)
+        //            {
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Oblique;
+        //            }
+        //            else
+        //            {
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            tabletProjectsOnHoldDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiTabletProjectsOnHold.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindTabletProjectsOnHold()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsOnHold");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "TabletProjectsOnHold");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    tabletProjectsOnHoldDict =
+        //        tabletProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                          p.Value.csr.ToLower().Contains(searchString))
+        //                              .OrderByDescending(kvp => kvp.Value.priority)
+        //                              .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                              .ThenBy(kvp => kvp.Key.projectNumber)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //    TabletProjectsOnHoldExpanders(tabletProjectsOnHoldDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetAllToolProjects()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiAllToolProjectsView> eoiAllToolProjects = new List<EoiAllToolProjectsView>();
+        //        try
+        //        {
+        //            IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+        //                                                             .Select(e => e.Subscribed);
+        //            string[] subs = subList.First().Split(',');
+        //            if (string.IsNullOrEmpty(subs[0]))
+        //            {
+        //                eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.ToList());
+        //            }
+        //            else
+        //            {
+        //                foreach (string sub in subs)
+        //                {
+        //                    string s = sub;
+        //                    if (sub == "Gregory") { s = "Greg"; }
+        //                    if (sub == "Nicholas") { s = "Nick"; }
+        //                    eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        if (_filterProjects)
+        //        {
+        //            eoiAllToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
+        //                                                                   !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber)).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        eoiAllToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+
+        //        allToolProjectsDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiAllToolProjectsView project in eoiAllToolProjects)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            using var nat02context = new NAT02Context();
+        //            bool finished = nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
+        //            nat02context.Dispose();
+        //            bool onHold = project.HoldStatus == "On Hold";
+        //            using var projectsContext = new ProjectsContext();
+        //            bool tablets = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Tablet &&
+        //                           string.IsNullOrEmpty(projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).TabletCheckedBy);
+        //            bool multitip = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).MultiTipSketch;
+        //            projectsContext.Dispose();
+        //            bool drawn = project.ToolDrawnBy.Length > 0;
+        //            bool started = project.ProjectStartedTool.Length > 0;
+
+        //            fontStyle = FontStyles.Normal;
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //            }
+
+        //            if (onHold)
+        //            {
+        //                back = new SolidColorBrush(Colors.MediumPurple);
+        //            }
+        //            else if (finished)
+        //            {
+        //                back = new SolidColorBrush(Colors.GreenYellow);
+        //            }
+        //            else if (drawn)
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3594FF"));
+        //            }
+        //            else if (started)
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF"));
+        //            }
+        //            else if (multitip)
+        //            {
+        //                back = new SolidColorBrush(Colors.Gray);
+        //            }
+        //            else if (tablets)
+        //            {
+        //                back = new SolidColorBrush(Colors.Yellow);
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            allToolProjectsDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.Drafter, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiAllToolProjects.Clear();
+        //    }
+        //    catch //(Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindAllToolProjects()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("AllToolProjects");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "AllToolProjects");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    allToolProjectsDict = allToolProjectsDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                                         p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                                         p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                                         p.Value.csr.ToLower().Contains(searchString) ||
+        //                                                         p.Value.drafter.ToLower().Contains(searchString))
+        //                                             .OrderByDescending(kvp => kvp.Value.priority)
+        //                                             .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                                             .ThenBy(kvp => kvp.Key.projectNumber)
+        //                                             .ToDictionary(x => x.Key, x => x.Value);
+
+        //    AllToolProjectsExpanders(allToolProjectsDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetToolProjectsNotStarted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiToolProjectsNotStarted> eoiToolProjectsNotStarted = new List<EoiToolProjectsNotStarted>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiToolProjectsNotStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.Csr.StartsWith(usrName) && (p.Tablet == false || (p.Tablet == true && p.TabletCheckedBy.Length > 0))).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiToolProjectsNotStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.Tablet == false || (p.Tablet == true && p.TabletCheckedBy.Length > 0)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        toolProjectsNotStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiToolProjectsNotStarted project in eoiToolProjectsNotStarted)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            fontWeight = FontWeights.Normal;
+        //            fontStyle = FontStyles.Normal;
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            toolProjectsNotStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiToolProjectsNotStarted.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindToolProjectsNotStarted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsNotStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsNotStarted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    toolProjectsNotStartedDict =
+        //        toolProjectsNotStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                              p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                              p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                              p.Value.csr.ToLower().Contains(searchString))
+        //                                  .OrderByDescending(kvp => kvp.Value.priority)
+        //                                  .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                                  .ThenBy(kvp => kvp.Key.projectNumber)
+        //                                  .ToDictionary(x => x.Key, x => x.Value);
+
+        //    ToolProjectsNotStartedExpanders(toolProjectsNotStartedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetToolProjectsStarted()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiToolProjectsStarted> eoiToolProjectsStarted = new List<EoiToolProjectsStarted>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiToolProjectsStarted = _nat02context.EoiToolProjectsStarted.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiToolProjectsStarted = _nat02context.EoiToolProjectsStarted.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        toolProjectsStartedDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiToolProjectsStarted project in eoiToolProjectsStarted)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            fontWeight = FontWeights.Normal;
+        //            fontStyle = FontStyles.Normal;
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            toolProjectsStartedDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ProjectStartedTool, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiToolProjectsStarted.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindToolProjectsStarted()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsStarted");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    toolProjectsStartedDict =
+        //        toolProjectsStartedDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                           p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                           p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                           p.Value.csr.ToLower().Contains(searchString) ||
+        //                                           p.Value.drafter.ToLower().Contains(searchString))
+        //                               .OrderByDescending(kvp => kvp.Value.priority)
+        //                               .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                               .ThenBy(kvp => kvp.Key.projectNumber)
+        //                               .ToDictionary(x => x.Key, x => x.Value);
+
+        //    ToolProjectsStartedExpanders(toolProjectsStartedDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetToolProjectsDrawn()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiToolProjectsDrawn> eoiToolProjectsDrawn = new List<EoiToolProjectsDrawn>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            eoiToolProjectsDrawn = _nat02context.EoiToolProjectsDrawn.Where(p => p.Csr.StartsWith(usrName)).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiToolProjectsDrawn = _nat02context.EoiToolProjectsDrawn.OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        toolProjectsDrawnDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiToolProjectsDrawn project in eoiToolProjectsDrawn)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            fontWeight = FontWeights.Normal;
+        //            fontStyle = FontStyles.Normal;
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            toolProjectsDrawnDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.ToolDrawnBy, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiToolProjectsDrawn.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindToolProjectsDrawn()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsDrawn");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsDrawn");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    toolProjectsDrawnDict =
+        //        toolProjectsDrawnDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                         p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                         p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                         p.Value.csr.ToLower().Contains(searchString) ||
+        //                                         p.Value.drafter.ToLower().Contains(searchString))
+        //                             .OrderByDescending(kvp => kvp.Value.priority)
+        //                             .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                             .ThenBy(kvp => kvp.Key.projectNumber)
+        //                             .ToDictionary(x => x.Key, x => x.Value);
+
+        //    ToolProjectsDrawnExpanders(toolProjectsDrawnDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetToolProjectsOnHold()
+        //{
+        //    try
+        //    {
+        //        using var _nat02context = new NAT02Context();
+        //        List<EoiProjectsOnHold> eoiToolProjectsOnHold = new List<EoiProjectsOnHold>();
+        //        if (User.Department == "Customer Service")
+        //        {
+        //            string usrName = User.GetUserName().Split(' ')[0];
+        //            if (usrName == "Gregory") { usrName = "Greg"; }
+        //            if (usrName == "Nicholas") { usrName = "Nick"; }
+        //            eoiToolProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Csr.StartsWith(usrName) && p.Tools == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        else
+        //        {
+        //            eoiToolProjectsOnHold = _nat02context.EoiProjectsOnHold.Where(p => p.Tools == true).OrderByDescending(t => t.MarkedPriority).ThenBy(t => t.DueDate).ToList();
+        //        }
+        //        _nat02context.Dispose();
+
+        //        toolProjectsOnHoldDict = new Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)>();
+
+        //        foreach (EoiProjectsOnHold project in eoiToolProjectsOnHold)
+        //        {
+        //            SolidColorBrush back;
+        //            SolidColorBrush fore;
+        //            FontWeight fontWeight;
+        //            FontStyle fontStyle;
+        //            bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+        //            bool late = project.DueDate < DateTime.Now.Date;
+        //            using var nat02context = new NAT02Context();
+        //            nat02context.Dispose();
+
+        //            fontWeight = FontWeights.Normal;
+        //            fontStyle = FontStyles.Normal;
+
+        //            if (priority)
+        //            {
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+        //            else
+        //            {
+        //                fore = new SolidColorBrush(Colors.Black);
+        //                fontWeight = FontWeights.Normal;
+        //                fontStyle = FontStyles.Normal;
+        //            }
+
+        //            if (late && User.Department == "Engineering")
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //                fore = new SolidColorBrush(Colors.DarkRed);
+        //                fontWeight = FontWeights.Bold;
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+        //            toolProjectsOnHoldDict.Add((project.ProjectNumber, project.RevisionNumber), (project.CustomerName, project.Csr, project.MarkedPriority, project.DueDate.Value.ToShortDateString(), back.Color.ToString(), fore.Color.ToString(), fontWeight.ToString(), fontStyle.ToString()));
+        //        }
+        //        eoiToolProjectsOnHold.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindToolProjectsOnHold()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsOnHold");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "ToolProjectsOnHold");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    toolProjectsOnHoldDict =
+        //        toolProjectsOnHoldDict.Where(p => p.Key.projectNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Key.revNumber.ToString().ToLower().Contains(searchString) ||
+        //                                          p.Value.customerName.ToLower().Contains(searchString) ||
+        //                                          p.Value.csr.ToLower().Contains(searchString))
+        //                              .OrderByDescending(kvp => kvp.Value.priority)
+        //                              .ThenBy(kvp => DateTime.Parse(kvp.Value.dueDate))
+        //                              .ThenBy(kvp => kvp.Key.projectNumber)
+        //                              .ToDictionary(x => x.Key, x => x.Value);
+
+        //    ToolProjectsOnHoldExpanders(toolProjectsOnHoldDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetDriveWorksQueue()
+        //{
+        //    try
+        //    {
+        //        using var _driveworkscontext = new DriveWorksContext();
+        //        List<QueueView> queueView = _driveworkscontext.QueueView.OrderBy(t => t.Priority).ThenBy(t => t.DateReleased).ToList();
+        //        _driveworkscontext.Dispose();
+
+        //        driveWorksQueueDict = new Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)>();
+
+        //        foreach (QueueView queueItem in queueView)
+        //        {
+        //            driveWorksQueueDict.Add(queueItem.TargetName, (queueItem.DisplayName, queueItem.Tags, queueItem.DateReleased.Value.ToShortTimeString(), queueItem.Priority));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindDriveWorksQueue()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("DriveWorksQueue");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "DriveWorksQueue");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (textBox.Template.FindName("SearchTextBox", textBox) as TextBox).Text.ToLower();
+        //    driveWorksQueueDict = driveWorksQueueDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                                         p.Value.releasedBy.ToLower().Contains(searchString) ||
+        //                                                         p.Value.tag.ToLower().Contains(searchString))
+        //                                             .OrderBy(kvp => kvp.Value.priority)
+        //                                             .ThenBy(kvp => kvp.Value.releaseTime)
+        //                                             .ToDictionary(x => x.Key, x => x.Value);
+
+        //    DriveWorksQueueExpanders(driveWorksQueueDict);
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+        //private void GetNatoliOrderList()
+        //{
+        //    try
+        //    {
+        //        using var _natbcContext = new NATBCContext();
+        //        List<NatoliOrderList> natoliOrderList = new List<NatoliOrderList>();
+        //        string username = Environment.UserDomainName + "\\" + Environment.UserName;
+        //        if (User.Department == "D1133")
+        //        {
+        //            natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+        //        }
+        //        else if (User.EmployeeCode == "E4408")
+        //        {
+        //            natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", @"NATOLI\dnelson").ToList();
+        //            natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+        //        }
+        //        else
+        //        {
+        //            natoliOrderList = _natbcContext.Set<NatoliOrderList>().FromSqlRaw("dbo.spNOL_Get_OrderList_ByUserID @NTUserID = {0}", username).ToList();
+        //            natoliOrderList = natoliOrderList.OrderBy(o => o.ShipDate).ThenBy(o => o.OrderNo).ToList();
+        //        }
+        //        _natbcContext.Dispose();
+
+        //        natoliOrderListDict = new Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)>();
+
+        //        foreach (NatoliOrderList order in natoliOrderList)
+        //        {
+        //            int daysToShip = (order.ShipDate.Date - DateTime.Now.Date).Days;
+        //            SolidColorBrush back;
+
+        //            if (daysToShip < 0)
+        //            {
+        //                back = new SolidColorBrush(Colors.Red);
+        //            }
+        //            else if (daysToShip == 0)
+        //            {
+        //                back = new SolidColorBrush(Colors.Orange);
+        //            }
+        //            else if (daysToShip > 0 && daysToShip < 4)
+        //            {
+        //                back = new SolidColorBrush(Colors.Yellow);
+        //            }
+        //            else
+        //            {
+        //                back = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF"));
+        //            }
+
+        //            // Get repId from quote header
+        //            OrderHeader orderHeader = _nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNo);
+        //            using var _ = new NAT01Context();
+        //            string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).UserAcctNo;
+        //            _.Dispose();
+        //            using var __ = new NECContext();
+        //            string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
+        //            __.Dispose();
+
+        //            natoliOrderListDict.Add((order.OrderNo / 100).ToString(), (order.Customer, order.ShipDate, order.Rush, order.OnHold, order.RepInitials, repId, back.Color.ToString()));
+        //        }
+        //        natoliOrderList.Clear();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //}
+        //private void BindNatoliOrderList()
+        //{
+        //    int i = User.VisiblePanels.IndexOf("NatoliOrderList");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    if (moduleHeader.Children.OfType<Label>().First().Content.ToString() != headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value)
+        //    {
+        //        moduleHeader.Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == User.VisiblePanels[i]).First().Value;
+
+        //        Button button = moduleHeader.Children.OfType<Button>().First();
+
+        //        button.Visibility = Visibility.Visible;
+
+        //        TextBox textBox0 = moduleHeader.Children.OfType<TextBox>().Single(t => !t.Name.Contains("Search"));
+
+        //        textBox0.Visibility = Visibility.Collapsed;
+
+        //        TextBox textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.Contains("Search"));
+
+        //        RemoveRoutedEventHandlers(textBox, TextBox.TextChangedEvent);
+
+        //        textBox.TextChanged += NatoliOrderListSearchBox_TextChanged;
+
+        //        dockPanel.Children.Remove(dockPanel.Children.OfType<Border>().First() as Border);
+
+        //        (dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel).Children.Clear();
+
+        //        BuildPanel(dockPanel, interiorStackPanel, "NatoliOrderList");
+        //    }
+
+        //    // Filter using search box so they don't lose a search just because of a refresh
+        //    var _textBox = moduleHeader.Children.OfType<TextBox>().Single(t => t.Name.EndsWith("SearchBox"));
+        //    string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        //    if (searchString.ToLower().StartsWith("rep:"))
+        //    {
+        //        searchString = searchString.Substring(4);
+        //        var _filtered =
+        //        natoliOrderListDict.Where(p => p.Value.repId.ToLower().Trim() == searchString)
+        //                           .OrderBy(kvp => kvp.Value.shipDate)
+        //                           .ToDictionary(x => x.Key, x => x.Value);
+
+        //        // Remove/Add expanders based on filtering
+        //        NatoliOrderListExpanders(_filtered);
+        //    }
+        //    else
+        //    {
+        //        var _filtered =
+        //        natoliOrderListDict.Where(p => p.Key.ToString().ToLower().Contains(searchString) ||
+        //                                       p.Value.customerName.ToLower().Contains(searchString))
+        //                           .OrderBy(kvp => kvp.Value.shipDate)
+        //                           .ToDictionary(x => x.Key, x => x.Value);
+
+        //        // Remove/Add expanders based on filtering
+        //        NatoliOrderListExpanders(_filtered);
+        //    }
+
+        //    StackPanel sp = (dockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    ScrollViewer sv = sp.Parent as ScrollViewer;
+        //    if (sv.Visibility != Visibility.Visible)
+        //    {
+        //        sv.Visibility = Visibility.Visible;
+        //        Image image = (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.OfType<Image>().First();
+        //        (MainGrid.Children.OfType<Border>().First(c => c.Name == "Border_" + i).Child as DockPanel).Children.Remove(image);
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Removes all event handlers subscribed to the specified routed event from the specified element.
+        ///// </summary>
+        ///// <param name="element">The UI element on which the routed event is defined.</param>
+        ///// <param name="routedEvent">The routed event for which to remove the event handlers.</param>
+        //public static void RemoveRoutedEventHandlers(UIElement element, RoutedEvent routedEvent)
+        //{
+        //    // Get the EventHandlersStore instance which holds event handlers for the specified element.
+        //    // The EventHandlersStore class is declared as internal.
+        //    var eventHandlersStoreProperty = typeof(UIElement).GetProperty(
+        //        "EventHandlersStore", BindingFlags.Instance | BindingFlags.NonPublic);
+        //    object eventHandlersStore = eventHandlersStoreProperty.GetValue(element, null);
+
+        //    if (eventHandlersStore == null) return;
+
+        //    // Invoke the GetRoutedEventHandlers method on the EventHandlersStore instance 
+        //    // for getting an array of the subscribed event handlers.
+        //    var getRoutedEventHandlers = eventHandlersStore.GetType().GetMethod(
+        //        "GetRoutedEventHandlers", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        //    var routedEventHandlers = (RoutedEventHandlerInfo[])getRoutedEventHandlers.Invoke(
+        //        eventHandlersStore, new object[] { routedEvent });
+
+        //    // Iteratively remove all routed event handlers from the element.
+        //    try
+        //    {
+        //        foreach (var routedEventHandler in routedEventHandlers)
+        //            element.RemoveHandler(routedEvent, routedEventHandler.Handler);
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //}
+        //#endregion
+
+        //#region Expander Addition/Subtraction
+        //private void BeingEnteredExpanders(Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("BeingEntered");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.Keys.ToList().IndexOf(dict.First(kvp => kvp.Key == order).Key);
+        //        Expander expander = CreateBeingEnteredExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key == double.Parse(_order)).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "BeingEntered").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
+        //}
+        //private void InTheOfficeExpanders(Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("InTheOffice");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreateInTheOfficeExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InTheOffice").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
+        //}
+        //private void QuotesNotConvertedExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("QuotesNotConverted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                       , short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(double, short)> newQuotes = dict.Keys.AsEnumerable().Select(q => (q.quoteNumber, (short)q.revNumber)).Except(quotes);
+        //    foreach ((double, short?) quote in newQuotes)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Item1, quote.Item2)));
+        //        Expander expander = CreateQuotesNotConvertedExpander(dict.First(x => (x.Key.quoteNumber, (short)x.Key.revNumber) == (quote.Item1, quote.Item2)));
+        //        Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 5)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesNotConverted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void OrdersEnteredUnscannedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("EnteredUnscanned");
+
+        //    // New style
+        //    //// Get main content control that houses all the rows
+        //    //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
+        //    //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
+
+        //    //// Get main content control children
+        //    //List <ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                                            .Children.OfType<ContentControl>().ToList();
+
+        //    //// See if there are any that need to be removed
+        //    //List<ContentControl> removeThese = new List<ContentControl>();
+        //    //foreach (ContentControl row in rows)
+        //    //{
+        //    //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+        //    //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //    //    {
+        //    //        removeThese.Add(row);
+        //    //        continue;
+        //    //    }
+        //    //    Dispatcher.Invoke(() =>
+        //    //    {
+        //    //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
+        //    //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+        //    //        {
+        //    //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
+        //    //        }
+        //    //    });
+
+        //    //}
+        //    //foreach (ContentControl row1 in removeThese) {
+        //    //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                   .Children.Remove(row1); }
+
+        //    //// See if there are any that need to be added
+        //    //List<double> orders = new List<double>();
+        //    //foreach (ContentControl row in rows)
+        //    //{
+        //    //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
+        //    //}
+
+        //    //IEnumerable<double> newOrders = dict.Keys.Except(orders);
+
+        //    //foreach (double order in newOrders)
+        //    //{
+        //    //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //    //    ContentControl contentControl = new ContentControl()
+        //    //    {
+        //    //        Style = App.Current.Resources["OrdersEnteredUnscannedRows"] as Style
+        //    //    };
+
+        //    //    contentControl.ApplyTemplate();
+
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
+        //    //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+        //    //    {
+        //    //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
+        //    //    }
+
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysIn.ToString();
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
+        //    //    Dispatcher.Invoke(() =>
+        //    //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                   .Children.Insert(index, contentControl));
+        //    //}
+
+        //    //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
+
+
+
+
+
+
+
+
+        //    // Old style
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreateEnteredUnscannedExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        {
+        //            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background));
+        //            foreach (Label label in (expander.Header as Grid).Children.OfType<Label>())
+        //            {
+        //                label.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
+        //            }
+        //        });
+
+        //    }
+        //    foreach (Expander expander1 in removeThese) { interiorStackPanel.Children.Remove(expander1); }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "EnteredUnscanned").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Count;
+        //}
+        //private void OrdersInEngineeringUnprintedExpanders(Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("InEngineering");
+        //    // New style
+        //    //// Get main content control that houses all the rows
+        //    //ContentControl mainContentControl = MainGrid.Children[i] as ContentControl;
+        //    //ContentControl footerContentControl = (VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ContentControl>().Last();
+
+        //    //// Get main content control children
+        //    //List<ContentControl> rows = ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                                            .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                                            .Children.OfType<ContentControl>().ToList();
+
+        //    //// See if there are any that need to be removed
+        //    //List<ContentControl> removeThese = new List<ContentControl>();
+        //    //foreach (ContentControl row in rows)
+        //    //{
+        //    //    string _order = (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text;
+        //    //    if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //    //    {
+        //    //        removeThese.Add(row);
+        //    //        continue;
+        //    //    }
+        //    //    Dispatcher.Invoke(() =>
+        //    //    {
+        //    //        (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == double.Parse(_order)).Value.background));
+        //    //        foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+        //    //        {
+        //    //            textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.foreground));
+        //    //        }
+        //    //    });
+
+        //    //}
+        //    //foreach (ContentControl row1 in removeThese)
+        //    //{
+        //    //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                   .Children.Remove(row1);
+        //    //}
+
+        //    //// See if there are any that need to be added
+        //    //List<double> orders = new List<double>();
+        //    //foreach (ContentControl row in rows)
+        //    //{
+        //    //    orders.Add(double.Parse((VisualTreeHelper.GetChild(row as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                           .Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text));
+        //    //}
+
+        //    //IEnumerable<double> newOrders = dict.Keys.Except(orders);
+
+        //    //foreach (double order in newOrders)
+        //    //{
+        //    //    int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //    //    ContentControl contentControl = new ContentControl()
+        //    //    {
+        //    //        Style = App.Current.Resources["OrdersInEngineeringRows"] as Style
+        //    //    };
+
+        //    //    contentControl.ApplyTemplate();
+
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.Single(kvp => kvp.Key == order).Value.background));
+        //    //    foreach (TextBlock textBlock in (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>())
+        //    //    {
+        //    //        textBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == order).Value.foreground));
+        //    //    }
+
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = (order).ToString();
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ShipDaysTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysToShip.ToString();
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.customerName;
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "EmployeeTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.employeeName;
+        //    //    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "DaysInEngTextBlock").Text = dict.Single(kvp => kvp.Key == order).Value.daysInEng.ToString();
+        //    //    Dispatcher.Invoke(() =>
+        //    //    ((VisualTreeHelper.GetChild(mainContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                   .Children.OfType<ScrollViewer>().First().Content as DockPanel)
+        //    //                                                                                   .Children.Insert(index, contentControl));
+        //    //}
+
+        //    //(VisualTreeHelper.GetChild(footerContentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First()
+        //    //                                                                                .Children.OfType<TextBlock>().First().Text = "Count: " + dict.Count.ToString();
+
+
+
+
+
+
+
+
+        //    // Old style
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreateInEngineeringUnprintedExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "InEngineering").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void QuotesToConvertExpanders(Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    try
+        //    {
+        //        int i = User.VisiblePanels.IndexOf("QuotesToConvert");
+        //        DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //        Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //        StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //        IEnumerable<(double, short)> quotes = interiorStackPanel.Children.OfType<Expander>().Select(e => (double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
+        //                                                                                                          short.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> newQuotes = new Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)>();
+
+        //        foreach (var quote in dict)
+        //        {
+        //            if (!quotes.Any(q => q.Item1 == quote.Key.quoteNumber && q.Item2 == (short)quote.Key.revNumber))
+        //            {
+        //                // Add to newQuotes
+        //                newQuotes.Add(quote.Key, quote.Value);
+        //            }
+        //        }
+
+        //        newQuotes = newQuotes.OrderBy(kvp => kvp.Value.timeSubmitted).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        //        //IEnumerable<(double, short)> newQuotes = dict.AsEnumerable().Select(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber)).Except(quotes)
+        //        //                                             .OrderBy(kvp => dict.First(q => q.Key.quoteNumber == kvp.Item1 && q.Key.revNumber == kvp.Item2).Value.timeSubmitted);
+        //        foreach (var quote in newQuotes)
+        //        {
+        //            int index = dict.OrderBy(d => d.Value.timeSubmitted).ToList().IndexOf(dict.First(o => (o.Key.quoteNumber, (short)o.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
+        //            Expander expander = CreateQuotesToConvertExpander(dict.First(q => (q.Key.quoteNumber, (short)q.Key.revNumber) == (quote.Key.quoteNumber, quote.Key.revNumber)));
+        //            Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //        }
+
+        //        List<Expander> removeThese = new List<Expander>();
+        //        foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //        {
+        //            double _quote = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //            short _rev = short.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //            if (!dict.Any(kvp => (kvp.Key.quoteNumber, (short)kvp.Key.revNumber) == (_quote, _rev)))
+        //            {
+        //                removeThese.Add(expander);
+        //                continue;
+        //            }
+        //            Dispatcher.Invoke(() =>
+        //            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_quote, _rev))).Value.background)));
+        //        }
+        //        foreach (Expander expander1 in removeThese)
+        //        {
+        //            interiorStackPanel.Children.Remove(expander1);
+        //        }
+
+        //        if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //        {
+        //            if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //            {
+        //                Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //                AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //            {
+        //                Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //                headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //            }
+        //        }
+
+        //        dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "QuotesToConvert").First().Value;
+        //        dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
+        //private void OrdersReadyToPrintExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ReadyToPrint");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreateReadyToPrintExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ReadyToPrint").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void OrdersPrintedInEngineeringExpanders(Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("PrintedInEngineering");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<double> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => double.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()));
+
+        //    IEnumerable<double> newOrders = dict.Keys.Except(orders);
+        //    foreach (double order in newOrders)
+        //    {
+        //        int index = dict.OrderBy(o => o.Key).ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreatePrintedInEngineeringExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string _order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
+        //        if (!dict.Any(kvp => kvp.Key == double.Parse(_order)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key == double.Parse(_order)).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 6)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "PrintedInEngineering").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void AllTabletProjectsExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("AllTabletProjects");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateAllTabletProjectsExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        try
+        //        {
+        //            Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //        }
+        //        catch
+        //        {
+
+        //        }
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        {
+        //            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict
+        //                                                                           .First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.background));
+        //            (expander.Header as Grid).Children[4].SetValue(ContentProperty, dict.First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.drafter);
+        //        });
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "AllTabletProjects").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void TabletProjectsNotStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsNotStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateTabletProjectsNotStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsNotStarted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void TabletProjectsStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateTabletProjectsStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsStarted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void TabletProjectsDrawnExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsDrawn");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateTabletProjectsDrawnExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsDrawn").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void TabletProjectsSubmittedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsSubmitted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateTabletProjectsSubmittedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsSubmitted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void TabletProjectsOnHoldExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("TabletProjectsOnHold");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateTabletProjectsOnHoldExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "TabletProjectsOnHold").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void AllToolProjectsExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("AllToolProjects");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateAllToolProjectsExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        try
+        //        {
+        //            Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        {
+        //            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict
+        //                                                                           .First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.background));
+        //            (expander.Header as Grid).Children[4].SetValue(ContentProperty, dict.First(o => (o.Key.projectNumber, o.Key.revNumber) == (_projectNumber, _rev)).Value.drafter);
+        //        });
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "AllToolProjects").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void ToolProjectsNotStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsNotStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateToolProjectsNotStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsNotStarted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void ToolProjectsStartedExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsStarted");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateToolProjectsStartedExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+        //    if ((interiorStackPanel.Parent as ScrollViewer).ComputedVerticalScrollBarVisibility == Visibility.Visible)
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 7)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            AddColumn(headerGrid, CreateColumnDefinition(new GridLength(22)));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if ((dockPanel.Children.OfType<Border>().First().Child as Grid).ColumnDefinitions.Count == 8)
+        //        {
+        //            Grid headerGrid = dockPanel.Children.OfType<Border>().First().Child as Grid;
+        //            headerGrid.ColumnDefinitions.RemoveAt(headerGrid.ColumnDefinitions.Count - 1);
+        //        }
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsStarted").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void ToolProjectsDrawnExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsDrawn");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateToolProjectsDrawnExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsDrawn").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void ToolProjectsOnHoldExpanders(Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("ToolProjectsOnHold");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<(int, int)> projects = interiorStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString())
+        //                                                                                                  , int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
+
+        //    IEnumerable<(int, int)> newProjects = dict.Keys.AsEnumerable().Select(o => (o.projectNumber, (int)o.revNumber)).Except(projects);
+
+        //    foreach ((int, int?) project in newProjects)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Expander expander = CreateToolProjectsOnHoldExpander(dict.First(p => (p.Key.projectNumber, (int)p.Key.revNumber) == (project.Item1, project.Item2)));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        int _projectNumber = int.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //        int _rev = int.Parse(((Grid)expander.Header).Children[1].GetValue(ContentProperty).ToString());
+        //        if (!dict.Any(kvp => (kvp.Key.projectNumber, (int)kvp.Key.revNumber) == (_projectNumber, _rev)))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //        Dispatcher.Invoke(() =>
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(o => o.Key.Equals((_projectNumber, _rev))).Value.background)));
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "ToolProjectsOnHold").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void DriveWorksQueueExpanders(Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("DriveWorksQueue");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<string> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => (e.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+
+        //    IEnumerable<string> newModels = dict.Keys.Except(orders);
+        //    foreach (string model in newModels)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == model));
+        //        Expander expander = CreateDriveWorksQueueExpander(dict.First(x => x.Key == model));
+        //        Dispatcher.Invoke(() =>
+        //        interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string modelName = ((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString();
+        //        if (!dict.Any(kvp => kvp.Key == modelName))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "DriveWorksQueue").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //private void NatoliOrderListExpanders(Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> dict)
+        //{
+        //    int i = User.VisiblePanels.IndexOf("NatoliOrderList");
+        //    DockPanel dockPanel = MainGrid.Children.OfType<Border>().First(p => p.Name.StartsWith("Border_" + i)).Child as DockPanel;
+        //    Grid moduleHeader = dockPanel.Children.OfType<Grid>().First();
+        //    StackPanel interiorStackPanel = dockPanel.Children.OfType<ScrollViewer>().First().Content as StackPanel;
+
+        //    IEnumerable<string> orders = interiorStackPanel.Children.OfType<Expander>().Select(e => (e.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+
+        //    IEnumerable<string> newOrders = dict.Keys.Except(orders).OrderBy(o => dict.First(ol => ol.Key == o).Value.shipDate);
+        //    foreach (string order in newOrders)
+        //    {
+        //        int index = dict.ToList().IndexOf(dict.First(o => o.Key == order));
+        //        Expander expander = CreateNatoliOrderListExpander(dict.First(x => x.Key == order));
+        //        Dispatcher.Invoke(() => interiorStackPanel.Children.Insert(index, expander));
+        //    }
+
+        //    List<Expander> removeThese = new List<Expander>();
+        //    foreach (Expander expander in interiorStackPanel.Children.OfType<Expander>())
+        //    {
+        //        string order = ((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString();
+        //        if (!dict.Any(kvp => kvp.Key == order))
+        //        {
+        //            removeThese.Add(expander);
+        //            continue;
+        //        }
+        //    }
+        //    foreach (Expander expander1 in removeThese)
+        //    {
+        //        interiorStackPanel.Children.Remove(expander1);
+        //    }
+
+        //    dockPanel.Children.OfType<Grid>().First().Children.OfType<Label>().First().Content = headers.Where(kvp => kvp.Key == "NatoliOrderList").First().Value;
+        //    dockPanel.Children.OfType<Label>().First(l => l.Name == "TotalLabel").Content = "Total: " + dict.Keys.Count;
+        //}
+        //#endregion
+
+        //#region Expander Creation
+        //private Expander CreateBeingEnteredExpander(KeyValuePair<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Value.quoteNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(30)), CreateLabel(kvp.Value.revNumber.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 3, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.numDaysToShip.ToString(), 0, 4, fontWeight, foreground, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black)
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrdersBeingEnteredExpander_MouseRightButtonUp;
+        //    return expander;
+        //}
+        //private Expander CreateInTheOfficeExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        VerticalAlignment = VerticalAlignment.Top
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Value.daysInOffice.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(100)), CreateLabel(kvp.Value.employeeName, 0, 4, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.csr, 0, 5, fontWeight, foreground, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black)
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrdersInTheOfficeExpander_MouseRightButtonUp;
+
+        //    // expander.Expanded += InTheOfficeExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreateEnteredUnscannedExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysIn.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black)
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrdersEnteredUnscannedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += EnteredUnscannedExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreateInEngineeringUnprintedExpander(KeyValuePair<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        VerticalAlignment = VerticalAlignment.Top
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysInEng.ToString(), 0, 3, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 4, fontWeight, foreground, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrdersInEngineeringUnprintedExpander_MouseRightButtonUp;
+
+        //    expander.Expanded += InEngineeringExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreateReadyToPrintExpander(KeyValuePair<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    try
+        //    {
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 3, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(105)), CreateLabel(kvp.Value.checkedBy, 0, 4, fontWeight, foreground, null, 14, true));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrdersReadyToPrintExpander_MouseRightButtonUp;
+
+        //    //expander.Expanded += ReadyToPrintExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreatePrintedInEngineeringExpander(KeyValuePair<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Value.daysToShip.ToString(), 0, 2, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.employeeName, 0, 3, fontWeight, foreground, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.checkedBy, 0, 4, fontWeight, foreground, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += OrderPrintedInEngineeringDataGrid_MouseRightButtonUp;
+
+        //    //expander.Expanded += PrintedInEngineeringExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreateQuotesNotConvertedExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    try
+        //    {
+        //        Grid grid = new Grid
+        //        {
+        //            HorizontalAlignment = HorizontalAlignment.Stretch
+        //        };
+
+        //        SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //        FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Key.quoteNumber.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName, 0, 2, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.csr, 0, 3, fontWeight, foreground, null, 14, true));
+
+        //        Expander expander = new Expander()
+        //        {
+        //            IsExpanded = false,
+        //            Header = grid,
+        //            HorizontalAlignment = HorizontalAlignment.Stretch
+        //        };
+
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //        expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
+        //        expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
+        //        expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
+        //        expander.MouseRightButtonUp += QuotesNotConverted_MouseRightButtonUp;
+
+        //        expander.Expanded += QuotesNotConvertedExpander_Expanded;
+        //        return expander;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        return new Expander();
+        //    }
+        //}
+        //private Expander CreateQuotesToConvertExpander(KeyValuePair<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> kvp)
+        //{
+        //    try
+        //    {
+        //        Grid grid = new Grid
+        //        {
+        //            HorizontalAlignment = HorizontalAlignment.Stretch
+        //        };
+
+        //        SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //        FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(65)), CreateLabel(kvp.Key.quoteNumber.ToString(), 0, 0, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName, 0, 2, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(150)), CreateLabel(kvp.Value.csr, 0, 3, fontWeight, foreground, null, 14, true));
+        //        AddColumn(grid, CreateColumnDefinition(new GridLength(50)), CreateLabel(kvp.Value.daysIn.ToString(), 0, 4, fontWeight, foreground, null, 14, true));
+
+        //        Expander expander = new Expander()
+        //        {
+        //            IsExpanded = false,
+        //            Header = grid,
+        //            HorizontalAlignment = HorizontalAlignment.Stretch,
+        //            ToolTip = kvp.Value.shipment
+        //        };
+
+        //        expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //        expander.MouseDoubleClick += QuoteDataGrid_MouseDoubleClick;
+        //        expander.PreviewKeyDown += QuoteDataGrid_PreviewKeyDown;
+        //        expander.PreviewMouseDown += QuoteDataGrid_PreviewMouseDown;
+        //        expander.MouseRightButtonUp += QuotesToConvert_MouseRightButtonUp;
+
+        //        //expander.Expanded += QuotesNotConvertedExpander_Expanded;
+        //        return expander;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //        return new Expander();
+        //    }
+        //}
+        //private Expander CreateAllTabletProjectsExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate.Trim(), 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += AllTabletProjectsDataGrid_MouseRightButtonUp;
+
+        //    expander.Expanded += AllTabletProjectsExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateTabletProjectsNotStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += TabletProjectNotStartedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += TabletProjectsNotStartedExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateTabletProjectsStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += TabletProjectStartedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += TabletProjectsStartedExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateTabletProjectsDrawnExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += TabletProjectDrawnDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += TabletProjectsDrawnExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateTabletProjectsSubmittedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += TabletProjectSubmittedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += TabletProjectsSubmittedExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateTabletProjectsOnHoldExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.priority.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += TabletProjectOnHoldDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += TabletProjectsOnHoldExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateAllToolProjectsExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate.Trim(), 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += AllToolProjectsDataGrid_MouseRightButtonUp;
+
+        //    expander.Expanded += AllToolProjectsExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateToolProjectsNotStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += ToolProjectNotStartedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += ToolProjectsNotStartedExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateToolProjectsStartedExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += ToolProjectStartedDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += ToolProjectsStartedExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateToolProjectsDrawnExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.drafter, 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += ToolProjectDrawnDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += ToolProjectsDrawnExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateToolProjectsOnHoldExpander(KeyValuePair<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
+        //    FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
+        //    FontStyle fontStyle = (FontStyle)new FontStyleConverter().ConvertFromString(kvp.Value.fontStyle);
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Key.projectNumber.ToString(), 0, 0, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Key.revNumber.ToString(), 0, 1, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 2, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.csr.Trim(), 0, 3, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(70)), CreateLabel(kvp.Value.priority.Trim(), 0, 4, fontWeight, foreground, fontStyle, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.dueDate, 0, 5, fontWeight, foreground, fontStyle, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += ToolProjectsOnHoldExpander_Expanded;
+        //    using var __nat02context = new NAT02Context();
+        //    if (__nat02context.EoiProjectsOnHold.Any(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber))
+        //    {
+        //        expander.ToolTip = string.IsNullOrEmpty(__nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim()) ? "No Comment" : __nat02context.EoiProjectsOnHold.First(p => p.ProjectNumber == kvp.Key.projectNumber && p.RevisionNumber == kvp.Key.revNumber).OnHoldComment.Trim();
+        //    }
+        //    __nat02context.Dispose();
+        //    return expander;
+        //}
+        //private Expander CreateDriveWorksQueueExpander(KeyValuePair<string, (string releasedBy, string tag, string releaseTime, int priority)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Key.Trim(), 0, 0, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(170)), CreateLabel(kvp.Value.releasedBy.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(120)), CreateLabel(kvp.Value.tag.Trim(), 0, 2, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.releaseTime, 0, 3, FontWeights.Normal, null, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null,
+        //        Background = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF")
+        //    };
+
+        //    // expander.MouseDoubleClick += ProjectDataGrid_MouseDoubleClick;
+        //    // expander.PreviewKeyDown += ProjectDataGrid_PreviewKeyDown;
+        //    // expander.PreviewMouseDown += ProjectDataGrid_PreviewMouseDown;
+        //    // expander.MouseRightButtonUp += ToolProjectOnHoldDataGrid_MouseRightButtonUp;
+
+        //    // expander.Expanded += DriveWorksQueueExpander_Expanded;
+        //    return expander;
+        //}
+        //private Expander CreateNatoliOrderListExpander(KeyValuePair<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> kvp)
+        //{
+        //    Grid grid = new Grid
+        //    {
+        //        HorizontalAlignment = HorizontalAlignment.Stretch
+        //    };
+
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ToString(), 0, 0, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(kvp.Value.customerName.Trim(), 0, 1, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(80)), CreateLabel(kvp.Value.shipDate.ToShortDateString(), 0, 2, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Value.rush.Trim(), 0, 3, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(55)), CreateLabel(kvp.Value.onHold, 0, 4, FontWeights.Normal, null, null, 14, true));
+        //    AddColumn(grid, CreateColumnDefinition(new GridLength(40)), CreateLabel(kvp.Value.rep, 0, 5, FontWeights.Normal, null, null, 14, true));
+
+        //    Expander expander = new Expander()
+        //    {
+        //        IsExpanded = false,
+        //        Header = grid,
+        //        HorizontalAlignment = HorizontalAlignment.Stretch,
+        //        BorderBrush = new SolidColorBrush(Colors.Black),
+        //        ToolTip = null
+        //    };
+
+        //    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
+        //    expander.Expanded += OrderListExpander_Expanded;
+        //    expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+
+        //    return expander;
+        //}
+        //#endregion
+
+        //#region Module Search Box Text Changed Events
+        //private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+        //}
+        //private void OrdersInTheOfficeSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+        //}
+        //private void QuotesNotConvertedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+        //}
+        //private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+        //}
+        //private void OrdersInEngineeringUnprintedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+        //}
+        //private void QuotesToConvertSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+        //}
+        //private void OrdersReadyToPrintSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+        //}
+        //private void OrdersPrintedInEngineeringSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+        //}
+        //private void AllTabletProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsSubmittedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+        //}
+        //private void TabletProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+        //}
+        //private void AllToolProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+        //}
+        //private void ToolProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+        //}
+        //private void DriveWorksQueueSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+        //}
+        //private void NatoliOrderListSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+        //}
+        //#endregion
+
+        //#region Expanders Expanding Events
+        //private void OrderListExpander_Expanded(object sender, RoutedEventArgs e)
+        //{
+        //    Expander expander = (Expander)sender;
+        //    Grid grid = (Grid)expander.Header;
+        //    UIElementCollection collection = grid.Children;
+        //    string orderNumber = collection[0].GetValue(ContentProperty).ToString() + "00";
+        //    using var _natbcContext = new NATBCContext();
+
+        //    List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' AND TSA.DepartmentDesc <> 'Production Mgmnt' ORDER BY OrderLineNumber", orderNumber).ToList();
+        //    _natbcContext.Dispose();
+
+        //    StackPanel lineItemsStackPanel = new StackPanel()
+        //    {
+        //        Orientation = Orientation.Vertical
+        //    };
+
+        //    foreach (LineItemLastScan lineItem in lines)
+        //    {
+        //        Grid lineItemGrid = new Grid();
+        //        // lineItemGrid.Width = expander.Width - 30 - 22;
+        //        lineItemGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.OrderDetailTypeDescription, 0, 0, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(string.Format("{0:d} {0:t}", lineItem.ScanTimeStamp), 0, 1, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.Department, 0, 2, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.Employee, 0, 3, FontWeights.Normal));
+
+        //        lineItemsStackPanel.Children.Add(lineItemGrid);
+        //    }
+
+        //    expander.Content = lineItemsStackPanel;
+        //}
+        //private void InEngineeringExpander_Expanded(object sender, RoutedEventArgs e)
+        //{
+        //    Expander expander = sender as Expander;
+        //    string orderNumber = (expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString() + "00";
+        //    using var _natbcContext = new NATBCContext();
+
+        //    List<LineItemLastScan> lines = _natbcContext.LineItemLastScan.FromSqlRaw("SELECT DISTINCT OrderDetailTypeDescription, OrderLineNumber, (SELECT TOP 1 ScanTimeStamp FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'ScanTimeStamp', (SELECT TOP 1 DepartmentDesc FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Department', (SELECT TOP 1 EmployeeName FROM NATBC.dbo.TravellerScansAudit WITH (NOLOCK) WHERE TravellerScansAudit.OrderNumber = TSA.OrderNumber AND TravellerScansAudit.OrderLineNumber = TSA.OrderLineNumber AND TravellerScansAudit.DepartmentDesc <> 'Production Mgmnt' ORDER BY ScanTimeStamp DESC) AS 'Employee' FROM NATBC.dbo.TravellerScansAudit TSA WITH (NOLOCK) WHERE TSA.OrderNumber = {0} AND TSA.OrderDetailTypeID NOT IN('E','H','MC','RET','T','TM','Z') AND TSA.OrderDetailTypeDescription <> 'PARTS' AND TSA.DepartmentDesc <> 'Production Mgmnt' ORDER BY OrderLineNumber", orderNumber).ToList();
+        //    _natbcContext.Dispose();
+
+        //    StackPanel lineItemsStackPanel = new StackPanel()
+        //    {
+        //        Orientation = Orientation.Vertical
+        //    };
+
+        //    foreach (LineItemLastScan lineItem in lines)
+        //    {
+        //        Grid lineItemGrid = new Grid();
+        //        // lineItemGrid.Width = expander.Width - 30 - 22;
+        //        lineItemGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //        bool isChecked = selectedOrders.Any(o => o.Item1.Contains((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString())) ||
+        //                         selectedLineItems.Any(o => o.Contains(orderNumber) && o.Substring(1, 2) == lineItem.OrderLineNumber.ToString("00"));
+
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(36)));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(18)), CreateCheckBox(0, 1, isChecked));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(lineItem.OrderDetailTypeDescription, 0, 2, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", lineItem.ScanTimeStamp), 0, 3, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(lineItem.Department, 0, 4, FontWeights.Normal));
+        //        AddColumn(lineItemGrid, CreateColumnDefinition(new GridLength(150)), CreateLabel(lineItem.Employee, 0, 5, FontWeights.Normal));
+
+        //        lineItemGrid.Tag = lineItem.OrderLineNumber;
+
+        //        lineItemsStackPanel.Children.Add(lineItemGrid);
+        //    }
+
+        //    expander.Content = lineItemsStackPanel;
+        //}
+        //private void AllTabletProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        //{
+        //    Expander expander = sender as Expander;
+        //    int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //    int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+        //    using var _projectsContext = new ProjectsContext();
+        //    ProjectSpecSheet eoiAllTabletProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+        //    StackPanel stagesStackPanel = new StackPanel()
+        //    {
+        //        Orientation = Orientation.Vertical
+        //    };
+
+        //    List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+        //    if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.ProjectStartedTablet)) { stages.Add(("Started", eoiAllTabletProjectsView.ProjectStartedTablet,
+        //        _projectsContext.ProjectStartedTablet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted)); }
+        //    if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletDrawnBy)) { stages.Add(("Drawn", eoiAllTabletProjectsView.TabletDrawnBy,
+        //        _projectsContext.TabletDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletSubmittedBy)) { stages.Add(("Submitted", eoiAllTabletProjectsView.TabletSubmittedBy,
+        //        _projectsContext.TabletSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    if (!string.IsNullOrEmpty(eoiAllTabletProjectsView.TabletCheckedBy)) { stages.Add(("Checked", eoiAllTabletProjectsView.TabletCheckedBy,
+        //        _projectsContext.TabletCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    _projectsContext.Dispose();
+
+        //    foreach ((string, string, DateTime?) stage in stages)
+        //    {
+        //        Grid stagesGrid = new Grid();
+        //        stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+
+        //        stagesStackPanel.Children.Add(stagesGrid);
+        //    }
+
+        //    expander.Content = stagesStackPanel;
+        //}
+        //private void AllToolProjectsExpander_Expanded(object sender, RoutedEventArgs e)
+        //{
+        //    Expander expander = sender as Expander;
+        //    int projectNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //    int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+        //    using var _projectsContext = new ProjectsContext();
+        //    ProjectSpecSheet eoiAllToolProjectsView = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber);
+
+        //    StackPanel stagesStackPanel = new StackPanel()
+        //    {
+        //        Orientation = Orientation.Vertical
+        //    };
+
+        //    List<(string, string, DateTime?)> stages = new List<(string, string, DateTime?)>();
+        //    if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ProjectStartedTool))
+        //    {
+        //        stages.Add(("Started", eoiAllToolProjectsView.ProjectStartedTool,
+        //            _projectsContext.ProjectStartedTool.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolDrawnBy))
+        //    {
+        //        stages.Add(("Drawn", eoiAllToolProjectsView.ToolDrawnBy,
+        //            _projectsContext.ToolDrawnBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolSubmittedBy))
+        //    {
+        //        stages.Add(("Submitted", eoiAllToolProjectsView.ToolSubmittedBy,
+        //            _projectsContext.ToolSubmittedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    if (!string.IsNullOrEmpty(eoiAllToolProjectsView.ToolCheckedBy))
+        //    {
+        //        stages.Add(("Checked", eoiAllToolProjectsView.ToolCheckedBy,
+        //            _projectsContext.ToolCheckedBy.Single(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revNumber).TimeSubmitted));
+        //    }
+        //    _projectsContext.Dispose();
+
+        //    foreach ((string, string, DateTime?) stage in stages)
+        //    {
+        //        Grid stagesGrid = new Grid();
+        //        stagesGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(36)));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel(stage.Item1, 0, 1, FontWeights.Normal));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(stage.Item2, 0, 2, FontWeights.Normal));
+        //        AddColumn(stagesGrid, CreateColumnDefinition(new GridLength(120)), CreateLabel(string.Format("{0:d} {0:t}", stage.Item3), 0, 3, FontWeights.Normal));
+
+        //        stagesStackPanel.Children.Add(stagesGrid);
+        //    }
+
+        //    expander.Content = stagesStackPanel;
+        //}
+        //private void QuotesNotConvertedExpander_Expanded(object sender, RoutedEventArgs e)
+        //{
+        //    Expander expander = sender as Expander;
+        //    int quoteNumber = int.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //    int revNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+
+        //    // Get the quote date/revision date
+        //    using var _nat01Context = new NAT01Context();
+        //    DateTime quoteDate = _nat01Context.QuoteHeader.Single(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber).QuoteDate;
+        //    _nat01Context.Dispose();
+
+        //    // Get the follow-up date(s)
+        //    using var _nat02Context = new NAT02Context();
+        //    List<DateTime?> followUps = _nat02Context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quoteNumber && q.QuoteRevNo == revNumber)
+        //                                                                       .OrderBy(q => q.TimeSubmitted)
+        //                                                                       .Select(q => q.TimeSubmitted).ToList();
+        //    _nat02Context.Dispose();
+
+        //    StackPanel infoStackPanel = new StackPanel()
+        //    {
+        //        Orientation = Orientation.Vertical
+        //    };
+
+        //    Grid infoGrid = new Grid();
+        //    infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
+        //    AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("The last saved date of this quote is: " + quoteDate.ToShortDateString(), 0, 1, FontWeights.Normal));
+        //    infoStackPanel.Children.Add(infoGrid);
+
+        //    if (followUps.Any())
+        //    {
+        //        foreach (DateTime date in followUps)
+        //        {
+        //            infoGrid = new Grid();
+        //            infoGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+        //            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(36)));
+        //            AddColumn(infoGrid, CreateColumnDefinition(new GridLength(1, GridUnitType.Star)), CreateLabel("Follow-up was completed on: " + date.ToShortDateString(), 0, 1, FontWeights.Normal));
+        //            infoStackPanel.Children.Add(infoGrid);
+        //        }
+        //    }
+
+        //    expander.Content = infoStackPanel;
+        //}
+        //#endregion
+        //#endregion
 
         //#region DataGridLoadingRow
         //private void InEngineeringDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -11916,22 +13073,22 @@ namespace NatoliOrderInterface
         }
         private void ContextMenu_Closed(object sender, RoutedEventArgs e)
         {
-            foreach (StackPanel stackPanel in MainGrid.Children.OfType<StackPanel>())
-            {
-                try
-                {
-                    DataGrid dataGrid = stackPanel.Children.OfType<DataGrid>().First();
-                    if (dataGrid.ContextMenu != null && dataGrid.ContextMenu.Tag.ToString() == "RightClickMenu")
-                    {
-                        dataGrid.ContextMenu = null;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // MessageBox.Show(ex.Message);
-                    IMethods.WriteToErrorLog("ContextMenu_Closed", ex.Message, User);
-                }
-            }
+            //foreach (StackPanel stackPanel in MainGrid.Children.OfType<StackPanel>())
+            //{
+            //    try
+            //    {
+            //        DataGrid dataGrid = stackPanel.Children.OfType<DataGrid>().First();
+            //        if (dataGrid.ContextMenu != null && dataGrid.ContextMenu.Tag.ToString() == "RightClickMenu")
+            //        {
+            //            dataGrid.ContextMenu = null;
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        // MessageBox.Show(ex.Message);
+            //        IMethods.WriteToErrorLog("ContextMenu_Closed", ex.Message, User);
+            //    }
+            //}
         }
         private void Checkbox_Checked(object sender, RoutedEventArgs e)
         {

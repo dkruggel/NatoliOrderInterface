@@ -449,8 +449,15 @@
             </DockPanel>
         </Grid>
 
-        <Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0" DockPanel.ZIndex="1">
-            <!--<Image x:Name="LoadingAnimation" gif:ImageBehavior.AnimatedSource="/NATOLI_ANIMATION.gif" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="300" MaxWidth="{Binding ActualWidth, ElementName=GridWindow}"/>   xmlns:gif="http://wpfanimatedgif.codeplex.com"  WpfAnimatedGif -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <Border>
+                <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel" AllowDrop="True">
+                </WrapPanel>
+            </Border>
+        </ScrollViewer>
+
+        <!--<Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0" DockPanel.ZIndex="1">
+            <Image x:Name="LoadingAnimation" gif:ImageBehavior.AnimatedSource="/NATOLI_ANIMATION.gif" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="300" MaxWidth="{Binding ActualWidth, ElementName=GridWindow}"/>   xmlns:gif="http://wpfanimatedgif.codeplex.com"  WpfAnimatedGif -->
             <!--
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -462,8 +469,8 @@
                 <RowDefinition/>
                 <RowDefinition Height="0"/>
             </Grid.RowDefinitions>
-            -->
-        </Grid>
+            
+        </Grid>-->
         
     </DockPanel>
 </Window>

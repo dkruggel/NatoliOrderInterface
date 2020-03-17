@@ -24,6 +24,7 @@ namespace NatoliOrderInterface
         #region Orders Being Entered
         private ListBox OrdersBeingEnteredListBox { get; set; }
         private List<EoiOrdersBeingEnteredView> ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
+        private List<EoiOrdersBeingEnteredView> _ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
         public List<EoiOrdersBeingEnteredView> OrdersBeingEntered
         {
             get
@@ -44,6 +45,7 @@ namespace NatoliOrderInterface
         #region Orders In The Office
         private ListBox OrdersInTheOfficeListBox = new ListBox();
         private List<EoiOrdersInOfficeView> ordersInTheOffice = new List<EoiOrdersInOfficeView>();
+        private List<EoiOrdersInOfficeView> _ordersInTheOffice = new List<EoiOrdersInOfficeView>();
         public List<EoiOrdersInOfficeView> OrdersInTheOffice
         {
             get
@@ -64,6 +66,7 @@ namespace NatoliOrderInterface
         #region Orders Entered Unscanned
         private ListBox OrdersEnteredListBox = new ListBox();
         private List<EoiOrdersEnteredAndUnscannedView> ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
+        private List<EoiOrdersEnteredAndUnscannedView> _ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
         public List<EoiOrdersEnteredAndUnscannedView> OrdersEntered
         {
             get
@@ -84,6 +87,7 @@ namespace NatoliOrderInterface
         #region Orders In Engineering
         private ListBox OrdersInEngListBox = new ListBox();
         private List<EoiOrdersInEngineeringUnprintedView> ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
+        private List<EoiOrdersInEngineeringUnprintedView> _ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
         public List<EoiOrdersInEngineeringUnprintedView> OrdersInEng
         {
             get
@@ -104,6 +108,7 @@ namespace NatoliOrderInterface
         #region Orders Ready To Print
         private ListBox OrdersReadyToPrintListBox = new ListBox();
         private List<EoiOrdersReadyToPrintView> ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
+        private List<EoiOrdersReadyToPrintView> _ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
         public List<EoiOrdersReadyToPrintView> OrdersReadyToPrint
         {
             get
@@ -124,6 +129,7 @@ namespace NatoliOrderInterface
         #region Orders Printed In Engineering
         private ListBox OrdersPrintedListBox = new ListBox();
         private List<EoiOrdersPrintedInEngineeringView> ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
+        private List<EoiOrdersPrintedInEngineeringView> _ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
         public List<EoiOrdersPrintedInEngineeringView> OrdersPrinted
         {
             get
@@ -144,6 +150,7 @@ namespace NatoliOrderInterface
         #region Quotes Not Converted
         private ListBox QuotesNotConvertedListBox = new ListBox();
         private List<EoiQuotesNotConvertedView> quotesNotConverted = new List<EoiQuotesNotConvertedView>();
+        private List<EoiQuotesNotConvertedView> _quotesNotConverted = new List<EoiQuotesNotConvertedView>();
         public List<EoiQuotesNotConvertedView> QuotesNotConverted
         {
             get
@@ -164,6 +171,7 @@ namespace NatoliOrderInterface
         #region Quotes To Convert
         private ListBox QuotesToConvertListBox = new ListBox();
         private List<EoiQuotesMarkedForConversionView> quotesToConvert = new List<EoiQuotesMarkedForConversionView>();
+        private List<EoiQuotesMarkedForConversionView> _quotesToConvert = new List<EoiQuotesMarkedForConversionView>();
         public List<EoiQuotesMarkedForConversionView> QuotesToConvert
         {
             get
@@ -181,11 +189,53 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
+        #region All Tablet Projects
+        private ListBox AllTabletProjectsListBox = new ListBox();
+        private List<EoiAllTabletProjectsView> allTabletProjects = new List<EoiAllTabletProjectsView>();
+        private List<EoiAllTabletProjectsView> _allTabletProjects = new List<EoiAllTabletProjectsView>();
+        public List<EoiAllTabletProjectsView> AllTabletProjects
+        {
+            get
+            {
+                return allTabletProjects;
+            }
+            set
+            {
+                if (value.Except(allTabletProjects).Count() > 0 || allTabletProjects.Except(value).Count() > 0)
+                {
+                    allTabletProjects = value;
+                    AllTabletProjectsListBox.ItemsSource = null;
+                    AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                }
+            }
+        }
+        #endregion
+        #region All Tool Projects
+        private ListBox AllToolProjectsListBox = new ListBox();
+        private List<EoiAllToolProjectsView> allToolProjects = new List<EoiAllToolProjectsView>();
+        private List<EoiAllToolProjectsView> _allToolProjects = new List<EoiAllToolProjectsView>();
+        public List<EoiAllToolProjectsView> AllToolProjects
+        {
+            get
+            {
+                return allToolProjects;
+            }
+            set
+            {
+                if (value.Except(allToolProjects).Count() > 0 || allToolProjects.Except(value).Count() > 0)
+                {
+                    allToolProjects = value;
+                    AllToolProjectsListBox.ItemsSource = null;
+                    AllToolProjectsListBox.ItemsSource = allToolProjects;
+                }
+            }
+        }
+        #endregion
 
         private Dictionary<string, (string, IEnumerable<object>, ListBox)> panels = new Dictionary<string, (string, IEnumerable<object>, ListBox)>();
         List<(string, IEnumerable<object>, ListBox)> modules = new List<(string, IEnumerable<object>, ListBox)>();
 
-        public System.Timers.Timer timer = new System.Timers.Timer(15000);
+        public System.Timers.Timer timer = new System.Timers.Timer(30000);
 
         private User user;
 
@@ -199,6 +249,7 @@ namespace NatoliOrderInterface
             BuildPanels();
 
             BindData();
+            UpdateUI();
 
             timer.Elapsed += Timer_Elapsed;
             timer.Start();
@@ -355,9 +406,22 @@ namespace NatoliOrderInterface
                             OrdersPrintedListBox.ItemsSource = null;
                             OrdersPrintedListBox.ItemsSource = ordersPrinted;
                             break;
-                        //case ("AllTabletProjects", "Main"):
-                        //    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
-                        //    break;
+                        case ("AllTabletProjects", "Main"):
+                            label = new Label
+                            {
+                                Style = App.Current.Resources["AllTabletProjectsModule"] as Style
+                            };
+
+                            label.ApplyTemplate();
+
+                            grid.Children.Add(label);
+
+                            MainWrapPanel.Children.Add(grid);
+
+                            AllTabletProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+                            AllTabletProjectsListBox.ItemsSource = null;
+                            AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                            break;
                         //case ("TabletProjectsNotStarted", "Main"):
                         //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
                         //    break;
@@ -373,9 +437,22 @@ namespace NatoliOrderInterface
                         //case ("TabletProjectsOnHold", "Main"):
                         //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
                         //    break;
-                        //case ("AllToolProjects", "Main"):
-                        //    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
-                        //    break;
+                        case ("AllToolProjects", "Main"):
+                            label = new Label
+                            {
+                                Style = App.Current.Resources["AllToolProjectsModule"] as Style
+                            };
+
+                            label.ApplyTemplate();
+
+                            grid.Children.Add(label);
+
+                            MainWrapPanel.Children.Add(grid);
+
+                            AllToolProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
+                            AllToolProjectsListBox.ItemsSource = null;
+                            AllToolProjectsListBox.ItemsSource = allToolProjects;
+                            break;
                         //case ("ToolProjectsNotStarted", "Main"):
                         //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
                         //    break;
@@ -407,35 +484,13 @@ namespace NatoliOrderInterface
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Task.Run(() => BindData());
-        }
-
-        private void GetData()
-        {
-            using var _ = new NAT02Context();
-            try
-            {
-                // List<EoiOrdersBeingEnteredView> eoiOrdersBeingEnteredView = _.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
-
-                //if (user.Department == "Customer Service" && !(user.GetUserName().StartsWith("Tiffany") || user.GetUserName().StartsWith("James W")))
-                //{
-                //    string usrName = user.GetUserName().Split(' ')[0];
-                //    eoiOrdersInOfficeView = _.EoiOrdersInOfficeView.Where(o => o.Csr.StartsWith(usrName)).OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
-                //}
-                //else
-                //{
-                // List<EoiOrdersInOfficeView> eoiOrdersInOfficeView = _.EoiOrdersInOfficeView.OrderBy(o => o.NumDaysToShip).ThenBy(o => o.DaysInOffice).ToList();
-                //}
-                //List<EoiOrdersEnteredAndUnscannedView> eoiOrdersEnteredAndUnscannedView = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
-                //List<EoiOrdersInEngineeringUnprintedView> eoiOrdersInEngineeringUnprintedView = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
-                List<EoiOrdersReadyToPrintView> eoiOrdersReadyToPrintView = _.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
-                List<EoiOrdersPrintedInEngineeringView> eoiOrdersPrintedInEngineeringView = _.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            _.Dispose();
+            //DateTime dateTime = DateTime.Now;
+            timer.Stop();
+            BindData();
+            UpdateUI();
+            timer.Start();
+            //TimeSpan timeSpan = DateTime.Now - dateTime;
+            //MessageBox.Show(timeSpan.TotalMilliseconds.ToString());
         }
 
         private void BindData()
@@ -447,32 +502,38 @@ namespace NatoliOrderInterface
                     switch (panel, "Main")
                     {
                         case ("BeingEntered", "Main"):
-                            Dispatcher.Invoke(() => GetBeingEntered());
+                            //Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+                            Task.Run(() => GetBeingEntered());
                             break;
                         case ("InTheOffice", "Main"):
-                            Dispatcher.Invoke(() => GetInTheOffice());
+                            //Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+                            Task.Run(() => GetInTheOffice());
                             break;
                         case ("QuotesNotConverted", "QuotesNotConverted"):
                             Dispatcher.Invoke(() => GetQuotesNotConverted());
                             break;
                         case ("EnteredUnscanned", "Main"):
-                            Dispatcher.Invoke(() => GetEnteredUnscanned());
+                            //Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+                            Task.Run(() => GetEnteredUnscanned());
                             break;
                         case ("InEngineering", "Main"):
-                            Dispatcher.Invoke(() => GetInEngineering());
+                            //Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+                            Task.Run(() => GetInEngineering());
                             break;
                         case ("QuotesToConvert", "Main"):
                             Dispatcher.Invoke(() => GetQuotesToConvert());
                             break;
                         case ("ReadyToPrint", "Main"):
-                            Dispatcher.Invoke(() => GetReadyToPrint());
+                            //Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+                            Task.Run(() => GetReadyToPrint());
                             break;
                         case ("PrintedInEngineering", "Main"):
-                            Dispatcher.Invoke(() => GetPrintedInEngineering());
+                            //Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+                            Task.Run(() => GetPrintedInEngineering());
                             break;
-                        //case ("AllTabletProjects", "Main"):
-                        //    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
-                        //    break;
+                        case ("AllTabletProjects", "Main"):
+                            Task.Run(() => GetAllTabletProjects());
+                            break;
                         //case ("TabletProjectsNotStarted", "Main"):
                         //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
                         //    break;
@@ -488,9 +549,9 @@ namespace NatoliOrderInterface
                         //case ("TabletProjectsOnHold", "Main"):
                         //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
                         //    break;
-                        //case ("AllToolProjects", "Main"):
-                        //    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
-                        //    break;
+                        case ("AllToolProjects", "Main"):
+                            Task.Run(() => GetAllToolProjects());
+                            break;
                         //case ("ToolProjectsNotStarted", "Main"):
                         //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
                         //    break;
@@ -519,6 +580,17 @@ namespace NatoliOrderInterface
 
             }
         }
+        private void UpdateUI()
+        {
+            Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
+            Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
+            Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
+            Task.Run(() => Dispatcher.Invoke(() => BindInEngineering()));
+            Task.Run(() => Dispatcher.Invoke(() => BindReadyToPrint()));
+            Task.Run(() => Dispatcher.Invoke(() => BindPrintedInEngineering()));
+            Task.Run(() => Dispatcher.Invoke(() => BindAllTabletProjects()));
+            Task.Run(() => Dispatcher.Invoke(() => BindAllToolProjects()));
+        }
 
         #region Gets And Binds
         private void GetBeingEntered()
@@ -526,7 +598,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                OrdersBeingEntered = _.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
+                _ordersBeingEntered = _.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -534,18 +606,26 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
+        private void BindBeingEntered()
+        {
+            OrdersBeingEntered = _ordersBeingEntered;
+        }
         private void GetInTheOffice()
         {
             try
             {
                 using var _ = new NAT02Context();
-                OrdersInTheOffice = _.EoiOrdersInOfficeView.OrderBy(o => o.OrderNo).ToList();
+                _ordersInTheOffice = _.EoiOrdersInOfficeView.OrderBy(o => o.OrderNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private void BindInTheOffice()
+        {
+            OrdersInTheOffice = _ordersInTheOffice;
         }
         private void GetQuotesNotConverted()
         {
@@ -568,7 +648,7 @@ namespace NatoliOrderInterface
                     }
                     _eoiQuotesNotConvertedView.AddRange(_.EoiQuotesNotConvertedView.Where(q => q.Csr.Contains(s) && q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).ToList());
                 }
-                QuotesNotConverted = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
+                _quotesNotConverted = _eoiQuotesNotConvertedView.Where(q => q.QuoteDate >= DateTime.Now.AddDays(-quoteDays)).OrderByDescending(q => q.QuoteNo).ThenByDescending(q => q.QuoteRevNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -581,7 +661,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                OrdersEntered = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+                _ordersEntered = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -589,18 +669,26 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
+        private void BindEnteredUnscanned()
+        {
+            OrdersEntered = _ordersEntered;
+        }
         private void GetInEngineering()
         {
             try
             {
                 using var _ = new NAT02Context();
-                OrdersInEng = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
+                _ordersInEng = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private void BindInEngineering()
+        {
+            OrdersInEng = _ordersInEng;
         }
         private void GetQuotesToConvert()
         {
@@ -622,7 +710,7 @@ namespace NatoliOrderInterface
                     }
                     _eoiQuotesMarkedForConversion.AddRange(_.EoiQuotesMarkedForConversionView.Where(q => q.Csr.Contains(s)).OrderBy(q => q.TimeSubmitted).ToList());
                 }
-                QuotesToConvert = _eoiQuotesMarkedForConversion;
+                _quotesToConvert = _eoiQuotesMarkedForConversion;
                 _.Dispose();
             }
             catch (Exception ex)
@@ -635,7 +723,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                OrdersReadyToPrint = _.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
+                _ordersReadyToPrint = _.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -643,18 +731,104 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
+        private void BindReadyToPrint()
+        {
+            OrdersReadyToPrint = _ordersReadyToPrint;
+        }
         private void GetPrintedInEngineering()
         {
             try
             {
                 using var _ = new NAT02Context();
-                OrdersPrinted = _.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
+                _ordersPrinted = _.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private void BindPrintedInEngineering()
+        {
+            OrdersPrinted = _ordersPrinted;
+        }
+        private void GetAllTabletProjects()
+        {
+            try
+            {
+                using var _nat02context = new NAT02Context();
+                List<EoiAllTabletProjectsView> eoiAllTabletProjects = new List<EoiAllTabletProjectsView>();
+                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == user.EmployeeCode)
+                                                                     .Select(e => e.Subscribed);
+                eoiAllTabletProjects = new List<EoiAllTabletProjectsView>();
+                string[] subs = subList.First().Split(',');
+                List<EoiAllTabletProjectsView> projects = new List<EoiAllTabletProjectsView>();
+                foreach (string sub in subs)
+                {
+                    string s = sub;
+                    if (sub == "Gregory") { s = "Greg"; }
+                    if (sub == "Nicholas") { s = "Nick"; }
+                    eoiAllTabletProjects.AddRange(_nat02context.EoiAllTabletProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
+                }
+                if (user.FilterActiveProjects)
+                {
+                    _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                           .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                }
+                else
+                {
+                    _allTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                }
+                _nat02context.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void BindAllTabletProjects()
+        {
+            AllTabletProjects = _allTabletProjects;
+        }
+        private void GetAllToolProjects()
+        {
+            try
+            {
+                using var _nat02context = new NAT02Context();
+                List<EoiAllToolProjectsView> eoiAllToolProjects = new List<EoiAllToolProjectsView>();
+                IQueryable<string> subList = _nat02context.EoiSettings.Where(e => e.EmployeeId == user.EmployeeCode)
+                                                                     .Select(e => e.Subscribed);
+                eoiAllToolProjects = new List<EoiAllToolProjectsView>();
+                string[] subs = subList.First().Split(',');
+                List<EoiAllToolProjectsView> projects = new List<EoiAllToolProjectsView>();
+                foreach (string sub in subs)
+                {
+                    string s = sub;
+                    if (sub == "Gregory") { s = "Greg"; }
+                    if (sub == "Nicholas") { s = "Nick"; }
+                    eoiAllToolProjects.AddRange(_nat02context.EoiAllToolProjectsView.Where(q => q.Csr.Contains(s) || q.ReturnToCsr.Contains(s)).ToList());
+                }
+                if (user.FilterActiveProjects)
+                {
+                    _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                           .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                }
+                else
+                {
+                    _allToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                }
+                _nat02context.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void BindAllToolProjects()
+        {
+            AllToolProjects = _allToolProjects;
         }
         #endregion
     }

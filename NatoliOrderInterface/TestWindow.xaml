@@ -6,8 +6,10 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
         Title="TestWindow" Height="1020" Width="1875" WindowStartupLocation="CenterScreen">
-    <Border>
-        <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel">
-        </WrapPanel>
-    </Border>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+        <Border>
+            <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel" AllowDrop="True">
+            </WrapPanel>
+        </Border>
+    </ScrollViewer>
 </Window>

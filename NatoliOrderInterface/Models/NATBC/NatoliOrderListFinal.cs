@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NatoliOrderInterface.Models
 {
-    public partial class NatoliOrderList : IEquatable<NatoliOrderList>
+    public partial class NatoliOrderListFinal : IEquatable<NatoliOrderListFinal>
     {
         public double OrderNo { get; set; }
         public string Customer { get; set; }
@@ -12,7 +12,8 @@ namespace NatoliOrderInterface.Models
         public string Rush { get; set; }
         public string OnHold { get; set; }
         public string RepInitials { get; set; }
-        public bool Equals(NatoliOrderList other)
+        public string RepId { get; set; }
+        public bool Equals(NatoliOrderListFinal other)
         {
             if (other is null)
                 return false;
@@ -25,7 +26,7 @@ namespace NatoliOrderInterface.Models
                    this.RepInitials == other.RepInitials;
         }
 
-        public override bool Equals(object obj) => Equals(obj as NatoliOrderList);
+        public override bool Equals(object obj) => Equals(obj as NatoliOrderListFinal);
         public override int GetHashCode() => (OrderNo, Customer, Customer, ShipDate, Rush, OnHold, RepInitials).GetHashCode();
     }
 }

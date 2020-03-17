@@ -16,6 +16,7 @@ namespace NatoliOrderInterface
             { "A","ALIGNMENT TOOL" },
             { "CT","COPPER TABLETS" },
             { "D","DIE" },
+            { "DA","DIE ASSEMBLY" },
             { "DH","DIE HOLDER" },
             { "DI","DIE INSERT" },
             { "DP","DIE PLATE" },
