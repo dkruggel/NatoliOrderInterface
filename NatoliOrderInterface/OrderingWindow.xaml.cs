@@ -232,7 +232,10 @@ namespace NatoliOrderInterface
                     document.Close();
                     File.Move(tempFile, file, true);
                     File.Copy(file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
-                    File.Delete(oldFile);
+                    if (file != oldFile)
+                    {
+                        File.Delete(oldFile);
+                    }
                 }
                 else
                 {

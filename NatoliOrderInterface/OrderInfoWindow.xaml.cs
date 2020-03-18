@@ -1405,7 +1405,10 @@ namespace NatoliOrderInterface
                         try
                         {
                             File.Move(tempFile, _file, true);
-                            File.Delete(file);
+                            if (file != _file)
+                            {
+                                File.Delete(file);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -1453,7 +1456,7 @@ namespace NatoliOrderInterface
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceLow;
-                mailItem.Display(true);
+                mailItem.Display(false);
                 Cursor = Cursors.Arrow;
             }
             catch (Exception ex)

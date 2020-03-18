@@ -127,14 +127,15 @@ namespace NatoliOrderInterface
         public static void WriteToErrantFoldersLog(List<string> errantFolders, User user)
         {
             string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Errant_Folders_Log.txt";
-            System.IO.StreamReader sr = new System.IO.StreamReader(path);
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-            string existing = sr.ReadToEnd();
-            sr.Close();
-            string dateLine = DateTime.Now + "\r\n" + "\r\n";
-            string newText = dateLine;
             try
             {
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string existing = sr.ReadToEnd();
+                sr.Close();
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
+
                 foreach (string folder in errantFolders)
                 {
                     newText += " - " + folder + "\r\n";
@@ -151,16 +152,16 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    newText +=  "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
+                    newText += "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
                 }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
             }
             catch (Exception ex)
             {
                 WriteToErrorLog("IMethods.cs => WriteToErrantFoldersLog()", ex.Message, user);
             }
-            sw.Write(newText + existing);
-            sw.Flush();
-            sw.Close();
         }
         /// <summary>
         /// Writes to @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt"
@@ -170,15 +171,16 @@ namespace NatoliOrderInterface
         public static void WriteToFoldersRenamedLog(List<Tuple<string,string>> renamedFolders, User user)
         {
             string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt";
-            System.IO.StreamReader sr = new System.IO.StreamReader(path);
-            string existing = sr.ReadToEnd();
-            existing = existing;
-            sr.Close();
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
-            string dateLine = DateTime.Now + "\r\n" + "\r\n";
-            string newText = dateLine;
+            
             try
             {
+                System.IO.StreamReader sr = new System.IO.StreamReader(path);
+                string existing = sr.ReadToEnd();
+                existing = existing;
+                sr.Close();
+                System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
+                string dateLine = DateTime.Now + "\r\n" + "\r\n";
+                string newText = dateLine;
                 foreach (Tuple<string, string> folder in renamedFolders)
                 {
                     newText += " - " + folder.Item1 + " => " + folder.Item2 + "\r\n";
@@ -197,14 +199,14 @@ namespace NatoliOrderInterface
                 {
                     newText += "\r\n" + new string('+', 100) + "\r\n" + "\r\n";
                 }
+                sw.Write(newText + existing);
+                sw.Flush();
+                sw.Close();
             }
             catch (Exception ex)
             {
                 WriteToErrorLog("IMethods.cs => WriteToFoldersRenamedLog()", ex.Message, user);
             }
-            sw.Write(newText + existing);
-            sw.Flush();
-            sw.Close();
         }
         /// <summary>
         /// Checks if string 'input' contains any strings 'containsKeywords' using Default StringComparison.InvariantCulture. Returns bool.
@@ -1765,7 +1767,6 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-
                                     // Upper
                                     if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "R")
                                     {
@@ -1844,6 +1845,66 @@ namespace NatoliOrderInterface
                                             }
                                         }
                                     }
+                                    // Is Solid Multi-Tip
+                                    if (quoteLineItem.OptionNumbers.Contains("270"))
+                                    {
+                                        // Has Special Tip Width 
+                                        if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204"))
+                                        {
+                                            // Not 4mm tip width
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204" && o.Number1 != 0.1575))
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' may need special tip width (204) to be changed to 4.00mm (0.1575\") because it is a solid multi-tip.");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // No Groove
+                                            if (!quoteLineItem.OptionNumbers.Contains("110") && !quoteLineItem.OptionNumbers.Contains("111") && !quoteLineItem.OptionNumbers.Contains("112") && !quoteLineItem.OptionNumbers.Contains("115") && !quoteLineItem.OptionNumbers.Contains("116"))
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added because it is a solid multi-tip.");
+                                            }
+                                            else
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added IF the groove does not have 4mm standard tip width (check with engineering) because it is a solid multi-tip.");
+                                            }
+                                        }
+                                    }
+                                    if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
+                                    {
+                                        HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
+
+                                        // Semi-Exotic || Exotic
+                                        if (hob.Class == "SX" || hob.Class == "EX")
+                                        {
+                                            // Has Special Tip Width
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204"))
+                                            {
+                                                // Not 4mm tip width
+                                                if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "204" && o.Number1 != 0.1575))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' may need special tip width (204) to be changed to 4.00mm (0.1575\") because it is Exotic or Semi-Exotic class.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // No Groove
+                                                if (!quoteLineItem.OptionNumbers.Contains("110") && !quoteLineItem.OptionNumbers.Contains("111") && !quoteLineItem.OptionNumbers.Contains("112") && !quoteLineItem.OptionNumbers.Contains("115") && !quoteLineItem.OptionNumbers.Contains("116"))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added because it is of Exotic or Semi-Exotic class.");
+                                                }
+                                                else
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added IF the groove does not have 4mm standard tip width (check with engineering) because it is of Exotic or Semi-Exotic class.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                    }
+                                   
                                 }
                                 catch (Exception ex)
                                 {
@@ -2380,6 +2441,11 @@ namespace NatoliOrderInterface
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' has a 441 style head but the machine is a normal 'D' machine.");
                                             }
+                                            // Has special head flat .775 & does not have gauge number in engineering notes
+                                            if(quoteLineItem.optionValuesA.Any(o=>o.OptionCode == "020" && o.Number1 == 0.775) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
+                                            {
+                                                errors.Add("Engineering Note needs to specify head gauge number to differentiate between gauges of the same head flat (11185, HG-00023-SH001, HG-00147-SH001).");
+                                            }
                                         }
                                         // Machine is D and EU1-441
                                         else if ((machine.MachineTypePrCode.Trim() == "D" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") || machine.MachineNo == 1015) &&
@@ -2401,6 +2467,12 @@ namespace NatoliOrderInterface
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' has an FS-19 style head but the machine is a normal 'B' machine.");
                                             }
+                                            // Has special head flat .525 & does not have gauge number in engineering notes
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "020" && o.Number1 == 0.525) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "00042", "42", "000136", "136" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
+                                            {
+                                                errors.Add("Engineering Note needs to specify head gauge number to differentiate between gauges of the same head flat (11185, HG-00023-SH001, HG-00147-SH001).");
+                                            }
+
                                         }
                                         // Machine is B and FS-19
                                         else if (((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))) &&
@@ -2604,6 +2676,7 @@ namespace NatoliOrderInterface
                                         }
 
                                     }
+                                    
                                     // Has HobNo in HobList
                                     if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                                     {

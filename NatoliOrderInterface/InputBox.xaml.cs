@@ -31,8 +31,10 @@ namespace NatoliOrderInterface
         {
             Title = title;
             InitializeComponent();
+            
             InputTextLabel.Content = prompt;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.Activate();
             if (title == "Password")
             {
                 StackPanel1.Children.Add(PasswordTextBox);

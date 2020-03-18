@@ -844,13 +844,6 @@ namespace NatoliOrderInterface
                     try
                     {
                         string category = quote.InternationalYorN == 'Y' ? "I" : "D";
-                        string repName = _nat01Context.QuoteRepresentative.Where(qr => qr.RepId == quote.QuoteRepID).First().Name.Trim();
-                        string repLastName = repName.Split(' ')[1];
-                        bool international = _natbcContext.MoeEmployees.Any(e => (!string.IsNullOrEmpty(e.MoeEmployeeName) && !string.IsNullOrWhiteSpace(e.MoeEmployeeName)) && 
-                        (e.MoeEmployeeName.Trim() == repName || 
-                        (e.MoeEmployeeName.Trim() != repName && 
-                        e.MoeLastName == repLastName)) && 
-                        e.MoeDepartmentCode == "D1149");
                         if (exists)
                         {
                             if (_nat02Context.EoiQuoteScratchPad.Any(q => q.QuoteNo == quote.QuoteNumber && q.RevNo == Convert.ToByte(quote.QuoteRevNo) && q.LineNo == lineItem.Key && q.LineType == lineItem.Value))
@@ -881,7 +874,19 @@ namespace NatoliOrderInterface
                         }
                         else
                         {
-
+                            bool international = quote.InternationalYorN != 'Y' ? false : true;
+                            string repName = "";
+                            string repLastName = "";
+                            if (international == false && _nat01Context.QuoteRepresentative.Any(qr => qr.RepId == quote.QuoteRepID))
+                            {
+                                repName = _nat01Context.QuoteRepresentative.First(qr => qr.RepId == quote.QuoteRepID).Name.Trim();
+                                repLastName = repName.Split(' ')[1];
+                                international = _natbcContext.MoeEmployees.Any(e => (!string.IsNullOrEmpty(e.MoeEmployeeName) && !string.IsNullOrWhiteSpace(e.MoeEmployeeName)) &&
+                                (e.MoeEmployeeName.Trim() == repName ||
+                                (e.MoeEmployeeName.Trim() != repName &&
+                                e.MoeLastName == repLastName)) &&
+                                e.MoeDepartmentCode == "D1149");
+                            }
                             if (international)
                             {
                                 basePrice = (decimal)0.0;
@@ -3030,6 +3035,7 @@ namespace NatoliOrderInterface
         }
         private void Signature_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
+            Signature.Source = new BitmapImage();
             IMethods.WriteToErrorLog("QuoteInfoWindow.cs => Signature_ImageFailed; Quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, e.ErrorException.Message, user);
         }
         private void SubmitButton_Click(object sender, RoutedEventArgs e)
