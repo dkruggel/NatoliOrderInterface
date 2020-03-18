@@ -986,7 +986,7 @@ namespace NatoliOrderInterface
             try
             {
                 int quoteNumber = int.Parse(qNumber[0..^2]);
-                short revNumber = short.Parse(qNumber[^1..]);
+                short revNumber = qNumber[^1..] == "-" ? (short)0 : short.Parse(qNumber[^1..]);
                 WindowCollection collection = App.Current.Windows;
                 foreach (Window w in collection)
                 {

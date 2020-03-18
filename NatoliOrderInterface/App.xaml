@@ -4385,8 +4385,8 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock Tag="QuoteNumber" Text="{Binding QuoteNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
-                                                    <TextBlock Tag="QuoteRev" Text="{Binding Rev}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"/>
+                                                                            <TextBlock Name="QuoteNumber" Tag="QuoteNumber" Text="{Binding QuoteNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock Name="QuoteRev" Tag="QuoteRev" Text="{Binding Rev}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"/>
                                                     <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" TextWrapping="NoWrap"/>
                                                     <Grid Grid.Column="4">
                                                         <Grid.ColumnDefinitions>

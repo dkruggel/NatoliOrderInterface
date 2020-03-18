@@ -18,7 +18,7 @@ namespace NatoliOrderInterface
         {
             double orderNumber = 0.0;
 
-            if (!(value is EoiQuotesMarkedForConversionView))
+            if (!(value is EoiQuotesMarkedForConversionView) && !(value is EoiQuotesNotConvertedView))
             {
                 orderNumber = double.Parse(value.ToString());
             }

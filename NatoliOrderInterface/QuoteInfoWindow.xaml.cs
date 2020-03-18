@@ -352,15 +352,24 @@ namespace NatoliOrderInterface
             Total.Text = quote.QuoteTotal == 0 ? "$0.00" : "$" + String.Format("{0:#,###.00}", quote.QuoteTotal);
             ReferToQuote.Text = "* * * PLEASE REFER TO THIS QUOTE #: " + quote.QuoteNumber + ", REV. " + quote.QuoteRevNo + " ON YOUR PURCHASE ORDER * * *";
             QuoteRepresentative representativeRow = quote.Nat01Context.QuoteRepresentative.Where(q => q.RepId.Trim() == quote.QuoteRepID.ToString().Trim()).FirstOrDefault();
-            try
+            if (representativeRow is null)
             {
-                BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Absolute));
-                Signature.Source = image;
-                SignaturePlainText.Text = representativeRow.Name.ToString().Trim() + " / NATOLI ENGINEERING";
+                MessageBox.Show("RepID field is blank, no signature will be shown.");
+                // Signature.Source = new BitmapImage();
             }
-            catch
+            else
             {
-                MessageBox.Show("\"Signature File\" path in \"QuoteRepresentative\" database is not valid.", "Signature.jpg", MessageBoxButton.OK, MessageBoxImage.Warning);
+                try
+                {
+                    BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Absolute));
+                    Signature.Source = image;
+                    SignaturePlainText.Text = representativeRow.Name.ToString().Trim() + " / NATOLI ENGINEERING";
+                }
+                catch
+                {
+                    Signature.Source = new BitmapImage();
+                    MessageBox.Show("\"Signature File\" path in \"QuoteRepresentative\" database is not valid.", "Signature.jpg", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             foreach (QuoteLineItem lineItem in quoteLineItems)
             {

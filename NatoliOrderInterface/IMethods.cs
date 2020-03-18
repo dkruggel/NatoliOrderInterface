@@ -84,7 +84,7 @@ namespace NatoliOrderInterface
                 
                 try
                 {
-                    userFallback = Environment.UserDomainName;
+                    userFallback = Environment.UserDomainName + "\\" + Environment.UserName;
                 }
                 catch
                 { }
@@ -92,11 +92,11 @@ namespace NatoliOrderInterface
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(@"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Error_Log_Appends.txt", true);
                     sw.Write(
-                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n" +
+                        "Version: " + (user is null ? userFallback : user.PackageVersion) + "\r\n" +
                         "DateTime: " + DateTime.Now + "\r\n" +
-                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n" +
+                        "User: " + (user is null ? userFallback : user.GetUserName()) + "\r\n" +
                         "Location: " + errorLoc + "\r\n" +
-                        "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n");
+                        "ErrorMessage: " + (errorMessage is null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n");
                     sw.Flush();
                     sw.Close();
                 }
@@ -104,11 +104,11 @@ namespace NatoliOrderInterface
                 {
                     System.IO.StreamWriter sw = new System.IO.StreamWriter(path, false);
                     sw.Write(
-                        "Version: " + user == null ? userFallback : user.PackageVersion + "\r\n" +
+                        "Version: " + user is null ? userFallback : user.PackageVersion + "\r\n" +
                         "DateTime: " + DateTime.Now + "\r\n" +
-                        "User: " + (user == null ? userFallback : user.GetUserName()) + "\r\n" +
+                        "User: " + (user is null ? userFallback : user.GetUserName()) + "\r\n" +
                         "Location: " + errorLoc + "\r\n" +
-                        "ErrorMessage: " + (errorMessage == null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
+                        "ErrorMessage: " + (errorMessage is null ? "" : errorMessage) + "\r\n" + "\r\n" + new string('+', 50) + "\r\n" + "\r\n" +
                         existing);
                     sw.Flush();
                     sw.Close();
