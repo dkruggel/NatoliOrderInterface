@@ -1456,7 +1456,7 @@ namespace NatoliOrderInterface
                 mailItem.Body = "";
                 mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
                 mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceLow;
-                mailItem.Display(true);
+                mailItem.Display(false);
                 Cursor = Cursors.Arrow;
             }
             catch (Exception ex)

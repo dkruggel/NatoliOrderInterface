@@ -354,7 +354,7 @@ namespace NatoliOrderInterface
             QuoteRepresentative representativeRow = quote.Nat01Context.QuoteRepresentative.Where(q => q.RepId.Trim() == quote.QuoteRepID.ToString().Trim()).FirstOrDefault();
             try
             {
-                BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Relative));
+                BitmapImage image = new BitmapImage(new Uri(representativeRow.SignatureFile.ToString().Trim(), UriKind.Absolute));
                 Signature.Source = image;
                 SignaturePlainText.Text = representativeRow.Name.ToString().Trim() + " / NATOLI ENGINEERING";
             }
