@@ -435,7 +435,7 @@ namespace NatoliOrderInterface
                 App.GetConnectionString();
                 App.GetEmailSettings();
                 ((App)Application.Current as App).InitializeTimers();
-                UpdatedFromChild = MainRefresh;
+                // UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
                 Height = (double)User.Height;
@@ -491,13 +491,79 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
         }
-        public void MainRefresh()
+        public void MainRefresh(string module = "")
         {
-            BindData("Main");
-            BindData("QuotesNotConverted");
-            BindData("NatoliOrderList");
+            //BindData("Main");
+            //BindData("QuotesNotConverted");
+            //BindData("NatoliOrderList");
 
-            UpdateUI();
+            //UpdateUI();
+
+            if (string.IsNullOrEmpty(module))
+            {
+                Task.Run(() =>
+                {
+                    BindData("Main");
+                    BindData("QuotesNotConverted");
+                    BindData("NatoliOrderList");
+                }).ContinueWith(t => Dispatcher.Invoke(() => UpdateUI()));
+            }
+            else
+            {
+                switch (module)
+                {
+                    case "BeingEntered":
+                        GetBeingEntered();
+                        Dispatcher.Invoke(() => BindBeingEntered());
+                        break;
+                    case "InTheOffice":
+                        GetInTheOffice();
+                        Dispatcher.Invoke(() => BindInTheOffice());
+                        break;
+                    case "QuotesNotConverted":
+                        GetQuotesNotConverted();
+                        Dispatcher.Invoke(() => BindQuotesNotConverted());
+                        break;
+                    case "EnteredUnscanned":
+                        GetEnteredUnscanned();
+                        Dispatcher.Invoke(() => BindEnteredUnscanned());
+                        break;
+                    case "InEngineering":
+                        GetInEngineering();
+                        Dispatcher.Invoke(() => BindInEngineering());
+                        break;
+                    case "QuotesToConvert":
+                        GetQuotesToConvert();
+                        Dispatcher.Invoke(() => BindQuotesToConvert());
+                        break;
+                    case "ReadyToPrint":
+                        GetReadyToPrint();
+                        Dispatcher.Invoke(() => BindReadyToPrint());
+                        break;
+                    case "PrintedInEngineering":
+                        GetPrintedInEngineering();
+                        Dispatcher.Invoke(() => BindPrintedInEngineering());
+                        break;
+                    case "AllTabletProjects":
+                        GetAllTabletProjects();
+                        Dispatcher.Invoke(() => BindAllTabletProjects());
+                        break;
+                    case "AllToolProjects":
+                        GetAllToolProjects();
+                        Dispatcher.Invoke(() => BindAllToolProjects());
+                        break;
+                    case "DriveWorksQueue":
+                        GetDriveWorksQueue();
+                        Dispatcher.Invoke(() => BindDriveWorksQueue());
+                        break;
+                    case "NatoliOrderList":
+                        GetNatoliOrderList();
+                        Dispatcher.Invoke(() => BindNatoliOrderList());
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
         }
@@ -4014,6 +4080,15 @@ namespace NatoliOrderInterface
         }
         private void BindBeingEntered()
         {
+            string searchString = GetSearchString("BeingEntered");
+
+            _ordersBeingEntered =
+                _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                               o.QuoteNo.ToString().Contains(searchString) ||
+                                               o.CustomerName.ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+
             OrdersBeingEntered = _ordersBeingEntered;
         }
         private void GetInTheOffice()
@@ -4031,10 +4106,7 @@ namespace NatoliOrderInterface
         }
         private void BindInTheOffice()
         {
-            int i = User.VisiblePanels.IndexOf("InTheOffice");
-
-            var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
-            string searchString = (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            string searchString = GetSearchString("InTheOffice");
 
             _ordersInTheOffice =
                 _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
@@ -4079,6 +4151,27 @@ namespace NatoliOrderInterface
         }
         private void BindQuotesNotConverted()
         {
+            string searchString = GetSearchString("QuotesNotConverted");
+
+            if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                _quotesNotConverted.Where(p => p.RepId.ToLower().Trim() == searchString)
+                                   .OrderByDescending(kvp => kvp.QuoteNo)
+                                   .ToList();
+            }
+            else
+            {
+                var _filtered =
+                _quotesNotConverted.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+                                               p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
+                                               p.CustomerName.ToLower().Contains(searchString) ||
+                                               p.Csr.ToLower().Contains(searchString))
+                                   .OrderByDescending(kvp => kvp.QuoteNo)
+                                   .ToList();
+            }
+
             QuotesNotConverted = _quotesNotConverted;
         }
         private void GetEnteredUnscanned()
@@ -4096,6 +4189,14 @@ namespace NatoliOrderInterface
         }
         private void BindEnteredUnscanned()
         {
+            string searchString = GetSearchString("EnteredUnscanned");
+
+            _ordersEntered =
+                _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                          p.CustomerName.ToLower().Contains(searchString))
+                              .OrderBy(kvp => kvp.OrderNo)
+                              .ToList();
+
             OrdersEntered = _ordersEntered;
         }
         private void GetInEngineering()
@@ -4113,6 +4214,17 @@ namespace NatoliOrderInterface
         }
         private void BindInEngineering()
         {
+            string searchString = GetSearchString("InEngineering");
+
+            _ordersInEng =
+                _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                        p.CustomerName.ToLower().Contains(searchString) ||
+                                        p.EmployeeName.ToLower().Contains(searchString))
+                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+
             OrdersInEng = _ordersInEng;
         }
         private void GetQuotesToConvert()
@@ -4145,6 +4257,16 @@ namespace NatoliOrderInterface
         }
         private void BindQuotesToConvert()
         {
+            string searchString = GetSearchString("QuotesNotConverted");
+
+            _quotesToConvert =
+                _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+                                            p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
+                                            p.CustomerName.ToLower().Contains(searchString) ||
+                                            p.Csr.ToLower().Contains(searchString))
+                                .OrderBy(kvp => kvp.QuoteNo)
+                                .ToList();
+
             QuotesToConvert = _quotesToConvert;
         }
         private void GetReadyToPrint()
@@ -4162,9 +4284,19 @@ namespace NatoliOrderInterface
         }
         private void BindReadyToPrint()
         {
+            string searchString = GetSearchString("ReadyToPrint");
+
+            _ordersReadyToPrint =
+                _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                               p.CustomerName.ToLower().Contains(searchString) ||
+                                               p.EmployeeName.ToLower().Contains(searchString) ||
+                                               p.CheckedBy.ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+
             OrdersReadyToPrint = _ordersReadyToPrint;
         }
-        private void GetPrintedInEngineering()
+        public void GetPrintedInEngineering()
         {
             try
             {
@@ -4177,8 +4309,68 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindPrintedInEngineering()
+        public void BindPrintedInEngineering()
         {
+            string searchString = GetSearchString("PrintedInEngineering");
+
+            string column;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1];
+                switch (column)
+                {
+                    case "Order No":
+
+                        _ordersPrinted =
+                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "Customer Name":
+
+                        _ordersPrinted =
+                            _ordersPrinted.Where(p => p.CustomerName.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "Employee Name":
+
+                        _ordersPrinted =
+                            _ordersPrinted.Where(p => p.EmployeeName.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "Checker":
+
+                        _ordersPrinted =
+                            _ordersPrinted.Where(p => p.CheckedBy.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    default:
+
+                        _ordersPrinted =
+                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                                      p.CustomerName.ToLower().Contains(searchString) ||
+                                                      p.EmployeeName.ToLower().Contains(searchString) ||
+                                                      p.CheckedBy.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _ordersPrinted =
+                    _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                              p.CustomerName.ToLower().Contains(searchString) ||
+                                              p.EmployeeName.ToLower().Contains(searchString) ||
+                                              p.CheckedBy.ToLower().Contains(searchString))
+                                  .OrderBy(kvp => kvp.OrderNo)
+                                  .ToList();
+            }
+
             OrdersPrinted = _ordersPrinted;
         }
         private void GetAllTabletProjects()
@@ -4218,6 +4410,19 @@ namespace NatoliOrderInterface
         }
         private void BindAllTabletProjects()
         {
+            string searchString = GetSearchString("AllTabletProjects");
+
+            _allTabletProjects =
+                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                              p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                              p.CustomerName.ToLower().Contains(searchString) ||
+                                              p.Csr.ToLower().Contains(searchString) ||
+                                              p.Drafter.ToLower().Contains(searchString))
+                                  .OrderByDescending(kvp => kvp.MarkedPriority)
+                                  .ThenBy(kvp => kvp.DueDate)
+                                  .ThenBy(kvp => kvp.ProjectNumber)
+                                  .ToList();
+
             AllTabletProjects = _allTabletProjects;
         }
         private void GetAllToolProjects()
@@ -4257,6 +4462,19 @@ namespace NatoliOrderInterface
         }
         private void BindAllToolProjects()
         {
+            string searchString = GetSearchString("AllToolProjects");
+
+            _allToolProjects =
+                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                            p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                            p.CustomerName.ToLower().Contains(searchString) ||
+                                            p.Csr.ToLower().Contains(searchString) ||
+                                            p.Drafter.ToLower().Contains(searchString))
+                                .OrderByDescending(kvp => kvp.MarkedPriority)
+                                .ThenBy(kvp => kvp.DueDate)
+                                .ThenBy(kvp => kvp.ProjectNumber)
+                                .ToList();
+
             AllToolProjects = _allToolProjects;
         }
         private void GetDriveWorksQueue()
@@ -4325,46 +4543,141 @@ namespace NatoliOrderInterface
         }
         private void BindNatoliOrderList()
         {
+            string searchString = GetSearchString("NatoliOrderList");
+
+            if (searchString.ToLower().StartsWith("rep:"))
+            {
+                searchString = searchString.Substring(4);
+                var _filtered =
+                _natoliOrderList.Where(p => p.RepId.ToLower().Trim() == searchString)
+                                .OrderBy(kvp => kvp.ShipDate)
+                                .ToList();
+            }
+            else
+            {
+                var _filtered =
+                _natoliOrderList.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                            p.Customer.ToLower().Contains(searchString))
+                                .OrderBy(kvp => kvp.ShipDate)
+                                .ToList();
+            }
+
             NatoliOrderList = _natoliOrderList;
         }
         #endregion
         #region Module Search Box Text Changed Events
-        //private void OrdersBeingEnteredSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
-        //}
-        public void OrdersInTheOfficeSearchBox_TextChanged()
+        private string GetSearchString(string moduleName)
+        {
+            int i = User.VisiblePanels.IndexOf(moduleName);
+
+            var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
+            return (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+        }
+        public void TextChanged(string module)
+        {
+            switch (module)
+            {
+                case "BeingEntered":
+                    OrdersBeingEnteredSearchBox_TextChanged();
+                    break;
+                case "InTheOffice":
+                    OrdersInTheOfficeSearchBox_TextChanged();
+                    break;
+                case "QuotesNotConverted":
+                    QuotesNotConvertedSearchBox_TextChanged();
+                    break;
+                case "EnteredUnscanned":
+                    OrdersEnteredUnscannedSearchBox_TextChanged();
+                    break;
+                case "InEngineering":
+                    OrdersInEngineeringUnprintedSearchBox_TextChanged();
+                    break;
+                case "QuotesToConvert":
+                    QuotesToConvertSearchBox_TextChanged();
+                    break;
+                case "ReadyToPrint":
+                    OrdersReadyToPrintSearchBox_TextChanged();
+                    break;
+                case "PrintedInEngineering":
+                    OrdersPrintedInEngineeringSearchBox_TextChanged();
+                    break;
+                case "AllTabletProjects":
+                    AllTabletProjectsSearchBox_TextChanged();
+                    break;
+                //case ("TabletProjectsNotStarted", "Main"):
+                //    break;
+                //case ("TabletProjectsStarted", "Main"):
+                //    break;
+                //case ("TabletProjectsDrawn", "Main"):
+                //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsSubmitted", "Main"):
+                //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+                //    break;
+                //case ("TabletProjectsOnHold", "Main"):
+                //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+                //    break;
+                case "AllToolProjects":
+                    AllToolProjectsSearchBox_TextChanged();
+                    break;
+                //case ("ToolProjectsNotStarted", "Main"):
+                //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsStarted", "Main"):
+                //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsDrawn", "Main"):
+                //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+                //    break;
+                //case ("ToolProjectsOnHold", "Main"):
+                //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+                //    break;
+                case "DriveWorksQueue":
+                    DriveWorksQueueSearchBox_TextChanged();
+                    break;
+                case "NatoliOrderList":
+                    NatoliOrderListSearchBox_TextChanged();
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void OrdersBeingEnteredSearchBox_TextChanged()
+        {
+            Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+        }
+        private void OrdersInTheOfficeSearchBox_TextChanged()
         {
             Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
         }
-        //private void QuotesNotConvertedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
-        //}
-        //private void OrdersEnteredUnscannedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
-        //}
-        //private void OrdersInEngineeringUnprintedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
-        //}
-        //private void QuotesToConvertSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
-        //}
-        //private void OrdersReadyToPrintSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
-        //}
-        //private void OrdersPrintedInEngineeringSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
-        //}
-        //private void AllTabletProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
-        //}
+        private void QuotesNotConvertedSearchBox_TextChanged()
+        {
+            Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+        }
+        private void OrdersEnteredUnscannedSearchBox_TextChanged()
+        {
+            Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+        }
+        private void OrdersInEngineeringUnprintedSearchBox_TextChanged()
+        {
+            Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+        }
+        private void QuotesToConvertSearchBox_TextChanged()
+        {
+            Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+        }
+        private void OrdersReadyToPrintSearchBox_TextChanged()
+        {
+            Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+        }
+        private void OrdersPrintedInEngineeringSearchBox_TextChanged()
+        {
+            Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+        }
+        private void AllTabletProjectsSearchBox_TextChanged()
+        {
+            Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+        }
         //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
         //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
@@ -4385,10 +4698,10 @@ namespace NatoliOrderInterface
         //{
         //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
         //}
-        //private void AllToolProjectsSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
-        //}
+        private void AllToolProjectsSearchBox_TextChanged()
+        {
+            Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+        }
         //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
         //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
@@ -4405,14 +4718,14 @@ namespace NatoliOrderInterface
         //{
         //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
         //}
-        //private void DriveWorksQueueSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
-        //}
-        //private void NatoliOrderListSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
-        //}
+        private void DriveWorksQueueSearchBox_TextChanged()
+        {
+            Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+        }
+        private void NatoliOrderListSearchBox_TextChanged()
+        {
+            Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+        }
         #endregion
         #endregion
 

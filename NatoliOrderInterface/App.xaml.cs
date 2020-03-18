@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using NatoliOrderInterface.Models.NEC;
 using NatoliOrderInterface.Models.DriveWorks;
+using System.Threading.Tasks;
 
 namespace NatoliOrderInterface
 {
@@ -29,6 +30,7 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class App : Application
     {
+        #region Declaratoins
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -62,6 +64,7 @@ namespace NatoliOrderInterface
         private int click_count = 0;
         private CheckBox checkBox;
         private string docNumber;
+        #endregion
 
         public static void GetConnectionString()
         {
@@ -153,20 +156,17 @@ namespace NatoliOrderInterface
         }
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).OrdersInTheOfficeSearchBox_TextChanged();
-            //TextBox textBox = sender as TextBox;
-            //if (textBox.Text.Length > 0)
-            //{
-            //    Grid grid = textBox.Parent as Grid;
-            //    Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
-            //    xImage.Visibility = Visibility.Visible;
-            //}
-            //else
-            //{
-            //    Grid grid = textBox.Parent as Grid;
-            //    Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
-            //    xImage.Visibility = Visibility.Collapsed;
-            //}
+            var x = new TextBox();
+            try
+            {
+                x = VisualTreeHelper.GetParent((((sender as TextBox).Parent as Grid).Parent as Border)) as TextBox;
+            }
+            catch
+            {
+                x = sender as TextBox;
+            }
+            string type = ((x.Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
         }
         private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -549,7 +549,7 @@ namespace NatoliOrderInterface
                         }
                         else if (pss.ToolDrawnBy.Length > 0)
                         {
-                            ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectSubmittedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
                         else if (pss.ProjectStartedTool.Length > 0)
@@ -1053,12 +1053,13 @@ namespace NatoliOrderInterface
         #region Orders
         private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
             WorkOrder workOrder = null;
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count > 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
-                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
 
                 int count = validOrders.Count;
@@ -1124,16 +1125,18 @@ namespace NatoliOrderInterface
                 //}
             }
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
             WorkOrder workOrder = null;
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
-                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+                
                 List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
 
                 int count = validOrders.Count;
@@ -1151,16 +1154,17 @@ namespace NatoliOrderInterface
                 }
             }
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
         {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
             WorkOrder workOrder = null;
             // Scan selected orders if there are any and then clear the list
             if (selectedOrders.Count != 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
-                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
 
                 int count = validOrders.Count;
@@ -1213,18 +1217,19 @@ namespace NatoliOrderInterface
                 }
             }
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         #endregion
         #region Quotes
         private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
         {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
             using var _nat02context = new NAT02Context();
 
             if (selectedProjects.Count > 0)
             {
-                // New list of projects that are in the same module that was right clicked inside of
-                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == currModule).ToList();
 
                 try
@@ -1255,7 +1260,7 @@ namespace NatoliOrderInterface
             
             _nat02context.SaveChanges();
             _nat02context.Dispose();
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void SubmitQuote_Click(object sender, RoutedEventArgs e)
         {
@@ -1320,7 +1325,7 @@ namespace NatoliOrderInterface
             necContext.Dispose();
             context.Dispose();
             this.MainWindow.Cursor = Cursors.Arrow;
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void RecallQuote_Click(object sender, RoutedEventArgs e)
         {
@@ -1362,13 +1367,18 @@ namespace NatoliOrderInterface
             necContext.Dispose();
             context.Dispose();
             this.MainWindow.Cursor = Cursors.Arrow;
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         #endregion
         #region Projects
         private void NextStepProject_Click(object sender, RoutedEventArgs e)
         {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
             projectsToMove = selectedProjects.Where(p => p.Item5 == selectedProjects.Last().Item5).ToList();
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void StartProject_Click(object sender, RoutedEventArgs e)
         {
@@ -1394,7 +1404,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void FinishProject_Click(object sender, RoutedEventArgs e)
@@ -1423,7 +1433,7 @@ namespace NatoliOrderInterface
                     selectedProjects.Clear();
                     projectsToMove.Clear();
 
-                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
                 }
             }
             catch (Exception ex) { 
@@ -1454,7 +1464,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void CheckProject_Click(object sender, RoutedEventArgs e)
@@ -1481,7 +1491,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void OnHoldProject_Click(object sender, RoutedEventArgs e)
@@ -1508,7 +1518,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void OffHoldProject_Click(object sender, RoutedEventArgs e)
@@ -1535,7 +1545,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void CompleteProject_Click(object sender, RoutedEventArgs e)
@@ -1562,7 +1572,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void CancelProject_Click(object sender, RoutedEventArgs e)
@@ -1589,7 +1599,7 @@ namespace NatoliOrderInterface
                 selectedProjects.Clear();
                 projectsToMove.Clear();
 
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh();
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void StartTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
