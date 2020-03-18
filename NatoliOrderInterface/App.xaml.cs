@@ -249,8 +249,47 @@ namespace NatoliOrderInterface
         }
         private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            var name = ((sender as DockPanel).Parent as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+
+            int oldIndex = user.VisiblePanels.IndexOf(name);
+
             Window parent = Window.GetWindow((sender as DockPanel));
-            //parent.Cursor = Cursors.Arrow;
+            
+            Win32Point w32Mouse = new Win32Point();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                GetCursorPos(ref w32Mouse);
+            }
+            else
+            {
+                // How to do on Linux and OSX?
+            }
+
+            if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
+            {
+                (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                SaveSettings();
+            }
+        }
+        private void SaveSettings()
+        {
+            NAT02Context _nat02context = new NAT02Context();
+
+            string newPanels = "";
+            List<string> visiblePanels = new List<string>();
+            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children)
+            {
+                visiblePanels.Add((VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7]);
+            }
+            newPanels = String.Join(',', visiblePanels.ToArray());
+
+            EoiSettings eoiSettings = _nat02context.EoiSettings.Single(s => s.EmployeeId == user.EmployeeCode);
+            eoiSettings.Panels = newPanels;
+            _nat02context.EoiSettings.Update(eoiSettings);
+            _nat02context.SaveChanges();
+            _nat02context.Dispose();
+
+            user.VisiblePanels = visiblePanels;
         }
         private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
@@ -634,8 +673,8 @@ namespace NatoliOrderInterface
                             else
                             {
                                 // Check Order: Enabled, "Mark As Checked"
-                                orderCheckButton.IsEnabled = true;
-                                orderCheckButton.ToolTip = "Mark As Checked";
+                                //orderCheckButton.IsEnabled = true;
+                                //orderCheckButton.ToolTip = "Mark As Checked";
                             }
                             break;
                         case "ReadyToPrint":
@@ -1219,6 +1258,137 @@ namespace NatoliOrderInterface
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
+        private void DoNotProcess_Click(object sender, RoutedEventArgs e)
+        {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+            // Scan selected orders if there are any and then clear the list
+            if (selectedOrders.Count != 0)
+            {
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    (string, CheckBox, string) order = validOrders[i];
+                    using var nat02context = new NAT02Context();
+                    EoiOrdersDoNotProcess _ = new EoiOrdersDoNotProcess()
+                    {
+                        OrderNo = double.Parse(order.Item1),
+                        UserName = user.GetUserName()
+                    };
+                    nat02context.EoiOrdersDoNotProcess.Add(_);
+                    nat02context.SaveChanges();
+                    nat02context.Dispose();
+                }
+            }
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+        }
+        private void CanProcess_Click(object sender, RoutedEventArgs e)
+        {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+            // Scan selected orders if there are any and then clear the list
+            if (selectedOrders.Count != 0)
+            {
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    (string, CheckBox, string) order = validOrders[i];
+                    using var nat02context = new NAT02Context();
+                    if (nat02context.EoiOrdersDoNotProcess.Any(o => o.OrderNo == double.Parse(order.Item1)))
+                    {
+                        EoiOrdersDoNotProcess _ = nat02context.EoiOrdersDoNotProcess.Single(o => o.OrderNo == double.Parse(order.Item1));
+                        nat02context.EoiOrdersDoNotProcess.Remove(_);
+                    }
+                    nat02context.SaveChanges();
+                    nat02context.Dispose();
+                }
+            }
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+        }
+        private void NotFinished_Click(object sender, RoutedEventArgs e)
+        {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+            // Scan selected orders if there are any and then clear the list
+            if (selectedOrders.Count != 0)
+            {
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    (string, CheckBox, string) order = validOrders[i];
+                    using var nat02context = new NAT02Context();
+                    if (nat02context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == double.Parse(order.Item1)))
+                    {
+                        EoiOrdersMarkedForChecking _ = nat02context.EoiOrdersMarkedForChecking.Single(o => o.OrderNo == double.Parse(order.Item1));
+                        nat02context.EoiOrdersMarkedForChecking.Remove(_);
+                    }
+                    nat02context.SaveChanges();
+                    nat02context.Dispose();
+                }
+            }
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+        }
+        private void FinishOrder_Click(object sender, RoutedEventArgs e)
+        {
+            // New list of projects that are in the same module that was right clicked inside of
+            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+            // Scan selected orders if there are any and then clear the list
+            if (selectedOrders.Count != 0)
+            {
+                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
+
+                int count = validOrders.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    (string, CheckBox, string) order = validOrders[i];
+                    using var nat02context = new NAT02Context();
+                    if (!nat02context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == double.Parse(order.Item1)))
+                    {
+                        EoiOrdersMarkedForChecking _ = new EoiOrdersMarkedForChecking()
+                        {
+                            OrderNo = double.Parse(order.Item1)
+                        };
+                        nat02context.EoiOrdersMarkedForChecking.Add(_);
+                    }
+                    nat02context.SaveChanges();
+                    nat02context.Dispose();
+                }
+            }
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+        }
+        //private void CheckOrder_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // New list of projects that are in the same module that was right clicked inside of
+        //    string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+        //    // Scan selected orders if there are any and then clear the list
+        //    if (selectedOrders.Count != 0)
+        //    {
+        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == currModule).ToList();
+
+        //        int count = validOrders.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+
+        //        }
+        //    }
+
+        //    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+        //}
         #endregion
         #region Quotes
         private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
@@ -2522,6 +2692,7 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
+
         #endregion
     }
 }

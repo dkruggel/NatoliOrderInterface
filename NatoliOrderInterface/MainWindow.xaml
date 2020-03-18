@@ -401,6 +401,7 @@
                 </Menu>
                 <Button Name="NotificationButton" DockPanel.Dock="Left" Style="{StaticResource ShakeButtonIcon}" Tag="{StaticResource bellDrawingImage}" Background="Transparent" BorderThickness="0" Click="NotificationsMenu_Click"/>
                 <Button DockPanel.Dock="Left" Style="{StaticResource RotateButtonIcon}" Tag="{StaticResource refresh_doubleDrawingImage}" Background="Transparent" BorderThickness="0" Click="ForceRefresh_Click"/>
+                <Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click"/>
             </DockPanel>
             <DockPanel HorizontalAlignment="Right">
                 <Grid Margin="5,0">

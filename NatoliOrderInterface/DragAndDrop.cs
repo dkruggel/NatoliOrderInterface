@@ -126,9 +126,23 @@ namespace NatoliOrderInterface
                     // How to do on Linux and OSX?
                 }
 
-                this.DragDropWindow.Left = w32Mouse.X;
-                this.DragDropWindow.Top = w32Mouse.Y;
-                this.DragDropWindow.Show();
+                Window parent = (Application.Current.MainWindow as MainWindow);
+
+                if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
+                {
+                    var name = (VisualTreeHelper.GetChild(dragElement, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+
+                    int oldIndex = user.VisiblePanels.IndexOf(name);
+                    
+                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                    SaveSettings();
+                }
+                else
+                {
+                    this.DragDropWindow.Left = w32Mouse.X;
+                    this.DragDropWindow.Top = w32Mouse.Y;
+                    this.DragDropWindow.Show();
+                }
             }
             catch (Exception ex)
             {

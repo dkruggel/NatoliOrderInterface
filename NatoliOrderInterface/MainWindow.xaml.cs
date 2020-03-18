@@ -140,27 +140,27 @@ namespace NatoliOrderInterface
 
 
         #region View Dictionaries
-        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
-        Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
-        Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> ordersBeingEnteredDict;
-        Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> ordersInTheOfficeDict;
-        Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> ordersEnteredUnscannedDict;
-        Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> ordersInEngineeringUnprintedDict;
-        Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersReadyToPrintDict;
-        Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersPrintedInEngineeringDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsNotStartedDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsStartedDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsDrawnDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsSubmittedDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsOnHoldDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> allTabletProjectsDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsNotStartedDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsStartedDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsDrawnDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsOnHoldDict;
-        Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> allToolProjectsDict;
-        Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)> driveWorksQueueDict;
-        Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> natoliOrderListDict;
+        //Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, string repId, string background, string foreground, string fontWeight)> quotesNotConvertedDict;
+        //Dictionary<(double quoteNumber, short? revNumber), (string customerName, string csr, int daysIn, DateTime timeSubmitted, string shipment, string background, string foreground, string fontWeight)> quotesToConvertDict;
+        //Dictionary<double, (double quoteNumber, int revNumber, string customerName, int numDaysToShip, string background, string foreground, string fontWeight)> ordersBeingEnteredDict;
+        //Dictionary<double, (string customerName, int daysToShip, int daysInOffice, string employeeName, string csr, string background, string foreground, string fontWeight)> ordersInTheOfficeDict;
+        //Dictionary<double, (string customerName, int daysToShip, int daysIn, string background, string foreground, string fontWeight)> ordersEnteredUnscannedDict;
+        //Dictionary<double, (string customerName, int daysToShip, int daysInEng, string employeeName, string background, string foreground, string fontWeight)> ordersInEngineeringUnprintedDict;
+        //Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersReadyToPrintDict;
+        //Dictionary<double, (string customerName, int daysToShip, string employeeName, string checkedBy, string background, string foreground, string fontWeight)> ordersPrintedInEngineeringDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsNotStartedDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsStartedDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsDrawnDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsSubmittedDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> tabletProjectsOnHoldDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> allTabletProjectsDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsNotStartedDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsStartedDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsDrawnDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> toolProjectsOnHoldDict;
+        //Dictionary<(int projectNumber, int? revNumber), (string customerName, string csr, string priority, string drafter, string dueDate, string background, string foreground, string fontWeight, string fontStyle)> allToolProjectsDict;
+        //Dictionary<string, (string releasedBy, string tag, string releaseTime, int priority)> driveWorksQueueDict;
+        //Dictionary<string, (string customerName, DateTime shipDate, string rush, string onHold, string rep, string repId, string background)> natoliOrderListDict;
         List<object> dictList;
         #endregion
 
@@ -830,13 +830,13 @@ namespace NatoliOrderInterface
             if (e.Key == Key.Left)
             {
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
-                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 860);
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 855);
             }
             else if (e.Key == Key.Right)
             {
 
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
-                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 860);
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 855);
             }
         }
         #endregion
@@ -937,8 +937,6 @@ namespace NatoliOrderInterface
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
-
-
             #endregion
             #region SubsMenuRegion
             MenuItem subsMenu = new MenuItem();
@@ -1414,7 +1412,75 @@ namespace NatoliOrderInterface
                 _nat02Context.Dispose();
             }
         }
+        private void AddModule_Click(object sender, RoutedEventArgs e)
+        {
+            // Open Add Module Window
+            Window addModuleWindow = new Window()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Width = 250,
+                Height = 350
+            };
 
+            DockPanel dockPanel = new DockPanel();
+
+            ListBox listBox = new ListBox();
+            DockPanel.SetDock(listBox, Dock.Top);
+            listBox.SelectionChanged += ListBox_SelectionChanged;
+            listBox.PreviewMouseDoubleClick += AddNewModule_Click;
+            using var _ = new NAT02Context();
+            List<string> visiblePanels = _.EoiSettings.Single(s => s.DomainName == User.DomainName).Panels.Split(',').ToList();
+            _.Dispose();
+            List<string> possiblePanels = IMethods.GetPossiblePanels(User);
+            listBox.ItemsSource = possiblePanels.Except(visiblePanels);
+
+            dockPanel.Children.Add(listBox);
+            addModuleWindow.Content = dockPanel;
+            addModuleWindow.Show();
+        }
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DockPanel dockPanel = (sender as ListBox).Parent as DockPanel;
+            Window w = dockPanel.Parent as Window;
+
+            if (dockPanel.Children.OfType<Button>().Any())
+                dockPanel.Children.Remove(dockPanel.Children.OfType<Button>().First());
+
+            Button button = new Button()
+            {
+                Content = "Add Module"
+            };
+            DockPanel.SetDock(button, Dock.Top);
+            dockPanel.Children.Add(button);
+            button.Click += AddNewModule_Click;
+        }
+        private void AddNewModule_Click(object sender, RoutedEventArgs e)
+        {
+            string name = sender is Button ? ((sender as Button).Parent as DockPanel).Children.OfType<ListBox>().First().SelectedItem.ToString() : (sender as ListBox).SelectedItem.ToString();
+            Window.GetWindow(sender as DependencyObject).Close();
+            AddModule(name, 0);
+            SaveSettings();
+        }
+        private void SaveSettings()
+        {
+            NAT02Context _nat02context = new NAT02Context();
+
+            string newPanels = "";
+            List<string> visiblePanels = new List<string>();
+            foreach (Grid grid in MainWrapPanel.Children)
+            {
+                visiblePanels.Add((VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7]);
+            }
+            newPanels = String.Join(',', visiblePanels.ToArray());
+
+            EoiSettings eoiSettings = _nat02context.EoiSettings.Single(s => s.EmployeeId == User.EmployeeCode);
+            eoiSettings.Panels = newPanels;
+            _nat02context.EoiSettings.Update(eoiSettings);
+            _nat02context.SaveChanges();
+            _nat02context.Dispose();
+
+            User.VisiblePanels = visiblePanels;
+        }
         #region Clicks
         private void StartTabletProject_Click(object sender, RoutedEventArgs e)
         {
@@ -2878,28 +2944,6 @@ namespace NatoliOrderInterface
                         };
                         _nat02context.Add(q);
                     }
-
-                    // Uncheck Check All CheckBox
-                    //var x = MainGrid.Children;
-                    //foreach (Border border in x.OfType<Border>())
-                    //{
-                    //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                    //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                    //    {
-                    //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                    //    }
-                    //}
-                }
-                else
-                {
-                    EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
-                    {
-                        QuoteNo = _quoteNumber,
-                        QuoteRevNo = _quoteRevNumber,
-                        TimeSubmitted = DateTime.Now,
-                        FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == _quoteNumber && m.QuoteRevNo == _quoteRevNumber) + 1
-                    };
-                    _nat02context.Add(q);
                 }
             }
             catch

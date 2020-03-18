@@ -1255,7 +1255,9 @@ namespace NatoliOrderInterface
             nat02context.Dispose();
             try
             {
-                quote.Dispose();
+                if (!(quote is null))
+                    quote.Dispose();
+
             }
             catch
             {
@@ -1579,7 +1581,6 @@ namespace NatoliOrderInterface
         }
         private void PrintOrderButton_Click(object sender, RoutedEventArgs e)
         {
-
             using var nat01Context = new NAT01Context();
             using var nat02Context = new NAT02Context();
             try

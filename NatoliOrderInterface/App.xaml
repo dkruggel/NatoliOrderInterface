@@ -282,6 +282,13 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="add_item_altDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M24,24z M0,0z M18,6L20.5,6C20.7761424,6 21,6.22385763 21,6.5 21,6.77614237 20.7761424,7 20.5,7L18,7 18,9.5C18,9.77614237 17.7761424,10 17.5,10 17.2238576,10 17,9.77614237 17,9.5L17,7 14.5,7C14.2238576,7 14,6.77614237 14,6.5 14,6.22385763 14.2238576,6 14.5,6L17,6 17,3.5C17,3.22385763 17.2238576,3 17.5,3 17.7761424,3 18,3.22385763 18,3.5L18,6z M20,11.5C20,11.2238576 20.2238576,11 20.5,11 20.7761424,11 21,11.2238576 21,11.5L21,18.5C21,19.8807119,19.8807119,21,18.5,21L5.5,21C4.11928813,21,3,19.8807119,3,18.5L3,5.5C3,4.11928813,4.11928813,3,5.5,3L12.5,3C12.7761424,3 13,3.22385763 13,3.5 13,3.77614237 12.7761424,4 12.5,4L5.5,4C4.67157288,4,4,4.67157288,4,5.5L4,18.5C4,19.3284271,4.67157288,20,5.5,20L18.5,20C19.3284271,20,20,19.3284271,20,18.5L20,11.5z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <!--#endregion-->
 
         <DrawingImage x:Key="greenplusadditioniconDrawingImage">
@@ -2605,6 +2612,36 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="AddModuleButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Visible"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="ToolTip" Value="Add Module"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource add_item_altDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         
         <!--#region Movement-->
         <Style x:Key="SubmitQuoteButton" TargetType="{x:Type Button}">
@@ -4271,8 +4308,8 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="SubmiteQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="FollowUpButton" Style="{StaticResource FollowUpQuoteButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="SubmiteQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
+                                        <Button x:Name="FollowUpButton" Style="{StaticResource FollowUpQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompletedQuoteCheck_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Quote" Click="OpenQuoteButton_Click"/>
                                         <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Export To Excel" Visibility="Visible" Click="ExportButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
@@ -4524,7 +4561,7 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Ready To Be Converted" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="RecallQuoteButton" Style="{StaticResource RecallQuoteButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="RecallQuoteButton" Style="{StaticResource RecallQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="RecallQuote_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Quote" Click="OpenQuoteButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -4789,9 +4826,9 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Being Entered" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -5054,9 +5091,9 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders In The Office" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right" Click="StartWorkOrder_Click"/>
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -5317,10 +5354,10 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
+                                        <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right" Click="StartWorkOrder_Click"/>
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -5573,11 +5610,11 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Being Processed In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderFinishButton" Style="{StaticResource OrderFinishButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCheckButton" Style="{StaticResource OrderCheckButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
+                                        <Button x:Name="OrderFinishButton" Style="{StaticResource OrderFinishButton}" Margin="2,0" HorizontalAlignment="Right" Click="FinishOrder_Click"/>
+                                        <!--<Button x:Name="OrderCheckButton" Style="{StaticResource OrderCheckButton}" Margin="2,0" HorizontalAlignment="Right" Click="CheckOrder_Click"/>-->
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -5833,10 +5870,10 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Ready To Be Printed" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderNotFinishedButton" Style="{StaticResource OrderNotFinishedButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
+                                        <Button x:Name="OrderNotFinishedButton" Style="{StaticResource OrderNotFinishedButton}" Margin="2,0" HorizontalAlignment="Right" Click="NotFinished_Click"/>
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
@@ -6092,10 +6129,10 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Printed And Ready For Production" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderToProductionButton" Style="{StaticResource OrderToProductionButton}" Margin="2,0" HorizontalAlignment="Right" Click="ToProdManOrder_Click"/>
-                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
-                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
+                                        <Button x:Name="OrderCanProcessButton" Style="{StaticResource OrderCanProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="CanProcess_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
