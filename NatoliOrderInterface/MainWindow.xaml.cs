@@ -825,6 +825,20 @@ namespace NatoliOrderInterface
 
             }
         }
+        private void GridWindow_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left)
+            {
+                double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 860);
+            }
+            else if (e.Key == Key.Right)
+            {
+
+                double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 860);
+            }
+        }
         #endregion
 
         #region MenuStuff
@@ -4263,7 +4277,7 @@ namespace NatoliOrderInterface
         }
         private void BindQuotesToConvert()
         {
-            string searchString = GetSearchString("QuotesNotConverted");
+            string searchString = GetSearchString("QuotesToConvert");
 
             _quotesToConvert =
                 _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
@@ -4577,7 +4591,8 @@ namespace NatoliOrderInterface
             int i = User.VisiblePanels.IndexOf(moduleName);
 
             var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
-            return (_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox).Text.ToLower();
+            //var x = VisualTreeHelper.GetChild(_textBox as DependencyObject, 0); //_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
+            return _textBox.Text.ToLower(); //x.Text.ToLower();
         }
         public void TextChanged(string module)
         {

@@ -7,6 +7,7 @@
         <local:IsFocusedOrIsNotEmpty x:Key="isFocusedOrIsNotEmptyConverter"/>
         <local:BackgroundConverter x:Key="backgroundConverter"/>
         <local:CheckBoxConverter x:Key="checkBoxConverter"/>
+        <local:ToolTipConverter x:Key="toolTipConverter"/>
         <local:MainWindow x:Key="MainWindow"/>
         <!--#region Colors -->
         <Color x:Key="Light.Color">#B3EFFF</Color>
@@ -4323,11 +4324,11 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                            <Grid Margin="0,0">
-                                                <Grid.Background>
-                                                                            <Binding ElementName="QuoteNumber" Path="Text" Converter="{StaticResource backgroundConverter}" ConverterParameter="Quotes" NotifyOnSourceUpdated="True"/>
-                                                </Grid.Background>
-                                                <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                    <Grid Margin="0,0">
+                                                                        <Grid.Background>
+                                                                            <Binding Converter="{StaticResource backgroundConverter}" ConverterParameter="Quotes" NotifyOnSourceUpdated="True"/>
+                                                                        </Grid.Background>
+                                                                        <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Grid Background="Transparent" ShowGridLines="False" MaxHeight="35" MinHeight="35" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
@@ -4571,6 +4572,9 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <ToggleButton x:Name="ToggleButton" PreviewMouseDown="ToggleButton_SingleClick">
+                                                <ToggleButton.ToolTip>
+                                                    <Binding Converter="{StaticResource toolTipConverter}"/>
+                                                </ToggleButton.ToolTip>
                                                 <ToggleButton.Style>
                                                     <Style TargetType="{x:Type ToggleButton}">
                                                         <Setter Property="Template">
@@ -4578,7 +4582,7 @@
                                                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                                             <Grid Margin="0,0">
                                                 <Grid.Background>
-                                                                            <Binding ElementName="QuoteNumber" Path="Text" Converter="{StaticResource backgroundConverter}" ConverterParameter="Quotes" NotifyOnSourceUpdated="True"/>
+                                                    <Binding Converter="{StaticResource backgroundConverter}" ConverterParameter="Quotes" NotifyOnSourceUpdated="True"/>
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>

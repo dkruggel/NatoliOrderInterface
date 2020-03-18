@@ -16,7 +16,12 @@ namespace NatoliOrderInterface
         Dictionary<string, string> oeDetailTypes = new Dictionary<string, string>() { { "U", "Upper" }, { "L", "Lower" }, { "D", "Die" }, { "DS", "Die" }, { "R", "Reject" }, { "A", "Alignment" } };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double orderNumber = double.Parse(value.ToString());
+            double orderNumber = 0.0;
+
+            if (!(value is EoiQuotesMarkedForConversionView))
+            {
+                orderNumber = double.Parse(value.ToString());
+            }
 
             using var _nat02Context = new NAT02Context();
             using var nat01context = new NAT01Context();
@@ -313,9 +318,38 @@ namespace NatoliOrderInterface
                         
                     }
                 }
-                else if (parameter.ToString() == "Quotes")
+                else if (value is EoiQuotesMarkedForConversionView)
                 {
+                    EoiQuotesMarkedForConversionView quote = value as EoiQuotesMarkedForConversionView;
 
+                    if (quote.Rush == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                }
+                else if (value is EoiQuotesNotConvertedView)
+                {
+                    EoiQuotesNotConvertedView quote = value as EoiQuotesNotConvertedView;
+
+                    int days = GetNumberOfDays(quote.Csr);
+
+                    bool needs_followup_4 = DateTime.Today.Subtract(_nat02Context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
+                                            GetNumberOfDays(quote.Csr) == 14;
+                    bool needs_followup = !_nat02Context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
+                                          DateTime.Today.Subtract(_nat02Context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&
+                                          !needs_followup_4;
+
+                    if (needs_followup)
+                    {
+                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                        return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                    }
+                    else if (needs_followup_4)
+                    {
+                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                        return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                    }
+
+                    if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                 }
                 else if (parameter.ToString() == "NatoliOrderList")
                 {
@@ -352,7 +386,38 @@ namespace NatoliOrderInterface
 
             return new SolidColorBrush(Colors.Transparent);
         }
-
+        private static int GetNumberOfDays(string csr)
+        {
+            switch (csr)
+            {
+                case "Alex Heimberger":
+                    return 14;
+                case "Anna King":
+                    return 7;
+                case "Bryan Foy":
+                    return 7;
+                case "David Nelson":
+                    return 7;
+                case "Gregory Lyle":
+                    return 14;
+                case "Heather Lane":
+                    return 7;
+                case "Humberto Zamora":
+                    return 14;
+                case "James Willis":
+                    return 14;
+                case "Miral Bouzitoun":
+                    return 14;
+                case "Nicholas Tarte":
+                    return 14;
+                case "Samantha Bowman":
+                    return 7;
+                case "Tiffany Simonpietri":
+                    return 7;
+                default:
+                    return 14;
+            }
+        }
         private LinearGradientBrush SetLinearGradientBrush(Color first, Color second, Color third, Color fourth)
         {
             LinearGradientBrush linearGradientBrush;
