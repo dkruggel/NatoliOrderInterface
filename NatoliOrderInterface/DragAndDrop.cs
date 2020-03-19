@@ -324,14 +324,14 @@ namespace NatoliOrderInterface
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         {
                             GetCursorPos(ref w32Mouse);
-                            if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
-                            {
-                                w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
-                            }
-                            else if ((Application.Current.MainWindow as MainWindow).Left < 0)
-                            {
-                                w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
-                            }
+                            //if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                            //{
+                            //    w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                            //}
+                            //else if ((Application.Current.MainWindow as MainWindow).Left < 0)
+                            //{
+                            //    w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
+                            //}
                         }
                         else
                         {
@@ -402,14 +402,6 @@ namespace NatoliOrderInterface
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     GetCursorPos(ref w32Mouse);
-                    if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
-                    {
-                        w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
-                    }
-                    else if ((Application.Current.MainWindow as MainWindow).Left < 0)
-                    {
-                        w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
-                    }
                 }
                 else
                 {
@@ -423,6 +415,7 @@ namespace NatoliOrderInterface
                 {
                     if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
                     {
+                        double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
                         if (w32Mouse.Y > loc.Item1.Y && w32Mouse.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
                         {
                             // We have a winner!
@@ -430,7 +423,8 @@ namespace NatoliOrderInterface
                             
                             break;
                         }
-                        else if (w32Mouse.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) && w32Mouse.Y < locs[locs.IndexOf(loc) + 1].Item1.Y)
+                        else if (w32Mouse.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) &&
+                            (nextY > loc.Item1.Y ? w32Mouse.Y < nextY : true))
                         {
                             // We have a winner!
                             newIndex = locs.IndexOf(loc);
@@ -492,6 +486,18 @@ namespace NatoliOrderInterface
             foreach (Grid grid in wrapPanel.Children)
             {
                 Point point = grid.TransformToAncestor(wrapPanel).Transform(new Point(-x, 0));
+
+                if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                {
+                    point.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                }
+                else if ((Application.Current.MainWindow as MainWindow).Left < 0)
+                {
+                    point.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
+                }
+
+                point.Y += (Application.Current.MainWindow as MainWindow).Top;
+
                 Size size = new Size(grid.ActualWidth, grid.ActualHeight);
                 if (size != new Size(0, 0)) { loc.Add((point, size)); }
             }
