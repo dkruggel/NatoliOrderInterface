@@ -4328,7 +4328,7 @@ namespace NatoliOrderInterface
                                             p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
                                             p.CustomerName.ToLower().Contains(searchString) ||
                                             p.Csr.ToLower().Contains(searchString))
-                                .OrderBy(kvp => kvp.QuoteNo)
+                                .OrderBy(kvp => kvp.TimeSubmitted)
                                 .ToList();
 
             QuotesToConvert = _quotesToConvert;
