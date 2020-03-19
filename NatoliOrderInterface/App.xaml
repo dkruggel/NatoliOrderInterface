@@ -4308,7 +4308,7 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="36" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="SubmiteQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
+                                        <Button x:Name="SubmitQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
                                         <Button x:Name="FollowUpButton" Style="{StaticResource FollowUpQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompletedQuoteCheck_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Quote" Click="OpenQuoteButton_Click"/>
                                         <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Export To Excel" Visibility="Visible" Click="ExportButton_Click"/>
@@ -4386,7 +4386,7 @@
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
                                                                             <TextBlock Name="QuoteNumber" Tag="QuoteNumber" Text="{Binding QuoteNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
-                                                                            <TextBlock Name="QuoteRev" Tag="QuoteRev" Text="{Binding Rev}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"/>
+                                                                            <TextBlock Name="QuoteRev" Tag="QuoteRev" Text="{Binding QuoteRevNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"/>
                                                     <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" TextWrapping="NoWrap"/>
                                                     <Grid Grid.Column="4">
                                                         <Grid.ColumnDefinitions>

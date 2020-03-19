@@ -444,11 +444,13 @@ namespace NatoliOrderInterface
                 // Quote
                 if (quote)
                 {
+                    selectedQuotes.Add((col0val, col1val, checkBox, type));
+
                     var uniqueTypes = selectedQuotes.Select(q => q.Item4).Distinct();
 
                     if (type == "QuotesNotConverted")
                     {
-                        Button submitQuoteButton = buttons.Single(b => b.Name == "SubmiteQuoteButton");
+                        Button submitQuoteButton = buttons.Single(b => b.Name == "SubmitQuoteButton");
                         Button followUpButton = buttons.Single(b => b.Name == "FollowUpButton");
 
                         if (uniqueTypes.Count() == 1)
@@ -475,8 +477,6 @@ namespace NatoliOrderInterface
                             recallQuoteButton.Visibility = Visibility.Collapsed;
                         }
                     }
-
-                    selectedQuotes.Add((col0val, col1val, checkBox, type));
                 }
                 // Project
                 else if (project)
@@ -816,7 +816,7 @@ namespace NatoliOrderInterface
             projectNextStepButton.ToolTip = "";
 
             // Complete: Enabled, "Mark As Complete"
-            projectCompleteButton.Visibility = user.Department == "Customer Service" ? Visibility.Visible : Visibility.Collapsed;
+            projectCompleteButton.Visibility = (user.Department == "Customer Service" || user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754") ? Visibility.Visible : Visibility.Collapsed;
             projectCompleteButton.IsEnabled = true;
             projectCompleteButton.ToolTip = "Mark As Complete";
         }
@@ -1720,11 +1720,11 @@ namespace NatoliOrderInterface
         }
         private void CompleteProject_Click(object sender, RoutedEventArgs e)
         {
-            if (projectsToMove.Count > 0)
+            if (selectedProjects.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1740,7 +1740,7 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                projectsToMove.Clear();
+                //projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
