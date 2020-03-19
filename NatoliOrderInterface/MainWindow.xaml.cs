@@ -4633,10 +4633,16 @@ namespace NatoliOrderInterface
         private string GetSearchString(string moduleName)
         {
             int i = User.VisiblePanels.IndexOf(moduleName);
-
-            var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
-            //var x = VisualTreeHelper.GetChild(_textBox as DependencyObject, 0); //_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
-            return _textBox.Text.ToLower(); //x.Text.ToLower();
+            if(i<0)
+            {
+                return "";
+            }
+            else
+            {
+                var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
+                //var x = VisualTreeHelper.GetChild(_textBox as DependencyObject, 0); //_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
+                return _textBox.Text.ToLower(); //x.Text.ToLower();
+            }
         }
         public void TextChanged(string module)
         {

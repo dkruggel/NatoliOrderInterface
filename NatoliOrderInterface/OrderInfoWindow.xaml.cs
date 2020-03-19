@@ -186,7 +186,9 @@ namespace NatoliOrderInterface
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     url = url.Replace("&", "^&");
-                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                    string filePath = "\""+new Uri(url).LocalPath+"\"";
+                    Process.Start(new ProcessStartInfo("cmd", $"/c {filePath}") { CreateNoWindow = true });
+
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
@@ -769,7 +771,7 @@ namespace NatoliOrderInterface
                     hobNo = hobNo.Remove(0, 1);
                 }
                 string folderBeginning = hobNo.Length == 6 || hobNo.Length == 5 ? hobNo.Remove(hobNo.Length - 3) : hobNo.Length == 4 ? "0" + hobNo.First().ToString() : "00";
-                string path = @"\\nsql03\data1\DRAW\E-DRAWINGS\" + folderBeginning + @"-E-DRAWINGS\";
+                string path = @"L:\DRAW\E-DRAWINGS\" + folderBeginning + @"-E-DRAWINGS\";
                 string[] files = Directory.GetFiles(path, hobNo + "*" + "*.pdf");
                 List<string> doesContainCustomer = files.Where(s => s.Contains(workOrder.EndUserName.Split(' ')[0])).OrderBy(s => s).ToList();
                 List<string> doesNotContainCustomer = files.Where(s => !s.Contains(workOrder.EndUserName.Split(' ')[0])).OrderBy(s => s).ToList();
