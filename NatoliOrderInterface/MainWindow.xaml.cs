@@ -726,6 +726,11 @@ namespace NatoliOrderInterface
                 eoiSettings.Top = (short?)Top;
                 eoiSettings.Left = (short?)Left;
                 eoiSettings.FilterActiveProjects = _filterProjects;
+                eoiSettings.PrimaryScreenLr = System.Windows.SystemParameters.VirtualScreenLeft < 0 ? "R" : "L";
+                var leftField = typeof(Window).GetField("_actualLeft", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var topField = typeof(Window).GetField("_actualTop", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if ((double)leftField.GetValue(this) < -100) { eoiSettings.UsePrimary = false; }
+                else if ((double)leftField.GetValue(this) > 2100) { eoiSettings.UsePrimary = false; }
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }
@@ -968,7 +973,7 @@ namespace NatoliOrderInterface
                 }
                 subsMenu.Items.Add(menuItem);
             }
-            MainMenu.Items.Add(subsMenu);
+            if (User.Department != "Hob Programming") { MainMenu.Items.Add(subsMenu); }
             #endregion
             #region LegendRegion
             MenuItem legendMenu = new MenuItem
@@ -1238,32 +1243,35 @@ namespace NatoliOrderInterface
             }
             else
             {
-                MainMenu.Items.Add(legendMenu);
-                legendMenu.Items.Add(ordersHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(orderRushMenu);
-                legendMenu.Items.Add(doNotProcessMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(projectsHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(tabletIsToolProjectMenu);
-                legendMenu.Items.Add(priorityMenu);
-                legendMenu.Items.Add(sentToEngineeringProjectMenu);
-                legendMenu.Items.Add(startedProjectMenu);
-                legendMenu.Items.Add(drawnProjectMenu);
-                legendMenu.Items.Add(submittedProjectMenu);
-                legendMenu.Items.Add(checkedProjectMenu);
-                legendMenu.Items.Add(onHoldProjectMenu);
-                legendMenu.Items.Add(toolStillTabletProjectMenu);
-                legendMenu.Items.Add(toolMultiTipSketchMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quotesHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quoteRushMenu);
-                legendMenu.Items.Add(followupQuoteCheckMenu);
+                if (User.Department != "Hob Programming")
+                {
+                    MainMenu.Items.Add(legendMenu);
+                    legendMenu.Items.Add(ordersHeader);
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(orderRushMenu);
+                    legendMenu.Items.Add(doNotProcessMenu);
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(projectsHeader);
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(tabletIsToolProjectMenu);
+                    legendMenu.Items.Add(priorityMenu);
+                    legendMenu.Items.Add(sentToEngineeringProjectMenu);
+                    legendMenu.Items.Add(startedProjectMenu);
+                    legendMenu.Items.Add(drawnProjectMenu);
+                    legendMenu.Items.Add(submittedProjectMenu);
+                    legendMenu.Items.Add(checkedProjectMenu);
+                    legendMenu.Items.Add(onHoldProjectMenu);
+                    legendMenu.Items.Add(toolStillTabletProjectMenu);
+                    legendMenu.Items.Add(toolMultiTipSketchMenu);
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(quotesHeader);
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(new Separator());
+                    legendMenu.Items.Add(quoteRushMenu);
+                    legendMenu.Items.Add(followupQuoteCheckMenu);
+                }
             }
 
             #endregion

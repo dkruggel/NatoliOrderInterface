@@ -126,24 +126,27 @@ namespace NatoliOrderInterface
                     // How to do on Linux and OSX?
                 }
 
-                Window parent = (Application.Current.MainWindow as MainWindow);
+                Rect bounds = (Application.Current.MainWindow as MainWindow).RestoreBounds;
 
-                if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
+                if (w32Mouse.X < bounds.Left || w32Mouse.X > bounds.Right || w32Mouse.Y < bounds.Top || w32Mouse.Y > bounds.Bottom)
                 {
                     string name = (VisualTreeHelper.GetChild(dragElement, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
 
                     int oldIndex = user.VisiblePanels.IndexOf(name);
 
-                    MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?");
-                    switch (res)
-                    {
-                        case MessageBoxResult.OK:
-                            (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                            SaveSettings();
-                            break;
-                        case MessageBoxResult.Cancel:
-                            break;
-                    }
+                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                    SaveSettings();
+
+                    //MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?","",MessageBoxButton.YesNo);
+                    //switch (res)
+                    //{
+                    //    case MessageBoxResult.Yes:
+                    //        (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                    //        SaveSettings();
+                    //        break;
+                    //    case MessageBoxResult.No:
+                    //        break;
+                    //}
                 }
                 else
                 {
@@ -324,14 +327,6 @@ namespace NatoliOrderInterface
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         {
                             GetCursorPos(ref w32Mouse);
-                            //if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
-                            //{
-                            //    w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
-                            //}
-                            //else if ((Application.Current.MainWindow as MainWindow).Left < 0)
-                            //{
-                            //    w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
-                            //}
                         }
                         else
                         {
@@ -411,9 +406,28 @@ namespace NatoliOrderInterface
                 List<(Point, Size)> locs = GetModuleLocations();
                 int newIndex = 0;
 
+                
+
                 foreach ((Point, Size) loc in locs)
                 {
-                    if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
+                    if (sender is Button)
+                    {
+                        if ((sender as Button).Name == "AddModuleButton")
+                        {
+                            MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
+                            switch (res)
+                            {
+                                case MessageBoxResult.Yes:
+                                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                                    SaveSettings();
+                                    break;
+                                case MessageBoxResult.No:
+                                    break;
+                            }
+                            break;
+                        }
+                    }
+                    else if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
                     {
                         double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
                         if (w32Mouse.Y > loc.Item1.Y && w32Mouse.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
@@ -487,16 +501,26 @@ namespace NatoliOrderInterface
             {
                 Point point = grid.TransformToAncestor(wrapPanel).Transform(new Point(-x, 0));
 
-                if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                if ((Application.Current.MainWindow.WindowState == WindowState.Maximized))
                 {
-                    point.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                    var leftField = typeof(Window).GetField("_actualLeft", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var topField = typeof(Window).GetField("_actualTop", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if ((double)leftField.GetValue(this) < -100) { point.X -= (int)System.Windows.SystemParameters.WorkArea.Width; }
+                    else if ((double)leftField.GetValue(this) > 2100) { point.X += (int)System.Windows.SystemParameters.WorkArea.Width; }
                 }
-                else if ((Application.Current.MainWindow as MainWindow).Left < 0)
+                else
                 {
-                    point.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
-                }
+                    if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                    {
+                        point.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                    }
+                    else if ((Application.Current.MainWindow as MainWindow).Left < -10)
+                    {
+                        point.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
+                    }
 
-                point.Y += (Application.Current.MainWindow as MainWindow).Top;
+                    point.Y += (Application.Current.MainWindow as MainWindow).Top;
+                }
 
                 Size size = new Size(grid.ActualWidth, grid.ActualHeight);
                 if (size != new Size(0, 0)) { loc.Add((point, size)); }

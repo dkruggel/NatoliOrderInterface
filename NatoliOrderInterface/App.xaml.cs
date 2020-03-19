@@ -249,7 +249,7 @@ namespace NatoliOrderInterface
         }
         private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var name = ((sender as DockPanel).Parent as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+            var name = ((sender as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
 
             int oldIndex = user.VisiblePanels.IndexOf(name);
 

@@ -51,6 +51,8 @@ namespace NatoliOrderInterface
         public bool FilterActiveProjects { get; set; }
         public string PackageVersion { get; }
         public bool ViewReports { get; set; }
+        public string PrimaryScreenLr { get; set; }
+        public bool UsePrimary { get; set; }
 
         public User()
         {
@@ -111,6 +113,10 @@ namespace NatoliOrderInterface
             {
                 Department = "Engineering";
             }
+            else if (deptCode == "D1102")
+            {
+                Department = "Hob Programming";
+            }
             else if (deptCode == "D1151")
             {
                 Department = "Order Entry";
@@ -155,7 +161,8 @@ namespace NatoliOrderInterface
                                                                                                    e.MoeDepartmentCode == "D1149" ||
                                                                                                    e.MoeDepartmentCode == "D1147" ||
                                                                                                    e.MoeDepartmentCode == "D1143" ||
-                                                                                                   e.MoeDepartmentCode == "D1133")).FirstOrDefault();
+                                                                                                   e.MoeDepartmentCode == "D1133" ||
+                                                                                                   e.MoeDepartmentCode == "D1102")).FirstOrDefault();
             }
             
             context.Dispose();
