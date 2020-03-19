@@ -594,14 +594,14 @@ namespace NatoliOrderInterface
         /// </summary>
         private void IfAppIsRunningSwitchToItAndShutdown()
         {
-            //var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
-            //if (currentlyRunningProcesses.Any())
-            //{
-            //    var process = currentlyRunningProcesses.First();
-            //    var id = process.Id;
-            //    IMethods.BringProcessToFront(currentlyRunningProcesses.First());
-            //    Application.Current.Shutdown();
-            //}
+            var currentlyRunningProcesses = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName).Where(p => p.Id != Process.GetCurrentProcess().Id);
+            if (currentlyRunningProcesses.Any())
+            {
+                var process = currentlyRunningProcesses.First();
+                var id = process.Id;
+                IMethods.BringProcessToFront(currentlyRunningProcesses.First());
+                Application.Current.Shutdown();
+            }
         }
         /// <summary>
         /// Binds a user to User.

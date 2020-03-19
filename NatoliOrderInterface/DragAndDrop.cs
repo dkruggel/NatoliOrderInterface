@@ -130,12 +130,20 @@ namespace NatoliOrderInterface
 
                 if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
                 {
-                    var name = (VisualTreeHelper.GetChild(dragElement, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+                    string name = (VisualTreeHelper.GetChild(dragElement, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
 
                     int oldIndex = user.VisiblePanels.IndexOf(name);
-                    
-                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                    SaveSettings();
+
+                    MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?");
+                    switch (res)
+                    {
+                        case MessageBoxResult.OK:
+                            (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                            SaveSettings();
+                            break;
+                        case MessageBoxResult.Cancel:
+                            break;
+                    }
                 }
                 else
                 {
@@ -316,6 +324,14 @@ namespace NatoliOrderInterface
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                         {
                             GetCursorPos(ref w32Mouse);
+                            if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                            {
+                                w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                            }
+                            else if ((Application.Current.MainWindow as MainWindow).Left < 0)
+                            {
+                                w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
+                            }
                         }
                         else
                         {
@@ -386,6 +402,14 @@ namespace NatoliOrderInterface
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     GetCursorPos(ref w32Mouse);
+                    if ((Application.Current.MainWindow as MainWindow).Left > System.Windows.SystemParameters.WorkArea.Width)
+                    {
+                        w32Mouse.X += (int)System.Windows.SystemParameters.WorkArea.Width;
+                    }
+                    else if ((Application.Current.MainWindow as MainWindow).Left < 0)
+                    {
+                        w32Mouse.X -= (int)System.Windows.SystemParameters.WorkArea.Width;
+                    }
                 }
                 else
                 {
@@ -406,7 +430,7 @@ namespace NatoliOrderInterface
                             
                             break;
                         }
-                        else if (w32Mouse.Y > (loc.Item1.Y + (loc.Item2.Height / 2)))
+                        else if (w32Mouse.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) && w32Mouse.Y < locs[locs.IndexOf(loc) + 1].Item1.Y)
                         {
                             // We have a winner!
                             newIndex = locs.IndexOf(loc);
