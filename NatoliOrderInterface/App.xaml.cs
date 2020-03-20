@@ -22,6 +22,8 @@ using System.Runtime.InteropServices;
 using NatoliOrderInterface.Models.NEC;
 using NatoliOrderInterface.Models.DriveWorks;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace NatoliOrderInterface
 {
@@ -835,6 +837,7 @@ namespace NatoliOrderInterface
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = true;
             projectNextStepButton.ToolTip = "Mark As Checked";
+            //RemoveEventHandlers(projectNextStepButton);
             projectNextStepButton.Click += CheckProject_Click;
 
             // Complete: Disabled, No Tooltip
@@ -857,6 +860,7 @@ namespace NatoliOrderInterface
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = true;
             projectNextStepButton.ToolTip = "Mark As Submitted";
+            //RemoveEventHandlers(projectNextStepButton);
             projectNextStepButton.Click += SubmitProject_Click;
 
             // Complete: Disabled, No Tooltip
@@ -879,6 +883,7 @@ namespace NatoliOrderInterface
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = true;
             projectNextStepButton.ToolTip = "Mark As Drawn";
+            //RemoveEventHandlers(projectNextStepButton);
             projectNextStepButton.Click += FinishProject_Click;
 
             // Complete: Disabled, No Tooltip
@@ -901,12 +906,23 @@ namespace NatoliOrderInterface
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = true;
             projectNextStepButton.ToolTip = "Mark As Started";
+            //RemoveEventHandlers(projectNextStepButton);
             projectNextStepButton.Click += StartProject_Click;
 
             // Complete: Disabled, No Tooltip
             projectCompleteButton.Visibility = user.Department == "Customer Service" ? Visibility.Visible : Visibility.Collapsed;
             projectCompleteButton.IsEnabled = false;
             projectCompleteButton.ToolTip = "";
+        }
+        private void RemoveEventHandlers(Control el)
+        {
+            FieldInfo fi = typeof(Control).GetField("EventClick",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            object obj = fi.GetValue(el);
+            PropertyInfo pi = el.GetType().GetProperty("Events",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
+            list.RemoveHandler(obj, list[obj]);
         }
         private void ToggleButton_SingleClick(object sender, MouseButtonEventArgs e)
         {
@@ -1547,8 +1563,6 @@ namespace NatoliOrderInterface
             string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
 
             projectsToMove = selectedProjects.Where(p => p.Item5 == selectedProjects.Last().Item5).ToList();
-
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void StartProject_Click(object sender, RoutedEventArgs e)
         {
@@ -1558,21 +1572,17 @@ namespace NatoliOrderInterface
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
 
-                if (currModule == "AllTabletProjects")
+                if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartTabletProject(validProjects);
                 }
-                else if (currModule == "AllToolProjects")
+                else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartToolProject(validProjects);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
 
-                selectedProjects.Clear();
-                projectsToMove.Clear();
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
+                }
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1587,23 +1597,18 @@ namespace NatoliOrderInterface
                     string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                     List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
 
-                    if (currModule == "AllTabletProjects")
+                    if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishTabletProject(validProjects);
                     }
-                    else if (currModule == "AllToolProjects")
+                    else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishToolProject(validProjects);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
+                        selectedProjects.Clear();
+                        projectsToMove.Clear();
 
-                    selectedProjects.Clear();
-                    projectsToMove.Clear();
-
-                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                        (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                    }
                 }
             }
             catch (Exception ex) { 
@@ -1618,21 +1623,17 @@ namespace NatoliOrderInterface
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
 
-                if (currModule == "AllTabletProjects")
+                if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Submit")
                 {
                     SubmitTabletProject(validProjects);
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     SubmitToolProject(validProjects);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
 
-                selectedProjects.Clear();
-                projectsToMove.Clear();
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
+                }
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1645,21 +1646,16 @@ namespace NatoliOrderInterface
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
                 List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
 
-                if (currModule == "AllTabletProjects")
+                if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckTabletProject(validProjects);
                 }
-                else if (currModule == "AllToolProjects")
+                else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckToolProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-
-                selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1720,11 +1716,11 @@ namespace NatoliOrderInterface
         }
         private void CompleteProject_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedProjects.Count > 0)
+            if (projectsToMove.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1740,7 +1736,7 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                //projectsToMove.Clear();
+                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1793,6 +1789,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -1859,6 +1856,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -1938,6 +1936,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -2007,6 +2006,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -2075,6 +2075,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -2161,6 +2162,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
@@ -2263,6 +2265,7 @@ namespace NatoliOrderInterface
 
                         // Uncheck project expander
                         project.Item3.IsChecked = false;
+                        (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                         using var _projectsContext = new ProjectsContext();
                         using var _driveworksContext = new DriveWorksContext();
@@ -2331,6 +2334,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user)
                     {
@@ -2355,6 +2359,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user)
                     {
@@ -2382,6 +2387,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     int _projectNumber = int.Parse(project.Item1);
                     int _revNumber = int.Parse(project.Item2);
 
@@ -2441,6 +2447,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     int _projectNumber = int.Parse(project.Item1);
                     int _revNumber = int.Parse(project.Item2);
 
@@ -2511,6 +2518,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _nat02Context = new NAT02Context();
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
@@ -2547,6 +2555,7 @@ namespace NatoliOrderInterface
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                     using var _nat02Context = new NAT02Context();
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
@@ -2582,6 +2591,7 @@ namespace NatoliOrderInterface
                         {
                             // Uncheck project expander
                             project.Item3.IsChecked = false;
+                            (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                             if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
                             {
@@ -2648,6 +2658,7 @@ namespace NatoliOrderInterface
                         {
                             // Uncheck project expander
                             project.Item3.IsChecked = false;
+                            (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                             if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
                             {

@@ -3299,9 +3299,9 @@
                                         </EventTrigger>
                                     </TextBlock.Triggers>
                                 </TextBlock>
-                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged"/>
-                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp"/>
-                                <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed">
+                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged" AllowDrop="True"/>
+                                <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp" AllowDrop="True"/>
+                                <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed" AllowDrop="True">
                                 </Image>
                             </Grid>
                         </Border>
@@ -6945,7 +6945,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged" AllowDrop="True"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
