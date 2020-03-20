@@ -452,8 +452,8 @@ namespace NatoliOrderInterface
                         (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
                     }
 
-                // Insert module that's moving into newIndex position
-                (Application.Current.MainWindow as MainWindow).AddModule(name, newIndex);
+                    // Insert module that's moving into newIndex position
+                    (Application.Current.MainWindow as MainWindow).AddModule(name, newIndex);
 
                     SaveSettings();
                 }
