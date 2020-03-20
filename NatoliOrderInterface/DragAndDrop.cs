@@ -405,6 +405,7 @@ namespace NatoliOrderInterface
 
                 if (hitTestResult.VisualHit == VisualTreeHelper.GetChild(button, 0))
                 {
+
                     MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
                     switch (res)
                     {
@@ -444,7 +445,7 @@ namespace NatoliOrderInterface
 
                     newIndex++;
 
-                    CloseWindow();
+                    
 
                     if (locs.Count == user.VisiblePanels.Count - 1)
                     {
@@ -457,7 +458,7 @@ namespace NatoliOrderInterface
 
                     SaveSettings();
                 }
-
+                CloseWindow();
                 //droppedData.ClearValue(EffectProperty);
                 Mouse.SetCursor(Cursors.Arrow);
             }
