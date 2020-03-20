@@ -370,7 +370,14 @@ namespace NatoliOrderInterface
                     EasingDoubleKeyFrame easingDoubleKeyFrame_2 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 150)));
                     EasingDoubleKeyFrame easingDoubleKeyFrame_3 = new EasingDoubleKeyFrame(-15, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 200)));
                     EasingDoubleKeyFrame easingDoubleKeyFrame_4 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 250)));
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_5 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 1250)));
                     doubleAnimationUsingKeyFrames.KeyFrames = new DoubleKeyFrameCollection() { easingDoubleKeyFrame_0,
+                                                                                               easingDoubleKeyFrame_1,
+                                                                                               easingDoubleKeyFrame_2,
+                                                                                               easingDoubleKeyFrame_3,
+                                                                                               easingDoubleKeyFrame_4,
+                                                                                               easingDoubleKeyFrame_5,
+                                                                                               easingDoubleKeyFrame_0,
                                                                                                easingDoubleKeyFrame_1,
                                                                                                easingDoubleKeyFrame_2,
                                                                                                easingDoubleKeyFrame_3,
