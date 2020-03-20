@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using NatoliOrderInterface.Models;
+using System.Windows.Media.Animation;
 
 namespace NatoliOrderInterface
 {
@@ -126,34 +127,9 @@ namespace NatoliOrderInterface
                     // How to do on Linux and OSX?
                 }
 
-                Rect bounds = (Application.Current.MainWindow as MainWindow).RestoreBounds;
-
-                if (w32Mouse.X < bounds.Left || w32Mouse.X > bounds.Right || w32Mouse.Y < bounds.Top || w32Mouse.Y > bounds.Bottom)
-                {
-                    string name = (VisualTreeHelper.GetChild(dragElement, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
-
-                    int oldIndex = user.VisiblePanels.IndexOf(name);
-
-                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                    SaveSettings();
-
-                    //MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?","",MessageBoxButton.YesNo);
-                    //switch (res)
-                    //{
-                    //    case MessageBoxResult.Yes:
-                    //        (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                    //        SaveSettings();
-                    //        break;
-                    //    case MessageBoxResult.No:
-                    //        break;
-                    //}
-                }
-                else
-                {
-                    this.DragDropWindow.Left = w32Mouse.X;
-                    this.DragDropWindow.Top = w32Mouse.Y;
-                    this.DragDropWindow.Show();
-                }
+                this.DragDropWindow.Left = w32Mouse.X;
+                this.DragDropWindow.Top = w32Mouse.Y;
+                this.DragDropWindow.Show();
             }
             catch (Exception ex)
             {
@@ -376,6 +352,33 @@ namespace NatoliOrderInterface
                     };
                     //draggedItem.IsSelected = true;
                     (sender as Grid).Visibility = Visibility.Collapsed;
+                    List<Button> buttons = (Application.Current.MainWindow as MainWindow).MenuDock.Children.OfType<Button>().ToList();
+                    Button button = buttons.Single(b => b.Name == "RemoveModuleButton");
+                    button.Visibility = Visibility.Visible;
+                    button.RenderTransform = new RotateTransform()
+                    {
+                        CenterX = 0,
+                        CenterY = -5
+                    };
+                    button.RenderTransformOrigin = new Point(0.5, 0.5);
+                    EventTrigger eventTrigger = new EventTrigger();
+                    Storyboard storyboard = new Storyboard();
+                    DoubleAnimationUsingKeyFrames doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames();
+                    doubleAnimationUsingKeyFrames.RepeatBehavior = new RepeatBehavior(50);
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_0 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 50)));
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_1 = new EasingDoubleKeyFrame(15, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 100)));
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_2 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 150)));
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_3 = new EasingDoubleKeyFrame(-15, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 200)));
+                    EasingDoubleKeyFrame easingDoubleKeyFrame_4 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 250)));
+                    doubleAnimationUsingKeyFrames.KeyFrames = new DoubleKeyFrameCollection() { easingDoubleKeyFrame_0,
+                                                                                               easingDoubleKeyFrame_1,
+                                                                                               easingDoubleKeyFrame_2,
+                                                                                               easingDoubleKeyFrame_3,
+                                                                                               easingDoubleKeyFrame_4};
+                    Storyboard.SetTarget(doubleAnimationUsingKeyFrames, button);
+                    Storyboard.SetTargetProperty(doubleAnimationUsingKeyFrames, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
+                    storyboard.Children.Add(doubleAnimationUsingKeyFrames);
+                    storyboard.Begin(button);
                     CreateDragDropWindow(label);
                     DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
                 }
@@ -393,22 +396,10 @@ namespace NatoliOrderInterface
 
                 int oldIndex = user.VisiblePanels.IndexOf(name);
 
-                Win32Point w32Mouse = new Win32Point();
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    GetCursorPos(ref w32Mouse);
-                }
-                else
-                {
-                    // How to do on Linux and OSX?
-                }
-
                 List<(Point, Size)> locs = GetModuleLocations();
                 int newIndex = 0;
 
-                Button button = (Application.Current.MainWindow as MainWindow).AddModuleButton;
-                Point point = button.TransformToAncestor(button.Parent as Visual).Transform(new Point(0, 0));
-                Rect buttonRect = new Rect(point, new Size(button.ActualWidth, button.ActualHeight));
+                Button button = (Application.Current.MainWindow as MainWindow).RemoveModuleButton;
 
                 HitTestResult hitTestResult = VisualTreeHelper.HitTest(Application.Current.MainWindow, e.GetPosition(Application.Current.MainWindow));
 
@@ -425,52 +416,47 @@ namespace NatoliOrderInterface
                             break;
                     }
                 }
-                else if (hitTestResult.VisualHit.GetType() == typeof(Border))
-                {
-                    var x = (hitTestResult.VisualHit as Border).Child;
-                }
                 else
                 {
-
-                }
-
-                foreach ((Point, Size) loc in locs)
-                {
-                    if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
+                    Point point = e.GetPosition(Application.Current.MainWindow as MainWindow);
+                    foreach ((Point, Size) loc in locs)
                     {
-                        double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
-                        if (w32Mouse.Y > loc.Item1.Y && w32Mouse.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
+                        if (point.X < (loc.Item1.X + loc.Item2.Width))
                         {
-                            // We have a winner!
-                            newIndex = locs.IndexOf(loc) - 1;
-                            
-                            break;
-                        }
-                        else if (w32Mouse.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) &&
-                            (nextY > loc.Item1.Y ? w32Mouse.Y < nextY : true))
-                        {
-                            // We have a winner!
-                            newIndex = locs.IndexOf(loc);
+                            double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
+                            if (point.Y > loc.Item1.Y && point.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
+                            {
+                                // We have a winner!
+                                newIndex = locs.IndexOf(loc) - 1;
 
-                            break;
+                                break;
+                            }
+                            else if (point.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) &&
+                                (nextY > loc.Item1.Y ? point.Y < nextY : true))
+                            {
+                                // We have a winner!
+                                newIndex = locs.IndexOf(loc);
+
+                                break;
+                            }
                         }
                     }
-                }
 
-                newIndex++;
+                    newIndex++;
 
-                CloseWindow();
+                    CloseWindow();
 
-                if (locs.Count == user.VisiblePanels.Count - 1)
-                {
-                    // Remove module that's moving from old position
-                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                }
+                    if (locs.Count == user.VisiblePanels.Count - 1)
+                    {
+                        // Remove module that's moving from old position
+                        (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                    }
 
                 // Insert module that's moving into newIndex position
                 (Application.Current.MainWindow as MainWindow).AddModule(name, newIndex);
 
-                SaveSettings();
+                    SaveSettings();
+                }
 
                 //droppedData.ClearValue(EffectProperty);
                 Mouse.SetCursor(Cursors.Arrow);
