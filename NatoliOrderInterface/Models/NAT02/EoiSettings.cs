@@ -19,7 +19,5 @@ namespace NatoliOrderInterface.Models
         public short QuoteDays { get; set; }
         public bool FilterActiveProjects { get; set; }
         public string PackageVersion { get; set; }
-        public string PrimaryScreenLr { get; set; }
-        public bool UsePrimary { get; set; }
     }
 }

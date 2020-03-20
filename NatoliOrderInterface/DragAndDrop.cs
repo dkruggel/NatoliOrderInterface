@@ -406,28 +406,37 @@ namespace NatoliOrderInterface
                 List<(Point, Size)> locs = GetModuleLocations();
                 int newIndex = 0;
 
-                
+                Button button = (Application.Current.MainWindow as MainWindow).AddModuleButton;
+                Point point = button.TransformToAncestor(button.Parent as Visual).Transform(new Point(0, 0));
+                Rect buttonRect = new Rect(point, new Size(button.ActualWidth, button.ActualHeight));
+
+                HitTestResult hitTestResult = VisualTreeHelper.HitTest(Application.Current.MainWindow, e.GetPosition(Application.Current.MainWindow));
+
+                if (hitTestResult.VisualHit == VisualTreeHelper.GetChild(button, 0))
+                {
+                    MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
+                    switch (res)
+                    {
+                        case MessageBoxResult.Yes:
+                            (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                            SaveSettings();
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else if (hitTestResult.VisualHit.GetType() == typeof(Border))
+                {
+                    var x = (hitTestResult.VisualHit as Border).Child;
+                }
+                else
+                {
+
+                }
 
                 foreach ((Point, Size) loc in locs)
                 {
-                    if (sender is Button)
-                    {
-                        if ((sender as Button).Name == "AddModuleButton")
-                        {
-                            MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
-                            switch (res)
-                            {
-                                case MessageBoxResult.Yes:
-                                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                                    SaveSettings();
-                                    break;
-                                case MessageBoxResult.No:
-                                    break;
-                            }
-                            break;
-                        }
-                    }
-                    else if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
+                    if (w32Mouse.X < (loc.Item1.X + loc.Item2.Width))
                     {
                         double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
                         if (w32Mouse.Y > loc.Item1.Y && w32Mouse.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))

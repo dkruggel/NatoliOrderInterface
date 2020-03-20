@@ -610,6 +610,7 @@ namespace NatoliOrderInterface
         {
             try
             {
+                // User = new User("jwillis");
                 User = new User(Environment.UserName);
                 App.user = User;
                 // User = new User("jwillis");
@@ -726,11 +727,6 @@ namespace NatoliOrderInterface
                 eoiSettings.Top = (short?)Top;
                 eoiSettings.Left = (short?)Left;
                 eoiSettings.FilterActiveProjects = _filterProjects;
-                eoiSettings.PrimaryScreenLr = System.Windows.SystemParameters.VirtualScreenLeft < 0 ? "R" : "L";
-                var leftField = typeof(Window).GetField("_actualLeft", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var topField = typeof(Window).GetField("_actualTop", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if ((double)leftField.GetValue(this) < -100) { eoiSettings.UsePrimary = false; }
-                else if ((double)leftField.GetValue(this) > 2100) { eoiSettings.UsePrimary = false; }
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }

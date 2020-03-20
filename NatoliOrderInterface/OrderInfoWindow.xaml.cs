@@ -675,6 +675,17 @@ namespace NatoliOrderInterface
             foreach (KeyValuePair<short, string[]> option in orderLineItems[lineItemNumber - 1].Options)
             {
                 string[] printables = option.Value;
+                string carbide = "";
+                if (printables[0].StartsWith("CARBIDE LINED"))
+                {
+                    using var _ = new NAT02Context();
+                    PartAllocation insert = _.PartAllocation.SingleOrDefault(o => o.WorkOrderNumber == (this.orderNumber * 100).ToString());
+                    _.Dispose();
+                    if (!(insert is null))
+                    {
+                        carbide = "\n" + insert.PartNumber + "\nOD:" + insert.OD.ToString("#.0000") + "\nOL:" + insert.OL.ToString("#.0000") + "\nID:" + ((decimal)insert.ID).ToString("#.0000");
+                    }
+                }
                 if (printables[0].Trim().Length != 0)
                 {
                     TextBlock textBlock = new TextBlock
@@ -685,7 +696,7 @@ namespace NatoliOrderInterface
                         FontWeight = FontWeights.Bold,
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Text = String.Concat(printables),
-                        ToolTip = orderLineItems[lineItemNumber - 1].OptionNumbers[option.Key],
+                        ToolTip = orderLineItems[lineItemNumber - 1].OptionNumbers[option.Key] + carbide,
                         Height = 20
                     };
                     textBlock.MouseUp += OrderOptions_MouseUp;
