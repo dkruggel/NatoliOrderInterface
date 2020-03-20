@@ -39,6 +39,7 @@ namespace NatoliOrderInterface
         public Grid Grid = new Grid();
         public WrapPanel WrapPanel = new WrapPanel();
         private User user;
+        Storyboard storyboard;
 
 
         public DragAndDrop(User _user, ListBox _listBox, ObservableCollection<TextBlock> _textBlocks, double depthOfShadow = 4, double directionOfDropShadow = 315)
@@ -362,7 +363,7 @@ namespace NatoliOrderInterface
                     };
                     button.RenderTransformOrigin = new Point(0.5, 0.5);
                     EventTrigger eventTrigger = new EventTrigger();
-                    Storyboard storyboard = new Storyboard();
+                    storyboard = new Storyboard();
                     DoubleAnimationUsingKeyFrames doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames();
                     doubleAnimationUsingKeyFrames.RepeatBehavior = new RepeatBehavior(50);
                     EasingDoubleKeyFrame easingDoubleKeyFrame_0 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 50)));
@@ -399,6 +400,8 @@ namespace NatoliOrderInterface
         {
             try
             {
+                storyboard.Stop();
+
                 var name = (VisualTreeHelper.GetChild(Grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
 
                 int oldIndex = user.VisiblePanels.IndexOf(name);
@@ -431,7 +434,7 @@ namespace NatoliOrderInterface
                     {
                         if (point.X < (loc.Item1.X + loc.Item2.Width))
                         {
-                            double nextY = locs[locs.IndexOf(loc) + 1].Item1.Y;
+                            double nextY = (loc != locs.Last()) ? locs[locs.IndexOf(loc) + 1].Item1.Y : locs.Count - 1;
                             if (point.Y > loc.Item1.Y && point.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
                             {
                                 // We have a winner!
@@ -447,6 +450,10 @@ namespace NatoliOrderInterface
 
                                 break;
                             }
+                        }
+                        else
+                        {
+                            newIndex = locs.Count;
                         }
                     }
 
