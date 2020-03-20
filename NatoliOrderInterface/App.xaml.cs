@@ -1121,6 +1121,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
                     var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
@@ -1198,6 +1199,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
                     var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
@@ -1226,6 +1228,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     using var nat02context = new NAT02Context();
                     if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
                     {
@@ -1288,6 +1291,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     using var nat02context = new NAT02Context();
                     EoiOrdersDoNotProcess _ = new EoiOrdersDoNotProcess()
                     {
@@ -1316,6 +1320,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     using var nat02context = new NAT02Context();
                     if (nat02context.EoiOrdersDoNotProcess.Any(o => o.OrderNo == double.Parse(order.Item1)))
                     {
@@ -1343,6 +1348,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     using var nat02context = new NAT02Context();
                     if (nat02context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == double.Parse(order.Item1)))
                     {
@@ -1370,6 +1376,7 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
+                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
                     using var nat02context = new NAT02Context();
                     if (!nat02context.EoiOrdersMarkedForChecking.Any(o => o.OrderNo == double.Parse(order.Item1)))
                     {
@@ -1426,6 +1433,7 @@ namespace NatoliOrderInterface
                         {
                             (string, string, CheckBox, string) quote = validQuotes[i];
                             quote.Item3.IsChecked = false;
+                            (VisualTreeHelper.GetParent((quote.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
                             EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
                             {
