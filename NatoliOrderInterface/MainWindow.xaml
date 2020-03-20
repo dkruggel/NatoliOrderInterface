@@ -7,7 +7,7 @@
         DataContext="{Binding RelativeSource={RelativeSource self}}"
         x:Name="GridWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1000" Width="1800" Margin="0" Closing="GridWindow_Closing" Activated="GridWindow_Activated" AllowDrop="False" StateChanged="GridWindow_StateChanged" Loaded="GridWindow_Loaded" ContentRendered="GridWindow_ContentRendered" LayoutUpdated="GridWindow_LayoutUpdated" Drop="GridWindow_Drop" UseLayoutRounding="True" PreviewKeyUp="GridWindow_PreviewKeyUp">
+        Title="MainWindow" Height="1000" Width="1800" Margin="0" Closing="GridWindow_Closing" Activated="GridWindow_Activated" AllowDrop="True" StateChanged="GridWindow_StateChanged" Loaded="GridWindow_Loaded" ContentRendered="GridWindow_ContentRendered" LayoutUpdated="GridWindow_LayoutUpdated" Drop="GridWindow_Drop" UseLayoutRounding="True" PreviewKeyUp="GridWindow_PreviewKeyUp">
     <Window.Resources>
         <ControlTemplate x:Key="ExpanderControlTemplate1" TargetType="{x:Type Expander}">
             <Border BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="5" SnapsToDevicePixels="True">
