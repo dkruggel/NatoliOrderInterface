@@ -939,7 +939,7 @@ namespace NatoliOrderInterface
 
             var x = e.OriginalSource;
             fromCheckBox = false;
-            if (x.GetType() == (new System.Windows.Shapes.Rectangle().GetType()))
+            if (x.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((x as Grid) != null && (x as Grid).Name == "templateRoot"))
             {
                 fromCheckBox = true;
             }
