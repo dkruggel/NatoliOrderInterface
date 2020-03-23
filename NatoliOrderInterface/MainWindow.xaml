@@ -399,10 +399,12 @@
                 <Menu DockPanel.Dock="Left" x:Name="MainMenu" Height="30" HorizontalContentAlignment="Center" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Dark}">
                     <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
                 </Menu>
-                <Button Name="NotificationButton" DockPanel.Dock="Left" Style="{StaticResource ShakeButtonIcon}" Tag="{StaticResource bellDrawingImage}" Background="Transparent" BorderThickness="0" Click="NotificationsMenu_Click"/>
-                <Button DockPanel.Dock="Left" Style="{StaticResource RotateButtonIcon}" Tag="{StaticResource refresh_doubleDrawingImage}" Background="Transparent" BorderThickness="0" Click="ForceRefresh_Click"/>
-                <Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>
-                <Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource TrashButton}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Dark}" AllowDrop="True"/>
+                <Button Name="NotificationButton" DockPanel.Dock="Left" Style="{StaticResource ShakeButtonIcon}" Tag="{StaticResource bellDrawingImage}" Background="Transparent" BorderThickness="0" Click="NotificationsMenu_Click" ToolTip="Notifications"/>
+                <Button DockPanel.Dock="Left" Style="{StaticResource RotateButtonIcon}" Tag="{StaticResource refresh_doubleDrawingImage}" Background="Transparent" BorderThickness="0" Click="ForceRefresh_Click" ToolTip="Refresh"/>
+                <Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource add_item_altDrawingImage}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>
+                <!--<Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>-->
+                <Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" AllowDrop="True" IsEnabled="False"/>
+                <!--<Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource TrashButton}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Dark}" AllowDrop="True"/>-->
             </DockPanel>
             <DockPanel HorizontalAlignment="Right">
                 <Grid Margin="5,0">

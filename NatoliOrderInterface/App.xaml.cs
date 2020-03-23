@@ -65,6 +65,7 @@ namespace NatoliOrderInterface
         };
         private int click_count = 0;
         private CheckBox checkBox;
+        private bool fromCheckBox = false;
         private string docNumber;
         #endregion
 
@@ -125,7 +126,7 @@ namespace NatoliOrderInterface
             TextBox textBox = sender as TextBox;
             Grid grid = textBox.Parent as Grid;
             Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
-            if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused)
+            if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused || textBox.Text == "")
             {
                 textBox.Text = "";
                 xImage.Visibility = Visibility.Collapsed;
@@ -932,7 +933,14 @@ namespace NatoliOrderInterface
             double_click_timer.Stop();
             click_count++;
             checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-            
+
+            var x = e.OriginalSource;
+            fromCheckBox = false;
+            if (x.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((x as Grid) != null && (x as Grid).Name == "templateRoot"))
+            {
+                fromCheckBox = true;
+            }
+
             GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
             grid = null;
@@ -980,7 +988,10 @@ namespace NatoliOrderInterface
             }
             else
             {
-                checkBox.IsChecked = !checkBox.IsChecked;
+                if(fromCheckBox == false)
+                {
+                    checkBox.IsChecked = !checkBox.IsChecked;
+                }
             }
 
             click_count = 0;
@@ -1131,8 +1142,8 @@ namespace NatoliOrderInterface
                 {
                     (string, CheckBox, string) order = validOrders[i];
                     (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    //var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    //var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
                     int retVal = workOrder.TransferOrder(user, "D080", currModule == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
@@ -1208,15 +1219,16 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
-                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    // Uncheck order expander
+                    order.Item2.IsChecked = false;
+                    //(VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
+                    //var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    //var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
                     int retVal = workOrder.TransferOrder(user, "D040", currModule == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
 
-                    // Uncheck order expander
-                    order.Item2.IsChecked = false;
+                    
                 }
             }
 

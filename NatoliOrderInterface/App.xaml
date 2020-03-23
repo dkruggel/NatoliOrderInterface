@@ -2196,8 +2196,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}">
+                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Cursor="Hand">
                                 <Image.RenderTransform>
                                     <TransformGroup>
                                         <TranslateTransform x:Name="Position"/>
@@ -2245,61 +2245,11 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
-        <!--<Style x:Key="ShakeButtonFromTopIcon" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="0.5,0.5">
-                                <Image.RenderTransform>
-                                    <TransformGroup>
-                                        <RotateTransform x:Name="Orientation" CenterY="-10"/>
-                                    </TransformGroup>
-                                </Image.RenderTransform>
-                                <Image.Triggers>
-                                    <EventTrigger RoutedEvent="MouseEnter">
-                                        <BeginStoryboard x:Name="RotateIt">
-                                            <Storyboard>
-                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Orientation" Storyboard.TargetProperty="Angle" RepeatBehavior="60x">
-                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.05" Value="0"/>
-                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.1" Value="15"/>
-                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.15" Value="0"/>
-                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.20" Value="-15"/>
-                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="0"/>
-                                                </DoubleAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </Image.Triggers>
-                            </Image>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard x:Name="Highlight">
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" Duration="0" To="LightGray" FillBehavior="HoldEnd"/>
-                            <DoubleAnimation Storyboard.TargetProperty="(Button.Background).(Opacity)" To="0.5" FillBehavior="HoldEnd" Duration="0"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" Duration="0" To="Transparent" FillBehavior="HoldEnd"/>
-                            <DoubleAnimation Storyboard.TargetProperty="(Button.Background).(Opacity)" To="1" FillBehavior="HoldEnd" Duration="0"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>-->
         <Style x:Key="RotateButtonIcon" TargetType="Button">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <Border Name="Border" Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                             <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="0.5,0.5">
                                 <Image.RenderTransform>
                                     <TransformGroup>
@@ -2345,13 +2295,55 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}">
+                        <Border Name="Border" Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Image x:Name="Image" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}">
                             </Image>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border Name="Border" Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                    <Image x:Name="Image" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Opacity="0.5">
+                                    </Image>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border Name="Border" Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="6" BorderThickness="{TemplateBinding BorderThickness}" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                    <Image x:Name="Image" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Opacity="1">
+                                    </Image>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard x:Name="Highlight">
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" Duration="0" To="LightGray" FillBehavior="HoldEnd"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(Button.Background).(Opacity)" To="0.5" FillBehavior="HoldEnd" Duration="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" Duration="0" To="Transparent" FillBehavior="HoldEnd"/>
+                            <DoubleAnimation Storyboard.TargetProperty="(Button.Background).(Opacity)" To="1" FillBehavior="HoldEnd" Duration="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
         </Style>
         <!--#endregion-->
 
@@ -2699,7 +2691,7 @@
             <Setter Property="Visibility" Value="Visible"/>
             <Setter Property="Margin" Value="2,0"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="ToolTip" Value="Add Module"/>
+            <Setter Property="ToolTip" Value="Remove Module"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">

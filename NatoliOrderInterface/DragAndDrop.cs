@@ -365,7 +365,9 @@ namespace NatoliOrderInterface
                     EventTrigger eventTrigger = new EventTrigger();
                     storyboard = new Storyboard();
                     DoubleAnimationUsingKeyFrames doubleAnimationUsingKeyFrames = new DoubleAnimationUsingKeyFrames();
-                    doubleAnimationUsingKeyFrames.RepeatBehavior = new RepeatBehavior(50);
+                    var repeatBehavior = new RepeatBehavior();
+                    repeatBehavior = System.Windows.Media.Animation.RepeatBehavior.Forever;
+                    doubleAnimationUsingKeyFrames.RepeatBehavior = repeatBehavior;
                     EasingDoubleKeyFrame easingDoubleKeyFrame_0 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 50)));
                     EasingDoubleKeyFrame easingDoubleKeyFrame_1 = new EasingDoubleKeyFrame(15, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 100)));
                     EasingDoubleKeyFrame easingDoubleKeyFrame_2 = new EasingDoubleKeyFrame(0, KeyTime.FromTimeSpan(new TimeSpan(0, 0, 0, 0, 150)));
@@ -386,7 +388,8 @@ namespace NatoliOrderInterface
                     Storyboard.SetTarget(doubleAnimationUsingKeyFrames, button);
                     Storyboard.SetTargetProperty(doubleAnimationUsingKeyFrames, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
                     storyboard.Children.Add(doubleAnimationUsingKeyFrames);
-                    storyboard.Begin(button);
+                    button.IsEnabled = true;
+                    storyboard.Begin(button,true);
                     CreateDragDropWindow(label);
                     DragDrop.DoDragDrop(draggedItem, draggedItem.DataContext, DragDropEffects.Move);
                 }
@@ -400,85 +403,102 @@ namespace NatoliOrderInterface
         {
             try
             {
-                storyboard.Stop();
 
-                var name = (VisualTreeHelper.GetChild(Grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
-
-                int oldIndex = user.VisiblePanels.IndexOf(name);
-
-                List<(Point, Size)> locs = GetModuleLocations();
-                int newIndex = 0;
 
                 Button button = (Application.Current.MainWindow as MainWindow).RemoveModuleButton;
-
-                HitTestResult hitTestResult = VisualTreeHelper.HitTest(Application.Current.MainWindow, e.GetPosition(Application.Current.MainWindow));
-
-                if (hitTestResult.VisualHit == VisualTreeHelper.GetChild(button, 0))
+                try
                 {
+                    storyboard.Stop(button);
 
-                    MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
-                    switch (res)
+                    var name = (VisualTreeHelper.GetChild(Grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+
+                    int oldIndex = user.VisiblePanels.IndexOf(name);
+
+                    List<(Point, Size)> locs = GetModuleLocations();
+                    int newIndex = 0;
+
+
+                    HitTestResult hitTestResult = VisualTreeHelper.HitTest(Application.Current.MainWindow, e.GetPosition(Application.Current.MainWindow));
+
+                    Image image = hitTestResult.VisualHit as Image;
+                    Border border = image == null ? null : image.Parent as Border;
+                    Button hitTestButton = border == null ? null : border.TemplatedParent as Button;
+                    string hittestButtonName = hitTestButton == null ? "" : hitTestButton.Name ?? "";
+                    if (hittestButtonName == "RemoveModuleButton")
                     {
-                        case MessageBoxResult.Yes:
+
+                        MessageBoxResult res = MessageBox.Show("Do you want to remove " + name + "?", "", MessageBoxButton.YesNo);
+                        switch (res)
+                        {
+                            case MessageBoxResult.Yes:
+                                (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                                SaveSettings();
+                                break;
+                            case MessageBoxResult.No:
+                                (Application.Current.MainWindow as MainWindow).AddModule(name, oldIndex);
+                                SaveSettings();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Point point = e.GetPosition(Application.Current.MainWindow as MainWindow);
+                        foreach ((Point, Size) loc in locs)
+                        {
+                            if (point.X < (loc.Item1.X + loc.Item2.Width))
+                            {
+                                double nextY = (loc != locs.Last()) ? locs[locs.IndexOf(loc) + 1].Item1.Y : locs.Count - 1;
+                                if (point.Y > loc.Item1.Y && point.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
+                                {
+                                    // We have a winner!
+                                    newIndex = locs.IndexOf(loc) - 1;
+
+                                    break;
+                                }
+                                else if (point.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) &&
+                                    (nextY > loc.Item1.Y ? point.Y < nextY : true))
+                                {
+                                    // We have a winner!
+                                    newIndex = locs.IndexOf(loc);
+
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                newIndex = locs.Count;
+                            }
+                        }
+
+                        newIndex++;
+
+
+                        if (locs.Count == user.VisiblePanels.Count - 1)
+                        {
+                            // Remove module that's moving from old position
                             (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                            SaveSettings();
-                            break;
-                        case MessageBoxResult.No:
-                            break;
+                        }
+
+                        newIndex = Math.Min(user.VisiblePanels.Count - 1, newIndex);
+                        // Insert module that's moving into newIndex position
+                        (Application.Current.MainWindow as MainWindow).AddModule(name, newIndex);
+
+                        SaveSettings();
                     }
+
+                    //droppedData.ClearValue(EffectProperty);
+                    Mouse.SetCursor(Cursors.Arrow);
                 }
-                else
+                catch (Exception ex)
                 {
-                    Point point = e.GetPosition(Application.Current.MainWindow as MainWindow);
-                    foreach ((Point, Size) loc in locs)
-                    {
-                        if (point.X < (loc.Item1.X + loc.Item2.Width))
-                        {
-                            double nextY = (loc != locs.Last()) ? locs[locs.IndexOf(loc) + 1].Item1.Y : locs.Count - 1;
-                            if (point.Y > loc.Item1.Y && point.Y < (loc.Item1.Y + (loc.Item2.Height / 2)))
-                            {
-                                // We have a winner!
-                                newIndex = locs.IndexOf(loc) - 1;
-
-                                break;
-                            }
-                            else if (point.Y > (loc.Item1.Y + (loc.Item2.Height / 2)) &&
-                                (nextY > loc.Item1.Y ? point.Y < nextY : true))
-                            {
-                                // We have a winner!
-                                newIndex = locs.IndexOf(loc);
-
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            newIndex = locs.Count;
-                        }
-                    }
-
-                    newIndex++;
-
-                    
-
-                    if (locs.Count == user.VisiblePanels.Count - 1)
-                    {
-                        // Remove module that's moving from old position
-                        (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                    }
-
-                    // Insert module that's moving into newIndex position
-                    (Application.Current.MainWindow as MainWindow).AddModule(name, newIndex);
-
-                    SaveSettings();
+                    IMethods.WriteToErrorLog("DragAndDrop.cs => Grid_Dropping", ex.Message, user);
                 }
+                button.IsEnabled = false;
                 CloseWindow();
-                //droppedData.ClearValue(EffectProperty);
-                Mouse.SetCursor(Cursors.Arrow);
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("DragAndDrop.cs => Grid_Dropping", ex.Message, user);
+                IMethods.WriteToErrorLog("DragAndDrop.cs => Grid_Dropping (Outer)", ex.Message, user);
             }
         }
         public bool CloseWindow()
