@@ -152,6 +152,8 @@ namespace NatoliOrderInterface
             {
                 DoubleAnimation doubleAnimation = new DoubleAnimation(150, TimeSpan.FromSeconds(.5));
                 border.BeginAnimation(Border.WidthProperty, doubleAnimation);
+                TextBox textBox = grid.Children.OfType<TextBox>().First() as TextBox;
+                textBox.Focus();
             }
             else
             {
