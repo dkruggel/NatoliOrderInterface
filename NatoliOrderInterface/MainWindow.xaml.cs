@@ -1335,31 +1335,31 @@ namespace NatoliOrderInterface
         {
             Dispatcher.Invoke(() =>
             {
-                // Check for new notifications
-                using var _nat02context = new NAT02Context();
-                try
-                {
-                    int active = _nat02context.EoiNotificationsActive.Where(n => n.User == User.DomainName).Count();
-                    if (active > 0)
-                    {
-                        MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                        var bell = App.Current.Resources["bell_alt_ringDrawingImage"] as DrawingImage;
-                        var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
-                        image.Source = bell as ImageSource;
-                    }
-                    else
-                    {
-                        MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                        var bell = App.Current.Resources["bellDrawingImage"] as DrawingImage;
-                        var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
-                        image.Source = bell as ImageSource;
-                    }
-                }
-                catch (Exception ex)
-                {
+                //    // Check for new notifications
+                //    using var _nat02context = new NAT02Context();
+                //    try
+                //    {
+                //        int active = _nat02context.EoiNotificationsActive.Where(n => n.User == User.DomainName).Count();
+                //        if (active > 0)
+                //        {
+                //            //MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
+                //            var bell = App.Current.Resources["bell_alt_ringDrawingImage"] as DrawingImage;
+                //            var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
+                //            image.Source = bell as ImageSource;
+                //        }
+                //        else
+                //        {
+                //            //MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
+                //            var bell = App.Current.Resources["bellDrawingImage"] as DrawingImage;
+                //            var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
+                //            image.Source = bell as ImageSource;
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
 
-                }
-                _nat02context.Dispose();
+                //    }
+                //    _nat02context.Dispose();
             }
             );
         }
@@ -12087,7 +12087,14 @@ namespace NatoliOrderInterface
                                             {
                                                 foreach (string file in files)
                                                 {
-                                                    System.IO.File.Move(file, file.Replace(@"Quotes\" + quote, @"WorkOrders\" + order));
+                                                    try
+                                                    {
+                                                        System.IO.File.Move(file, file.Replace(@"Quotes\" + quote, @"WorkOrders\" + order));
+                                                    }
+                                                    catch
+                                                    {
+
+                                                    }
                                                 }
                                             }
                                             string[] folders = System.IO.Directory.GetDirectories(QUOTE_PATH + quote);
