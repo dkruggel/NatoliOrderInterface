@@ -65,6 +65,7 @@ namespace NatoliOrderInterface
         };
         private int click_count = 0;
         private CheckBox checkBox;
+        private bool fromCheckBox = false;
         private string docNumber;
         #endregion
 
@@ -935,7 +936,14 @@ namespace NatoliOrderInterface
             double_click_timer.Stop();
             click_count++;
             checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-            
+
+            var x = e.OriginalSource;
+            fromCheckBox = false;
+            if (x.GetType() == (new System.Windows.Shapes.Rectangle().GetType()))
+            {
+                fromCheckBox = true;
+            }
+
             GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
             grid = null;
@@ -983,7 +991,10 @@ namespace NatoliOrderInterface
             }
             else
             {
-                checkBox.IsChecked = !checkBox.IsChecked;
+                if(fromCheckBox == false)
+                {
+                    checkBox.IsChecked = !checkBox.IsChecked;
+                }
             }
 
             click_count = 0;
