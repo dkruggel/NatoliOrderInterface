@@ -123,13 +123,16 @@ namespace NatoliOrderInterface
         private void SearchTextBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            
+            Grid grid = textBox.Parent as Grid;
+            Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
             if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused)
             {
-                Grid grid = textBox.Parent as Grid;
-                Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
                 textBox.Text = "";
                 xImage.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                xImage.Visibility = Visibility.Visible;
             }
         }
         private void xImage_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
