@@ -4646,8 +4646,8 @@ namespace NatoliOrderInterface
 
                 var _textBox = (VisualTreeHelper.GetChild((MainWrapPanel.Children[i] as Grid).Children[0] as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<DockPanel>().Last().Children.OfType<TextBox>().First();
                 //var x = VisualTreeHelper.GetChild(_textBox as DependencyObject, 0); //_textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
-                var text = _textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
-                string _text = text.Text ?? "";
+                var text = _textBox == null ? new TextBox { Text = "" } : _textBox.Template.FindName("SearchTextBox", _textBox) as TextBox;
+                string _text = text == null ? "" : (text.Text ?? "");
                 //return _textBox.Text.ToLower(); //x.Text.ToLower();
                 return _text.ToLower();
             }
