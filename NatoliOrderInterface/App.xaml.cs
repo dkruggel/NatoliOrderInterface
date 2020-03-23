@@ -200,13 +200,14 @@ namespace NatoliOrderInterface
             if (count == 0)
             {
                 (expandButton.TemplatedParent as Label).MinHeight = 100;
-                (expandButton.TemplatedParent as Label).Height = 205;
+                //(expandButton.TemplatedParent as Label).Height = 205;
+                (expandButton.TemplatedParent as Label).Height = 10;
             }
             else
             {
-                if (count < 10)
+                if (count < 11)
                 {
-                    (collapseButton.TemplatedParent as Label).Height = 35 * (count + 1) + 100;
+                    (collapseButton.TemplatedParent as Label).Height = 35 * count + 100;
                 }
                 else
                 {
@@ -960,6 +961,9 @@ namespace NatoliOrderInterface
 
             if (click_count == 2)
             {
+                // Set cursor to waiting
+                (Application.Current.MainWindow as MainWindow).Cursor = Cursors.AppStarting;
+
                 // Open Quote, Order, or Project folder
                 if (docNumber[0] == 'P')
                 {
@@ -973,6 +977,9 @@ namespace NatoliOrderInterface
                 {
                     OpenWorkOrder(docNumber[1..]);
                 }
+
+                // Set cursor to pointer
+                (Application.Current.MainWindow as MainWindow).Cursor = Cursors.Arrow;
             }
             else
             {
