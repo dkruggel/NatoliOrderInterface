@@ -65,7 +65,9 @@ namespace NatoliOrderInterface
         };
         private int click_count = 0;
         private CheckBox checkBox;
+        private CheckBox checkBox2;
         private bool fromCheckBox = false;
+        private bool fromCheckBox2 = false;
         private string docNumber;
         #endregion
 
@@ -935,14 +937,27 @@ namespace NatoliOrderInterface
         {
             double_click_timer.Stop();
             click_count++;
-            checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-
-            var x = e.OriginalSource;
-            fromCheckBox = false;
-            if (x.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((x as Grid) != null && (x as Grid).Name == "templateRoot"))
+            if (click_count == 1)
             {
-                fromCheckBox = true;
+                checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
+                var origSource = e.OriginalSource;
+                fromCheckBox = false;
+                if (origSource.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot"))
+                {
+                    fromCheckBox = true;
+                }
             }
+            else if(click_count == 2)
+            {
+                checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
+                var origSource = e.OriginalSource;
+                fromCheckBox2 = false;
+                if (origSource.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot"))
+                {
+                    fromCheckBox2 = true;
+                }
+            }
+            
 
             GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
@@ -969,26 +984,44 @@ namespace NatoliOrderInterface
 
             if (click_count == 2)
             {
-                // Set cursor to waiting
-                (Application.Current.MainWindow as MainWindow).Cursor = Cursors.AppStarting;
+                // Clicked different items
+                if ((checkBox.Parent as Grid).Children.OfType<TextBlock>().First().Text != (checkBox2.Parent as Grid).Children.OfType<TextBlock>().First().Text)
+                {
+                    if (fromCheckBox == false)
+                    {
+                        checkBox.IsChecked = !checkBox.IsChecked;
+                    }
+                    if (fromCheckBox2 == false)
+                    {
+                        checkBox2.IsChecked = !checkBox2.IsChecked;
+                    }
+                }
+                // DoubleClicked same item
+                else
+                {
+                    // Set cursor to waiting
+                    (Application.Current.MainWindow as MainWindow).Cursor = Cursors.AppStarting;
 
-                // Open Quote, Order, or Project folder
-                if (docNumber[0] == 'P')
-                {
-                    OpenProject(docNumber[1..]);
-                }
-                else if (docNumber[0] == 'Q')
-                {
-                    OpenQuote(docNumber[1..]);
-                }
-                else if (docNumber[0] == 'O')
-                {
-                    OpenWorkOrder(docNumber[1..]);
-                }
+                    // Open Quote, Order, or Project folder
+                    if (docNumber[0] == 'P')
+                    {
+                        OpenProject(docNumber[1..]);
+                    }
+                    else if (docNumber[0] == 'Q')
+                    {
+                        OpenQuote(docNumber[1..]);
+                    }
+                    else if (docNumber[0] == 'O')
+                    {
+                        OpenWorkOrder(docNumber[1..]);
+                    }
 
                 // Set cursor to pointer
                 (Application.Current.MainWindow as MainWindow).Cursor = Cursors.Arrow;
+                }
+                
             }
+            // Single clicked
             else
             {
                 if(fromCheckBox == false)
