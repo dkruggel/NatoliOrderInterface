@@ -1145,8 +1145,8 @@ namespace NatoliOrderInterface
                 {
                     (string, CheckBox, string) order = validOrders[i];
                     (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    //var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    //var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
                     int retVal = workOrder.TransferOrder(user, "D080", currModule == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
@@ -1222,9 +1222,9 @@ namespace NatoliOrderInterface
                 for (int i = 0; i < count; i++)
                 {
                     (string, CheckBox, string) order = validOrders[i];
-                    (VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+                    //(VisualTreeHelper.GetParent((order.Item2.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
+                    //var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+                    //var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
                     workOrder = new WorkOrder(int.Parse(order.Item1), this.MainWindow);
                     int retVal = workOrder.TransferOrder(user, "D040", currModule == "EnteredUnscanned");
                     if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
