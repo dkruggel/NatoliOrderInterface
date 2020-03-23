@@ -192,34 +192,24 @@ namespace NatoliOrderInterface
 
             collapseButton.Visibility = Visibility.Visible;
 
-            if (count < 11)
+            if (count == 0)
             {
-                (collapseButton.TemplatedParent as Label).Height = 35 * (count + 1) + 100;
+                (expandButton.TemplatedParent as Label).MinHeight = 100;
+                //(expandButton.TemplatedParent as Label).Height = 205;
+                (expandButton.TemplatedParent as Label).Height = 10;
             }
             else
             {
-                (collapseButton.TemplatedParent as Label).Height = 500;
+                if (count < 11)
+                {
+                    (collapseButton.TemplatedParent as Label).Height = 35 * count + 100;
+                }
+                else
+                {
+                    (collapseButton.TemplatedParent as Label).Height = 500;
+                }
+                (expandButton.TemplatedParent as Label).MinHeight = 200;
             }
-            (expandButton.TemplatedParent as Label).MinHeight = 200;
-
-            //if (count == 0)
-            //{
-            //    (expandButton.TemplatedParent as Label).MinHeight = 100;
-            //    //(expandButton.TemplatedParent as Label).Height = 205;
-            //    (expandButton.TemplatedParent as Label).Height = 135;
-            //}
-            //else
-            //{
-            //    if (count < 11)
-            //    {
-            //        (collapseButton.TemplatedParent as Label).Height = 35 * (count + 1) + 100;
-            //    }
-            //    else
-            //    {
-            //        (collapseButton.TemplatedParent as Label).Height = 500;
-            //    }
-            //    (expandButton.TemplatedParent as Label).MinHeight = 200;
-            //}
         }
         private void CollapseModule_Click(object sender, RoutedEventArgs e)
         {
