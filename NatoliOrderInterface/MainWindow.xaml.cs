@@ -102,7 +102,7 @@ namespace NatoliOrderInterface
             EventHandler handler = RemovedFromSelectedOrders;
             handler?.Invoke(this, e);
         }
-        public delegate void SomeBoolChangedEvent();
+        public delegate void SomeBoolChangedEvent(string module = "");
         public event SomeBoolChangedEvent UpdatedFromChild;
         private Boolean _boolValue;
         public Boolean BoolValue
@@ -435,7 +435,7 @@ namespace NatoliOrderInterface
                 App.GetConnectionString();
                 App.GetEmailSettings();
                 ((App)Application.Current as App).InitializeTimers();
-                // UpdatedFromChild = MainRefresh;
+                UpdatedFromChild = MainRefresh;
                 SetUser();
                 Width = (double)User.Width;
                 Height = (double)User.Height;
