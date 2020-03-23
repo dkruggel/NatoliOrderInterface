@@ -164,13 +164,13 @@ namespace NatoliOrderInterface
             var x = new TextBox();
             try
             {
-                x = VisualTreeHelper.GetParent((((sender as TextBox).Parent as Grid).Parent as Border)) as TextBox;
+                x = VisualTreeHelper.GetParent(((sender as TextBox).Parent as Grid).Parent as DockPanel) as TextBox;
             }
             catch
             {
                 x = sender as TextBox;
             }
-            string type = ((x.Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+            string type = (((VisualTreeHelper.GetParent((x.Parent as Grid).Parent as Border) as TextBox).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
             (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
         }
         private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
