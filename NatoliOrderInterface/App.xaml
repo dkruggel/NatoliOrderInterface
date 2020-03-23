@@ -8,6 +8,7 @@
         <local:BackgroundConverter x:Key="backgroundConverter"/>
         <local:CheckBoxConverter x:Key="checkBoxConverter"/>
         <local:ToolTipConverter x:Key="toolTipConverter"/>
+        <local:ModuleHeightConvertor x:Key="moduleHeightConvertor"/>
         <local:MainWindow x:Key="MainWindow"/>
         <!--#region Colors -->
         <Color x:Key="Light.Color">#B3EFFF</Color>
@@ -4355,7 +4356,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -4608,7 +4608,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -4867,7 +4866,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -5132,7 +5130,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -5401,7 +5398,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -5657,7 +5653,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -5917,7 +5912,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -6176,7 +6170,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -6435,7 +6428,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -6699,7 +6691,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -6947,7 +6938,7 @@
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible"/>-->
                                     </StackPanel>
-                                    <TextBlock Text="{Binding ElementName=AllToolProjectsListBox, Path=Items.Count, StringFormat='Count: {0}'}" DockPanel.Dock="Right" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                                    <TextBlock x:Name="CountTextBox" Text="{Binding ElementName=AllToolProjectsListBox, Path=Items.Count, StringFormat='Count: {0}'}" DockPanel.Dock="Right" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center" Margin="0,0,10,0"/>
                                 </DockPanel>
                             </Grid>
                         </Grid>
@@ -6959,7 +6950,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
@@ -7168,7 +7158,6 @@
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="500"/>
-            <Setter Property="MinHeight" Value="200"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="850"/>
             <Setter Property="Template">
