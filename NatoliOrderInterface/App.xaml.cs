@@ -125,7 +125,7 @@ namespace NatoliOrderInterface
             TextBox textBox = sender as TextBox;
             Grid grid = textBox.Parent as Grid;
             Image xImage = grid.Children.OfType<Image>().First(i => i.Name.ToString() == "xImage") as Image;
-            if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused)
+            if (e.Key == System.Windows.Input.Key.Escape && textBox.IsFocused || textBox.Text == "")
             {
                 textBox.Text = "";
                 xImage.Visibility = Visibility.Collapsed;
