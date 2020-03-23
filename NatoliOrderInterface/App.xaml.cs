@@ -32,7 +32,7 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class App : Application
     {
-        #region Declaratoins
+        #region Declarations
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -163,16 +163,10 @@ namespace NatoliOrderInterface
         }
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var x = new TextBox();
-            try
-            {
-                x = VisualTreeHelper.GetParent(((sender as TextBox).Parent as Grid).Parent as DockPanel) as TextBox;
-            }
-            catch
-            {
-                x = sender as TextBox;
-            }
-            string type = (((VisualTreeHelper.GetParent((x.Parent as Grid).Parent as Border) as TextBox).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+            GetAncestor(sender as TextBox, typeof(Grid), "DisplayGrid");
+            Grid displayGrid = grid as Grid;
+            grid = null;
+            string type = displayGrid.Children.OfType<ListBox>().First().Name[0..^7];
             (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
         }
         private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
@@ -197,24 +191,25 @@ namespace NatoliOrderInterface
 
             collapseButton.Visibility = Visibility.Visible;
 
-            if (count == 0)
-            {
-                (expandButton.TemplatedParent as Label).MinHeight = 100;
-                //(expandButton.TemplatedParent as Label).Height = 205;
-                (expandButton.TemplatedParent as Label).Height = 10;
-            }
-            else
-            {
-                if (count < 11)
-                {
-                    (collapseButton.TemplatedParent as Label).Height = 35 * count + 100;
-                }
-                else
-                {
-                    (collapseButton.TemplatedParent as Label).Height = 500;
-                }
-                (expandButton.TemplatedParent as Label).MinHeight = 200;
-            }
+            (collapseButton.TemplatedParent as Label).MaxHeight = 500;
+            //if (count == 0)
+            //{
+            //    // (expandButton.TemplatedParent as Label).MinHeight = 100;
+            //    // (expandButton.TemplatedParent as Label).Height = 205;
+            //    (expandButton.TemplatedParent as Label).MaxHeight = 100;
+            //}
+            //else
+            //{
+            //    if (count < 11)
+            //    {
+            //        (collapseButton.TemplatedParent as Label).MaxHeight = 35 * count + 100;
+            //    }
+            //    else
+            //    {
+            //        (collapseButton.TemplatedParent as Label).MaxHeight = 500;
+            //    }
+            //    // (expandButton.TemplatedParent as Label).MinHeight = 200;
+            //}
         }
         private void CollapseModule_Click(object sender, RoutedEventArgs e)
         {
@@ -226,23 +221,25 @@ namespace NatoliOrderInterface
 
             expandButton.Visibility = Visibility.Visible;
 
-            if (count == 0)
-            {
-                (collapseButton.TemplatedParent as Label).MinHeight = 100;
-                (collapseButton.TemplatedParent as Label).Height = 100;
-            }
-            else
-            {
-                if (count < 3)
-                {
-                    (collapseButton.TemplatedParent as Label).Height = 35 * count + 100;
-                }
-                else
-                {
-                    (collapseButton.TemplatedParent as Label).Height = 205;
-                }
-                (expandButton.TemplatedParent as Label).MinHeight = 200;
-            }
+            (collapseButton.TemplatedParent as Label).MaxHeight = 205;
+            //if (count == 0)
+            //{
+            //    // (collapseButton.TemplatedParent as Label).MinHeight = 100;
+            //    (collapseButton.TemplatedParent as Label).MaxHeight = 100;
+            //}
+            //else
+            //{
+            //    (collapseButton.TemplatedParent as Label).MaxHeight = 205;
+            //    //if (count < 3)
+            //    //{
+            //    //    // (collapseButton.TemplatedParent as Label).MaxHeight = 35 * count + 100;
+            //    //}
+            //    //else
+            //    //{
+            //    //    (collapseButton.TemplatedParent as Label).MaxHeight = 205;
+            //    //}
+            //    // (expandButton.TemplatedParent as Label).MinHeight = 200;
+            //}
         }
         private void DockPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {

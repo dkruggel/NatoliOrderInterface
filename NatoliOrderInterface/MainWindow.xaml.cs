@@ -3144,7 +3144,8 @@ namespace NatoliOrderInterface
             _.SaveChanges();
             _.Dispose();
             User.FilterActiveProjects = _filterProjects;
-            MainRefresh();
+            MainRefresh("AllTabletProjects");
+            MainRefresh("AllToolProjects");
         }
         private void LineItemCheckBox_Checked(object sender, RoutedEventArgs e)
         {
@@ -4120,6 +4121,8 @@ namespace NatoliOrderInterface
         }
         private void UpdateUI()
         {
+            Task.Run(() => Dispatcher.Invoke(() => BindQuotesNotConverted()));
+            Task.Run(() => Dispatcher.Invoke(() => BindQuotesToConvert()));
             Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
             Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
             Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
