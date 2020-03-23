@@ -4388,31 +4388,31 @@ namespace NatoliOrderInterface
             if (searchString.Contains(":"))
             {
                 column = searchString.Split(':')[0];
-                searchString = searchString.Split(':')[1];
+                searchString = searchString.Split(':')[1].Trim();
                 switch (column)
                 {
-                    case "Order No":
+                    case "order no":
 
                         _ordersPrinted =
                             _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
-                    case "Customer Name":
+                    case "customer name":
 
                         _ordersPrinted =
                             _ordersPrinted.Where(p => p.CustomerName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
-                    case "Employee Name":
+                    case "employee name":
 
                         _ordersPrinted =
                             _ordersPrinted.Where(p => p.EmployeeName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
-                    case "Checker":
+                    case "checker":
 
                         _ordersPrinted =
                             _ordersPrinted.Where(p => p.CheckedBy.ToLower().Contains(searchString))
