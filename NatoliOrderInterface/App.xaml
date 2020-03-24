@@ -4355,7 +4355,7 @@
         <Style x:Key="QuotesNotConvertedModule" TargetType="Label" x:Name="QuotesNotConvertedModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -4607,7 +4607,7 @@
         <Style x:Key="QuotesToConvertModule" TargetType="Label" x:Name="QuotesToConvertModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -4865,7 +4865,7 @@
         <Style x:Key="OrdersBeingEnteredModule" TargetType="Label" x:Name="OrdersBeingEnteredModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -5129,7 +5129,7 @@
         <Style x:Key="OrdersInTheOfficeModule" TargetType="Label" x:Name="OrdersInTheOfficeModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -5397,7 +5397,7 @@
         <Style x:Key="OrdersEnteredModule" TargetType="Label" x:Name="OrdersEnteredModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -5652,7 +5652,7 @@
         <Style x:Key="OrdersInEngineeringModule" TargetType="Label" x:Name="OrdersInEngineeringModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -5911,7 +5911,7 @@
         <Style x:Key="OrdersReadyToPrintModule" TargetType="Label" x:Name="OrdersReadyToPrintModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -6169,7 +6169,7 @@
         <Style x:Key="OrdersPrintedInEngineeringModule" TargetType="Label" x:Name="OrdersPrintedInEngineeringModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -6427,7 +6427,7 @@
         <Style x:Key="AllTabletProjectsModule" TargetType="Label" x:Name="AllTabletProjectsModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -6690,7 +6690,7 @@
         <Style x:Key="AllToolProjectsModule" TargetType="Label" x:Name="AllToolProjectsModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -6949,7 +6949,7 @@
         <Style x:Key="DriveWorksQueueModule" TargetType="Label" x:Name="DriveWorksQueueModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
@@ -7157,7 +7157,7 @@
         <Style x:Key="NatoliOrderListModule" TargetType="Label" x:Name="NatoliOrderListModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="500"/>
+            <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
             <Setter Property="MaxWidth" Value="750"/>
             <Setter Property="Template">
