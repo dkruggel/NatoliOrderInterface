@@ -1235,12 +1235,26 @@ namespace NatoliOrderInterface
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
 
+                    string comments = "";
+
+                    foreach(string textFile in Directory.GetFiles(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber, "*.txt"))
+                    {
+                        string text = File.ReadAllText(textFile);
+                        string name = Path.GetFileName(textFile);
+                        comments += name + "<br><br>" + text + "<br><br>" + new string('-', 30) + "<br><br>";
+                    }
+                    if (comments.Length > 0)
+                    {
+                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments;
+                    }
+
                     var body = new TextPart(MimeKit.Text.TextFormat.Html)
                     {
                         Text = "Dear " + CSRs.First() + ",<br><br>" +
 
                         @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                         "The drawings for the customer are attached.<br><br>" +
+                        comments + "-End Comments-<br><br>"+
                         "Thanks,<br>" +
                         "Engineering Team<br><br><br>" +
 

@@ -12087,13 +12087,9 @@ namespace NatoliOrderInterface
                                             {
                                                 foreach (string file in files)
                                                 {
-                                                    try
+                                                    if(!System.IO.File.Exists(file.Replace(@"Quotes\" + quote, @"WorkOrders\" + order)))
                                                     {
                                                         System.IO.File.Move(file, file.Replace(@"Quotes\" + quote, @"WorkOrders\" + order));
-                                                    }
-                                                    catch
-                                                    {
-
                                                     }
                                                 }
                                             }
