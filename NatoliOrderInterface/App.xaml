@@ -7037,7 +7037,7 @@
                                                                             <TextBlock x:Name="ModelName" Tag="ModelName" Text="{Binding TargetName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
                                                                             <TextBlock x:Name="ReleasedBy" Tag="ReleasedBy" Text="{Binding DisplayName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
                                                                             <TextBlock Tag="Tag" Text="{Binding Tags, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
-                                                                            <TextBlock Tag="ReleaseTime" Text="{Binding DateReleased, NotifyOnSourceUpdated=True, StringFormat='{}{0:MM/dd/yyyy}'}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
+                                                                            <TextBlock Tag="ReleaseTime" Text="{Binding DateReleased, NotifyOnSourceUpdated=True, StringFormat='{}{0:hh:mm:ss}'}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                                         </Grid>
                                                                         <Grid.Triggers>
                                                                             <EventTrigger RoutedEvent="MouseEnter">
