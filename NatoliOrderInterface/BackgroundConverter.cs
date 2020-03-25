@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Linq;
 using NatoliOrderInterface.Models.NAT01;
 using NatoliOrderInterface.Models.Projects;
+using NatoliOrderInterface.Models.DriveWorks;
 
 namespace NatoliOrderInterface
 {
@@ -18,7 +19,7 @@ namespace NatoliOrderInterface
         {
             double orderNumber = 0.0;
 
-            if (!(value is EoiQuotesMarkedForConversionView) && !(value is EoiQuotesNotConvertedView))
+            if (!(value is EoiQuotesMarkedForConversionView) && !(value is EoiQuotesNotConvertedView) && !(value is QueueView))
             {
                 orderNumber = double.Parse(value.ToString());
             }
