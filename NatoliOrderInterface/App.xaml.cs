@@ -939,7 +939,7 @@ namespace NatoliOrderInterface
                 checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
                 fromCheckBox = false;
-                if (origSource.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot"))
+                if (origSource.GetType() == typeof(System.Windows.Shapes.Rectangle) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot") || (((origSource as Border).Parent as Grid) != null && ((origSource as Border).Parent as Grid).Name == "templateRoot"))
                 {
                     fromCheckBox = true;
                 }
@@ -949,7 +949,7 @@ namespace NatoliOrderInterface
                 checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
                 fromCheckBox2 = false;
-                if (origSource.GetType() == (new System.Windows.Shapes.Rectangle().GetType()) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot"))
+                if (origSource.GetType() == typeof(System.Windows.Shapes.Rectangle) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot") || (((origSource as Border).Parent as Grid) != null && ((origSource as Border).Parent as Grid).Name == "templateRoot"))
                 {
                     fromCheckBox2 = true;
                 }
