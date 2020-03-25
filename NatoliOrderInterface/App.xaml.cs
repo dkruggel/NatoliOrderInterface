@@ -930,6 +930,19 @@ namespace NatoliOrderInterface
             EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
             list.RemoveHandler(obj, list[obj]);
         }
+        private void ToggleButtonCheckBox_Clicked(object sender, RoutedEventArgs e)
+        {
+            // First click
+            if (click_count == 1)
+            {
+                fromCheckBox = true;
+            }
+            // Second click
+            else if (click_count == 2)
+            {
+                fromCheckBox2 = true;
+            }
+        }
         /// <summary>
         /// ToggleButton MouseDown Event Handler
         /// </summary>
@@ -941,87 +954,18 @@ namespace NatoliOrderInterface
             double_click_timer.Stop();
             // Increase click count
             click_count++;
-            // First click
+
+
             if (click_count == 1)
             {
-                // Keep this check box in memory
+                fromCheckBox = false;
                 checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-                var origSource = e.OriginalSource;
-                switch (origSource.GetType().Name)
-                {
-                    case "Rectangle":
-                        {
-                            if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox = true;
-                            }
-                        }
-                        break;
-                    case "Grid":
-                        {
-                            if((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox = true;
-                            }
-                        }
-                        break;
-                    case "Border":
-                        {
-                            if ((origSource as Border).Name == "checkBoxBorder")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox = true;
-                            }
-                        }
-                        break;
-                    default:
-                        fromCheckBox = false;
-                        break;
-                }
             }
-            // Second click
-            else if(click_count == 2)
+            else if (click_count == 2)
             {
-                // Keep this checkbox in memory
+                fromCheckBox2 = false;
                 checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-                var origSource = e.OriginalSource;
-                switch (origSource.GetType().Name)
-                {
-                    case "Rectangle":
-                        {
-                            if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox2 = true;
-                            }
-                        }
-                        break;
-                    case "Grid":
-                        {
-                            if ((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox2 = true;
-                            }
-                        }
-                        break;
-                    case "Border":
-                        {
-                            if ((origSource as Border).Name == "checkBoxBorder")
-                            {
-                                // Checkbox was clicked (don't change checkmark on timer elapse)
-                                fromCheckBox2 = true;
-                            }
-                        }
-                        break;
-                    default:
-                        fromCheckBox2 = false;
-                        break;
-                }
             }
-            
 
             GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
@@ -2845,8 +2789,12 @@ namespace NatoliOrderInterface
                 _driveworksContext.Dispose();
             }
         }
+
+
         #endregion
 
         #endregion
+
+        
     }
 }
