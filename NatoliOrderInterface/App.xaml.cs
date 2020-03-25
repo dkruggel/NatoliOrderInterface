@@ -1023,7 +1023,7 @@ namespace NatoliOrderInterface
             }
             
 
-            //GetAncestorWithoutName(checkBox, typeof(ListBox));
+            GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
             grid = null;
 
