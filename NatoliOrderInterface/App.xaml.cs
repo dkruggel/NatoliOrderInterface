@@ -938,20 +938,70 @@ namespace NatoliOrderInterface
             {
                 checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
-                fromCheckBox = false;
-                if (origSource.GetType() == typeof(System.Windows.Shapes.Rectangle) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot") || (((origSource as Border).Parent as Grid) != null && ((origSource as Border).Parent as Grid).Name == "templateRoot"))
+                switch (origSource.GetType().Name)
                 {
-                    fromCheckBox = true;
+                    case "Rectangle":
+                        {
+                            if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
+                            {
+                                fromCheckBox = true;
+                            }
+                        }
+                        break;
+                    case "Grid":
+                        {
+                            if((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
+                            {
+                                fromCheckBox = true;
+                            }
+                        }
+                        break;
+                    case "Border":
+                        {
+                            if ((origSource as Border).Name == "checkBoxBorder")
+                            {
+                                fromCheckBox = true;
+                            }
+                        }
+                        break;
+                    default:
+                        fromCheckBox = false;
+                        break;
                 }
             }
             else if(click_count == 2)
             {
                 checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
-                fromCheckBox2 = false;
-                if (origSource.GetType() == typeof(System.Windows.Shapes.Rectangle) || ((origSource as Grid) != null && (origSource as Grid).Name == "templateRoot") || (((origSource as Border).Parent as Grid) != null && ((origSource as Border).Parent as Grid).Name == "templateRoot"))
+                switch (origSource.GetType().Name)
                 {
-                    fromCheckBox2 = true;
+                    case "Rectangle":
+                        {
+                            if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
+                            {
+                                fromCheckBox2 = true;
+                            }
+                        }
+                        break;
+                    case "Grid":
+                        {
+                            if ((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
+                            {
+                                fromCheckBox2 = true;
+                            }
+                        }
+                        break;
+                    case "Border":
+                        {
+                            if ((origSource as Border).Name == "checkBoxBorder")
+                            {
+                                fromCheckBox2 = true;
+                            }
+                        }
+                        break;
+                    default:
+                        fromCheckBox2 = false;
+                        break;
                 }
             }
             
