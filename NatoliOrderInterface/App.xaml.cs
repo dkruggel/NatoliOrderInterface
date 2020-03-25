@@ -932,10 +932,14 @@ namespace NatoliOrderInterface
         }
         private void ToggleButton_SingleClick(object sender, MouseButtonEventArgs e)
         {
+            // Stop timer
             double_click_timer.Stop();
+            // Increase click count
             click_count++;
+            // First click
             if (click_count == 1)
             {
+                // Keep this check box in memory
                 checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
                 switch (origSource.GetType().Name)
@@ -944,6 +948,7 @@ namespace NatoliOrderInterface
                         {
                             if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox = true;
                             }
                         }
@@ -952,6 +957,7 @@ namespace NatoliOrderInterface
                         {
                             if((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox = true;
                             }
                         }
@@ -960,6 +966,7 @@ namespace NatoliOrderInterface
                         {
                             if ((origSource as Border).Name == "checkBoxBorder")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox = true;
                             }
                         }
@@ -969,8 +976,10 @@ namespace NatoliOrderInterface
                         break;
                 }
             }
+            // Second click
             else if(click_count == 2)
             {
+                // Keep this checkbox in memory
                 checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
                 var origSource = e.OriginalSource;
                 switch (origSource.GetType().Name)
@@ -979,6 +988,7 @@ namespace NatoliOrderInterface
                         {
                             if ((origSource as System.Windows.Shapes.Rectangle).Name == "indeterminateMark")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox2 = true;
                             }
                         }
@@ -987,6 +997,7 @@ namespace NatoliOrderInterface
                         {
                             if ((origSource as Grid).Name == "templateRoot" || (origSource as Grid).Name == "markGrid")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox2 = true;
                             }
                         }
@@ -995,6 +1006,7 @@ namespace NatoliOrderInterface
                         {
                             if ((origSource as Border).Name == "checkBoxBorder")
                             {
+                                // Checkbox was clicked (don't change checkmark on timer elapse)
                                 fromCheckBox2 = true;
                             }
                         }
@@ -1006,29 +1018,35 @@ namespace NatoliOrderInterface
             }
             
 
-            GetAncestorWithoutName(checkBox, typeof(ListBox));
+            //GetAncestorWithoutName(checkBox, typeof(ListBox));
             var type = (grid as ListBox).Name[0..^7];
             grid = null;
 
             if (type.Contains("Quote"))
             {
+                // Document number to open if doubleclicked
                 docNumber = "Q" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteNumber").Text;
                 docNumber += "-" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRev").Text;
             }
             else if (type.Contains("Project"))
             {
+                // Document number to open if doubleclicked
                 docNumber = "P" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ProjectNumber").Text;
             }
             else
             {
+                // Document number to open if doubleclicked
                 docNumber = "O" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumber").Text;
             }
+            // Start new double-click timer
             double_click_timer.Start();
         }
         public void Double_Click_Timer_Elapsed(object sender, EventArgs e)
         {
+            // Stop timer
             double_click_timer.Stop();
 
+            // Double-clicked
             if (click_count == 2)
             {
                 // Clicked different items
@@ -1043,7 +1061,7 @@ namespace NatoliOrderInterface
                         checkBox2.IsChecked = !checkBox2.IsChecked;
                     }
                 }
-                // DoubleClicked same item
+                // DoubleClicked same item (open document)
                 else
                 {
                     // Set cursor to waiting
@@ -1071,12 +1089,15 @@ namespace NatoliOrderInterface
             // Single clicked
             else
             {
+                // Is it from a checkbox (meaning it already toggled the checkmark)
                 if(fromCheckBox == false)
                 {
+                    // Toggle the checkmark
                     checkBox.IsChecked = !checkBox.IsChecked;
                 }
             }
 
+            // Reset the click count
             click_count = 0;
         }
         #region Open Documents
