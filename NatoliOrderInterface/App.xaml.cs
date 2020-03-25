@@ -930,6 +930,11 @@ namespace NatoliOrderInterface
             EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
             list.RemoveHandler(obj, list[obj]);
         }
+        /// <summary>
+        /// ToggleButton MouseDown Event Handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToggleButton_SingleClick(object sender, MouseButtonEventArgs e)
         {
             // Stop timer
@@ -1041,6 +1046,11 @@ namespace NatoliOrderInterface
             // Start new double-click timer
             double_click_timer.Start();
         }
+        /// <summary>
+        /// Timer Elapsed from ToggleButton MouseDown Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void Double_Click_Timer_Elapsed(object sender, EventArgs e)
         {
             // Stop timer
