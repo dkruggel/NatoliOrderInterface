@@ -930,16 +930,23 @@ namespace NatoliOrderInterface
             EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
             list.RemoveHandler(obj, list[obj]);
         }
+        /// <summary>
+        /// ToggleButton's CheckBox Clicked Event Handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToggleButtonCheckBox_Clicked(object sender, RoutedEventArgs e)
         {
             // First click
             if (click_count == 1)
             {
+                // Check Box was clicked
                 fromCheckBox = true;
             }
             // Second click
             else if (click_count == 2)
             {
+                // Check Box was clicked
                 fromCheckBox2 = true;
             }
         }
@@ -958,12 +965,16 @@ namespace NatoliOrderInterface
 
             if (click_count == 1)
             {
+                // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
                 fromCheckBox = false;
+                // Set the checkBox from first click to compare on timer elapse
                 checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
             }
             else if (click_count == 2)
             {
+                // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
                 fromCheckBox2 = false;
+                // Set the checkBox from second click to compare on timer elapse
                 checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
             }
 
