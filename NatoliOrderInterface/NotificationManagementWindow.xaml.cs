@@ -31,6 +31,7 @@ namespace NatoliOrderInterface
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
             FillNotifications();
+            this.Focus();
         }
 
         private void FillNotifications()
@@ -316,6 +317,14 @@ namespace NatoliOrderInterface
             _.Dispose();
 
             parent.SetNotificationPicture();
+        }
+
+        private void NotificationMAnageMentWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }
