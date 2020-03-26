@@ -2959,7 +2959,7 @@ namespace NatoliOrderInterface
 
         private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            // Height = null;
+            // Height = Double.NaN;
         }
     }
 }
