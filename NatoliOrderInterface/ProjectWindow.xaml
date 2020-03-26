@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Name="ProjectWindowXAML" x:Class="NatoliOrderInterface.ProjectWindow"
         mc:Ignorable="d"
-        Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+        Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" WindowStartupLocation="CenterScreen" UseLayoutRounding="True" Activated="ProjectWindowXAML_Activated">
     <Window.Resources>
         <System:String x:Key="UnitsText">in</System:String>
     </Window.Resources>
@@ -75,16 +75,16 @@
                 <!-- Top Half -->
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="115"/>
+                        <ColumnDefinition Width="150"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="115"/>
+                        <ColumnDefinition Width="200"/>
                     </Grid.ColumnDefinitions>
                     <Border x:Name="ProjectNavigation" Visibility="Visible" Grid.Column="0" BorderBrush="Black" BorderThickness="0,2,2,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0">
                         <StackPanel x:Name="RoutingStackPanel">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0">
                                 <Border x:Name="SwitchProjectType" BorderBrush="Black" BorderThickness="2" Cursor="Hand" Background="{StaticResource BackgroundBrush}" MouseUp="SwitchProjectRoutingType_MouseUp">
                                     <DockPanel Margin="4,0" LastChildFill="False">
-                                        <Image Height="20" Source="{StaticResource Switch_LogoDrawingImage}" HorizontalAlignment="Center"/>
+                                        <Image Height="20" Source="Switch_Logo.PNG" HorizontalAlignment="Center"/>
                                         <TextBlock x:Name="CurrentProjectType" Text="TABLETS" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16" Style="{StaticResource BoldTextBlock}" Padding="0,0,0,2"/>
                                     </DockPanel>
                                 </Border>
@@ -291,15 +291,52 @@
                             </Border>
                         </Grid>
                     </StackPanel>
-                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Right">
-                        <DockPanel Width="{Binding ActualWidth, ElementName=RoutingStackPanel}">
+                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="2,2,0,2" Margin="0,-2,0,0" CornerRadius="0,0,0,0" HorizontalAlignment="Stretch">
+                        <DockPanel HorizontalAlignment="Stretch" Margin="5,0,5,0">
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="SpecificationsButton" Content="Specifications" Click="SpecificationsButton_Click"/>
-                            <Border DockPanel.Dock="Bottom" BorderThickness="0,2,0,0" BorderBrush="Black" x:Name="AttachFilesBorder" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop">
+                            <Border DockPanel.Dock="Bottom" BorderThickness="0,2,0,0" Margin="-5,0" BorderBrush="Black" x:Name="AttachFilesBorder" AllowDrop="True" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop">
                                 <DockPanel VerticalAlignment="Center">
-                                    <Image DockPanel.Dock="Bottom" Margin="4,0,4,0" Source="{StaticResource attach_fileDrawingImage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                                    <TextBlock DockPanel.Dock="Bottom" Text="ATTACH FILES" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,0,0,30" Style="{StaticResource BoldTextBlock}"/>
+                                    <TextBlock DockPanel.Dock="Top" Text="FILES" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Style="{StaticResource BoldTextBlock}"/>
+                                    <!--<Image DockPanel.Dock="Top" Margin="4,0,4,0" Source="{StaticResource add_item_altDrawingImage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="60"/>-->
+                                    <ListBox x:Name="FilesListBox" DockPanel.Dock="Top" Height="190" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Name="stackPanel">
+                                                    <Border Name="button" Padding="0" BorderBrush="Transparent" Background="Transparent" ToolTip="{Binding Item3}">
+                                                        <DockPanel LastChildFill="True">
+                                                            <Image Name="image" Height="{Binding  ActualHeight, ElementName=textBlock}" Source="{DynamicResource file_emptyDrawingImage}"></Image>
+                                                            <TextBlock Name="textBlock" Text="{Binding Item1}" Foreground="{StaticResource Dark}" Height="18" Margin="2,0,0,0"/>
+                                                        </DockPanel>
+                                                    </Border>
+                                                </StackPanel>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".xlsm">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".xlsx">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".pdf">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_pdfDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".msg">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource mailDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".jpg">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".png">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".bmp">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                     <!--<TextBlock Margin="0,20,0,0" FontSize="10" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource NormalTextBlock}" Visibility="Collapsed"><Run Text="Icon made by "/><Hyperlink NavigateUri="https://www.freepik.com/home" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Freepik"/></Hyperlink><Run Text=" from "/><Hyperlink NavigateUri="http://www.flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="www.flaticon.com"/></Hyperlink></TextBlock>-->
                                 </DockPanel>
                             </Border>
@@ -338,12 +375,12 @@
                                         <ComboBox x:Name="DieShape"  Style="{StaticResource ComboBoxAlignsLeft}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                         <TextBlock Text="Width:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="TabletWidth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Length:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Center" Margin="0,14,0,4" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="TabletLength" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Tolerance:" VerticalAlignment="Bottom" Margin="0,0,0,5" Grid.Row="4" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
@@ -378,12 +415,12 @@
                                         <TextBox Style="{StaticResource TextBox}" x:Name="UpperHobNumber" Grid.Row="1" Grid.Column="1" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right" DockPanel.Dock="Right"/>
                                         <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="UpperCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="UpperLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock x:Name="UpperHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
@@ -422,12 +459,12 @@
                                         <TextBox Style="{StaticResource TextBox}" x:Name="LowerHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
                                         <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="LowerCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="LowerLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock x:Name="LowerHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
@@ -466,12 +503,12 @@
                                         <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
                                         <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="ShortRejectLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock x:Name="ShortRejectHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>
@@ -510,12 +547,12 @@
                                         <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectHobNumber" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" TextChanged="HobOrDieNumber_TextChanged" HorizontalContentAlignment="Right"/>
                                         <TextBlock Text="Cup Depth:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="2" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectCupDepth" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock Text="Land:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                         <DockPanel Grid.Row="3" Grid.Column="1" >
-                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
+                                            <TextBlock Style="{StaticResource NormalTextBlock}" Text="{DynamicResource UnitsText}"  Cursor="Hand" VerticalAlignment="Bottom" DockPanel.Dock="Right" MouseUp="Units_MouseUp"/>
                                             <TextBox Style="{StaticResource TextBox}" x:Name="LongRejectLand" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
                                         </DockPanel>
                                         <TextBlock x:Name="LongRejectHobDescriptionPlaceHolder" Text="Hob Description" Margin="4,4,0,0" Height="60" VerticalAlignment="Top" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray" IsEnabled="False"/>

@@ -828,7 +828,7 @@ namespace NatoliOrderInterface
             {
                 EmailMessage emailMessage = new EmailMessage();
                 var message = new MimeMessage();
-                if (to.Count > 0)
+                if (to != null && to.Count > 0)
                 {
                     foreach (string recipient in to)
                     {
@@ -836,7 +836,7 @@ namespace NatoliOrderInterface
                         message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     }
                 }
-                if (cc.Count > 0)
+                if (cc != null && cc.Count > 0)
                 {
                     foreach (string recipient in cc)
                     {
@@ -844,7 +844,7 @@ namespace NatoliOrderInterface
                         message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     }
                 }
-                if (bcc.Count > 0)
+                if (bcc != null && bcc.Count > 0)
                 {
                     foreach (string recipient in bcc)
                     {
@@ -854,7 +854,7 @@ namespace NatoliOrderInterface
                 }
 
                 //emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
-                //message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                message.From.Add(new MailboxAddress("Automated Email", "automatedemail@natoli.com"));
 
                 message.Subject = subject;
 
@@ -862,7 +862,7 @@ namespace NatoliOrderInterface
                 {
                     Text = body
                 };
-                if (attachments.Count > 0)
+                if (attachments != null && attachments.Count > 0)
                 {
                     var multipart = new Multipart("Mixed");
                     multipart.Add(_body);
@@ -1138,24 +1138,23 @@ namespace NatoliOrderInterface
         /// </summary>
         /// <param name="inputDirectory"></param>
         /// <param name="outputZipFile"></param>
-        public static void CreateZipFile(string inputDirectory, string outputZipFile, string _projectNumber, string _revNo, User user)
+        public static void CreateZipFile(string inputDirectory, string outputZipFile)
         {
-            //if (File.Exists(outputZipFile))
-            //{
-            //    File.Delete(outputZipFile);
-            //}
-            //System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
             try
             {
-                if (File.Exists(outputZipFile))
+                try
                 {
                     File.Delete(outputZipFile);
+                }
+                catch
+                {
+
                 }
                 System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("IMethods.cs => CreateZipFile; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
+                IMethods.WriteToErrorLog("IMethods.cs => CreateZipFile (user is dummy user)", ex.Message, new User("twilliams"));
             }
         }
         /// <summary>
@@ -1257,7 +1256,7 @@ namespace NatoliOrderInterface
                     }
                     if (comments.Length > 0)
                     {
-                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments;
+                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br>br>-End Comments-<br><br>";
                     }
 
                     var body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -1266,7 +1265,7 @@ namespace NatoliOrderInterface
 
                         @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                         "The drawings for the customer are attached.<br><br>" +
-                        comments + "-End Comments-<br><br>"+
+                        comments +
                         "Thanks,<br>" +
                         "Engineering Team<br><br><br>" +
 
@@ -2270,8 +2269,8 @@ namespace NatoliOrderInterface
                             {
                                 try
                                 {
-                                    // Uppper or Upper Holder
-                                    if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH")
+                                    // Uppper or Upper Holder or Reject or Reject Holder
+                                    if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RH")
                                     {
                                         // Hob Exists
                                         if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
