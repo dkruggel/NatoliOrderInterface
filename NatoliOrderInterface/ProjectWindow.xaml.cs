@@ -62,6 +62,7 @@ namespace NatoliOrderInterface
         private string CoreRodKeyCollarSteelID = null;
         private bool CoreRodPunch = false;
         private string CoreRodPunchSteelID = null;
+        public string emptyString = "";
         private List<Tuple<string, string, string>> projectFiles = new List<Tuple<string, string, string>>();
         public List<Tuple<string, string, string>> ProjectFiles
         {
@@ -5679,8 +5680,7 @@ namespace NatoliOrderInterface
 
 
 
-        #endregion
 
-        
+        #endregion
     }
 }
