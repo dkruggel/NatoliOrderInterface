@@ -2951,5 +2951,15 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
+
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // Height = Actual Height;
+        }
+
+        private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // Height = null;
+        }
     }
 }
