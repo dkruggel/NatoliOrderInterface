@@ -1280,7 +1280,7 @@ namespace NatoliOrderInterface
 
                     if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
-                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
+                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile, projectNumber, revNo, user);
                         string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
                         MimePart attachment = new MimePart(mimetype[0], mimetype[1])
                         {
