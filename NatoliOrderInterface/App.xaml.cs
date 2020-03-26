@@ -1269,8 +1269,15 @@ namespace NatoliOrderInterface
                 //    }
                 //}
             }
+            try
+            {
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("InTheOffice");
+            }
+            catch
+            {
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            }
         }
         private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
         {
@@ -1301,7 +1308,15 @@ namespace NatoliOrderInterface
                 }
             }
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            try
+            {
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("InEngineering");
+            }
+            catch
+            {
+
+            }
         }
         private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
         {
@@ -1365,7 +1380,16 @@ namespace NatoliOrderInterface
                 }
             }
 
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            try
+            {
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("PrintedInEngineering");
+            }
+            catch
+            {
+
+            }
+            
         }
         private void DoNotProcess_Click(object sender, RoutedEventArgs e)
         {
@@ -1609,7 +1633,15 @@ namespace NatoliOrderInterface
             necContext.Dispose();
             context.Dispose();
             this.MainWindow.Cursor = Cursors.Arrow;
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            try
+            {
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("QuotesToConvert");
+            }
+            catch
+            {
+                
+            }
         }
         private void RecallQuote_Click(object sender, RoutedEventArgs e)
         {
@@ -1651,7 +1683,13 @@ namespace NatoliOrderInterface
             necContext.Dispose();
             context.Dispose();
             this.MainWindow.Cursor = Cursors.Arrow;
-            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            try
+            {
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("QuotesNotConverted");
+            }
+            catch 
+            { }
         }
         #endregion
         #region Projects
