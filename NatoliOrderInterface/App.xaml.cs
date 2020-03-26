@@ -1943,15 +1943,15 @@ namespace NatoliOrderInterface
                 try
                 {
                     // Check to see if the project is in the correct module
-                    if (project.Item4 == "AllTabletProjects")
+                    if (project.Item4 != "AllTabletProjects")
                     {
-                        using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                        {
-                            _.Dispose();
+                        //using var _ = new ProjectsContext();
+                        //if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        //{
+                            //_.Dispose();
                             continue;
-                        }
-                        _.Dispose();
+                        //}
+                        //_.Dispose();
                     }
 
                     // Add a note to the drafter
