@@ -1138,13 +1138,25 @@ namespace NatoliOrderInterface
         /// </summary>
         /// <param name="inputDirectory"></param>
         /// <param name="outputZipFile"></param>
-        public static void CreateZipFile(string inputDirectory, string outputZipFile)
+        public static void CreateZipFile(string inputDirectory, string outputZipFile, string _projectNumber, string _revNo, User user)
         {
-            if (File.Exists(outputZipFile))
+            //if (File.Exists(outputZipFile))
+            //{
+            //    File.Delete(outputZipFile);
+            //}
+            //System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
+            try
             {
-                File.Delete(outputZipFile);
+                if (File.Exists(outputZipFile))
+                {
+                    File.Delete(outputZipFile);
+                }
+                System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
             }
-            System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("IMethods.cs => CreateZipFile; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
+            }
         }
         /// <summary>
         /// Takes the PrincipalId of the Driveworks.SecurityUsers table and returns the Full Name.
@@ -1269,7 +1281,7 @@ namespace NatoliOrderInterface
 
                     if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
                     {
-                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
+                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile, projectNumber, revNo, user);
                         string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
                         MimePart attachment = new MimePart(mimetype[0], mimetype[1])
                         {

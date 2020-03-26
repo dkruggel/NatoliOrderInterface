@@ -566,6 +566,15 @@ namespace NatoliOrderInterface
             }
 
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
+
+
+#if DEBUG
+            List<string> _CSRs = new List<string>();
+
+            _CSRs.Add("Miral");
+
+            IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, "110012", "0", User);
+#endif
         }
         /// <summary>
         /// Resets timers from a list in the order they are provided.
@@ -659,7 +668,7 @@ namespace NatoliOrderInterface
             }
         }
         
-        #region Main Window Events
+#region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
 #if DEBUG
@@ -840,14 +849,14 @@ namespace NatoliOrderInterface
                 ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 755);
             }
         }
-        #endregion
+#endregion
 
-        #region MenuStuff
+#region MenuStuff
         public void BuildMenus()
         {
             //MainMenu.Items.Clear();
             MainMenu.Items.RemoveAt(0);
-            #region FileMenuRegion
+#region FileMenuRegion
             MenuItem fileMenu = new MenuItem
             {
                 Header = "File",
@@ -938,8 +947,8 @@ namespace NatoliOrderInterface
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
-            #endregion
-            #region SubsMenuRegion
+#endregion
+#region SubsMenuRegion
             MenuItem subsMenu = new MenuItem();
             subsMenu.Header = "Subscriptions";
             subsMenu.Height = MainMenu.Height;
@@ -970,8 +979,8 @@ namespace NatoliOrderInterface
                 subsMenu.Items.Add(menuItem);
             }
             if (User.Department != "Hob Programming") { MainMenu.Items.Add(subsMenu); }
-            #endregion
-            #region LegendRegion
+#endregion
+#region LegendRegion
             MenuItem legendMenu = new MenuItem
             {
                 Header = "Legend",
@@ -1270,13 +1279,13 @@ namespace NatoliOrderInterface
                 }
             }
 
-            #endregion
-            #region RightClickRegion
+#endregion
+#region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
                 Header = "Start"
             };
-            #endregion
+#endregion
         }
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {
@@ -1485,7 +1494,7 @@ namespace NatoliOrderInterface
 
             User.VisiblePanels = visiblePanels;
         }
-        #region Clicks
+#region Clicks
         private void StartTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -3200,10 +3209,10 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow.xaml.cs => Subscriptions_SubmenuClosed()", ex.Message, User);
             }
         }
-        #endregion
-        #endregion
+#endregion
+#endregion
 
-        #region MainWindowSearches
+#region MainWindowSearches
         private void QuoteSearchButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
@@ -3653,9 +3662,9 @@ namespace NatoliOrderInterface
 
             listBox.Visibility = Visibility.Collapsed;
         }
-        #endregion
+#endregion
 
-        #region New Modules
+#region New Modules
         private void BuildPanels()
         {
             try
@@ -4135,7 +4144,7 @@ namespace NatoliOrderInterface
             Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
         }
 
-        #region Gets And Binds
+#region Gets And Binds
         private void GetBeingEntered()
         {
             try
@@ -4635,8 +4644,8 @@ namespace NatoliOrderInterface
 
             NatoliOrderList = _natoliOrderList;
         }
-        #endregion
-        #region Module Search Box Text Changed Events
+#endregion
+#region Module Search Box Text Changed Events
         private string GetSearchString(string moduleName)
         {
             int i = User.VisiblePanels.IndexOf(moduleName);
@@ -4808,8 +4817,8 @@ namespace NatoliOrderInterface
         {
             Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
         }
-        #endregion
-        #endregion
+#endregion
+#endregion
 
         //#region ModuleBuilding
 
@@ -11953,7 +11962,7 @@ namespace NatoliOrderInterface
         //}
         //#endregion276138
 
-        #region Folder Management
+#region Folder Management
         private void QuotesAndOrders()
         {
             FindMissingOrders(ListTop100Orders());
@@ -12155,9 +12164,9 @@ namespace NatoliOrderInterface
                 Console.WriteLine("Exception: " + eSql.Message);
             }
         }
-        #endregion        
+#endregion
 
-        #region DataGrid Events
+#region DataGrid Events
         private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             using var _context = new NAT02Context();
@@ -13574,9 +13583,9 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow => GridWindow_Drop", ex.Message, User);
             }
         }
-        #endregion
+#endregion
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -13614,6 +13623,6 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
-        #endregion
+#endregion
     }
 }
