@@ -130,6 +130,14 @@ namespace NatoliOrderInterface
                 Department = "Customer Service";
             }
             VisiblePanels = settings.Panels.Split(',').ToList();
+            foreach (string panel in VisiblePanels)
+            {
+                if (panel == "TabletProjectsNotStarted" || panel == "TabletProjectsStarted" || panel == "TabletProjectsDrawn" || panel == "TabletProjectsSubmitted" ||
+                    panel == "TabletProjectsOnHold" || panel == "ToolProjectsNotStarted" || panel == "ToolProjectsStarted" || panel == "ToolProjectsDrawn" || panel == "ToolProjectsOnHold")
+                {
+                    VisiblePanels.Remove(panel);
+                }
+            }
             if (domainName == "dkruggel") { SignatureLeft = 955; SignatureBottom = 20; }
             else if (domainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
             else if (domainName == "dsachuk") { SignatureLeft = 958; SignatureBottom = 20; }
