@@ -9,6 +9,7 @@
         Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" WindowStartupLocation="CenterScreen" UseLayoutRounding="True" Activated="ProjectWindowXAML_Activated">
     <Window.Resources>
         <System:String x:Key="UnitsText">in</System:String>
+        
     </Window.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="False">
         <Grid>
@@ -627,29 +628,25 @@
                                         </Border>
                                         <TextBlock Text="Density:" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
                                         <TextBox Style="{StaticResource TextBox}" x:Name="Density" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="1" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right"/>
-                                        <ComboBox x:Name="DensityUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="1" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
-                                            <System:String>sys:String.Empty</System:String>
+                                        <ComboBox x:Name="DensityUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="1" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False" SelectedIndex="-1">
                                             <System:String>mg/mm³</System:String>
                                             <System:String>mg/in³</System:String>
                                         </ComboBox>
                                         <TextBlock Text="Mass:" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
                                         <TextBox Style="{StaticResource TextBox}" x:Name="Mass" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="2" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
-                                        <ComboBox x:Name="MassUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="2" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
-                                            <System:String>sys:String.Empty</System:String>
+                                        <ComboBox x:Name="MassUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="2" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False" SelectedIndex="-1">
                                             <System:String>mg</System:String>
                                             <System:String>g</System:String>
                                         </ComboBox>
                                         <TextBlock Text="Volume:" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
                                         <TextBox Style="{StaticResource TextBox}" x:Name="Volume" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="3" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
-                                        <ComboBox x:Name="VolumeUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="3" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
-                                            <System:String>sys:String.Empty</System:String>
+                                        <ComboBox x:Name="VolumeUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="3" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False" SelectedIndex="-1">
                                             <System:String>mm³</System:String>
                                             <System:String>in³</System:String>
                                         </ComboBox>
                                         <TextBlock Text="Thickness:" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0" Style="{StaticResource NormalTextBlock}" />
                                         <TextBox Style="{StaticResource TextBox}" x:Name="TargetThickness" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch"  Grid.Row="4" Grid.Column="1" Margin="0,0,4,0" HorizontalContentAlignment="Right" />
-                                        <ComboBox x:Name="TargetThicknessUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="4" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False">
-                                            <System:String>sys:String.Empty</System:String>
+                                        <ComboBox x:Name="TargetThicknessUnits" Style="{StaticResource ComboBoxAlignsLeft}" Grid.Row="4" Grid.Column="2" Margin="4,-2,0,0" IsEditable="False" SelectedIndex="-1">
                                             <System:String>mm</System:String>
                                             <System:String>in</System:String>
                                         </ComboBox>
@@ -681,8 +678,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="Pre-Pick" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                                 <TextBox Style="{StaticResource TextBox}" x:Name="PrePickAmount" Grid.Column="1" HorizontalContentAlignment="Right" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                                <ComboBox x:Name="PrePickUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Left">
-                                                    <System:String>sys:String.Empty</System:String>
+                                                <ComboBox x:Name="PrePickUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Left" SelectedIndex="-1">
                                                     <System:String>%</System:String>
                                                     <System:String>mm</System:String>
                                                     <System:String>in</System:String>
@@ -698,8 +694,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Text="Taper:" Grid.Column="0" Style="{StaticResource NormalTextBlock}"/>
                                                 <TextBox Style="{StaticResource TextBox}" x:Name="TaperAmount" Grid.Column="1" HorizontalContentAlignment="Right" Text="" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,4,0"/>
-                                                <ComboBox x:Name="TaperUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False">
-                                                    <System:String>sys:String.Empty</System:String>
+                                                <ComboBox x:Name="TaperUnits" Grid.Column="2" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" SelectedIndex="-1">
                                                     <System:String>%</System:String>
                                                     <System:String>mm</System:String>
                                                     <System:String>in</System:String>
@@ -1136,8 +1131,7 @@
                                             </Border>
                                             <DockPanel Grid.Row="1">
                                                 <TextBlock Text="Key Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                                                <ComboBox x:Name="KeyType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center">
-                                                    <System:String>sys:String.Empty</System:String>
+                                                <ComboBox x:Name="KeyType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center" SelectedIndex="-1">
                                                     <System:String>Fixed Parallel Key 1 Slot</System:String>
                                                     <System:String>Fixed Parallel Key 2 Slots</System:String>
                                                     <System:String>Woodruff Key 1 Slot</System:String>
@@ -1151,8 +1145,7 @@
                                             </DockPanel>
                                             <DockPanel Grid.Row="2">
                                                 <TextBlock Text="Key Angle:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
-                                                <ComboBox x:Name="KeyOrientation" Style="{StaticResource ComboBoxAlignsLeft}" DockPanel.Dock="Right" Margin="0" IsEditable="False" Width="40" VerticalAlignment="Center">
-                                                    <System:String>sys:String.Empty</System:String>
+                                                <ComboBox x:Name="KeyOrientation" Style="{StaticResource ComboBoxAlignsLeft}" DockPanel.Dock="Right" Margin="0" IsEditable="False" Width="40" VerticalAlignment="Center" SelectedIndex="-1">
                                                     <System:String>CW</System:String>
                                                     <System:String>CCW</System:String>
                                                 </ComboBox>
@@ -1299,8 +1292,7 @@
                                 <TextBox Style="{StaticResource TextBox}" x:Name="SketchID" Grid.Column="1"  HorizontalContentAlignment="Center" Margin="0,0,10,0" TextChanged="SketchID_TextChanged"/>
                                 <TextBlock x:Name="NumberOfTipsPlaceHolder" Text="# Tips" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray" IsEnabled="False" Margin="0,0,10,0"/>
                                 <TextBox Style="{StaticResource TextBox}" x:Name="NumberOfTips" Grid.Column="2" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
-                                <ComboBox x:Name="MultiTipStyle" Grid.Column="3" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}">
-                                    <System:String>sys:String.Empty</System:String>
+                                <ComboBox x:Name="MultiTipStyle" Grid.Column="3" Style="{StaticResource ComboBoxAlignsLeft}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center" IsEnabled="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type CheckBox}}}" SelectedIndex="-1">
                                     <System:String>SOLID</System:String>
                                     <System:String>ASSEMBLED</System:String>
                                 </ComboBox>
