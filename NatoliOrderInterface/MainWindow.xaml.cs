@@ -566,15 +566,6 @@ namespace NatoliOrderInterface
             }
 
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
-
-
-#if DEBUG
-            List<string> _CSRs = new List<string>();
-
-            _CSRs.Add("Miral");
-
-            IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, "110012", "0", User);
-#endif
         }
         /// <summary>
         /// Resets timers from a list in the order they are provided.
@@ -667,13 +658,12 @@ namespace NatoliOrderInterface
                 foldersTimer.Enabled = true;
             }
         }
-        
-#region Main Window Events
+
+        #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
 #if DEBUG
-            //TestWindow testWindow = new TestWindow();
-            //testWindow.Show();
+            
 #endif
         }
         private void GridWindow_ContentRendered(object sender, EventArgs e)

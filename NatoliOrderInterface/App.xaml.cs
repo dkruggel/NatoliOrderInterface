@@ -489,6 +489,7 @@ namespace NatoliOrderInterface
                 // Project
                 else if (project)
                 {
+                    Button projectPreviousStepButton = buttons.Single(b => b.Name == "ProjectPreviousStepButton");
                     Button projectOnHoldButton = buttons.Single(b => b.Name == "ProjectOnHoldButton");
                     Button projectOffHoldButton = buttons.Single(b => b.Name == "ProjectOffHoldButton");
                     Button projectNextStepButton = buttons.Single(b => b.Name == "ProjectNextStepButton");
@@ -496,6 +497,7 @@ namespace NatoliOrderInterface
                     Button projectCancelButton = buttons.Single(b => b.Name == "ProjectCancelButton");
                     Button projectOpenButton = buttons.Single(b => b.Name == "WindowButton");
 
+                    projectPreviousStepButton.Visibility = Visibility.Visible;
                     projectOnHoldButton.Visibility = Visibility.Visible;
                     projectOffHoldButton.Visibility = Visibility.Visible;
                     projectNextStepButton.Visibility = Visibility.Visible;
@@ -503,6 +505,7 @@ namespace NatoliOrderInterface
                     projectCancelButton.Visibility = Visibility.Visible;
                     projectOpenButton.Visibility = Visibility.Visible;
 
+                    projectPreviousStepButton.IsEnabled = false;
                     projectOnHoldButton.IsEnabled = false;
                     projectOffHoldButton.IsEnabled = false;
                     projectNextStepButton.IsEnabled = false;
@@ -527,7 +530,7 @@ namespace NatoliOrderInterface
                         }
                         else if (!(pss.TabletSubmittedBy is null))
                         {
-                            ProjectSubmittedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
                         else if (pss.TabletDrawnBy.Length > 0)
@@ -569,7 +572,7 @@ namespace NatoliOrderInterface
                         }
                         else if (!(pss.TabletSubmittedBy is null))
                         {
-                            ProjectSubmittedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
                         else if (pss.TabletDrawnBy.Length > 0)
@@ -596,7 +599,7 @@ namespace NatoliOrderInterface
                         }
                         else if (pss.ToolDrawnBy.Length > 0)
                         {
-                            ProjectSubmittedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
                         else if (pss.ProjectStartedTool.Length > 0)
@@ -828,7 +831,7 @@ namespace NatoliOrderInterface
             projectCompleteButton.IsEnabled = true;
             projectCompleteButton.ToolTip = "Mark As Complete";
         }
-        private void ProjectSubmittedButtons(Button projectOnHoldButton, Button projectOffHoldButton, Button projectNextStepButton,
+        private void ProjectSubmittedButtons(Button projectPreviousStepButton, Button projectOnHoldButton, Button projectOffHoldButton, Button projectNextStepButton,
                                              Button projectCompleteButton, Button projectCancelButton)
         {
             // On Hold: Enabled, "Put On Hold"
@@ -838,6 +841,12 @@ namespace NatoliOrderInterface
             // Off Hold: Disabled, No Tooltip
             projectOffHoldButton.IsEnabled = false;
             projectOffHoldButton.ToolTip = "";
+
+            // Previous Step: Enabled, "Send Back To Drafter"
+            projectPreviousStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
+            projectPreviousStepButton.IsEnabled = true;
+            projectPreviousStepButton.ToolTip = "Send Back To Drafter";
+            projectNextStepButton.Click += PreviousStepProject_Click;
 
             // Next Step: Enabled, "Mark As Checked"
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
@@ -1693,6 +1702,32 @@ namespace NatoliOrderInterface
         }
         #endregion
         #region Projects
+        private void PreviousStepProject_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedProjects.Count > 0)
+            {
+                // New list of projects that are in the same module that was right clicked inside of
+                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
+
+                if (currModule == "AllTabletProjects")
+                {
+                    SendBackTabletProject(validProjects);
+                }
+                else if (currModule == "AllToolProjects")
+                {
+                    // CompleteToolProject(validProjects);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                selectedProjects.Clear();
+
+                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+            }
+        }
         private void NextStepProject_Click(object sender, RoutedEventArgs e)
         {
             // New list of projects that are in the same module that was right clicked inside of
@@ -1900,6 +1935,81 @@ namespace NatoliOrderInterface
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
+        private void SendBackTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
+        {
+            for (int i = 0; i < validProjects.Count; i++)
+            {
+                (string, string, CheckBox, string, string) project = validProjects[i];
+                try
+                {
+                    // Check to see if the project is in the correct module
+                    if (project.Item4 != "AllTabletProjects")
+                    {
+                        //using var _ = new ProjectsContext();
+                        //if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        //{
+                            //_.Dispose();
+                            continue;
+                        //}
+                        //_.Dispose();
+                    }
+
+                    // Add a note to the drafter
+                    System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.Item1 + "\\NEED_TO_FIX.txt");
+                    streamWriter.Close();
+                    System.Diagnostics.Process.Start("notepad.exe", @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.Item1 + "\\NEED_TO_FIX.txt");
+
+                    // Uncheck project expander
+                    project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
+
+                    using var _projectsContext = new ProjectsContext();
+                    using var _driveworksContext = new DriveWorksContext();
+
+                    // Get project revision number
+                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+                    // Remove from Submitted
+                    // Remove from Drawn
+
+                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+                    {
+                        IMethods.StartProject(project.Item1, project.Item2, "TABLETS", user);
+                    }
+                    else
+                    {
+                        TabletSubmittedBy tabletSubmittedBy = _projectsContext.TabletSubmittedBy.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        _projectsContext.TabletSubmittedBy.Remove(tabletSubmittedBy);
+
+                        TabletDrawnBy tabletDrawnBy = _projectsContext.TabletDrawnBy.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        _projectsContext.TabletDrawnBy.Remove(tabletDrawnBy);
+
+                        ProjectSpecSheet projectSpecSheet = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        projectSpecSheet.TabletDrawnBy = "";
+                        projectSpecSheet.TabletSubmittedBy = "";
+                        _projectsContext.ProjectSpecSheet.Update(projectSpecSheet);
+
+                        // Drive specification transition name to "Started - Tablets"
+                        // Auto archive project specification
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                        spec.StateName = "Started - Tablets";
+                        _driveworksContext.Specifications.Update(spec);
+                    }
+
+                    _projectsContext.SaveChanges();
+                    _driveworksContext.SaveChanges();
+                    _projectsContext.Dispose();
+                    _driveworksContext.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    // MessageBox.Show(ex.Message);
+                    IMethods.WriteToErrorLog("SendBackTabletProject", ex.Message, user);
+                }
+            }
+        }
         private void StartTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
         {
             for (int i = 0; i < validProjects.Count; i++)
@@ -1963,7 +2073,7 @@ namespace NatoliOrderInterface
                 catch (Exception ex)
                 {
                     // MessageBox.Show(ex.Message);
-                    IMethods.WriteToErrorLog("StartTabletProject_CLick", ex.Message, user);
+                    IMethods.WriteToErrorLog("StartTabletProject", ex.Message, user);
                 }
             }
         }
@@ -2837,10 +2947,9 @@ namespace NatoliOrderInterface
         }
 
 
-        #endregion
 
         #endregion
 
-        
+        #endregion
     }
 }
