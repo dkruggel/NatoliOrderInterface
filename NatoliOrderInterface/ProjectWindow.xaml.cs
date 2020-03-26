@@ -5547,18 +5547,18 @@ namespace NatoliOrderInterface
         #region Attach Files
         private void AttachFilesBorder_DragEnter(object sender, DragEventArgs e)
         {
-
+            //Mouse.OverrideCursor = new Cursor(@"C:\Users\twilliams\source\repos\NatoliOrderInterface\NatoliOrderInterface\add-item.cur");
         }
 
         private void AttachFilesBorder_DragLeave(object sender, DragEventArgs e)
         {
-
+            //Mouse.OverrideCursor = null;
         }
 
         private void AttachFilesBorder_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effects = DragDropEffects.Link;
+                e.Effects = DragDropEffects.Copy;
             else
                 e.Effects = DragDropEffects.None;
 
@@ -5601,7 +5601,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Could not copy the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
                 IMethods.WriteToErrorLog("ProjectWindow.xaml.cs => AttachFilesBorder_Drop", ex.Message, user);
             }
-                
+            //Mouse.OverrideCursor = null;
         }
         
         private void file_MouseDoubleClick(object sender, MouseButtonEventArgs e)

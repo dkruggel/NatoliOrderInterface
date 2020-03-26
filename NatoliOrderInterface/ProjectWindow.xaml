@@ -301,7 +301,7 @@
                                 <DockPanel VerticalAlignment="Center">
                                     <TextBlock DockPanel.Dock="Top" Text="FILES" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Style="{StaticResource BoldTextBlock}"/>
                                     <!--<Image DockPanel.Dock="Top" Margin="4,0,4,0" Source="{StaticResource add_item_altDrawingImage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="60"/>-->
-                                    <ListBox x:Name="FilesListBox" DockPanel.Dock="Top" Height="190" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp">
+                                    <ListBox x:Name="FilesListBox" DockPanel.Dock="Top" Height="190" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Name="stackPanel">
