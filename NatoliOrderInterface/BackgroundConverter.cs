@@ -233,6 +233,7 @@ namespace NatoliOrderInterface
                         bool submitted = project.TabletSubmittedBy is null ? false : project.TabletSubmittedBy.Length > 0;
                         bool drawn = project.TabletDrawnBy.Length > 0;
                         bool started = project.ProjectStartedTablet.Length > 0;
+                        bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
 
                         if (onHold)
                         {
@@ -248,6 +249,11 @@ namespace NatoliOrderInterface
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
                             return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
+                        }
+                        if (sentBack)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (drawn)
                         {
