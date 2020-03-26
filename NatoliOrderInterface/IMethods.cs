@@ -1140,11 +1140,22 @@ namespace NatoliOrderInterface
         /// <param name="outputZipFile"></param>
         public static void CreateZipFile(string inputDirectory, string outputZipFile)
         {
-            if (File.Exists(outputZipFile))
+            try
             {
-                File.Delete(outputZipFile);
+                try
+                {
+                    File.Delete(outputZipFile);
+                }
+                catch
+                {
+
+                }
+                System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
             }
-            System.IO.Compression.ZipFile.CreateFromDirectory(inputDirectory, outputZipFile, 0, false);
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("IMethods.cs => CreateZipFile (user is dummy user)", ex.Message, new User("twilliams"));
+            }
         }
         /// <summary>
         /// Takes the PrincipalId of the Driveworks.SecurityUsers table and returns the Full Name.
@@ -1245,7 +1256,7 @@ namespace NatoliOrderInterface
                     }
                     if (comments.Length > 0)
                     {
-                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments;
+                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br>br>-End Comments-<br><br>";
                     }
 
                     var body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -1254,7 +1265,7 @@ namespace NatoliOrderInterface
 
                         @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                         "The drawings for the customer are attached.<br><br>" +
-                        comments + "-End Comments-<br><br>"+
+                        comments +
                         "Thanks,<br>" +
                         "Engineering Team<br><br><br>" +
 
