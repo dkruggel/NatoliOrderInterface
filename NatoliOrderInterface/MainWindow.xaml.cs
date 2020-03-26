@@ -477,7 +477,7 @@ namespace NatoliOrderInterface
                         //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User, "2000002");
                         //customerNoteWindow.Show();
                         //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "45879", "0", User);
-                        //ProjectWindow projectWindow = new ProjectWindow("110000", "0", this, User, false);
+                        ProjectWindow projectWindow = new ProjectWindow("110012", "4", this, User, false);
                     }
                     else if (User.EmployeeCode == "E4408")
                     {

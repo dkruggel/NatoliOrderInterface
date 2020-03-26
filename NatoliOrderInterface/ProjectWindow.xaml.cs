@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Reflection;
 using System.IO;
+using System.Collections.Specialized;
 
 namespace NatoliOrderInterface
 {
@@ -61,6 +62,17 @@ namespace NatoliOrderInterface
         private string CoreRodKeyCollarSteelID = null;
         private bool CoreRodPunch = false;
         private string CoreRodPunchSteelID = null;
+        private List<Tuple<string, string, string>> projectFiles = new List<Tuple<string, string, string>>();
+        public List<Tuple<string, string, string>> ProjectFiles
+        {
+            get { return projectFiles; }
+            set
+            {
+                projectFiles = value;
+                FilesListBox.ItemsSource = null;
+                FilesListBox.ItemsSource = projectFiles;
+            }
+        }
         private readonly string projectsDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
         public static string Units = "in";
         Quote quote = null;
@@ -462,6 +474,22 @@ namespace NatoliOrderInterface
             LongRejectCupType.Items.Clear();
             LongRejectCupType.ItemsSource = null;
             LongRejectCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
+            ProjectFiles = GetProjectFiles(projectNumber);
+        }
+
+        private List<Tuple<string,string,string>> GetProjectFiles(string projectNumber)
+        {
+            string rootDir = projectsDirectory + projectNumber + "\\";
+            string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
+            List<Tuple<string, string,string>> files = new List<Tuple<string, string,string>>();
+            foreach(string file in filePaths)
+            {
+                string directory = Path.GetDirectoryName(file);
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                string ext = Path.GetExtension(file);
+                files.Add(new Tuple<string, string, string>(fileName, directory, ext));
+            }
+            return files;
         }
         /// <summary>
         /// Fills in the controls for a blank project ready to be created.
@@ -4035,6 +4063,10 @@ namespace NatoliOrderInterface
         }
 
         #region Events
+        private void ProjectWindowXAML_Activated(object sender, EventArgs e)
+        {
+            ProjectFiles = GetProjectFiles(projectNumber);
+        }
         /// <summary>
         /// Disposes the window after close
         /// </summary>
@@ -5269,8 +5301,6 @@ namespace NatoliOrderInterface
                 }
                 else if (button.Content.ToString() == "Revise")
                 {
-
-
                     using var _projectsContext = new ProjectsContext();
                     EngineeringProjects oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
@@ -5526,15 +5556,87 @@ namespace NatoliOrderInterface
 
         private void AttachFilesBorder_DragOver(object sender, DragEventArgs e)
         {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.Link;
+            else
+                e.Effects = DragDropEffects.None;
 
         }
 
         private void AttachFilesBorder_Drop(object sender, DragEventArgs e)
         {
-
+            try
+            {
+                string[] files = e.Data.GetData(DataFormats.FileDrop, false) as string[]; // get all files droppeds  
+                if (files != null && files.Any())
+                {
+                    string[] failures = { };
+                    string outDir = projectsDirectory + "\\" + projectNumber + "\\";
+                    foreach (string file in files)
+                    {
+                        try
+                        {
+                            File.Copy(file, outDir + Path.GetFileName(file));
+                        }
+                        catch (Exception ex)
+                        {
+                            failures.Append(Path.GetFileName(file) + " (" + ex.Message + ").");
+                        }
+                    }
+                    if (failures.Length > 0)
+                    {
+                        string errorMessage = "";
+                        foreach (string failure in failures)
+                        {
+                            errorMessage += failure + System.Environment.NewLine;
+                        }
+                        MessageBox.Show(errorMessage);
+                    }
+                }
+                ProjectFiles = GetProjectFiles(projectNumber);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not copy the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+                IMethods.WriteToErrorLog("ProjectWindow.xaml.cs => AttachFilesBorder_Drop", ex.Message, user);
+            }
+                
+        }
+        
+        private void file_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                ListBox listBox = sender as ListBox;
+                Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
+                string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
+                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            }
+        }
+        private void file_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Key == System.Windows.Input.Key.Delete)
+                {
+                    ListBox listBox = sender as ListBox;
+                    Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
+                    string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
+                    File.Delete(fullFilePath);
+                }
+                ProjectFiles = GetProjectFiles(projectNumber);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not delete the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            }
         }
         #endregion
-        
+
         #endregion
 
         #region IDisposable Support
@@ -5574,6 +5676,11 @@ namespace NatoliOrderInterface
         }
 
 
+
+
+
         #endregion
+
+        
     }
 }
