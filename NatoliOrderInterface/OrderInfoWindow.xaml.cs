@@ -1123,7 +1123,7 @@ namespace NatoliOrderInterface
                         bool shipped = _.TravellerScansAudit.Any(s => s.OrderNumber == orderNumber * 100 && s.DepartmentCode == "D990");
                         _.Dispose();
                         if (orderLocation.StartsWith("BeingEntered") || orderLocation.StartsWith("EnteredUnscanned") || orderLocation.StartsWith("InTheOffice") ||
-                            (string.IsNullOrEmpty(orderLocation) && !shipped))
+                            (orderLocation.StartsWith("PrintedInEngineering") && !workOrder.Finished) ||(string.IsNullOrEmpty(orderLocation) && !shipped))
                         {
                             StartOrderButton.IsEnabled = true;
                         }

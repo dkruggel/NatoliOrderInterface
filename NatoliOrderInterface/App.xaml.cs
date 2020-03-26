@@ -1760,11 +1760,11 @@ namespace NatoliOrderInterface
         }
         private void OnHoldProject_Click(object sender, RoutedEventArgs e)
         {
-            if (projectsToMove.Count > 0)
+            if (selectedProjects.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1780,18 +1780,17 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void OffHoldProject_Click(object sender, RoutedEventArgs e)
         {
-            if (projectsToMove.Count > 0)
+            if (selectedProjects.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1807,18 +1806,17 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void CompleteProject_Click(object sender, RoutedEventArgs e)
         {
-            if (projectsToMove.Count > 0)
+            if (selectedProjects.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1834,18 +1832,17 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
         private void CancelProject_Click(object sender, RoutedEventArgs e)
         {
-            if (projectsToMove.Count > 0)
+            if (selectedProjects.Count > 0)
             {
                 // New list of projects that are in the same module that was right clicked inside of
                 string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-                List<(string, string, CheckBox, string, string)> validProjects = projectsToMove.Where(p => p.Item4 == currModule).ToList();
+                List<(string, string, CheckBox, string, string)> validProjects = selectedProjects.Where(p => p.Item4 == currModule).ToList();
 
                 if (currModule == "AllTabletProjects")
                 {
@@ -1861,7 +1858,6 @@ namespace NatoliOrderInterface
                 }
 
                 selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -2621,6 +2617,7 @@ namespace NatoliOrderInterface
                     using var _nat02Context = new NAT02Context();
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
                     _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+                    _nat02Context.SaveChanges();
                     _nat02Context.Dispose();
                 }
                 catch (Exception ex)
