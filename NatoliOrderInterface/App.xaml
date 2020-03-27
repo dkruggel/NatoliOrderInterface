@@ -4556,7 +4556,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -4749,7 +4749,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -4948,7 +4948,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -5152,7 +5152,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -5343,7 +5343,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -5539,7 +5539,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -5733,7 +5733,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -5927,7 +5927,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -6127,7 +6127,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -6324,7 +6324,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged" AllowDrop="True"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -6468,7 +6468,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
@@ -6637,7 +6637,7 @@
                                     </Border>
                                 </Border>
                                 <DockPanel LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="3">
-                                    <TextBox Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
