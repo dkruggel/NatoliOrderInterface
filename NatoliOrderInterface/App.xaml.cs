@@ -2951,5 +2951,27 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
+
+        private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            {
+                UIElementCollection x = grid.Children as UIElementCollection;
+                Label label = x[0] as Label;
+                // Does not let the height change while searching
+                label.Height = label.ActualHeight;
+            }
+        }
+
+        private void SearchBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            {
+                UIElementCollection x = grid.Children as UIElementCollection;
+                Label label = x[0] as Label;
+                // Resets the height so it can scale with number of items
+                label.Height = Double.NaN;
+            }
+        }
     }
 }
