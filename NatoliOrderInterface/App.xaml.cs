@@ -194,7 +194,7 @@ namespace NatoliOrderInterface
 
             collapseButton.Visibility = Visibility.Visible;
 
-            (collapseButton.TemplatedParent as Label).MaxHeight = 500;
+            (collapseButton.TemplatedParent as Label).MaxHeight = 410;
             //if (count == 0)
             //{
             //    // (expandButton.TemplatedParent as Label).MinHeight = 100;
