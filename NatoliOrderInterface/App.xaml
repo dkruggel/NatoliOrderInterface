@@ -3341,8 +3341,6 @@
         </Style>
         <Style x:Key="SearchBox" TargetType="{x:Type TextBox}">
             <Setter Property="AllowDrop" Value="True"/>
-            <EventSetter Event="GotKeyboardFocus" Handler="SearchBox_GotKeyboardFocus"/>
-            <EventSetter Event="LostKeyboardFocus" Handler="SearchBox_LostKeyboardFocus"/>
             <Setter Property="Margin" Value="6,0"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -3375,7 +3373,7 @@
                                         </EventTrigger>
                                     </TextBlock.Triggers>
                                 </TextBlock>
-                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged" AllowDrop="True"/>
+                                <TextBox x:Name="SearchTextBox" Style="{StaticResource SearchBoxStyle}" Grid.Column="0" Margin="16,0" PreviewKeyUp="SearchTextBox_PreviewKeyUp" TextChanged="SearchTextBox_TextChanged" GotKeyboardFocus="SearchBox_GotKeyboardFocus" LostKeyboardFocus="SearchBox_LostKeyboardFocus" AllowDrop="True"/>
                                 <Image x:Name="MagImage" Source="{StaticResource searchDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" Visibility="Visible" PreviewMouseUp="MagImage_PreviewMouseUp" AllowDrop="True"/>
                                 <Image x:Name="xImage" Source="{StaticResource closeDrawingImage}" Grid.Column="1" Height="Auto" Width="Auto" Margin="0,1" HorizontalAlignment="Center" PreviewMouseUp="xImage_PreviewMouseUp" Visibility="Collapsed" AllowDrop="True">
                                 </Image>
