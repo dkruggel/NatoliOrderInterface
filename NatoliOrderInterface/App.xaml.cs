@@ -183,8 +183,13 @@ namespace NatoliOrderInterface
                 Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
                 DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
                 TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+                Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
+                Grid templatedBorderGrid = templatedBorder.Child as Grid;
+                TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
 
-                if ((sender as TextBox) == templatedTextBox)
+                TextBox textBox = (sender as TextBox);
+
+                if (textBox == templatedActualTextBox)
                 {
                     // Does not let the height change while searching
                     label.Height = label.ActualHeight;
@@ -202,8 +207,13 @@ namespace NatoliOrderInterface
                 Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
                 DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
                 TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+                Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
+                Grid templatedBorderGrid = templatedBorder.Child as Grid;
+                TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
 
-                if ((sender as TextBox) == templatedTextBox && string.IsNullOrEmpty((sender as TextBox).Text))
+                TextBox textBox = (sender as TextBox);
+
+                if (textBox == templatedActualTextBox && textBox.Text == "" && label.Height != Double.NaN)
                 {
                     // Resets the height so it can scale with number of items
                     label.Height = Double.NaN;
