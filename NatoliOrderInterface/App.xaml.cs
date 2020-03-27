@@ -563,7 +563,7 @@ namespace NatoliOrderInterface
                         }
                         else if (pss.ToolDrawnBy.Length > 0)
                         {
-                            ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
                         else if (pss.ProjectStartedTool.Length > 0)
