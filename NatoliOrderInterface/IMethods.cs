@@ -1244,7 +1244,10 @@ namespace NatoliOrderInterface
                     var message = new MimeMessage();
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-                    message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed";
+                    using var _ = new ProjectsContext();
+                    string cust = _.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
+                    _.Dispose();
+                    message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed for " + cust;
 
                     string comments = "";
 

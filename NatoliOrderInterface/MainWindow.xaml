@@ -396,9 +396,9 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <DockPanel x:Name="MainDock">
+    <DockPanel x:Name="MainDock" LastChildFill="True">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" DockPanel.ZIndex="2">
-            <WrapPanel>
+                <WrapPanel>
                 <DockPanel x:Name="MenuDock" Height="30" LastChildFill="False">
                     <Menu DockPanel.Dock="Left" x:Name="MainMenu" Height="30" HorizontalContentAlignment="Center" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Dark}">
                         <MenuItem Name="InitializingMenuItem" Header="Initializing... Please Wait" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="{Binding Height, ElementName=MainMenu}"/>
@@ -409,26 +409,27 @@
                     <!--<Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>-->
                     <Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" AllowDrop="True" IsEnabled="False"/>
                     <!--<Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource TrashButton}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Dark}" AllowDrop="True"/>-->
+                    <TextBox x:Name="ZoomTextBox" Text="100%" Height="20" VerticalAlignment="Center"/>
                 </DockPanel>
-                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <DockPanel HorizontalAlignment="Right" MaxHeight="90">
-                        <Border BorderBrush="LightGray" BorderThickness="1,0,0,0" Margin="0,2,0,2">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="250"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Customer" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Grid.Column="0" Margin="5,0"/>
-                                <Canvas Grid.Column="1" VerticalAlignment="Top">
-                                    <ContentControl x:Name="CustomerSearchListBox" Style="{StaticResource FuzzySearchWithSuggestions}" Panel.ZIndex="1"/>
-                                </Canvas>
-                                <!--<TextBox x:Name="CustomerSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0" Width="120"/>-->
-                            </Grid>
-                        </Border>
+                            <Border BorderBrush="LightGray" BorderThickness="1,0,0,0" Margin="0,2,0,2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="250"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Customer" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" Grid.Column="0" Margin="5,0"/>
+                                    <Canvas Grid.Column="1" VerticalAlignment="Top">
+                                        <ContentControl x:Name="CustomerSearchListBox" Style="{StaticResource FuzzySearchWithSuggestions}" Panel.ZIndex="1"/>
+                                    </Canvas>
+                                    <!--<TextBox x:Name="CustomerSearchTextBlock" Style="{StaticResource TextBox}" DockPanel.Dock="Top" Margin="2,0" Width="120"/>-->
+                                </Grid>
+                            </Border>
                             <Grid Width="110" Margin="8,0,5,0">
                                 <Button x:Name="CustomerSearchButton" Style="{StaticResource Button}" Margin="10,0,5,0" VerticalAlignment="Center" MinHeight="22" FontSize="12" Content="View Customer" Click="ProjectSearchButton_Click"/>
                             </Grid>
-                    </DockPanel>
+                        </DockPanel>
                         <DockPanel HorizontalAlignment="Right" MaxHeight="90" MaxWidth="1240">
                             <Border BorderBrush="LightGray" BorderThickness="1,0,0,0" Margin="0,2,0,2">
                                 <StackPanel Orientation="Horizontal" Margin="8,0,5,0">
@@ -464,12 +465,17 @@
             </WrapPanel>
         </Grid>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-            <Border>
-                <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel" AllowDrop="True">
-                </WrapPanel>
-            </Border>
-        </ScrollViewer>
+        <!--<Viewbox>-->
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <Border x:Name="WrapPanelBorder">
+                    <Border.LayoutTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Border.LayoutTransform>
+                    <WrapPanel Grid.IsSharedSizeScope="True" Orientation="Vertical" x:Name="MainWrapPanel" AllowDrop="True">
+                    </WrapPanel>
+                </Border>
+            </ScrollViewer>
+        <!--</Viewbox>-->
 
         <!--<Grid x:Name="MainGrid" ShowGridLines="False" Margin="0,0,0,0" DockPanel.ZIndex="1">
             <Image x:Name="LoadingAnimation" gif:ImageBehavior.AnimatedSource="/NATOLI_ANIMATION.gif" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="300" MaxWidth="{Binding ActualWidth, ElementName=GridWindow}"/>   xmlns:gif="http://wpfanimatedgif.codeplex.com"  WpfAnimatedGif -->

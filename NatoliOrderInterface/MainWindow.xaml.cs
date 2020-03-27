@@ -838,6 +838,21 @@ namespace NatoliOrderInterface
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
                 ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 655);
             }
+            else if (e.Key == Key.Enter && ZoomTextBox.IsFocused)
+            {
+                string newText = ZoomTextBox.Text;
+
+                newText = newText.EndsWith("%") ? newText.Remove(newText.LastIndexOf('%')) : newText;
+
+                double scale = double.Parse(newText);
+
+                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
+                scaleTransform.ScaleX = scale / 100;
+                scaleTransform.ScaleY = scale / 100;
+
+                // Make sure there is a percent symbol at the end
+                if (!ZoomTextBox.Text.EndsWith("%")) { ZoomTextBox.Text += "%"; }
+            }
         }
 #endregion
 
@@ -1269,13 +1284,13 @@ namespace NatoliOrderInterface
                 }
             }
 
-#endregion
-#region RightClickRegion
+            #endregion
+            #region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
                 Header = "Start"
             };
-#endregion
+            #endregion
         }
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {
@@ -1484,7 +1499,7 @@ namespace NatoliOrderInterface
 
             User.VisiblePanels = visiblePanels;
         }
-#region Clicks
+        #region Clicks
         private void StartTabletProject_Click(object sender, RoutedEventArgs e)
         {
             if (selectedProjects.Count > 0)
@@ -13679,6 +13694,6 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
-#endregion
+        #endregion
     }
 }
