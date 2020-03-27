@@ -846,7 +846,7 @@ namespace NatoliOrderInterface
             projectPreviousStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectPreviousStepButton.IsEnabled = true;
             projectPreviousStepButton.ToolTip = "Send Back To Drafter";
-            projectNextStepButton.Click += PreviousStepProject_Click;
+            projectPreviousStepButton.Click += PreviousStepProject_Click;
 
             // Next Step: Enabled, "Mark As Checked"
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
