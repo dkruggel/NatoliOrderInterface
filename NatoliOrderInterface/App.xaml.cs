@@ -489,7 +489,13 @@ namespace NatoliOrderInterface
                 // Project
                 else if (project)
                 {
-                    Button projectPreviousStepButton = buttons.Single(b => b.Name == "ProjectPreviousStepButton");
+                    Button projectPreviousStepButton = new Button();
+                    if (type != "AllToolProjects")
+                    {
+                        projectPreviousStepButton = buttons.Single(b => b.Name == "ProjectPreviousStepButton");
+                        projectPreviousStepButton.Visibility = Visibility.Visible;
+                        projectPreviousStepButton.IsEnabled = false;
+                    }
                     Button projectOnHoldButton = buttons.Single(b => b.Name == "ProjectOnHoldButton");
                     Button projectOffHoldButton = buttons.Single(b => b.Name == "ProjectOffHoldButton");
                     Button projectNextStepButton = buttons.Single(b => b.Name == "ProjectNextStepButton");
@@ -497,7 +503,7 @@ namespace NatoliOrderInterface
                     Button projectCancelButton = buttons.Single(b => b.Name == "ProjectCancelButton");
                     Button projectOpenButton = buttons.Single(b => b.Name == "WindowButton");
 
-                    projectPreviousStepButton.Visibility = Visibility.Visible;
+                    
                     projectOnHoldButton.Visibility = Visibility.Visible;
                     projectOffHoldButton.Visibility = Visibility.Visible;
                     projectNextStepButton.Visibility = Visibility.Visible;
@@ -505,7 +511,7 @@ namespace NatoliOrderInterface
                     projectCancelButton.Visibility = Visibility.Visible;
                     projectOpenButton.Visibility = Visibility.Visible;
 
-                    projectPreviousStepButton.IsEnabled = false;
+                    
                     projectOnHoldButton.IsEnabled = false;
                     projectOffHoldButton.IsEnabled = false;
                     projectNextStepButton.IsEnabled = false;
