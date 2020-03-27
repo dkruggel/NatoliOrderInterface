@@ -528,7 +528,7 @@ namespace NatoliOrderInterface
                         {
                             ProjectCheckedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                         }
-                        else if (!(pss.TabletSubmittedBy is null))
+                        else if (!string.IsNullOrEmpty(pss.TabletSubmittedBy))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
@@ -570,7 +570,7 @@ namespace NatoliOrderInterface
                             ProjectEnteredButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Start";
                         }
-                        else if (!(pss.TabletSubmittedBy is null))
+                        else if (!string.IsNullOrEmpty(pss.TabletSubmittedBy))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
