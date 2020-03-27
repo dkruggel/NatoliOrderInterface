@@ -172,6 +172,44 @@ namespace NatoliOrderInterface
             string type = displayGrid.Children.OfType<ListBox>().First().Name[0..^7];
             (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
         }
+        private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            {
+                UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
+                Label label = uIElementCollection[0] as Label;
+                label.ApplyTemplate();
+                Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
+                Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
+                DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
+                TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+
+                if ((sender as TextBox) == templatedTextBox)
+                {
+                    // Does not let the height change while searching
+                    label.Height = label.ActualHeight;
+                }
+            }
+        }
+        private void SearchBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            {
+                UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
+                Label label = uIElementCollection[0] as Label;
+                label.ApplyTemplate();
+                Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
+                Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
+                DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
+                TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+
+                if ((sender as TextBox) == templatedTextBox && string.IsNullOrEmpty((sender as TextBox).Text))
+                {
+                    // Resets the height so it can scale with number of items
+                    label.Height = Double.NaN;
+                }
+            }
+        }
         private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
         {
             OpenQuote(selectedQuotes.Last().Item1 + "-" + selectedQuotes.Last().Item2);
@@ -2958,26 +2996,6 @@ namespace NatoliOrderInterface
 
         #endregion
 
-        private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
-            {
-                UIElementCollection x = grid.Children as UIElementCollection;
-                Label label = x[0] as Label;
-                // Does not let the height change while searching
-                label.Height = label.ActualHeight;
-            }
-        }
 
-        private void SearchBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
-            {
-                UIElementCollection x = grid.Children as UIElementCollection;
-                Label label = x[0] as Label;
-                // Resets the height so it can scale with number of items
-                label.Height = Double.NaN;
-            }
-        }
     }
 }
