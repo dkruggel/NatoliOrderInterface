@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1000" Width="1800" Margin="0" Closing="GridWindow_Closing" Activated="GridWindow_Activated" AllowDrop="True" StateChanged="GridWindow_StateChanged" Loaded="GridWindow_Loaded" ContentRendered="GridWindow_ContentRendered" LayoutUpdated="GridWindow_LayoutUpdated" Drop="GridWindow_Drop" UseLayoutRounding="True" PreviewKeyUp="GridWindow_PreviewKeyUp">
     <Window.Resources>
-        <ControlTemplate x:Key="ExpanderControlTemplate1" TargetType="{x:Type Expander}">
+        <!--<ControlTemplate x:Key="ExpanderControlTemplate1" TargetType="{x:Type Expander}">
             <Border BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="5" SnapsToDevicePixels="True">
                 <DockPanel>
                     <Grid DockPanel.Dock="Top">
@@ -77,7 +77,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <ToggleButton x:Name="Site" Height="22" Grid.Column="0" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="1,0" MinWidth="0" MinHeight="0" Padding="0" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <!-- IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"-->
+                                --><!-- IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"-->
+        <!--
                                 <ToggleButton.FocusVisualStyle>
                                     <Style>
                                         <Setter Property="Control.Template">
@@ -107,9 +108,11 @@
                                                         </Grid>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
-                                                        <!--<Trigger Property="IsChecked" Value="True">
+                                                        -->
+        <!--<Trigger Property="IsChecked" Value="True">
                                                             <Setter Property="IsChecked" TargetName="checkbox" Value="True"/>
                                                         </Trigger>-->
+        <!--
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Setter.Value>
@@ -295,7 +298,7 @@
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
-        </ControlTemplate>
+        </ControlTemplate>-->
         <Style TargetType="Expander">
             <Setter Property="Template" Value="{StaticResource ExpanderControlTemplate1}"/>
         </Style>

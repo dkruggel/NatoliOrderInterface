@@ -830,13 +830,13 @@ namespace NatoliOrderInterface
             if (e.Key == Key.Left)
             {
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
-                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 755);
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 655);
             }
             else if (e.Key == Key.Right)
             {
 
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
-                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 755);
+                ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 655);
             }
         }
 #endregion

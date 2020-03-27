@@ -3553,7 +3553,7 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="ModuleHeaderTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="{StaticResource Dark}"/>
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
@@ -3561,7 +3561,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
         <Style x:Key="ModuleTextBlock" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="16"/>
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -4389,9 +4389,9 @@
         <Style x:Key="QuotesNotConvertedModule" TargetType="Label" x:Name="QuotesNotConvertedModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -4413,8 +4413,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="SubmitQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
                                         <Button x:Name="FollowUpButton" Style="{StaticResource FollowUpQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompletedQuoteCheck_Click"/>
@@ -4430,7 +4430,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
                                         <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="100"/>
@@ -4475,7 +4475,7 @@
                                                                         </Grid.Background>
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
                                                         <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="100"/>
@@ -4577,9 +4577,9 @@
         <Style x:Key="QuotesToConvertModule" TargetType="Label" x:Name="QuotesToConvertModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -4601,8 +4601,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Quotes Ready To Be Converted" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Quotes Ready To Be Converted" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="RecallQuoteButton" Style="{StaticResource RecallQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="RecallQuote_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Quote" Click="OpenQuoteButton_Click"/>
@@ -4616,14 +4616,14 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="90"/>
-                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="50"/>
+                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="Employee" Width="195"/>
-                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" Width="185"/>
+                                        <ColumnDefinition Width="70"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Quote #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -4666,14 +4666,14 @@
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="90"/>
-                                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="50"/>
+                                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="80"/>
+                                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="195"/>
-                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="185"/>
+                                                        <ColumnDefinition Width="70"/>
                                                     </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -4771,9 +4771,9 @@
         <Style x:Key="OrdersBeingEnteredModule" TargetType="Label" x:Name="OrdersBeingEnteredModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -4801,8 +4801,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders Being Entered" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders Being Entered" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
@@ -4818,14 +4818,14 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
-                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="100"/>
-                                        <ColumnDefinition SharedSizeGroup="QuoteRev" Width="70"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="90"/>
+                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="90"/>
+                                        <ColumnDefinition SharedSizeGroup="QuoteRev" Width="60"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="90"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -4865,14 +4865,14 @@
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
-                                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="100"/>
-                                                        <ColumnDefinition SharedSizeGroup="QuoteRev" Width="70"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="90"/>
+                                                                                <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="90"/>
+                                                        <ColumnDefinition SharedSizeGroup="QuoteRev" Width="60"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysToShip" Width="90"/>
                                                     </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -4971,9 +4971,9 @@
         <Style x:Key="OrdersInTheOfficeModule" TargetType="Label" x:Name="OrdersInTheOfficeModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5001,8 +5001,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders In The Office" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders In The Office" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right" Click="StartWorkOrder_Click"/>
                                         <Button x:Name="OrderDoNotProcessButton" Style="{StaticResource OrderDoNotProcessButton}" Margin="2,0" HorizontalAlignment="Right" Click="DoNotProcess_Click"/>
@@ -5018,15 +5018,15 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="60"/>
-                                        <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="50"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="55"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" Width="135"/>
+                                        <ColumnDefinition Width="135"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -5067,15 +5067,15 @@
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="60"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="50"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="55"/>
+                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="135"/>
+                                                        <ColumnDefinition Width="135"/>
                                                     </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -5177,7 +5177,7 @@
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="MaxHeight" Value="460"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5199,8 +5199,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right" Click="StartWorkOrder_Click"/>
@@ -5217,13 +5217,13 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="75"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="85"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="85"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="75"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="75"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -5262,13 +5262,13 @@
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="75"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="85"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="85"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="75"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="75"/>
                                                     </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -5366,9 +5366,9 @@
         <Style x:Key="OrdersInEngineeringModule" TargetType="Label" x:Name="OrdersInEngineeringModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5390,8 +5390,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders Being Processed In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="22" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders Being Processed In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderFinishButton" Style="{StaticResource OrderFinishButton}" Margin="2,0" HorizontalAlignment="Right" Click="FinishOrder_Click"/>
@@ -5409,14 +5409,14 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="85"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="85"/>
-                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="75"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="75"/>
+                                        <ColumnDefinition Width="140"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -5456,14 +5456,14 @@
                                                                         </Grid.Background>
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                                         <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition SharedSizeGroup="DaysToShip" Width="85"/>
-                                                                                <ColumnDefinition SharedSizeGroup="DaysInArea" Width="85"/>
-                                                                                <ColumnDefinition Width="160"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysToShip" Width="75"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysInArea" Width="75"/>
+                                                                                <ColumnDefinition Width="140"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -5561,9 +5561,9 @@
         <Style x:Key="OrdersReadyToPrintModule" TargetType="Label" x:Name="OrdersReadyToPrintModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5585,8 +5585,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders Ready To Be Printed" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders Ready To Be Printed" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderNotFinishedButton" Style="{StaticResource OrderNotFinishedButton}" Margin="2,0" HorizontalAlignment="Right" Click="NotFinished_Click"/>
@@ -5603,19 +5603,19 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="90"/>
-                                        <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
+                                        <ColumnDefinition Width="135"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
                                     <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Ships" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
                                     <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
                                     <TextBlock Text="Checker" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
@@ -5650,14 +5650,14 @@
                                                 </Grid.Background>
                                                 <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                 <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                                         <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="90"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                                        <ColumnDefinition Width="150"/>
+                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
+                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
+                                                        <ColumnDefinition Width="135"/>
                                                     </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -5755,9 +5755,9 @@
         <Style x:Key="OrdersPrintedInEngineeringModule" TargetType="Label" x:Name="OrdersPrintedInEngineeringModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5779,8 +5779,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Orders Printed And Ready For Production" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Orders Printed And Ready For Production" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
                                         <Button x:Name="OrderToProductionButton" Style="{StaticResource OrderToProductionButton}" Margin="2,0" HorizontalAlignment="Right" Click="ToProdManOrder_Click"/>
@@ -5797,19 +5797,19 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="80"/>
-                                        <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="55"/>
+                                        <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
+                                        <ColumnDefinition Width="140"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
                                     <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Ships" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
                                     <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
                                     <TextBlock Text="Checker" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
@@ -5844,14 +5844,14 @@
                                                     </Grid.Background>
                                                     <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                     <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                    <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                    <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                            <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
+                                                            <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
                                                             <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition SharedSizeGroup="DaysToShip" Width="80"/>
-                                                                                <ColumnDefinition SharedSizeGroup="Employee" Width="150"/>
-                                                                                <ColumnDefinition Width="150"/>
+                                                            <ColumnDefinition SharedSizeGroup="DaysToShip" Width="55"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
+                                                                                <ColumnDefinition Width="140"/>
                                                         </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -5949,9 +5949,9 @@
         <Style x:Key="AllTabletProjectsModule" TargetType="Label" x:Name="AllTabletProjectsModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -5973,8 +5973,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="All Tablet Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="All Tablet Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ProjectPreviousStepButton" Style="{StaticResource ProjectPreviousStepButton}" Margin="2,0" HorizontalAlignment="Right" Click="PreviousStepProject_Click"/>
                                         <Button x:Name="ProjectOnHoldButton" Style="{StaticResource ProjectOnHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OnHoldProject_Click"/>
@@ -5993,15 +5993,15 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="75"/>
-                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="45"/>
+                                        <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="65"/>
+                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="CSR" Width="120"/>
-                                        <ColumnDefinition SharedSizeGroup="Drafter" Width="100"/>
-                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition SharedSizeGroup="CSR" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="Drafter" Width="80"/>
+                                        <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Proj #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
@@ -6042,15 +6042,15 @@
                                                                         </Grid.Background>
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                                         <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                                                <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="75"/>
-                                                                                <ColumnDefinition SharedSizeGroup="RevNumber" Width="45"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="65"/>
+                                                                                <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition SharedSizeGroup="CSR" Width="120"/>
-                                                                                <ColumnDefinition SharedSizeGroup="Drafter" Width="100"/>
-                                                                                <ColumnDefinition Width="120"/>
+                                                                                <ColumnDefinition SharedSizeGroup="CSR" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Drafter" Width="80"/>
+                                                                                <ColumnDefinition Width="100"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
@@ -6149,9 +6149,9 @@
         <Style x:Key="AllToolProjectsModule" TargetType="Label" x:Name="AllToolProjectsModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -6173,8 +6173,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="All Tool Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="All Tool Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ProjectOnHoldButton" Style="{StaticResource ProjectOnHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OnHoldProject_Click"/>
                                         <Button x:Name="ProjectOffHoldButton" Style="{StaticResource ProjectOffHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OffHoldProject_Click"/>
@@ -6192,15 +6192,15 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="75"/>
-                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="50"/>
+                                        <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="65"/>
+                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="CSR" Width="120"/>
-                                        <ColumnDefinition SharedSizeGroup="Drafter" Width="100"/>
-                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition SharedSizeGroup="CSR" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="Drafter" Width="80"/>
+                                        <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
                                     <TextBlock Text="Proj #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="7,0,0,0"/>
@@ -6241,15 +6241,15 @@
                                                                         </Grid.Background>
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                                         <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                                                <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="75"/>
-                                                                                <ColumnDefinition SharedSizeGroup="RevNumber" Width="50"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="65"/>
+                                                                                <ColumnDefinition SharedSizeGroup="RevNumber" Width="40"/>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition SharedSizeGroup="CSR" Width="120"/>
-                                                                                <ColumnDefinition SharedSizeGroup="Drafter" Width="100"/>
-                                                                                <ColumnDefinition Width="120"/>
+                                                                                <ColumnDefinition SharedSizeGroup="CSR" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Drafter" Width="80"/>
+                                                                                <ColumnDefinition Width="100"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <CheckBox.IsChecked>
@@ -6344,9 +6344,9 @@
         <Style x:Key="DriveWorksQueueModule" TargetType="Label" x:Name="DriveWorksQueueModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -6368,8 +6368,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="22" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>-->
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
@@ -6382,12 +6382,12 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="ReleasedBy" Width="220"/>
-                                        <ColumnDefinition SharedSizeGroup="Tag" Width="155"/>
-                                        <ColumnDefinition SharedSizeGroup="ReleaseTime" Width="130"/>
+                                        <ColumnDefinition SharedSizeGroup="ReleasedBy" Width="185"/>
+                                        <ColumnDefinition SharedSizeGroup="Tag" Width="140"/>
+                                        <ColumnDefinition SharedSizeGroup="ReleaseTime" Width="120"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Model Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="7,0,0,0"/>
                                     <TextBlock Text="Released By" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="-7,0,0,0"/>
@@ -6422,12 +6422,12 @@
                                                                     <Grid Margin="0,0">
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                                         <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition SharedSizeGroup="ReleasedBy" Width="220"/>
-                                                                                <ColumnDefinition SharedSizeGroup="Tag" Width="155"/>
-                                                                                <ColumnDefinition SharedSizeGroup="ReleaseTime" Width="130"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ReleasedBy" Width="185"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Tag" Width="140"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ReleaseTime" Width="120"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <TextBlock x:Name="ModelName" Tag="ModelName" Text="{Binding TargetName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
                                                                             <TextBlock x:Name="ReleasedBy" Tag="ReleasedBy" Text="{Binding DisplayName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
@@ -6488,9 +6488,9 @@
         <Style x:Key="NatoliOrderListModule" TargetType="Label" x:Name="NatoliOrderListModule">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="MaxHeight" Value="460"/>
+            <Setter Property="MaxHeight" Value="410"/>
             <Setter Property="MinWidth" Value="400"/>
-            <Setter Property="MaxWidth" Value="750"/>
+            <Setter Property="MaxWidth" Value="650"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Label">
@@ -6512,8 +6512,8 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="34" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
-                                    <TextBlock Text="Natoli Order List" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="24" VerticalAlignment="Top"/>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="Natoli Order List" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Export To Excel" Click="ExportButton_Click" Visibility="Visible"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Work Order" Click="OpenOrderButton_Click"/>
@@ -6527,14 +6527,14 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="30" Background="{StaticResource Light}" Grid.Row="1">
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="ShipDate" Width="120"/>
-                                        <ColumnDefinition SharedSizeGroup="Rush" Width="65"/>
-                                        <ColumnDefinition SharedSizeGroup="OnHold" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="ShipDate" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="Rush" Width="55"/>
+                                        <ColumnDefinition SharedSizeGroup="OnHold" Width="90"/>
                                         <ColumnDefinition SharedSizeGroup="Rep" Width="50"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
@@ -6576,14 +6576,14 @@
                                                                         </Grid.Background>
                                                                         <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
                                                                         <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="32" Margin="6,0">
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="80"/>
                                                                                 <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition SharedSizeGroup="ShipDate" Width="120"/>
-                                                                                <ColumnDefinition SharedSizeGroup="Rush" Width="65"/>
-                                                                                <ColumnDefinition SharedSizeGroup="OnHold" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ShipDate" Width="100"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Rush" Width="55"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OnHold" Width="90"/>
                                                                                 <ColumnDefinition SharedSizeGroup="Rep" Width="50"/>
                                                                             </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
@@ -6655,7 +6655,6 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-
         </Style>
         <!--#endregion-->
 
