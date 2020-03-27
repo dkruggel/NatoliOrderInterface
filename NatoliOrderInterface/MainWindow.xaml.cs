@@ -4463,13 +4463,29 @@ namespace NatoliOrderInterface
                 }
                 if (User.FilterActiveProjects)
                 {
-                    _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
-                                           .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    if (User.DomainName == "mmulaosmanovic")
+                    {
+                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                               .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
+                    else
+                    {
+                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                               .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
                 }
                 else
                 {
-                    _allTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    if (User.DomainName == "mmulaosmanovic")
+                    {
+                        _allTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
+                    else
+                    {
+                        _allTabletProjects = eoiAllTabletProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
                 }
                 _nat02context.Dispose();
             }
@@ -4482,16 +4498,33 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllTabletProjects");
 
-            _allTabletProjects =
-                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
-                                              p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                              p.CustomerName.ToLower().Contains(searchString) ||
-                                              p.Csr.ToLower().Contains(searchString) ||
-                                              p.Drafter.ToLower().Contains(searchString))
-                                  .OrderByDescending(kvp => kvp.MarkedPriority)
-                                  .ThenBy(kvp => kvp.DueDate)
-                                  .ThenBy(kvp => kvp.ProjectNumber)
-                                  .ToList();
+            if (User.DomainName == "mmulaosmanovic")
+            {
+                _allTabletProjects =
+                    _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.CustomerName.ToLower().Contains(searchString) ||
+                                                  p.Csr.ToLower().Contains(searchString) ||
+                                                  p.Drafter.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+            }
+            else
+            {
+                _allTabletProjects =
+                    _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.CustomerName.ToLower().Contains(searchString) ||
+                                                  p.Csr.ToLower().Contains(searchString) ||
+                                                  p.Drafter.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+            }
 
             AllTabletProjects = _allTabletProjects;
         }
@@ -4515,13 +4548,29 @@ namespace NatoliOrderInterface
                 if (User.FilterActiveProjects)
                 {
 
-                    _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                           !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
-                                           .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    if (User.DomainName == "kbergerdine")
+                    {
+                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                               .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
+                    else
+                    {
+                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
+                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                                               .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
                 }
                 else
                 {
-                    _allToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    if (User.DomainName == "kbergerdine")
+                    {
+                        _allToolProjects = eoiAllToolProjects.OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
+                    else
+                    {
+                        _allToolProjects = eoiAllToolProjects.OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
+                    }
                 }
                 _nat02context.Dispose();
             }
@@ -4534,16 +4583,33 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllToolProjects");
 
-            _allToolProjects =
-                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
-                                            p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                            p.CustomerName.ToLower().Contains(searchString) ||
-                                            p.Csr.ToLower().Contains(searchString) ||
-                                            p.Drafter.ToLower().Contains(searchString))
-                                .OrderByDescending(kvp => kvp.MarkedPriority)
-                                .ThenBy(kvp => kvp.DueDate)
-                                .ThenBy(kvp => kvp.ProjectNumber)
-                                .ToList();
+            if (User.DomainName == "kbergerdine")
+            {
+                _allToolProjects =
+                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.CustomerName.ToLower().Contains(searchString) ||
+                                                p.Csr.ToLower().Contains(searchString) ||
+                                                p.Drafter.ToLower().Contains(searchString))
+                                    .OrderByDescending(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+            }
+            else
+            {
+                _allToolProjects =
+                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.CustomerName.ToLower().Contains(searchString) ||
+                                                p.Csr.ToLower().Contains(searchString) ||
+                                                p.Drafter.ToLower().Contains(searchString))
+                                    .OrderByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+            }
 
             AllToolProjects = _allToolProjects;
         }

@@ -11,6 +11,7 @@ namespace NatoliOrderInterface.Models
         public string CustomerName { get; set; }
         public string Csr { get; set; }
         public string Drafter { get; set; }
+        public int? Complete { get; set; }
         public string ProjectStartedTool { get; set; }
         public string ToolDrawnBy { get; set; }
         public double? QuoteOrOrderNumber { get; set; }
@@ -31,6 +32,7 @@ namespace NatoliOrderInterface.Models
                    this.CustomerName == other.CustomerName &&
                    this.Csr == other.Csr &&
                    this.Drafter == other.Drafter &&
+                   this.Complete == other.Complete &&
                    this.ProjectStartedTool == other.ProjectStartedTool &&
                    this.ToolDrawnBy == other.ToolDrawnBy &&
                    this.QuoteOrOrderNumber == other.QuoteOrOrderNumber &&
@@ -43,7 +45,7 @@ namespace NatoliOrderInterface.Models
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiAllToolProjectsView);
-        public override int GetHashCode() => (ProjectNumber, RevisionNumber, CustomerName, Csr, Drafter, ProjectStartedTool, ToolDrawnBy, QuoteOrOrderNumber, QuoteRevNum,
+        public override int GetHashCode() => (ProjectNumber, RevisionNumber, CustomerName, Csr, Drafter, Complete, ProjectStartedTool, ToolDrawnBy, QuoteOrOrderNumber, QuoteRevNum,
                                               Product, MarkedPriority, DueDate, HoldStatus, ReturnToCsr).GetHashCode();
     }
 }
