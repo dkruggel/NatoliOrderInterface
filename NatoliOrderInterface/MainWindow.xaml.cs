@@ -472,12 +472,10 @@ namespace NatoliOrderInterface
 
                 if (isDebugMode)
                 {
-                    if (User.EmployeeCode == "E4754")
+                    if (User.EmployeeCode == "E4754") // Tyler
                     {
-                        //CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(User, "2000002");
-                        //customerNoteWindow.Show();
-                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Miral","Tyler" }, "102881", "0", new User("mbouzitoun"));
                         //ProjectWindow projectWindow = new ProjectWindow("110012", "4", this, User, false);
+                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Miral", "James", "Tyler" }, "102993", "0", new User("twilliams"));
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
@@ -856,7 +854,7 @@ namespace NatoliOrderInterface
         }
 #endregion
 
-#region MenuStuff
+        #region MenuStuff
         public void BuildMenus()
         {
             //MainMenu.Items.Clear();
@@ -3217,7 +3215,7 @@ namespace NatoliOrderInterface
 #endregion
 #endregion
 
-#region MainWindowSearches
+        #region MainWindowSearches
         private void QuoteSearchButton_Click(object sender, RoutedEventArgs e)
         {
             Cursor = Cursors.AppStarting;
@@ -3669,7 +3667,7 @@ namespace NatoliOrderInterface
         }
 #endregion
 
-#region New Modules
+        #region New Modules
         private void BuildPanels()
         {
             try
@@ -12033,7 +12031,7 @@ namespace NatoliOrderInterface
         //}
         //#endregion276138
 
-#region Folder Management
+        #region Folder Management
         private void QuotesAndOrders()
         {
             FindMissingOrders(ListTop100Orders());
@@ -12237,7 +12235,7 @@ namespace NatoliOrderInterface
         }
 #endregion
 
-#region DataGrid Events
+        #region DataGrid Events
         private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             using var _context = new NAT02Context();
@@ -13656,7 +13654,7 @@ namespace NatoliOrderInterface
         }
 #endregion
 
-#region IDisposable Support
+        #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)

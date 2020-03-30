@@ -1261,10 +1261,13 @@ namespace NatoliOrderInterface
                     {
                         comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br>br>-End Comments-<br><br>";
                     }
-
+                    string debugTest = "";
+//#if DEBUG
+//                    debugTest = "****************<br>This is a test e-mail. Please ignore.<br>****************<br><br>";
+//#endif
                     var body = new TextPart(MimeKit.Text.TextFormat.Html)
                     {
-                        Text = "Dear " + CSRs.First() + ",<br><br>" +
+                        Text = debugTest+ "Dear " + CSRs.First() + ",<br><br>" +
 
                         @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                         "The drawings for the customer are attached.<br><br>" +

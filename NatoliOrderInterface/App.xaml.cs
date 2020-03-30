@@ -1145,13 +1145,25 @@ namespace NatoliOrderInterface
         {
             try
             {
-                string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
-                if (!System.IO.Directory.Exists(path))
-                    System.IO.Directory.CreateDirectory(path);
-                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                using var _projectsContext = new ProjectsContext();
+
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber))
+                {
+                    string revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
+                    projectWindow.Show();
+                }
+                else
+                {
+                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                }
                 //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
                 //projectWindow.Show();
                 //projectWindow.Dispose();
+                _projectsContext.Dispose();
             }
             catch (Exception ex)
             {
@@ -2508,22 +2520,22 @@ namespace NatoliOrderInterface
                             //Send Email To CSR
                             if (!(bool)_tools)
                             {
-                                List<string> _CSRs = new List<string>();
+                                List<string> _CSRs = new List<string>() { "Tyler" };
 
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
+                                if (_projectsContext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
                                 }
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+                                if (_projectsContext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
                                 }
                                 IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, user);
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
-
+                            IMethods.WriteToErrorLog("App.caml.cs => CheckTabletProject //Send Email To CSR", ex.Message, user);
                         }
                         finally
                         {
