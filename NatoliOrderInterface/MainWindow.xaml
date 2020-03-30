@@ -409,7 +409,7 @@
                     <!--<Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>-->
                     <Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" AllowDrop="True" IsEnabled="False"/>
                     <!--<Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource TrashButton}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Dark}" AllowDrop="True"/>-->
-                    <TextBox x:Name="ZoomTextBox" Text="100%" Height="20" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ZoomTextBox" Text="100%" Height="20" VerticalAlignment="Center" Margin="0,0,4,0"/>
                 </DockPanel>
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <DockPanel HorizontalAlignment="Right" MaxHeight="90">

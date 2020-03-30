@@ -481,7 +481,6 @@ namespace NatoliOrderInterface
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             using var _ = new ProjectsContext();
-
             try
             {
                 CheckBox checkBox = sender as CheckBox;
@@ -579,32 +578,46 @@ namespace NatoliOrderInterface
                     projectCancelButton.IsEnabled = false;
 
                     // Get previous and next steps to reset tooltip of back and forward buttons
-                    ProjectSpecSheet pss = _.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val));
+                    ProjectSpecSheet pss = null;
+                    if(_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val)))
+                    {
+                        pss = _.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val));
+                    }
                     List<ProjectSpecSheet> projectSpecSheets = new List<ProjectSpecSheet>();
+                    EngineeringProjects ep = null;
+                    if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(col0val).ToString() && p.RevNumber == int.Parse(col1val).ToString()))
+                    {
+                        ep = _.EngineeringProjects.First(p => p.ProjectNumber == int.Parse(col0val).ToString() && p.RevNumber == int.Parse(col1val).ToString());
+                    }
+                    bool epTablets = _.EngineeringTabletProjects.Any(p => p.ProjectNumber == int.Parse(col0val).ToString() && p.RevNumber == int.Parse(col1val).ToString());
+                    bool epTools = _.EngineeringToolProjects.Any(p => p.ProjectNumber == int.Parse(col0val).ToString() && p.RevNumber == int.Parse(col1val).ToString());
 
+                    using var nat02Context = new NAT02Context();
+                    bool projectFinished = nat02Context.EoiProjectsFinished.Any(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val));
+                    nat02Context.Dispose();
                     string nextStep = "";
 
-                    if (pss.HoldStatus == "ON HOLD")
+                    if ((pss != null && pss.HoldStatus == "ON HOLD") || (ep != null && ep.OnHold == true))
                     {
                         ProjectOnHoldButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                     }
-                    else if ((bool)pss.Tablet && !(bool)pss.Tools)
+                    else if ((pss != null && (bool)pss.Tablet && !(bool)pss.Tools) || (ep != null && epTablets && !epTools))
                     {
-                        if (pss.TabletCheckedBy.Length > 0)
+                        if (projectFinished)
                         {
                             ProjectCheckedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                         }
-                        else if (!string.IsNullOrEmpty(pss.TabletSubmittedBy))
+                        else if ((pss != null && !string.IsNullOrEmpty(pss.TabletSubmittedBy)) || (ep != null && ep.TabletSubmitted))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
-                        else if (pss.TabletDrawnBy.Length > 0)
+                        else if ((pss != null && pss.TabletDrawnBy.Length > 0) || (ep != null && ep.TabletDrawn))
                         {
                             ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Submit";
                         }
-                        else if (pss.ProjectStartedTablet.Length > 0)
+                        else if ((pss != null && pss.ProjectStartedTablet.Length > 0) || (ep != null && ep.TabletStarted))
                         {
                             ProjectStartedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Finish";
@@ -615,38 +628,38 @@ namespace NatoliOrderInterface
                             nextStep = "Start";
                         }
                     }
-                    else if ((bool)pss.Tablet && (bool)pss.Tools)
+                    else if ((pss != null && (bool)pss.Tablet && (bool)pss.Tools) || (ep != null && epTablets && epTools))
                     {
-                        if (pss.ToolCheckedBy.Length > 0)
+                        if (projectFinished)
                         {
                             ProjectCheckedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                         }
-                        else if (pss.ToolDrawnBy.Length > 0)
+                        else if ((pss != null && pss.ToolDrawnBy.Length > 0) || (ep != null && ep.ToolDrawn))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
-                        else if (pss.ProjectStartedTool.Length > 0)
+                        else if ((pss != null && pss.ProjectStartedTool.Length > 0) || (ep != null && ep.ToolStarted))
                         {
                             ProjectStartedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Finish";
                         }
-                        else if (pss.TabletCheckedBy.Length > 0)
+                        else if ((pss != null && pss.TabletCheckedBy.Length > 0) || (ep != null && ep.TabletChecked))
                         {
                             ProjectEnteredButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Start";
                         }
-                        else if (!string.IsNullOrEmpty(pss.TabletSubmittedBy))
+                        else if ((pss != null && !string.IsNullOrEmpty(pss.TabletSubmittedBy)) || (ep != null && ep.TabletSubmitted))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
-                        else if (pss.TabletDrawnBy.Length > 0)
+                        else if ((pss != null && pss.TabletDrawnBy.Length > 0) || (ep != null && ep.TabletDrawn))
                         {
                             ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Submit";
                         }
-                        else if (pss.ProjectStartedTablet.Length > 0)
+                        else if ((pss != null && pss.ProjectStartedTablet.Length > 0) || (ep != null && ep.TabletStarted))
                         {
                             ProjectStartedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Finish";
@@ -657,18 +670,18 @@ namespace NatoliOrderInterface
                             nextStep = "Start";
                         }
                     }
-                    if (!(bool)pss.Tablet && (bool)pss.Tools)
+                    if ((pss != null && !(bool)pss.Tablet && (bool)pss.Tools) || (ep != null && !epTablets && epTools))
                     {
-                        if (pss.ToolCheckedBy.Length > 0)
+                        if (projectFinished)
                         {
                             ProjectCheckedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                         }
-                        else if (pss.ToolDrawnBy.Length > 0)
+                        else if ((pss != null && pss.ToolDrawnBy.Length > 0) || (ep != null && ep.ToolDrawn))
                         {
                             ProjectSubmittedButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Check";
                         }
-                        else if (pss.ProjectStartedTool.Length > 0)
+                        else if ((pss != null && pss.ProjectStartedTool.Length > 0) || (ep != null && ep.ToolStarted))
                         {
                             ProjectStartedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Finish";
@@ -2099,10 +2112,26 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllTabletProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
+                        }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletStarted)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
                         }
                         _.Dispose();
                     }
@@ -2116,7 +2145,7 @@ namespace NatoliOrderInterface
 
                     // Get project revision number
                     // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+                    //string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
 
                     // Insert into StartedBy
 
@@ -2245,11 +2274,28 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllTabletProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
+                        }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (!_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletStarted || 
+                                _.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletDrawn)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
                         }
                         _.Dispose();
                     }
@@ -2655,8 +2701,10 @@ namespace NatoliOrderInterface
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
                     (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
-
-                    OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user)
+                    using var _ = new ProjectsContext();
+                    bool engineeringProject = _.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString());
+                    _.Dispose();
+                    OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user, engineeringProject)
                     {
                         Left = this.MainWindow.Left,
                         Top = this.MainWindow.Top
@@ -2680,8 +2728,11 @@ namespace NatoliOrderInterface
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
                     (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
+                    using var _ = new ProjectsContext();
+                    bool engineeringProject = _.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString());
+                    _.Dispose();
 
-                    OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user)
+                    OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", int.Parse(project.Item1), int.Parse(project.Item2), this.MainWindow as MainWindow, user, engineeringProject)
                     {
                         Left = this.MainWindow.Left,
                         Top = this.MainWindow.Top
