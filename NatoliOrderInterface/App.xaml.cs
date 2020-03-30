@@ -2932,6 +2932,7 @@ namespace NatoliOrderInterface
                     using var _nat02Context = new NAT02Context();
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
                     _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+                    _nat02Context.SaveChanges();
                     _nat02Context.Dispose();
                 }
                 catch (Exception ex)
