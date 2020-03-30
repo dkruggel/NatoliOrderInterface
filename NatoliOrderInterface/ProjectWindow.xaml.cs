@@ -495,6 +495,10 @@ namespace NatoliOrderInterface
         private List<Tuple<string,string,string>> GetProjectFiles(string projectNumber)
         {
             string rootDir = projectsDirectory + projectNumber + "\\";
+            if(!Directory.Exists(rootDir))
+            {
+                Directory.CreateDirectory(rootDir);
+            }
             string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
             List<Tuple<string, string,string>> files = new List<Tuple<string, string,string>>();
             foreach(string file in filePaths)

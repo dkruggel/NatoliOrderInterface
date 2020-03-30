@@ -601,6 +601,10 @@ namespace NatoliOrderInterface
                     {
                         ProjectOnHoldButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                     }
+                    else if(_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(col0val).ToString() && p.RevNumber == int.Parse(col1val).ToString()) && projectFinished)
+                    {
+                        ProjectCheckedButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                    }
                     else if ((pss != null && (bool)pss.Tablet && !(bool)pss.Tools) || (ep != null && epTablets && !epTools))
                     {
                         if (projectFinished)
@@ -1867,10 +1871,9 @@ namespace NatoliOrderInterface
                     {
                         FinishToolProject(validProjects);
                         selectedProjects.Clear();
-                        projectsToMove.Clear();
-
-                        (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                        projectsToMove.Clear();                       
                     }
+                     (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
                 }
             }
             catch (Exception ex) { 
