@@ -4147,7 +4147,7 @@ namespace NatoliOrderInterface
             Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
         }
 
-#region Gets And Binds
+        #region Gets And Binds
         private void GetBeingEntered()
         {
             try
@@ -4714,7 +4714,7 @@ namespace NatoliOrderInterface
             NatoliOrderList = _natoliOrderList;
         }
 #endregion
-#region Module Search Box Text Changed Events
+        #region Module Search Box Text Changed Events
         private string GetSearchString(string moduleName)
         {
             int i = User.VisiblePanels.IndexOf(moduleName);
@@ -4887,7 +4887,7 @@ namespace NatoliOrderInterface
             Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
         }
 #endregion
-#endregion
+        #endregion
 
         //#region ModuleBuilding
 
