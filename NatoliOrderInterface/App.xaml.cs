@@ -2195,13 +2195,30 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllToolProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
                         }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolStarted)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
                         _.Dispose();
                     }
+
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
@@ -2361,11 +2378,28 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllToolProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
+                        }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (!_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolStarted ||
+                                _.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolDrawn)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
                         }
                         _.Dispose();
                     }
@@ -2656,12 +2690,30 @@ namespace NatoliOrderInterface
                         if (project.Item4 == "AllToolProjects")
                         {
                             using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                            if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                             {
                                 _.Dispose();
                                 continue;
+                            }
+                            else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                            {
+                                if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
+                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                                {
+                                    _.Dispose();
+                                    continue;
+                                }
+                            }
+                            else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                            {
+                                if (_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolChecked ||
+                                    !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolDrawn ||
+                                    !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).ToolStarted)
+                                {
+                                    _.Dispose();
+                                    continue;
+                                }
                             }
                             _.Dispose();
                         }
@@ -2909,27 +2961,23 @@ namespace NatoliOrderInterface
                 (string, string, CheckBox, string, string) project = validProjects[i];
                 try
                 {
+                    using var _nat02Context = new NAT02Context();
                     // Check to see if the project is in the correct module
                     if (project.Item4 == "AllTabletProjects")
                     {
-                        using var _ = new ProjectsContext();
-                        if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        if (!_nat02Context.EoiProjectsFinished.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
                         {
-                            _.Dispose();
+                            _nat02Context.Dispose();
                             continue;
                         }
-                        _.Dispose();
                     }
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
                     (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
-                    using var _nat02Context = new NAT02Context();
-                    EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
+
+                    EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
                     _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
                     _nat02Context.SaveChanges();
                     _nat02Context.Dispose();
@@ -2948,25 +2996,22 @@ namespace NatoliOrderInterface
                 (string, string, CheckBox, string, string) project = validProjects[i];
                 try
                 {
+                    using var _nat02Context = new NAT02Context();
                     // Check to see if the project is in the correct module
-                    if (project.Item4 == "AllToolProjects")
+                    if (project.Item4 == "AllTabletProjects")
                     {
-                        using var _ = new ProjectsContext();
-                        if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+                        if (!_nat02Context.EoiProjectsFinished.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
                         {
-                            _.Dispose();
+                            _nat02Context.Dispose();
                             continue;
                         }
-                        _.Dispose();
                     }
 
                     // Uncheck project expander
                     project.Item3.IsChecked = false;
                     (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
-                    using var _nat02Context = new NAT02Context();
+
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
                     _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
                     _nat02Context.SaveChanges();
