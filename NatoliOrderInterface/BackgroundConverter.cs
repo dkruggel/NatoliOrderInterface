@@ -280,9 +280,8 @@ namespace NatoliOrderInterface
                         bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
                         bool finished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
                         using var projectsContext = new ProjectsContext();
-                        bool tablets = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Tablet &&
-                                       string.IsNullOrEmpty(projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).TabletCheckedBy);
-                        bool multitip = (bool)projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).MultiTipSketch;
+                        bool tablets = project.Tablet == 1 ? true : false;
+                        bool multitip = project.MultiTipSketch;
                         projectsContext.Dispose();
                         bool onHold = project.HoldStatus == "On Hold";
                         bool drawn = project.ToolDrawnBy.Length > 0;
