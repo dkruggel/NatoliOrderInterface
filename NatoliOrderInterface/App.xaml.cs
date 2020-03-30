@@ -2429,12 +2429,30 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllTabletProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
+                        }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletSubmitted || 
+                                !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletDrawn ||
+                                !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletStarted)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
                         }
                         _.Dispose();
                     }
@@ -2515,13 +2533,32 @@ namespace NatoliOrderInterface
                     if (project.Item4 == "AllTabletProjects")
                     {
                         using var _ = new ProjectsContext();
-                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                        if (!_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
                         {
                             _.Dispose();
                             continue;
+                        }
+                        else if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)))
+                        {
+                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
+                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+                            {
+                                _.Dispose();
+                                continue;
+                            }
+                        }
+                        else if (_.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()))
+                        {
+                            if (_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletChecked ||
+                                !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletSubmitted ||
+                                !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletDrawn ||
+                                !_.EngineeringProjects.Single(p => p.ProjectNumber == int.Parse(project.Item1).ToString() && p.RevNumber == int.Parse(project.Item2).ToString()).TabletStarted)
+                            {
+                                _.Dispose();
+                                continue;
+                            }
                         }
                         _.Dispose();
                     }
