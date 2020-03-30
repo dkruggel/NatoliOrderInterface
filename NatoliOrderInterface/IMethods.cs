@@ -661,7 +661,7 @@ namespace NatoliOrderInterface
             {
                 if (projectType == "TABLETS")
                 {
-                    bool _tools = _projectsContext.EngineeringToolProjects.Any();
+                    bool _tools = _projectsContext.EngineeringToolProjects.Any(p=> p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     engineeringProject.TabletChecked = true;
                     engineeringProject.TabletCheckedDateTime = DateTime.UtcNow;
@@ -683,13 +683,13 @@ namespace NatoliOrderInterface
 
                         List<string> _CSRs = new List<string>();
 
-                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
+                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
                         {
-                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
+                            _CSRs.Add(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
                         }
-                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
+                        if (!string.IsNullOrEmpty(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
                         {
-                            _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
+                            _CSRs.Add(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
                         }
 
 
@@ -721,13 +721,13 @@ namespace NatoliOrderInterface
 
                     List<string> _CSRs = new List<string>();
 
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR))
                     {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
+                        _CSRs.Add(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).CSR);
                     }
-                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
+                    if (!string.IsNullOrEmpty(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR))
                     {
-                        _CSRs.Add(_projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
+                        _CSRs.Add(_projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber).ReturnToCSR);
                     }
 
 
@@ -1244,8 +1244,19 @@ namespace NatoliOrderInterface
                     var message = new MimeMessage();
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    
+                    string cust = "";
                     using var _ = new ProjectsContext();
-                    string cust = _.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
+                    if(_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)))
+                    {
+                        cust = _.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
+                    }
+                    else if(_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()))
+                    {
+                        cust = string.IsNullOrEmpty(_.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName) ? 
+                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).CustomerName : 
+                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName;
+                    }
                     _.Dispose();
                     message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed for " + cust;
 

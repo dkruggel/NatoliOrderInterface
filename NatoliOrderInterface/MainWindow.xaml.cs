@@ -859,7 +859,7 @@ namespace NatoliOrderInterface
         {
             //MainMenu.Items.Clear();
             MainMenu.Items.RemoveAt(0);
-#region FileMenuRegion
+            #region FileMenuRegion
             MenuItem fileMenu = new MenuItem
             {
                 Header = "File",
@@ -950,339 +950,339 @@ namespace NatoliOrderInterface
             if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
-#endregion
-#region SubsMenuRegion
-            MenuItem subsMenu = new MenuItem();
-            subsMenu.Header = "Subscriptions";
-            subsMenu.Height = MainMenu.Height;
-            subsMenu.SubmenuClosed += Subscriptions_SubmenuClosed;
-            using var natbccontext = new NATBCContext();
-            using var nat02context = new NAT02Context();
-            List<string> csrList = natbccontext.MoeEmployees.Where(e => (e.MoeDepartmentCode == "D1149" || e.MoeDepartmentCode == "D1147" || e.MoeDepartmentCode == "D1143")
-                                                                         && e.InactiveFlag == 0 && e.MoeEmployeeCode != "E3167" && e.MoeEmployeeCode != "E4840"
-                                                                         && e.MoeEmployeeCode != "E4345" && e.MoeEmployeeCode != "E5047" && e.MoeEmployeeCode != "E5347")
-                                                            .Select(e => e.MoeFirstName.Trim()).ToList();
-            IQueryable<string> subList = nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
-                                                                 .Select(e => e.Subscribed);
-            string[] subs = subList.First().Split(',');
-            foreach (string CSR in csrList)
-            {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Name = CSR;
-                menuItem.Header = CSR;
-                menuItem.IsCheckable = true;
-                if (subs.Contains(CSR))
-                {
-                    menuItem.IsChecked = true;
-                }
-                else
-                {
-                    menuItem.IsChecked = false;
-                }
-                subsMenu.Items.Add(menuItem);
-            }
-            if (User.Department != "Hob Programming") { MainMenu.Items.Add(subsMenu); }
-#endregion
-#region LegendRegion
-            MenuItem legendMenu = new MenuItem
-            {
-                Header = "Legend",
-                HorizontalAlignment = HorizontalAlignment.Right
-            };
-            MenuItem orderRushMenu = new MenuItem
-            {
-                Header = "RUSH",
-                Background = new SolidColorBrush(Colors.White),
-                Foreground = new SolidColorBrush(Colors.DarkRed),
-                FontWeight = FontWeights.Bold
-            };
-            MenuItem quoteRushMenu = new MenuItem
-            {
-                Header = "RUSH",
-                Background = new SolidColorBrush(Colors.White),
-                Foreground = new SolidColorBrush(Colors.DarkRed),
-                FontWeight = FontWeights.Bold
-            };
-            MenuItem priorityMenu = new MenuItem
-            {
-                Header = "Priority",
-                Background = new SolidColorBrush(Colors.White),
-                Foreground = new SolidColorBrush(Colors.DarkRed),
-                FontWeight = FontWeights.Bold
-            };
-            MenuItem tabletIsToolProjectMenu = new MenuItem
-            {
-                Header = "Tablet/Tools",
-                Background = new SolidColorBrush(Colors.White),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Bold,
-                FontStyle = FontStyles.Oblique
-            };
-            MenuItem doNotProcessMenu = new MenuItem
-            {
-                Header = "Do Not Process",
-                Background = new SolidColorBrush(Colors.Pink),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem readyToCheckMenu = new MenuItem
-            {
-                Header = "Ready To Check",
-                Background = new SolidColorBrush(Colors.GreenYellow),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem beingLookedAtMenu = new MenuItem
-            {
-                Header = "Being Looked At",
-                Background = new SolidColorBrush(Colors.DodgerBlue),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem missingVariablesMenu = new MenuItem
-            {
-                Header = "Missing Automation Variables",
-                Background = new SolidColorBrush(Colors.Red),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem missingPrintsMenu = new MenuItem
-            {
-                Header = "Missing Prints",
-                Background = new SolidColorBrush(Colors.MediumPurple),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem driveworksErrorsMenu = new MenuItem
-            {
-                Header = "DriveWorks Error -- Did Not Run",
-                Background = new SolidColorBrush(Colors.Black),
-                Foreground = new SolidColorBrush(Colors.White),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem lateProjectMenu = new MenuItem
-            {
-                Header = "Late Project",
-                Background = new SolidColorBrush(Colors.Red),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem sentToEngineeringProjectMenu = new MenuItem
-            {
-                Header = "Sent to Engineering",
-                Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF")),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem startedProjectMenu = new MenuItem
-            {
-                Header = "Project Started",
-                Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF")),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem drawnProjectMenu = new MenuItem
-            {
-                Header = "Project Drawn",
-                Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF")),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem submittedProjectMenu = new MenuItem
-            {
-                Header = "Project Submitted",
-                Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF")),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem checkedProjectMenu = new MenuItem
-            {
-                Header = "Project Checked",
-                Background = new SolidColorBrush(Colors.GreenYellow),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem onHoldProjectMenu = new MenuItem
-            {
-                Header = "Project On Hold",
-                Background = new SolidColorBrush(Colors.MediumPurple),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem toolStillTabletProjectMenu = new MenuItem
-            {
-                Header = "Still on Tablet Side",
-                Background = new SolidColorBrush(Colors.Yellow),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem toolMultiTipSketchMenu = new MenuItem
-            {
-                Header = "Multi Tip Sketch",
-                Background = new SolidColorBrush(Colors.Gray),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem followupQuoteCheckMenu = new MenuItem
-            {
-                Header = "Quote needs follow up",
-                Background = new SolidColorBrush(Colors.Pink),
-                Foreground = new SolidColorBrush(Colors.Black),
-                FontWeight = FontWeights.Normal
-            };
-            MenuItem ordersHeader = new MenuItem
-            {
-                Header = "***Orders***",
-                IsEnabled = false,
-                Background = new SolidColorBrush(Colors.Yellow),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            MenuItem quotesHeader = new MenuItem
-            {
-                Header = "***Quotes***",
-                IsEnabled = false,
-                Background = new SolidColorBrush(Colors.Yellow),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            MenuItem projectsHeader = new MenuItem
-            {
-                Header = "***Projects***",
-                IsEnabled = false,
-                Background = new SolidColorBrush(Colors.Yellow),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
-            {
-                MainMenu.Items.Add(legendMenu);
-                legendMenu.Items.Add(ordersHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(orderRushMenu);
-                legendMenu.Items.Add(doNotProcessMenu);
-                legendMenu.Items.Add(readyToCheckMenu);
-                legendMenu.Items.Add(beingLookedAtMenu);
-                legendMenu.Items.Add(missingVariablesMenu);
-                legendMenu.Items.Add(missingPrintsMenu);
-                legendMenu.Items.Add(driveworksErrorsMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(projectsHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(tabletIsToolProjectMenu);
-                legendMenu.Items.Add(priorityMenu);
-                legendMenu.Items.Add(lateProjectMenu);
-                legendMenu.Items.Add(sentToEngineeringProjectMenu);
-                legendMenu.Items.Add(startedProjectMenu);
-                legendMenu.Items.Add(drawnProjectMenu);
-                legendMenu.Items.Add(submittedProjectMenu);
-                legendMenu.Items.Add(checkedProjectMenu);
-                legendMenu.Items.Add(onHoldProjectMenu);
-                legendMenu.Items.Add(toolStillTabletProjectMenu);
-                legendMenu.Items.Add(toolMultiTipSketchMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quotesHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quoteRushMenu);
-            }
-            else if (User.Department == "Engineering")
-            {
-                MainMenu.Items.Add(legendMenu);
-                legendMenu.Items.Add(ordersHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(orderRushMenu);
-                legendMenu.Items.Add(doNotProcessMenu);
-                legendMenu.Items.Add(readyToCheckMenu);
-                legendMenu.Items.Add(beingLookedAtMenu);
-                legendMenu.Items.Add(missingVariablesMenu);
-                legendMenu.Items.Add(missingPrintsMenu);
-                legendMenu.Items.Add(driveworksErrorsMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(projectsHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(tabletIsToolProjectMenu);
-                legendMenu.Items.Add(priorityMenu);
-                legendMenu.Items.Add(lateProjectMenu);
-                legendMenu.Items.Add(sentToEngineeringProjectMenu);
-                legendMenu.Items.Add(startedProjectMenu);
-                legendMenu.Items.Add(drawnProjectMenu);
-                legendMenu.Items.Add(submittedProjectMenu);
-                legendMenu.Items.Add(checkedProjectMenu);
-                legendMenu.Items.Add(onHoldProjectMenu);
-                legendMenu.Items.Add(toolStillTabletProjectMenu);
-                legendMenu.Items.Add(toolMultiTipSketchMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quotesHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quoteRushMenu);
-                legendMenu.Items.Add(followupQuoteCheckMenu);
-            }
-            else if (User.Department == "Order Entry")
-            {
-                MainMenu.Items.Add(legendMenu);
-                legendMenu.Items.Add(ordersHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(orderRushMenu);
-                legendMenu.Items.Add(doNotProcessMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quotesHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quoteRushMenu);
-            }
-            else if (User.Department == "Barb")
-            {
-                MainMenu.Items.Add(legendMenu);
-                legendMenu.Items.Add(ordersHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(orderRushMenu);
-                legendMenu.Items.Add(doNotProcessMenu);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quotesHeader);
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(new Separator());
-                legendMenu.Items.Add(quoteRushMenu);
-                legendMenu.Items.Add(followupQuoteCheckMenu);
-            }
-            else
-            {
-                if (User.Department != "Hob Programming")
-                {
-                    MainMenu.Items.Add(legendMenu);
-                    legendMenu.Items.Add(ordersHeader);
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(orderRushMenu);
-                    legendMenu.Items.Add(doNotProcessMenu);
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(projectsHeader);
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(tabletIsToolProjectMenu);
-                    legendMenu.Items.Add(priorityMenu);
-                    legendMenu.Items.Add(sentToEngineeringProjectMenu);
-                    legendMenu.Items.Add(startedProjectMenu);
-                    legendMenu.Items.Add(drawnProjectMenu);
-                    legendMenu.Items.Add(submittedProjectMenu);
-                    legendMenu.Items.Add(checkedProjectMenu);
-                    legendMenu.Items.Add(onHoldProjectMenu);
-                    legendMenu.Items.Add(toolStillTabletProjectMenu);
-                    legendMenu.Items.Add(toolMultiTipSketchMenu);
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(quotesHeader);
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(new Separator());
-                    legendMenu.Items.Add(quoteRushMenu);
-                    legendMenu.Items.Add(followupQuoteCheckMenu);
-                }
-            }
-
             #endregion
+            #region SubsMenuRegion
+                MenuItem subsMenu = new MenuItem();
+                subsMenu.Header = "Subscriptions";
+                subsMenu.Height = MainMenu.Height;
+                subsMenu.SubmenuClosed += Subscriptions_SubmenuClosed;
+                using var natbccontext = new NATBCContext();
+                using var nat02context = new NAT02Context();
+                List<string> csrList = natbccontext.MoeEmployees.Where(e => (e.MoeDepartmentCode == "D1149" || e.MoeDepartmentCode == "D1147" || e.MoeDepartmentCode == "D1143")
+                                                                             && e.InactiveFlag == 0 && e.MoeEmployeeCode != "E3167" && e.MoeEmployeeCode != "E4840"
+                                                                             && e.MoeEmployeeCode != "E4345" && e.MoeEmployeeCode != "E5047" && e.MoeEmployeeCode != "E5347")
+                                                                .Select(e => e.MoeFirstName.Trim()).ToList();
+                IQueryable<string> subList = nat02context.EoiSettings.Where(e => e.EmployeeId == User.EmployeeCode)
+                                                                     .Select(e => e.Subscribed);
+                string[] subs = subList.First().Split(',');
+                foreach (string CSR in csrList)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Name = CSR;
+                    menuItem.Header = CSR;
+                    menuItem.IsCheckable = true;
+                    if (subs.Contains(CSR))
+                    {
+                        menuItem.IsChecked = true;
+                    }
+                    else
+                    {
+                        menuItem.IsChecked = false;
+                    }
+                    subsMenu.Items.Add(menuItem);
+                }
+                if (User.Department != "Hob Programming") { MainMenu.Items.Add(subsMenu); }
+    #endregion
+            #region LegendRegion
+                        MenuItem legendMenu = new MenuItem
+                        {
+                            Header = "Legend",
+                            HorizontalAlignment = HorizontalAlignment.Right
+                        };
+                        MenuItem orderRushMenu = new MenuItem
+                        {
+                            Header = "RUSH",
+                            Background = new SolidColorBrush(Colors.White),
+                            Foreground = new SolidColorBrush(Colors.DarkRed),
+                            FontWeight = FontWeights.Bold
+                        };
+                        MenuItem quoteRushMenu = new MenuItem
+                        {
+                            Header = "RUSH",
+                            Background = new SolidColorBrush(Colors.White),
+                            Foreground = new SolidColorBrush(Colors.DarkRed),
+                            FontWeight = FontWeights.Bold
+                        };
+                        MenuItem priorityMenu = new MenuItem
+                        {
+                            Header = "Priority",
+                            Background = new SolidColorBrush(Colors.White),
+                            Foreground = new SolidColorBrush(Colors.DarkRed),
+                            FontWeight = FontWeights.Bold
+                        };
+                        MenuItem tabletIsToolProjectMenu = new MenuItem
+                        {
+                            Header = "Tablet/Tools",
+                            Background = new SolidColorBrush(Colors.White),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Bold,
+                            FontStyle = FontStyles.Oblique
+                        };
+                        MenuItem doNotProcessMenu = new MenuItem
+                        {
+                            Header = "Do Not Process",
+                            Background = new SolidColorBrush(Colors.Pink),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem readyToCheckMenu = new MenuItem
+                        {
+                            Header = "Ready To Check",
+                            Background = new SolidColorBrush(Colors.GreenYellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem beingLookedAtMenu = new MenuItem
+                        {
+                            Header = "Being Looked At",
+                            Background = new SolidColorBrush(Colors.DodgerBlue),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem missingVariablesMenu = new MenuItem
+                        {
+                            Header = "Missing Automation Variables",
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem missingPrintsMenu = new MenuItem
+                        {
+                            Header = "Missing Prints",
+                            Background = new SolidColorBrush(Colors.MediumPurple),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem driveworksErrorsMenu = new MenuItem
+                        {
+                            Header = "DriveWorks Error -- Did Not Run",
+                            Background = new SolidColorBrush(Colors.Black),
+                            Foreground = new SolidColorBrush(Colors.White),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem lateProjectMenu = new MenuItem
+                        {
+                            Header = "Late Project",
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem sentToEngineeringProjectMenu = new MenuItem
+                        {
+                            Header = "Sent to Engineering",
+                            Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFFFF")),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem startedProjectMenu = new MenuItem
+                        {
+                            Header = "Project Started",
+                            Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B2D6FF")),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem drawnProjectMenu = new MenuItem
+                        {
+                            Header = "Project Drawn",
+                            Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#52A3FF")),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem submittedProjectMenu = new MenuItem
+                        {
+                            Header = "Project Submitted",
+                            Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#0A7DFF")),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem checkedProjectMenu = new MenuItem
+                        {
+                            Header = "Project Checked",
+                            Background = new SolidColorBrush(Colors.GreenYellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem onHoldProjectMenu = new MenuItem
+                        {
+                            Header = "Project On Hold",
+                            Background = new SolidColorBrush(Colors.MediumPurple),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem toolStillTabletProjectMenu = new MenuItem
+                        {
+                            Header = "Still on Tablet Side",
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem toolMultiTipSketchMenu = new MenuItem
+                        {
+                            Header = "Multi Tip Sketch",
+                            Background = new SolidColorBrush(Colors.Gray),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem followupQuoteCheckMenu = new MenuItem
+                        {
+                            Header = "Quote needs follow up",
+                            Background = new SolidColorBrush(Colors.Pink),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                            FontWeight = FontWeights.Normal
+                        };
+                        MenuItem ordersHeader = new MenuItem
+                        {
+                            Header = "***Orders***",
+                            IsEnabled = false,
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            HorizontalAlignment = HorizontalAlignment.Center
+                        };
+                        MenuItem quotesHeader = new MenuItem
+                        {
+                            Header = "***Quotes***",
+                            IsEnabled = false,
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            HorizontalAlignment = HorizontalAlignment.Center
+                        };
+                        MenuItem projectsHeader = new MenuItem
+                        {
+                            Header = "***Projects***",
+                            IsEnabled = false,
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            HorizontalAlignment = HorizontalAlignment.Center
+                        };
+                        if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+                        {
+                            MainMenu.Items.Add(legendMenu);
+                            legendMenu.Items.Add(ordersHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(orderRushMenu);
+                            legendMenu.Items.Add(doNotProcessMenu);
+                            legendMenu.Items.Add(readyToCheckMenu);
+                            legendMenu.Items.Add(beingLookedAtMenu);
+                            legendMenu.Items.Add(missingVariablesMenu);
+                            legendMenu.Items.Add(missingPrintsMenu);
+                            legendMenu.Items.Add(driveworksErrorsMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(projectsHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(tabletIsToolProjectMenu);
+                            legendMenu.Items.Add(priorityMenu);
+                            legendMenu.Items.Add(lateProjectMenu);
+                            legendMenu.Items.Add(sentToEngineeringProjectMenu);
+                            legendMenu.Items.Add(startedProjectMenu);
+                            legendMenu.Items.Add(drawnProjectMenu);
+                            legendMenu.Items.Add(submittedProjectMenu);
+                            legendMenu.Items.Add(checkedProjectMenu);
+                            legendMenu.Items.Add(onHoldProjectMenu);
+                            legendMenu.Items.Add(toolStillTabletProjectMenu);
+                            legendMenu.Items.Add(toolMultiTipSketchMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quotesHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quoteRushMenu);
+                        }
+                        else if (User.Department == "Engineering")
+                        {
+                            MainMenu.Items.Add(legendMenu);
+                            legendMenu.Items.Add(ordersHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(orderRushMenu);
+                            legendMenu.Items.Add(doNotProcessMenu);
+                            legendMenu.Items.Add(readyToCheckMenu);
+                            legendMenu.Items.Add(beingLookedAtMenu);
+                            legendMenu.Items.Add(missingVariablesMenu);
+                            legendMenu.Items.Add(missingPrintsMenu);
+                            legendMenu.Items.Add(driveworksErrorsMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(projectsHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(tabletIsToolProjectMenu);
+                            legendMenu.Items.Add(priorityMenu);
+                            legendMenu.Items.Add(lateProjectMenu);
+                            legendMenu.Items.Add(sentToEngineeringProjectMenu);
+                            legendMenu.Items.Add(startedProjectMenu);
+                            legendMenu.Items.Add(drawnProjectMenu);
+                            legendMenu.Items.Add(submittedProjectMenu);
+                            legendMenu.Items.Add(checkedProjectMenu);
+                            legendMenu.Items.Add(onHoldProjectMenu);
+                            legendMenu.Items.Add(toolStillTabletProjectMenu);
+                            legendMenu.Items.Add(toolMultiTipSketchMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quotesHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quoteRushMenu);
+                            legendMenu.Items.Add(followupQuoteCheckMenu);
+                        }
+                        else if (User.Department == "Order Entry")
+                        {
+                            MainMenu.Items.Add(legendMenu);
+                            legendMenu.Items.Add(ordersHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(orderRushMenu);
+                            legendMenu.Items.Add(doNotProcessMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quotesHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quoteRushMenu);
+                        }
+                        else if (User.Department == "Barb")
+                        {
+                            MainMenu.Items.Add(legendMenu);
+                            legendMenu.Items.Add(ordersHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(orderRushMenu);
+                            legendMenu.Items.Add(doNotProcessMenu);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quotesHeader);
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(new Separator());
+                            legendMenu.Items.Add(quoteRushMenu);
+                            legendMenu.Items.Add(followupQuoteCheckMenu);
+                        }
+                        else
+                        {
+                            if (User.Department != "Hob Programming")
+                            {
+                                MainMenu.Items.Add(legendMenu);
+                                legendMenu.Items.Add(ordersHeader);
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(orderRushMenu);
+                                legendMenu.Items.Add(doNotProcessMenu);
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(projectsHeader);
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(tabletIsToolProjectMenu);
+                                legendMenu.Items.Add(priorityMenu);
+                                legendMenu.Items.Add(sentToEngineeringProjectMenu);
+                                legendMenu.Items.Add(startedProjectMenu);
+                                legendMenu.Items.Add(drawnProjectMenu);
+                                legendMenu.Items.Add(submittedProjectMenu);
+                                legendMenu.Items.Add(checkedProjectMenu);
+                                legendMenu.Items.Add(onHoldProjectMenu);
+                                legendMenu.Items.Add(toolStillTabletProjectMenu);
+                                legendMenu.Items.Add(toolMultiTipSketchMenu);
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(quotesHeader);
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(new Separator());
+                                legendMenu.Items.Add(quoteRushMenu);
+                                legendMenu.Items.Add(followupQuoteCheckMenu);
+                            }
+                        }
+
+                        #endregion
             #region RightClickRegion
             MenuItem startOrder = new MenuItem
             {
@@ -2873,7 +2873,7 @@ namespace NatoliOrderInterface
         {
             // Select max project number
             using var projectsContext = new ProjectsContext();
-            int engProjMax = Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
+            int engProjMax = projectsContext.EngineeringProjects.Any() ? Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1 : 0;
             int engProjArchMax = Convert.ToInt32(projectsContext.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
             string projectNumber = engProjArchMax > engProjMax ? engProjArchMax.ToString() : engProjMax.ToString();
             
