@@ -16,13 +16,33 @@ using System.Windows.Media;
 using System.Reflection;
 using System.IO;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
+using System.Windows.Navigation;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Interop;
 
 namespace NatoliOrderInterface
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
+    
     public partial class ProjectWindow : Window, IDisposable , IMethods
     {
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr FindWindow(string strClassName, string strWindowName);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        public struct Rect
+        {
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
+        }
+
         private readonly string projectNumber;
         private string projectRevNumber;
         private readonly MainWindow mainWindow = null;
@@ -77,7 +97,8 @@ namespace NatoliOrderInterface
         private readonly string projectsDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
         public static string Units = "in";
         Quote quote = null;
-        
+
+
 
         public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, bool isCreating)
         {
@@ -375,14 +396,14 @@ namespace NatoliOrderInterface
                     MessageBox.Show("Please enter Key Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return false;;
                 }
-                if (string.IsNullOrWhiteSpace(KeyType.Text) && (UpperGroove.IsChecked == true || ShortRejectGroove.IsChecked == true || LongRejectGroove.IsChecked == true))
+                if (string.IsNullOrWhiteSpace(UpperGrooveType.Text) && (UpperGroove.IsChecked == true || ShortRejectGroove.IsChecked == true || LongRejectGroove.IsChecked == true))
                 {
                     MessageBox.Show("Please enter an Upper Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return false;;
                 }
-                if (string.IsNullOrWhiteSpace(KeyType.Text) && LowerGroove.IsChecked == true)
+                if (string.IsNullOrWhiteSpace(LowerGrooveType.Text) && LowerGroove.IsChecked == true)
                 {
-                    MessageBox.Show("Please enter an Lower Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please enter a Lower Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return false;;
                 }
                 if (string.IsNullOrWhiteSpace(HeadType.Text) && (UpperPunch.IsChecked == true || UpperHolder.IsChecked == true || UpperHead.IsChecked == true || UpperHolder.IsChecked == true ||
@@ -390,7 +411,7 @@ namespace NatoliOrderInterface
                     ShortRejectPunch.IsChecked == true || ShortRejectHolder.IsChecked == true || ShortRejectHead.IsChecked == true || ShortRejectHolder.IsChecked == true ||
                     LongRejectPunch.IsChecked == true || LongRejectHolder.IsChecked == true || LongRejectHead.IsChecked == true || LongRejectHolder.IsChecked == true))
                 {
-                    MessageBox.Show("Please enter an Lower Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Please enter a Head Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                     return false;;
                 }
             }
@@ -401,21 +422,14 @@ namespace NatoliOrderInterface
         /// </summary>
         private void WindowSetup()
         {
-            if (mainWindow.WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                //Top = parent.Top;
-                //Left = parent.Left;
-                Width = mainWindow.Width;
-                Height = mainWindow.Height;
-            }
-            //Left = mainWindow.Left;
-            //Top = mainWindow.Top;
-            //Width = mainWindow.ActualWidth;
-            //Height = mainWindow.ActualHeight;
+            IntPtr hwnd = new WindowInteropHelper(mainWindow).Handle;
+            Rect windowRect = new Rect();
+            GetWindowRect(hwnd, ref windowRect);
+            Top = windowRect.Top + 8;
+            Left = windowRect.Left + 8;
+            Width = mainWindow.Width;
+            Height = mainWindow.Height;
+
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
 
