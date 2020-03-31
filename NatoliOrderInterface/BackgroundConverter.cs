@@ -32,124 +32,134 @@ namespace NatoliOrderInterface
             {
                 if (parameter.ToString() == "Orders")
                 {
-                        EoiAllOrdersView order = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == orderNumber);
-                        bool rush = order.RushYorN == "Y" || order.PaidRushFee == "Y";
+                    EoiAllOrdersView order = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == orderNumber);
+                    bool rush = order.RushYorN == "Y" || order.PaidRushFee == "Y";
 
-                        if (order.BeingEntered == 1) { return new SolidColorBrush(Colors.Transparent); }
+                    if (order.BeingEntered == 1) { return new SolidColorBrush(Colors.Transparent); }
 
-                        if (order.InTheOffice == 1)
-                        {
-                            if (order.DoNotProcess == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                        }
-
-                        if (order.EnteredUnscanned == 1)
-                        {
-                            if (order.DoNotProcess == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if ((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo")
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                        }
-
-                        if (order.InEngineering == 1)
+                    if (order.InTheOffice == 1)
                     {
-                            if (order.DoNotProcess == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if (order.BeingChecked == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if (order.MarkedForChecking == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.GreenYellow, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.GreenYellow, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-        }
-
-                        if (order.ReadyToPrint == 1)
+                        if (order.DoNotProcess == 1)
                         {
-                            if (order.DoNotProcess == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            else if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
-                            {
-                                bool tm2 = System.Convert.ToBoolean(order.Tm2);
-                                bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
-                                bool toolPrints = System.Convert.ToBoolean(order.Tool);
-                                List<OrderDetails> orderDetails;
-                                OrderHeader orderHeader;
-                                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
-                                orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
-
-                                if (tm2 || tabletPrints)
-                                {
-                                    foreach (OrderDetails od in orderDetails)
-                                    {
-                                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
-                                        {
-                                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                                            if (!System.IO.File.Exists(path))
-                                            {
-                                                goto Missing;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if (tm2 || toolPrints)
-                                {
-                                    foreach (OrderDetails od in orderDetails)
-                                    {
-                                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                                        {
-                                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                                            detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                            string international = orderHeader.UnitOfMeasure;
-                                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
-                                            if (!System.IO.File.Exists(path))
-                                            {
-                                                goto Missing;
-                                            }
-                                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                                            {
-                                                goto Missing;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                goto NotMissing;
-
-                            Missing:;
-                                if (rush) { return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                                goto Finished;
-
-                            NotMissing:;
-                                if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-
-                            Finished:;
-                            }
-                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
+                        if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
+
+                    if (order.EnteredUnscanned == 1)
+                    {
+                        if (order.DoNotProcess == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if ((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo")
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
+
+                    if (order.InEngineering == 1)
+                    {
+                        if (order.DoNotProcess == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (order.BeingChecked == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (order.VariablesExist == 0)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (order.MarkedForChecking == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.GreenYellow, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.GreenYellow, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
+
+                    if (order.ReadyToPrint == 1)
+                    {
+                        if (order.DoNotProcess == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (order.VariablesExist == 0)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        else if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
+                        {
+                            bool tm2 = System.Convert.ToBoolean(order.Tm2);
+                            bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
+                            bool toolPrints = System.Convert.ToBoolean(order.Tool);
+                            List<OrderDetails> orderDetails;
+                            OrderHeader orderHeader;
+                            orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
+                            orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
+
+                            if (tm2 || tabletPrints)
+                            {
+                                foreach (OrderDetails od in orderDetails)
+                                {
+                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                                    {
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+                                        if (!System.IO.File.Exists(path))
+                                        {
+                                            goto Missing;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (tm2 || toolPrints)
+                            {
+                                foreach (OrderDetails od in orderDetails)
+                                {
+                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                                    {
+                                        string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                                        detailType = detailType == "MISC" ? "REJECT" : detailType;
+                                        string international = orderHeader.UnitOfMeasure;
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
+                                        if (!System.IO.File.Exists(path))
+                                        {
+                                            goto Missing;
+                                        }
+                                        if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+                                        {
+                                            goto Missing;
+                                        }
+                                    }
+                                }
+                            }
+
+                            goto NotMissing;
+
+                        Missing:;
+                            if (rush) { return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                            goto Finished;
+
+                        NotMissing:;
+                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+
+                        Finished:;
+                        }
+                        if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
 
 
                     if (order.Printed == 1)
@@ -158,8 +168,13 @@ namespace NatoliOrderInterface
                             {
                                 if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
                                 return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                            }
-                            else if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
+                        }
+                        if (order.VariablesExist == 0)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        else if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
                             {
                                 bool tm2 = System.Convert.ToBoolean(order.Tm2);
                                 bool tabletPrints = System.Convert.ToBoolean(order.Tablet);

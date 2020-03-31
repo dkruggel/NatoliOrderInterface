@@ -16,6 +16,7 @@ namespace NatoliOrderInterface.Models
         public int TM2 { get; set; }
         public int Tablet { get; set; }
         public int Tool { get; set; }
+        public int VariablesExist { get; set; }
 
         public bool Equals(EoiOrdersReadyToPrintView other)
         {
@@ -32,10 +33,11 @@ namespace NatoliOrderInterface.Models
                    this.PaidRushFee == other.PaidRushFee &&
                    this.TM2 == other.TM2 &&
                    this.Tablet == other.Tablet &&
-                   this.Tool == other.Tool;
+                   this.Tool == other.Tool &&
+                   this.VariablesExist == other.VariablesExist;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiOrdersReadyToPrintView);
-        public override int GetHashCode() => (OrderNo, CustomerName, NumDaysToShip, EmployeeName, DepartmentDesc, CheckedBy, RushYorN, PaidRushFee, TM2, Tablet, Tool).GetHashCode();
+        public override int GetHashCode() => (OrderNo, CustomerName, NumDaysToShip, EmployeeName, DepartmentDesc, CheckedBy, RushYorN, PaidRushFee, TM2, Tablet, Tool, VariablesExist).GetHashCode();
     }
 }
