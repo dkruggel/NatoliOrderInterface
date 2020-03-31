@@ -1386,6 +1386,7 @@ namespace NatoliOrderInterface
                 //    }
                 //}
             }
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1424,7 +1425,7 @@ namespace NatoliOrderInterface
                     
                 }
             }
-
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1496,7 +1497,7 @@ namespace NatoliOrderInterface
                     _nat02context.Dispose();
                 }
             }
-
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1534,6 +1535,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1562,6 +1564,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1590,6 +1593,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1621,6 +1625,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1652,7 +1657,7 @@ namespace NatoliOrderInterface
 
             using var _nat02context = new NAT02Context();
 
-            if (selectedProjects.Count > 0)
+            if (selectedQuotes.Count > 0)
             {
                 List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == currModule).ToList();
 
@@ -1681,6 +1686,7 @@ namespace NatoliOrderInterface
                 {
 
                 }
+                selectedQuotes.Clear();
             }
             
             _nat02context.SaveChanges();
@@ -1749,6 +1755,7 @@ namespace NatoliOrderInterface
             nat02Context.Dispose();
             necContext.Dispose();
             context.Dispose();
+            selectedQuotes.Clear();
             this.MainWindow.Cursor = Cursors.Arrow;
             try
             {
@@ -1799,6 +1806,7 @@ namespace NatoliOrderInterface
             nat02Context.Dispose();
             necContext.Dispose();
             context.Dispose();
+            selectedQuotes.Clear();
             this.MainWindow.Cursor = Cursors.Arrow;
             try
             {
@@ -1858,11 +1866,9 @@ namespace NatoliOrderInterface
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartToolProject(validProjects);
-
-                    selectedProjects.Clear();
-                    projectsToMove.Clear();
                 }
-
+                selectedProjects.Clear();
+                projectsToMove.Clear();
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
@@ -1883,10 +1889,10 @@ namespace NatoliOrderInterface
                     else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishToolProject(validProjects);
-                        selectedProjects.Clear();
-                        projectsToMove.Clear();                       
                     }
-                     (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
+                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
                 }
             }
             catch (Exception ex) { 
@@ -1908,10 +1914,9 @@ namespace NatoliOrderInterface
                 else if (currModule == "AllToolProjects")
                 {
                     SubmitToolProject(validProjects);
-
-                    selectedProjects.Clear();
-                    projectsToMove.Clear();
                 }
+                selectedProjects.Clear();
+                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1931,10 +1936,9 @@ namespace NatoliOrderInterface
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckToolProject(validProjects);
-                    selectedProjects.Clear();
-                    projectsToMove.Clear();
                 }
-
+                selectedProjects.Clear();
+                projectsToMove.Clear();
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
