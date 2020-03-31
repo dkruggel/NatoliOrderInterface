@@ -2667,8 +2667,6 @@ namespace NatoliOrderInterface
                             //Send Email To CSR
                             if (!(bool)_tools)
                             {
-                                List<string> _CSRs = new List<string>() { "Tyler" };
-
                                 if (_projectsContext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
@@ -2783,7 +2781,7 @@ namespace NatoliOrderInterface
                             _driveworksContext.Specifications.Update(spec);
 
                             //Send Email To CSR
-                            List<string> _CSRs = new List<string>() { "Tyler" };
+                            
 
                             _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                             if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
