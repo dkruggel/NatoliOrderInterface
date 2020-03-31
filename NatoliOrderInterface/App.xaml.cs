@@ -1863,13 +1863,16 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartToolProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                selectedProjects.Clear();
-                projectsToMove.Clear();
+                
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
@@ -1886,13 +1889,15 @@ namespace NatoliOrderInterface
                     if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishTabletProject(validProjects);
+                        selectedProjects.Clear();
+                        projectsToMove.Clear();
                     }
                     else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishToolProject(validProjects);
+                        selectedProjects.Clear();
+                        projectsToMove.Clear();
                     }
-                    selectedProjects.Clear();
-                    projectsToMove.Clear();
                     (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
                 }
             }
@@ -1911,13 +1916,15 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Submit")
                 {
                     SubmitTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                else if (currModule == "AllToolProjects")
+                else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Submit")
                 {
                     SubmitToolProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                selectedProjects.Clear();
-                projectsToMove.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1933,13 +1940,15 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckToolProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                selectedProjects.Clear();
-                projectsToMove.Clear();
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
@@ -1954,17 +1963,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     OnHoldTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     OnHoldToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1980,17 +1989,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     OffHoldTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     OffHoldToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -2006,17 +2015,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     CompleteTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     CompleteToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -2032,17 +2041,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     CancelTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     CancelToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
