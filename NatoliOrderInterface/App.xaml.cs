@@ -2664,6 +2664,7 @@ namespace NatoliOrderInterface
 
                         try
                         {
+                            List<string> _CSRs = new List<string>();
                             //Send Email To CSR
                             if (!(bool)_tools)
                             {
@@ -2781,7 +2782,7 @@ namespace NatoliOrderInterface
                             _driveworksContext.Specifications.Update(spec);
 
                             //Send Email To CSR
-                            
+                            List<string> _CSRs = new List<string>();
 
                             _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                             if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
