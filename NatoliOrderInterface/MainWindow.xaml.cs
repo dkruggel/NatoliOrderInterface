@@ -659,46 +659,54 @@ namespace NatoliOrderInterface
         }
         private void ChangeZoom(decimal? zoom = null)
         {
-            // Pull from TextBox
-            if(zoom == null)
+            try
             {
-                string newText = ZoomTextBox.Text;
-
-                newText = newText.EndsWith("%") ? newText.Remove(newText.LastIndexOf('%')) : newText;
-
-                double scale = double.Parse(newText);
-
-                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
-                if (scaleTransform.ScaleX != scale / 100)
+                // Pull from TextBox
+                if (zoom == null)
                 {
-                    scaleTransform.ScaleX = scale / 100;
+                    string newText = ZoomTextBox.Text;
+
+                    newText = newText.EndsWith("%") ? newText.Remove(newText.LastIndexOf('%')) : newText;
+
+                    if (double.TryParse(newText, out double scale))
+                    {
+                        ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
+                        if (scaleTransform.ScaleX != scale / 100)
+                        {
+                            scaleTransform.ScaleX = scale / 100;
+                        }
+                        if (scaleTransform.ScaleY != scale / 100)
+                        {
+                            scaleTransform.ScaleY = scale / 100;
+                        }
+                        // Make sure there is a percent symbol at the end
+                        if (!ZoomTextBox.Text.EndsWith("%"))
+                        {
+                            ZoomTextBox.Text += "%";
+                        }
+                        User.Zoom = Convert.ToDecimal(scale);
+                    }
                 }
-                if (scaleTransform.ScaleY != scale / 100)
+                // Use Provided Number
+                else
                 {
-                    scaleTransform.ScaleY = scale / 100;
+                    double scale = Convert.ToDouble(zoom);
+                    ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
+                    if (scaleTransform.ScaleX != scale / 100)
+                    {
+                        scaleTransform.ScaleX = scale / 100;
+                    }
+                    if (scaleTransform.ScaleY != scale / 100)
+                    {
+                        scaleTransform.ScaleY = scale / 100;
+                    }
+                    ZoomTextBox.Text = scale + "%";
+                    User.Zoom = Convert.ToDecimal(scale);
                 }
-                // Make sure there is a percent symbol at the end
-                if (!ZoomTextBox.Text.EndsWith("%"))
-                {
-                    ZoomTextBox.Text += "%";
-                }
-                User.Zoom = Convert.ToDecimal(scale);
             }
-            // Use Provided Number
-            else
+            catch (Exception ex)
             {
-                double scale = Convert.ToDouble(zoom);
-                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
-                if (scaleTransform.ScaleX != scale / 100)
-                {
-                    scaleTransform.ScaleX = scale / 100;
-                }
-                if (scaleTransform.ScaleY != scale / 100)
-                {
-                    scaleTransform.ScaleY = scale / 100;
-                }
-                ZoomTextBox.Text = scale + "%";
-                User.Zoom = Convert.ToDecimal(scale);
+                IMethods.WriteToErrorLog("ChangeZoom", ex.Message, User);
             }
             
         }
