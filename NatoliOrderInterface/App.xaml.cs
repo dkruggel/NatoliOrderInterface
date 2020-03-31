@@ -600,8 +600,7 @@ namespace NatoliOrderInterface
                     nat02Context.Dispose();
                     string nextStep = "";
 
-                    selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
-                    selectedProjects = selectedProjects.Distinct().ToList();
+                    
 
                     // Buttons
                     if ((pss != null && pss.HoldStatus == "ON HOLD") || (ep != null && ep.OnHold == true))
@@ -704,7 +703,8 @@ namespace NatoliOrderInterface
                         }
                     }
 
-                    
+                    selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects = selectedProjects.Distinct().ToList();
 
                     // Cancel: Enabled, "Cancel Project"
                     projectCancelButton.IsEnabled = true;
@@ -738,8 +738,7 @@ namespace NatoliOrderInterface
                     EoiAllOrdersView _order = __.EoiAllOrdersView.Single(o => o.OrderNumber == double.Parse(col0val));
                     __.Dispose();
 
-                    selectedOrders.Add((col0val, checkBox, type));
-                    selectedOrders = selectedOrders.Distinct().ToList();
+                    
 
                     // Get location to determine button functions
                     switch (type)
@@ -803,6 +802,8 @@ namespace NatoliOrderInterface
                             break;
                     }
 
+                    selectedOrders.Add((col0val, checkBox, type));
+                    selectedOrders = selectedOrders.Distinct().ToList();
                     if (_order.DoNotProcess == 0)
                     {
                         orderDoNotProcessButton.IsEnabled = true;
