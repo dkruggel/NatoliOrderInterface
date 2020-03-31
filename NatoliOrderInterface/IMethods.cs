@@ -1240,6 +1240,8 @@ namespace NatoliOrderInterface
                         emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
                     }
                     emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
+                    // BCC
+                    emailMessage.BCCAddresses = new List<EmailAddress> { new EmailAddress("Tyler Williams", "eng5@natoli.com"), new EmailAddress("David Kruggel", "eng6@natoli.com") };
 
                     var message = new MimeMessage();
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));

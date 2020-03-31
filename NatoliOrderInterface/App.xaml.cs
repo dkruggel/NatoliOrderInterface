@@ -512,6 +512,7 @@ namespace NatoliOrderInterface
                 if (quote)
                 {
                     selectedQuotes.Add((col0val, col1val, checkBox, type));
+                    selectedQuotes = selectedQuotes.Distinct().ToList();
 
                     var uniqueTypes = selectedQuotes.Select(q => q.Item4).Distinct();
 
@@ -548,6 +549,7 @@ namespace NatoliOrderInterface
                 // Project
                 else if (project)
                 {
+
                     Button projectPreviousStepButton = new Button();
                     if (type != "AllToolProjects")
                     {
@@ -577,6 +579,7 @@ namespace NatoliOrderInterface
                     projectCompleteButton.IsEnabled = false;
                     projectCancelButton.IsEnabled = false;
 
+                    
                     // Get previous and next steps to reset tooltip of back and forward buttons
                     ProjectSpecSheet pss = null;
                     if(_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val)))
@@ -597,6 +600,9 @@ namespace NatoliOrderInterface
                     nat02Context.Dispose();
                     string nextStep = "";
 
+                    
+
+                    // Buttons
                     if ((pss != null && pss.HoldStatus == "ON HOLD") || (ep != null && ep.OnHold == true))
                     {
                         ProjectOnHoldButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
@@ -698,6 +704,7 @@ namespace NatoliOrderInterface
                     }
 
                     selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects = selectedProjects.Distinct().ToList();
 
                     // Cancel: Enabled, "Cancel Project"
                     projectCancelButton.IsEnabled = true;
@@ -730,6 +737,8 @@ namespace NatoliOrderInterface
                     using var __ = new NAT02Context();
                     EoiAllOrdersView _order = __.EoiAllOrdersView.Single(o => o.OrderNumber == double.Parse(col0val));
                     __.Dispose();
+
+                    
 
                     // Get location to determine button functions
                     switch (type)
@@ -793,6 +802,8 @@ namespace NatoliOrderInterface
                             break;
                     }
 
+                    selectedOrders.Add((col0val, checkBox, type));
+                    selectedOrders = selectedOrders.Distinct().ToList();
                     if (_order.DoNotProcess == 0)
                     {
                         orderDoNotProcessButton.IsEnabled = true;
@@ -805,7 +816,7 @@ namespace NatoliOrderInterface
                         orderCanProcessButton.IsEnabled = true;
                     }
 
-                    selectedOrders.Add((col0val, checkBox, type));
+                    
                 }
             }
             catch (Exception ex)
@@ -847,16 +858,19 @@ namespace NatoliOrderInterface
                 string col1val = (x[2] as TextBlock).Text;
                 if (quote)
                 {
-                    selectedQuotes.Remove((col0val, col1val, checkBox, type));
+                    selectedQuotes.RemoveAll(sq=> sq == (col0val, col1val, checkBox, type));
+                    selectedQuotes = selectedQuotes.Distinct().ToList();
                 }
                 else if (project)
                 {
-                    string nextStep = selectedProjects.Single(p => p.Item1 == col0val).Item5;
-                    selectedProjects.Remove((col0val, col1val, checkBox, type, nextStep));
+                    string nextStep = selectedProjects.First(p => p.Item1 == col0val && p.Item2 == col1val).Item5;
+                    selectedProjects.RemoveAll(sp => sp == (col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects = selectedProjects.Distinct().ToList();
                 }
                 else if (order)
                 {
-                    selectedOrders.Remove((col0val, checkBox, type));
+                    selectedOrders.RemoveAll(so => so == (col0val, checkBox, type));
+                    selectedOrders = selectedOrders.Distinct().ToList();
                 }
 
                 foreach (Button button in buttons)
@@ -1373,6 +1387,7 @@ namespace NatoliOrderInterface
                 //    }
                 //}
             }
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1411,7 +1426,7 @@ namespace NatoliOrderInterface
                     
                 }
             }
-
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1483,7 +1498,7 @@ namespace NatoliOrderInterface
                     _nat02context.Dispose();
                 }
             }
-
+            selectedOrders.Clear();
             try
             {
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
@@ -1521,6 +1536,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1549,6 +1565,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1577,6 +1594,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1608,6 +1626,7 @@ namespace NatoliOrderInterface
                     nat02context.Dispose();
                 }
             }
+            selectedOrders.Clear();
 
             (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
@@ -1639,7 +1658,7 @@ namespace NatoliOrderInterface
 
             using var _nat02context = new NAT02Context();
 
-            if (selectedProjects.Count > 0)
+            if (selectedQuotes.Count > 0)
             {
                 List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == currModule).ToList();
 
@@ -1668,6 +1687,7 @@ namespace NatoliOrderInterface
                 {
 
                 }
+                selectedQuotes.Clear();
             }
             
             _nat02context.SaveChanges();
@@ -1736,6 +1756,7 @@ namespace NatoliOrderInterface
             nat02Context.Dispose();
             necContext.Dispose();
             context.Dispose();
+            selectedQuotes.Clear();
             this.MainWindow.Cursor = Cursors.Arrow;
             try
             {
@@ -1786,6 +1807,7 @@ namespace NatoliOrderInterface
             nat02Context.Dispose();
             necContext.Dispose();
             context.Dispose();
+            selectedQuotes.Clear();
             this.MainWindow.Cursor = Cursors.Arrow;
             try
             {
@@ -1841,15 +1863,16 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Start")
                 {
                     StartToolProject(validProjects);
-
                     selectedProjects.Clear();
                     projectsToMove.Clear();
                 }
-
+                
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
@@ -1866,14 +1889,16 @@ namespace NatoliOrderInterface
                     if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishTabletProject(validProjects);
+                        selectedProjects.Clear();
+                        projectsToMove.Clear();
                     }
                     else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Finish")
                     {
                         FinishToolProject(validProjects);
                         selectedProjects.Clear();
-                        projectsToMove.Clear();                       
+                        projectsToMove.Clear();
                     }
-                     (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
                 }
             }
             catch (Exception ex) { 
@@ -1891,11 +1916,12 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Submit")
                 {
                     SubmitTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
-                else if (currModule == "AllToolProjects")
+                else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Submit")
                 {
                     SubmitToolProject(validProjects);
-
                     selectedProjects.Clear();
                     projectsToMove.Clear();
                 }
@@ -1914,6 +1940,8 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects" && validProjects[0].Item5 == "Check")
                 {
                     CheckTabletProject(validProjects);
+                    selectedProjects.Clear();
+                    projectsToMove.Clear();
                 }
                 else if (currModule == "AllToolProjects" && validProjects[0].Item5 == "Check")
                 {
@@ -1921,7 +1949,6 @@ namespace NatoliOrderInterface
                     selectedProjects.Clear();
                     projectsToMove.Clear();
                 }
-
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
@@ -1936,17 +1963,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     OnHoldTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     OnHoldToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1962,17 +1989,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     OffHoldTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     OffHoldToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -1988,17 +2015,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     CompleteTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     CompleteToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -2014,17 +2041,17 @@ namespace NatoliOrderInterface
                 if (currModule == "AllTabletProjects")
                 {
                     CancelTabletProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else if (currModule == "AllToolProjects")
                 {
                     CancelToolProject(validProjects);
+                    selectedProjects.Clear();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                selectedProjects.Clear();
 
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
@@ -2637,11 +2664,10 @@ namespace NatoliOrderInterface
 
                         try
                         {
+                            List<string> _CSRs = new List<string>();
                             //Send Email To CSR
                             if (!(bool)_tools)
                             {
-                                List<string> _CSRs = new List<string>() { "Tyler" };
-
                                 if (_projectsContext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)) && !string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
                                 {
                                     _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
@@ -2757,6 +2783,7 @@ namespace NatoliOrderInterface
 
                             //Send Email To CSR
                             List<string> _CSRs = new List<string>();
+
                             _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
                             if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
                             {
