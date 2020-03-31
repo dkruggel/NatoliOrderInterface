@@ -512,6 +512,7 @@ namespace NatoliOrderInterface
                 if (quote)
                 {
                     selectedQuotes.Add((col0val, col1val, checkBox, type));
+                    selectedQuotes = selectedQuotes.Distinct().ToList();
 
                     var uniqueTypes = selectedQuotes.Select(q => q.Item4).Distinct();
 
@@ -548,6 +549,7 @@ namespace NatoliOrderInterface
                 // Project
                 else if (project)
                 {
+
                     Button projectPreviousStepButton = new Button();
                     if (type != "AllToolProjects")
                     {
@@ -577,6 +579,7 @@ namespace NatoliOrderInterface
                     projectCompleteButton.IsEnabled = false;
                     projectCancelButton.IsEnabled = false;
 
+                    
                     // Get previous and next steps to reset tooltip of back and forward buttons
                     ProjectSpecSheet pss = null;
                     if(_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(col0val) && p.RevisionNumber == int.Parse(col1val)))
@@ -597,6 +600,10 @@ namespace NatoliOrderInterface
                     nat02Context.Dispose();
                     string nextStep = "";
 
+                    selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects = selectedProjects.Distinct().ToList();
+
+                    // Buttons
                     if ((pss != null && pss.HoldStatus == "ON HOLD") || (ep != null && ep.OnHold == true))
                     {
                         ProjectOnHoldButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
@@ -697,7 +704,7 @@ namespace NatoliOrderInterface
                         }
                     }
 
-                    selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
+                    
 
                     // Cancel: Enabled, "Cancel Project"
                     projectCancelButton.IsEnabled = true;
@@ -730,6 +737,9 @@ namespace NatoliOrderInterface
                     using var __ = new NAT02Context();
                     EoiAllOrdersView _order = __.EoiAllOrdersView.Single(o => o.OrderNumber == double.Parse(col0val));
                     __.Dispose();
+
+                    selectedOrders.Add((col0val, checkBox, type));
+                    selectedOrders = selectedOrders.Distinct().ToList();
 
                     // Get location to determine button functions
                     switch (type)
@@ -805,7 +815,7 @@ namespace NatoliOrderInterface
                         orderCanProcessButton.IsEnabled = true;
                     }
 
-                    selectedOrders.Add((col0val, checkBox, type));
+                    
                 }
             }
             catch (Exception ex)
@@ -847,16 +857,19 @@ namespace NatoliOrderInterface
                 string col1val = (x[2] as TextBlock).Text;
                 if (quote)
                 {
-                    selectedQuotes.Remove((col0val, col1val, checkBox, type));
+                    selectedQuotes.RemoveAll(sq=> sq == (col0val, col1val, checkBox, type));
+                    selectedQuotes = selectedQuotes.Distinct().ToList();
                 }
                 else if (project)
                 {
-                    string nextStep = selectedProjects.Single(p => p.Item1 == col0val).Item5;
-                    selectedProjects.Remove((col0val, col1val, checkBox, type, nextStep));
+                    string nextStep = selectedProjects.First(p => p.Item1 == col0val && p.Item2 == col1val).Item5;
+                    selectedProjects.RemoveAll(sp => sp == (col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects = selectedProjects.Distinct().ToList();
                 }
                 else if (order)
                 {
-                    selectedOrders.Remove((col0val, checkBox, type));
+                    selectedOrders.RemoveAll(so => so == (col0val, checkBox, type));
+                    selectedOrders = selectedOrders.Distinct().ToList();
                 }
 
                 foreach (Button button in buttons)
