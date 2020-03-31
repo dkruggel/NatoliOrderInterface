@@ -1272,7 +1272,7 @@ namespace NatoliOrderInterface
                     }
                     if (comments.Length > 0)
                     {
-                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br>br>-End Comments-<br><br>";
+                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br><br>-End Comments-<br><br>";
                     }
                     string debugTest = "";
 //#if DEBUG

@@ -466,6 +466,7 @@ namespace NatoliOrderInterface
                 // ConstructModules();
                 BuildPanels();
                 BuildMenus();
+                ChangeZoom(User.Zoom);
                 //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
@@ -656,6 +657,51 @@ namespace NatoliOrderInterface
                 foldersTimer.Enabled = true;
             }
         }
+        private void ChangeZoom(decimal? zoom = null)
+        {
+            // Pull from TextBox
+            if(zoom == null)
+            {
+                string newText = ZoomTextBox.Text;
+
+                newText = newText.EndsWith("%") ? newText.Remove(newText.LastIndexOf('%')) : newText;
+
+                double scale = double.Parse(newText);
+
+                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
+                if (scaleTransform.ScaleX != scale / 100)
+                {
+                    scaleTransform.ScaleX = scale / 100;
+                }
+                if (scaleTransform.ScaleY != scale / 100)
+                {
+                    scaleTransform.ScaleY = scale / 100;
+                }
+                // Make sure there is a percent symbol at the end
+                if (!ZoomTextBox.Text.EndsWith("%"))
+                {
+                    ZoomTextBox.Text += "%";
+                }
+                User.Zoom = Convert.ToDecimal(scale);
+            }
+            // Use Provided Number
+            else
+            {
+                double scale = Convert.ToDouble(zoom);
+                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
+                if (scaleTransform.ScaleX != scale / 100)
+                {
+                    scaleTransform.ScaleX = scale / 100;
+                }
+                if (scaleTransform.ScaleY != scale / 100)
+                {
+                    scaleTransform.ScaleY = scale / 100;
+                }
+                ZoomTextBox.Text = scale + "%";
+                User.Zoom = Convert.ToDecimal(scale);
+            }
+            
+        }
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -724,6 +770,7 @@ namespace NatoliOrderInterface
                 eoiSettings.Top = (short?)Top;
                 eoiSettings.Left = (short?)Left;
                 eoiSettings.FilterActiveProjects = _filterProjects;
+                eoiSettings.Zoom = User.Zoom;
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }
@@ -838,21 +885,15 @@ namespace NatoliOrderInterface
             }
             else if (e.Key == Key.Enter && ZoomTextBox.IsFocused)
             {
-                string newText = ZoomTextBox.Text;
-
-                newText = newText.EndsWith("%") ? newText.Remove(newText.LastIndexOf('%')) : newText;
-
-                double scale = double.Parse(newText);
-
-                ScaleTransform scaleTransform = (MainDock.Children.OfType<ScrollViewer>().First().Content as Border).LayoutTransform as ScaleTransform;
-                scaleTransform.ScaleX = scale / 100;
-                scaleTransform.ScaleY = scale / 100;
-
-                // Make sure there is a percent symbol at the end
-                if (!ZoomTextBox.Text.EndsWith("%")) { ZoomTextBox.Text += "%"; }
+                ChangeZoom();
             }
         }
-#endregion
+        private void ZoomTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ChangeZoom();
+        }
+        #endregion
+
 
         #region MenuStuff
         public void BuildMenus()
