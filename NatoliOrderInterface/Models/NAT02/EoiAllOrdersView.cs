@@ -30,5 +30,6 @@ namespace NatoliOrderInterface.Models
         public int Tm2 { get; set; }
         public int Tablet { get; set; }
         public int Tool { get; set; }
+        public int VariablesExist { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace NatoliOrderInterface.Models
         public int DoNotProcess { get; set; }
         public int BeingChecked { get; set; }
         public int MarkedForChecking { get; set; }
+        public int VariablesExist { get; set; }
 
         public bool Equals(EoiOrdersInEngineeringUnprintedView other)
         {
@@ -30,10 +31,11 @@ namespace NatoliOrderInterface.Models
                    this.PaidRushFee == other.PaidRushFee &&
                    this.DoNotProcess == other.DoNotProcess &&
                    this.BeingChecked == other.BeingChecked &&
-                   this.MarkedForChecking == other.MarkedForChecking;
+                   this.MarkedForChecking == other.MarkedForChecking &&
+                   this.VariablesExist == other.VariablesExist;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiOrdersInEngineeringUnprintedView);
-        public override int GetHashCode() => (OrderNo, CustomerName, NumDaysToShip, EmployeeName, DaysInEng, RushYorN, PaidRushFee, DoNotProcess, BeingChecked, MarkedForChecking).GetHashCode();
+        public override int GetHashCode() => (OrderNo, CustomerName, NumDaysToShip, EmployeeName, DaysInEng, RushYorN, PaidRushFee, DoNotProcess, BeingChecked, MarkedForChecking, VariablesExist).GetHashCode();
     }
 }
