@@ -3193,7 +3193,5 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
-
-
     }
 }
