@@ -10,6 +10,12 @@
         <local:ToolTipConverter x:Key="toolTipConverter"/>
         <local:ModuleHeightConvertor x:Key="moduleHeightConvertor"/>
         <local:MainWindow x:Key="MainWindow"/>
+        <BeginStoryboard x:Key="RotateIt">
+            <Storyboard x:Name="Rotation">
+                <DoubleAnimation Storyboard.TargetName="Orientation" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:.5"/>
+            </Storyboard>
+        </BeginStoryboard>
+        
         <!--#region Colors -->
         <Color x:Key="Light.Color">#B3EFFF</Color>
         <Color x:Key="Bright.Color">#00CFFF</Color>
@@ -2295,22 +2301,12 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Name="Border" Cursor="Hand" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Margin="{TemplateBinding Margin}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="0.5,0.5">
+                            <Image Name="Image"  Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" RenderTransformOrigin="0.5,0.5" PreviewMouseDown="Image_PreviewMouseDown">
                                 <Image.RenderTransform>
                                     <TransformGroup>
                                         <RotateTransform x:Name="Orientation"/>
                                     </TransformGroup>
                                 </Image.RenderTransform>
-                                <Image.Triggers>
-                                    <EventTrigger RoutedEvent="PreviewMouseDown">
-                                        <BeginStoryboard x:Name="RotateIt">
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="Orientation" Storyboard.TargetProperty="Angle" By="360" Duration="0:0:.5"/>
-                                                <DoubleAnimation Storyboard.TargetProperty="(Image.Opacity)" From="0.1" To="1" Duration="0:0:.5"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </Image.Triggers>
                             </Image>
                         </Border>
                     </ControlTemplate>

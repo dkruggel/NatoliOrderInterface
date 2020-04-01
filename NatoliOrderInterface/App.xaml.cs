@@ -113,6 +113,16 @@ namespace NatoliOrderInterface
         {
             double_click_timer.Tick += Double_Click_Timer_Elapsed;
         }
+        private void Image_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Image image = sender as Image;
+            BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as BeginStoryboard;
+            Storyboard sb = beginStoryboard.Storyboard;
+            sb.RepeatBehavior = RepeatBehavior.Forever;
+            DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
+            doubleAnimation.From = 0;
+            sb.Begin(image, true);
+        }
         private void OpenNotesButtonButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
@@ -3187,12 +3197,10 @@ namespace NatoliOrderInterface
             }
         }
 
-
-
         #endregion
 
         #endregion
 
-
+        
     }
 }

@@ -26,6 +26,7 @@ using WpfAnimatedGif;
 using NatoliOrderInterface.FolderIntegrity;
 using F23.StringSimilarity;
 using NatoliOrderInterface;
+using System.Windows.Media.Animation;
 
 namespace NatoliOrderInterface
 {
@@ -490,7 +491,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
         }
-        public void MainRefresh(string module = "")
+        public async void MainRefresh(string module = "")
         {
             //BindData("Main");
             //BindData("QuotesNotConverted");
@@ -500,70 +501,90 @@ namespace NatoliOrderInterface
 
             if (string.IsNullOrEmpty(module))
             {
-                Task.Run(() =>
+                List<string> timers = new List<string>();
+                timers.Add("Main");
+                if (User.VisiblePanels.Contains("QuotesNotConverted"))
                 {
-                    BindData("Main");
-                    BindData("QuotesNotConverted");
-                    BindData("NatoliOrderList");
-                }).ContinueWith(t => Dispatcher.Invoke(() => UpdateUI()));
+                    timers.Add("QuotesNotConverted");
+                }
+                if (User.VisiblePanels.Contains("NatoliOrderList"))
+                {
+                    timers.Add("NatoliOrderList");
+                }
+                await Task.Run(() => GetData(timers));
+                Dispatcher.Invoke(() =>
+                {
+                    RefreshButton.ApplyTemplate();
+                    var template = RefreshButton.Template;
+                    var image = (Image)template.FindName("Image", RefreshButton);
+                    System.Windows.Media.Animation.BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as System.Windows.Media.Animation.BeginStoryboard;
+                    Storyboard sb = beginStoryboard.Storyboard;
+                    if (sb.RepeatBehavior == RepeatBehavior.Forever)
+                    {
+                        DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
+                        doubleAnimation.From = null;
+                        sb.RepeatBehavior = new RepeatBehavior(1.0);
+                        sb.Begin(image, false);
+                    }
+                    UpdateUI();
+                });
             }
             else
             {
                 switch (module)
                 {
                     case "BeingEntered":
-                        GetBeingEntered();
+                        await Task.Run(() => GetBeingEntered());
                         Dispatcher.Invoke(() => BindBeingEntered());
                         break;
                     case "InTheOffice":
-                        GetInTheOffice();
+                        await Task.Run(() => GetInTheOffice());
                         Dispatcher.Invoke(() => BindInTheOffice());
                         break;
                     case "QuotesNotConverted":
-                        GetQuotesNotConverted();
+                        await Task.Run(() => GetQuotesNotConverted());
                         Dispatcher.Invoke(() => BindQuotesNotConverted());
                         break;
                     case "EnteredUnscanned":
-                        GetEnteredUnscanned();
+                        await Task.Run(() => GetEnteredUnscanned());
                         Dispatcher.Invoke(() => BindEnteredUnscanned());
                         break;
                     case "InEngineering":
-                        GetInEngineering();
+                        await Task.Run(() => GetInEngineering());
                         Dispatcher.Invoke(() => BindInEngineering());
                         break;
                     case "QuotesToConvert":
-                        GetQuotesToConvert();
+                        await Task.Run(() => GetQuotesToConvert());
                         Dispatcher.Invoke(() => BindQuotesToConvert());
                         break;
                     case "ReadyToPrint":
-                        GetReadyToPrint();
+                        await Task.Run(() => GetReadyToPrint());
                         Dispatcher.Invoke(() => BindReadyToPrint());
                         break;
                     case "PrintedInEngineering":
-                        GetPrintedInEngineering();
+                        await Task.Run(() => GetPrintedInEngineering());
                         Dispatcher.Invoke(() => BindPrintedInEngineering());
                         break;
                     case "AllTabletProjects":
-                        GetAllTabletProjects();
+                        await Task.Run(() => GetAllTabletProjects());
                         Dispatcher.Invoke(() => BindAllTabletProjects());
                         break;
                     case "AllToolProjects":
-                        GetAllToolProjects();
+                        await Task.Run(() => GetAllToolProjects());
                         Dispatcher.Invoke(() => BindAllToolProjects());
                         break;
                     case "DriveWorksQueue":
-                        GetDriveWorksQueue();
+                        await Task.Run(() => GetDriveWorksQueue());
                         Dispatcher.Invoke(() => BindDriveWorksQueue());
                         break;
                     case "NatoliOrderList":
-                        GetNatoliOrderList();
+                        await Task.Run(() => GetNatoliOrderList());
                         Dispatcher.Invoke(() => BindNatoliOrderList());
                         break;
                     default:
                         break;
                 }
             }
-
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
         }
         /// <summary>
@@ -721,24 +742,37 @@ namespace NatoliOrderInterface
         private void GridWindow_ContentRendered(object sender, EventArgs e)
         {
             // ConstructExpanders();
-            BindData("Main");
-            BindData("QuotesNotConverted");
-            BindData("NatoliOrderList");
-            UpdateUI();
+            List<string> timers = new List<string>();
+            timers.Add("Main");
+            if (User.VisiblePanels.Contains("QuotesNotConverted"))
+            {
+                timers.Add("QuotesNotConverted");
+            }
+            if (User.VisiblePanels.Contains("NatoliOrderList"))
+            {
+                timers.Add("NatoliOrderList");
+            }
+            Task t = new Task(()=>GetData(timers));
+            t.Start();
+            t.Wait();
 
-            SetNotificationPicture();
+            Dispatcher.Invoke(() => UpdateUI());
+            Dispatcher.Invoke(() => SetNotificationPicture());
         }
-        private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            BindData("Main");
-            UpdateUI();
+            await Task.Run(() => GetData(new List<string> { "Main" }));
+            Dispatcher.Invoke(() => UpdateUI());
         }
-        private void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            BindData("QuotesNotConverted");
-            UpdateUI();
 
-            SetNotificationPicture();
+            if (User.VisiblePanels.Contains("QuotesNotConverted"))
+            {
+                await Task.Run(() => GetData(new List<string> { "QuotesNotConverted" }));
+                Dispatcher.Invoke(() => UpdateUI());
+                Dispatcher.Invoke(() => SetNotificationPicture());
+            }
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -753,10 +787,14 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("FoldersTimer_Elapsed()", ex.Message, User);
             }
         }
-        private void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private async void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            BindData("NatoliOrderList");
-            UpdateUI();
+            if (User.VisiblePanels.Contains("NatoliOrderList"))
+            {
+                await Task.Run(() => GetData(new List<string> { "NatoliOrderList" }));
+                Dispatcher.Invoke(() => UpdateUI());
+            }
+            
         }
         private void OQTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -4093,87 +4131,106 @@ namespace NatoliOrderInterface
                     return grid;
             }
         }
-        private void BindData(string timer)
+        private void GetData(List<string> timers)
         {
             try
             {
+                List<Task> tasks = new List<Task>();
                 foreach (string panel in User.VisiblePanels)
                 {
-                    switch (panel, timer)
+                    foreach (string timer in timers)
                     {
-                        case ("BeingEntered", "Main"):
-                            //Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
-                            Task.Run(() => GetBeingEntered());
-                            break;
-                        case ("InTheOffice", "Main"):
-                            //Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
-                            Task.Run(() => GetInTheOffice());
-                            break;
-                        case ("QuotesNotConverted", "QuotesNotConverted"):
-                            Dispatcher.Invoke(() => GetQuotesNotConverted());
-                            break;
-                        case ("EnteredUnscanned", "Main"):
-                            //Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
-                            Task.Run(() => GetEnteredUnscanned());
-                            break;
-                        case ("InEngineering", "Main"):
-                            //Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
-                            Task.Run(() => GetInEngineering());
-                            break;
-                        case ("QuotesToConvert", "Main"):
-                            Dispatcher.Invoke(() => GetQuotesToConvert());
-                            break;
-                        case ("ReadyToPrint", "Main"):
-                            //Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
-                            Task.Run(() => GetReadyToPrint());
-                            break;
-                        case ("PrintedInEngineering", "Main"):
-                            //Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
-                            Task.Run(() => GetPrintedInEngineering());
-                            break;
-                        case ("AllTabletProjects", "Main"):
-                            Task.Run(() => GetAllTabletProjects());
-                            break;
-                        //case ("TabletProjectsNotStarted", "Main"):
-                        //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-                        //    break;
-                        //case ("TabletProjectsStarted", "Main"):
-                        //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-                        //    break;
-                        //case ("TabletProjectsDrawn", "Main"):
-                        //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-                        //    break;
-                        //case ("TabletProjectsSubmitted", "Main"):
-                        //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-                        //    break;
-                        //case ("TabletProjectsOnHold", "Main"):
-                        //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-                        //    break;
-                        case ("AllToolProjects", "Main"):
-                            Task.Run(() => GetAllToolProjects());
-                            break;
-                        //case ("ToolProjectsNotStarted", "Main"):
-                        //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-                        //    break;
-                        //case ("ToolProjectsStarted", "Main"):
-                        //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-                        //    break;
-                        //case ("ToolProjectsDrawn", "Main"):
-                        //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-                        //    break;
-                        //case ("ToolProjectsOnHold", "Main"):
-                        //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-                        //    break;
-                        case ("DriveWorksQueue", "Main"):
-                            Task.Run(() => GetDriveWorksQueue());
-                            break;
-                        case ("NatoliOrderList", "NatoliOrderList"):
-                            Task.Run(() => GetNatoliOrderList());
-                            break;
-                        default:
-                            break;
+                        switch (panel, timer)
+                        {
+                            case ("BeingEntered", "Main"):
+                                //Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetBeingEntered()));
+                                //tasks.Add(Task.Run(() => GetBeingEntered()));
+                                break;
+                            case ("InTheOffice", "Main"):
+                                //Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetInTheOffice()));
+                                //tasks.Add(Task.Run(() => GetInTheOffice()));
+                                break;
+                            case ("QuotesNotConverted", "QuotesNotConverted"):
+                                tasks.Add(new Task(() => GetQuotesNotConverted()));
+                                //tasks.Add(Task.Run(() => GetQuotesNotConverted()));
+                                break;
+                            case ("EnteredUnscanned", "Main"):
+                                //Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetEnteredUnscanned()));
+                                //tasks.Add(Task.Run(() => GetEnteredUnscanned()));
+                                break;
+                            case ("InEngineering", "Main"):
+                                //Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetInEngineering()));
+                                //tasks.Add(Task.Run(() => GetInEngineering()));
+                                break;
+                            case ("QuotesToConvert", "Main"):
+                                tasks.Add(new Task(() => GetQuotesToConvert()));
+                                //tasks.Add(Task.Run(() => GetQuotesToConvert()));
+                                break;
+                            case ("ReadyToPrint", "Main"):
+                                //Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetReadyToPrint()));
+                                //tasks.Add(Task.Run(() => GetReadyToPrint()));
+                                break;
+                            case ("PrintedInEngineering", "Main"):
+                                //Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+                                tasks.Add(new Task(() => GetPrintedInEngineering()));
+                                //tasks.Add(Task.Run(() => GetPrintedInEngineering()));
+                                break;
+                            case ("AllTabletProjects", "Main"):
+                                tasks.Add(new Task(() => GetAllTabletProjects()));
+                                //tasks.Add(Task.Run(() => GetAllTabletProjects()));
+                                break;
+                            //case ("TabletProjectsNotStarted", "Main"):
+                            //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
+                            //    break;
+                            //case ("TabletProjectsStarted", "Main"):
+                            //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
+                            //    break;
+                            //case ("TabletProjectsDrawn", "Main"):
+                            //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
+                            //    break;
+                            //case ("TabletProjectsSubmitted", "Main"):
+                            //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
+                            //    break;
+                            //case ("TabletProjectsOnHold", "Main"):
+                            //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
+                            //    break;
+                            case ("AllToolProjects", "Main"):
+                                tasks.Add(new Task(() => GetAllToolProjects()));
+                                //tasks.Add(Task.Run(() => GetAllToolProjects()));
+                                break;
+                            //case ("ToolProjectsNotStarted", "Main"):
+                            //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
+                            //    break;
+                            //case ("ToolProjectsStarted", "Main"):
+                            //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
+                            //    break;
+                            //case ("ToolProjectsDrawn", "Main"):
+                            //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
+                            //    break;
+                            //case ("ToolProjectsOnHold", "Main"):
+                            //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
+                            //    break;
+                            case ("DriveWorksQueue", "Main"):
+                                tasks.Add(new Task(() => GetDriveWorksQueue()));
+                                //tasks.Add(Task.Run(() => GetDriveWorksQueue()));
+                                break;
+                            case ("NatoliOrderList", "NatoliOrderList"):
+                                tasks.Add(new Task(() => GetNatoliOrderList()));
+                                //tasks.Add(Task.Run(() => GetNatoliOrderList()));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
+                Task t = Task.WhenAll(tasks);
+                Parallel.ForEach(tasks, task => task.Start());
+                t.Wait();
             }
             catch
             {
@@ -4182,18 +4239,25 @@ namespace NatoliOrderInterface
         }
         private void UpdateUI()
         {
-            Task.Run(() => Dispatcher.Invoke(() => BindQuotesNotConverted()));
-            Task.Run(() => Dispatcher.Invoke(() => BindQuotesToConvert()));
-            Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
-            Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
-            Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
-            Task.Run(() => Dispatcher.Invoke(() => BindInEngineering()));
-            Task.Run(() => Dispatcher.Invoke(() => BindReadyToPrint()));
-            Task.Run(() => Dispatcher.Invoke(() => BindPrintedInEngineering()));
-            Task.Run(() => Dispatcher.Invoke(() => BindAllTabletProjects()));
-            Task.Run(() => Dispatcher.Invoke(() => BindAllToolProjects()));
-            Task.Run(() => Dispatcher.Invoke(() => BindDriveWorksQueue()));
-            Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
+            try
+            {
+                Task.Run(() => Dispatcher.Invoke(() => BindQuotesNotConverted()));
+                Task.Run(() => Dispatcher.Invoke(() => BindQuotesToConvert()));
+                Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
+                Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
+                Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
+                Task.Run(() => Dispatcher.Invoke(() => BindInEngineering()));
+                Task.Run(() => Dispatcher.Invoke(() => BindReadyToPrint()));
+                Task.Run(() => Dispatcher.Invoke(() => BindPrintedInEngineering()));
+                Task.Run(() => Dispatcher.Invoke(() => BindAllTabletProjects()));
+                Task.Run(() => Dispatcher.Invoke(() => BindAllToolProjects()));
+                Task.Run(() => Dispatcher.Invoke(() => BindDriveWorksQueue()));
+                Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
 
         #region Gets And Binds
