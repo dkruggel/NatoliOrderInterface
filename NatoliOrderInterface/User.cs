@@ -54,6 +54,7 @@ namespace NatoliOrderInterface
         public string PrimaryScreenLr { get; set; }
         public bool UsePrimary { get; set; }
         public decimal Zoom { get; set; }
+        public short ModuleRows { get; set; }
 
         public User()
         {
@@ -109,6 +110,7 @@ namespace NatoliOrderInterface
             Maximized = settings.Maximized;
             QuoteDays = settings.QuoteDays;
             Zoom = settings.Zoom;
+            ModuleRows = (short)settings.ModuleRows;
             FilterActiveProjects = settings.FilterActiveProjects;
             DepartmentCode = deptCode;
             if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")

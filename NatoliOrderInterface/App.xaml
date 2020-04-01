@@ -5812,7 +5812,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="PrintedInEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="PrintedInEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="1500">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -6010,7 +6010,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="AllTabletProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="AllTabletProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="1500">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">

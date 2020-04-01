@@ -468,6 +468,7 @@ namespace NatoliOrderInterface
                 BuildPanels();
                 BuildMenus();
                 ChangeZoom(User.Zoom);
+                ChangeModuleRows("", User.ModuleRows);
                 //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
                 InitializeTimers(User);
@@ -731,6 +732,37 @@ namespace NatoliOrderInterface
             }
             
         }
+        private void ChangeModuleRows(string from, int? delta = null)
+        {
+            int height;
+            int maxRows;
+
+            try
+            {
+                if (delta is null)
+                {
+                    height = int.Parse(ModuleHeightTextBox.Text);
+                }
+                else
+                {
+                    height = (from == "mouse" ? int.Parse(ModuleHeightTextBox.Text) : 0) + ((int)delta);
+                }
+
+                maxRows = (int)Math.Floor((MainWrapPanel.ActualHeight - 10 - 102) / 28);
+                height = height > maxRows ? maxRows : height < 0 ? 0 : height;
+                ModuleHeightTextBox.Text = (height).ToString();
+                foreach (Grid grid in MainWrapPanel.Children)
+                {
+                    (grid.Children[0] as Label).MaxHeight = (28 * height) + 102;
+                }
+
+                User.ModuleRows = (short)height;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ChangeModuleRows", ex.Message, User);
+            }
+        }
 
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
@@ -817,6 +849,7 @@ namespace NatoliOrderInterface
                 eoiSettings.Left = (short?)Left;
                 eoiSettings.FilterActiveProjects = _filterProjects;
                 eoiSettings.Zoom = User.Zoom;
+                eoiSettings.ModuleRows = User.ModuleRows;
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }
@@ -933,6 +966,14 @@ namespace NatoliOrderInterface
             {
                 ChangeZoom();
             }
+            else if (e.Key == Key.Enter && ModuleHeightTextBox.IsFocused)
+            {
+                ChangeModuleRows("");
+            }
+        }
+        private void ModuleHeightTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ChangeModuleRows("mouse", e.Delta / 120);
         }
         private void ZoomTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -4917,7 +4958,7 @@ namespace NatoliOrderInterface
         }
         private void OrdersBeingEnteredSearchBox_TextChanged()
         {
-            Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindBeingEntered());
         }
         private void OrdersInTheOfficeSearchBox_TextChanged()
         {

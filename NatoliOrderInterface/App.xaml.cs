@@ -1073,6 +1073,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void ToggleButton_SingleClick(object sender, MouseButtonEventArgs e)
         {
+            if (e.MiddleButton == MouseButtonState.Pressed || e.RightButton == MouseButtonState.Pressed) { goto end; }
             // Stop timer
             double_click_timer.Stop();
             // Increase click count
@@ -1116,6 +1117,7 @@ namespace NatoliOrderInterface
             }
             // Start new double-click timer
             double_click_timer.Start();
+        end:;
         }
         /// <summary>
         /// Timer Elapsed from ToggleButton MouseDown Event
@@ -3200,7 +3202,5 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
-
-        
     }
 }

@@ -20,5 +20,6 @@ namespace NatoliOrderInterface.Models
         public bool FilterActiveProjects { get; set; }
         public string PackageVersion { get; set; }
         public decimal Zoom { get; set; }
+        public short? ModuleRows { get; set; }
     }
 }
