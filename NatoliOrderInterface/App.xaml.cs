@@ -3006,7 +3006,6 @@ namespace NatoliOrderInterface
                     project.Item3.IsChecked = false;
                     (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
 
-
                     EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
                     _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
                     _nat02Context.SaveChanges();
