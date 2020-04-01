@@ -631,10 +631,10 @@ namespace NatoliOrderInterface
         {
             try
             {
-                // User = new User("jwillis");
                 User = new User(Environment.UserName);
                 App.user = User;
                 // User = new User("jwillis");
+                // User = new User("mbouzitoun");
                 // User = new User("mbouzitoun");
                 // User = new User("billt");
             }

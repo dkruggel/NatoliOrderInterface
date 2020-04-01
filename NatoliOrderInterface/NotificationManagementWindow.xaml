@@ -62,7 +62,7 @@
                                             </Style>
                                         </Image.Style>
                                     </Image>
-                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource archiveDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -187,7 +187,7 @@
                                             </Style>
                                         </Image.Style>
                                     </Image>
-                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource archiveDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
@@ -325,7 +325,7 @@
                                             </Style>
                                         </Image.Style>
                                     </Image>
-                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource imagesDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
+                                    <Image x:Name="ArchiveNotificationImage" Source="{StaticResource archiveDrawingImage}" Height="Auto" Width="Auto" VerticalAlignment="Bottom" MouseUp="ArchiveNotification_Click" Visibility="Collapsed">
                                         <Image.ToolTip>
                                             <TextBlock Text="Archive Notification" Foreground="{StaticResource Foreground.Main}"/>
                                         </Image.ToolTip>
