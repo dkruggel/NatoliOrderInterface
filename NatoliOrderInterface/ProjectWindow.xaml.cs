@@ -1033,6 +1033,9 @@ namespace NatoliOrderInterface
 
                     RefreshRoutingButtons();
 
+                    CreationBorder.Visibility = Visibility.Hidden;
+                    ProjectNavigation.Visibility = Visibility.Visible;
+
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Text = "Archived"));
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Visibility = Visibility.Visible));
 
@@ -3523,6 +3526,7 @@ namespace NatoliOrderInterface
                 using var _projectsContext = new ProjectsContext();
 
                 EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
                 decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
                 EngineeringProjects engineeringProject = new EngineeringProjects
                 {
@@ -3583,30 +3587,30 @@ namespace NatoliOrderInterface
                     TimeSubmitted = DateTime.UtcNow,
                     DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
                     Priority = Priority.IsChecked ?? false,
-                    TabletStarted = projectWillBeActive ? oldEngineeringProject.TabletStarted : false,
-                    TabletStartedDateTime = projectWillBeActive ? oldEngineeringProject.TabletStartedDateTime : null,
-                    TabletStartedBy = projectWillBeActive ? oldEngineeringProject.TabletStartedBy : "",
-                    TabletDrawn = projectWillBeActive ? oldEngineeringProject.TabletDrawn : false,
-                    TabletDrawnDateTime = projectWillBeActive ? oldEngineeringProject.TabletDrawnDateTime : null,
-                    TabletDrawnBy = projectWillBeActive ? oldEngineeringProject.TabletDrawnBy : "",
-                    TabletSubmitted = projectWillBeActive ? oldEngineeringProject.TabletSubmitted : false,
-                    TabletSubmittedDateTime = projectWillBeActive ? oldEngineeringProject.TabletSubmittedDateTime : null,
-                    TabletSubmittedBy = projectWillBeActive ? oldEngineeringProject.TabletSubmittedBy : "",
-                    TabletChecked = projectWillBeActive ? oldEngineeringProject.TabletChecked : false,
-                    TabletCheckedDateTime = projectWillBeActive ? oldEngineeringProject.TabletCheckedDateTime : null,
-                    TabletCheckedBy = projectWillBeActive ? oldEngineeringProject.TabletCheckedBy : "",
-                    ToolStarted = projectWillBeActive ? oldEngineeringProject.ToolStarted : false,
-                    ToolStartedDateTime = projectWillBeActive ? oldEngineeringProject.ToolStartedDateTime : null,
-                    ToolStartedBy = projectWillBeActive ? oldEngineeringProject.ToolStartedBy : "",
-                    ToolDrawn = projectWillBeActive ? oldEngineeringProject.ToolDrawn : false,
-                    ToolDrawnDateTime = projectWillBeActive ? oldEngineeringProject.ToolDrawnDateTime : null,
-                    ToolDrawnBy = projectWillBeActive ? oldEngineeringProject.ToolDrawnBy : "",
-                    ToolSubmitted = projectWillBeActive ? oldEngineeringProject.ToolSubmitted : false,
-                    ToolSubmittedDateTime = projectWillBeActive ? oldEngineeringProject.ToolSubmittedDateTime : null,
-                    ToolSubmittedBy = projectWillBeActive ? oldEngineeringProject.ToolSubmittedBy : "",
-                    ToolChecked = projectWillBeActive ? oldEngineeringProject.ToolChecked : false,
-                    ToolCheckedDateTime = projectWillBeActive ? oldEngineeringProject.ToolCheckedDateTime : null,
-                    ToolCheckedBy = projectWillBeActive ? oldEngineeringProject.ToolCheckedBy : "",
+                    TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false: oldEngineeringProject.TabletStarted) : false,
+                    TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
+                    TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
+                    TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
+                    TabletDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletDrawnDateTime) : null,
+                    TabletDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletDrawnBy) : "",
+                    TabletSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletSubmitted) : false,
+                    TabletSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletSubmittedDateTime) : null,
+                    TabletSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletSubmittedBy) : "",
+                    TabletChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletChecked) : false,
+                    TabletCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletCheckedDateTime) : null,
+                    TabletCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletCheckedBy) : "",
+                    ToolStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolStarted) : false,
+                    ToolStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolStartedDateTime) : null,
+                    ToolStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolStartedBy) : "",
+                    ToolDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolDrawn) : false,
+                    ToolDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolDrawnDateTime) : null,
+                    ToolDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolDrawnBy) : "",
+                    ToolSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolSubmitted) : false,
+                    ToolSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolSubmittedDateTime) : null,
+                    ToolSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolSubmittedBy) : "",
+                    ToolChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolChecked) : false,
+                    ToolCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolCheckedDateTime) : null,
+                    ToolCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolCheckedBy) : "",
                     NewDrawing = NewDrawing,
                     UpdateExistingDrawing = UpdateExistingDrawing,
                     UpdateTextOnDrawing = UpdateTextOnDrawing,
@@ -3623,11 +3627,11 @@ namespace NatoliOrderInterface
                     BinLocation = BinLocation,
                     MultiTipSolid = MultiTipStyle.Text == "SOLID",
                     MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
-                    OnHold = projectWillBeActive ? oldEngineeringProject.OnHold : false,
-                    OnHoldComment = projectWillBeActive ? oldEngineeringProject.OnHoldComment : "",
-                    OnHoldDateTime = projectWillBeActive ? oldEngineeringProject.OnHoldDateTime : null,
-                    RevisedBy = projectWillBeActive ? oldEngineeringProject.RevisedBy : null,
-                    Changes = projectWillBeActive ? oldEngineeringProject.Changes : null
+                    OnHold = false,
+                    OnHoldComment = "",
+                    OnHoldDateTime = null,
+                    RevisedBy = projectWillBeActive ? user.GetDWDisplayName() : null,
+                    Changes = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.Changes) : null
                 };
                 _projectsContext.Dispose();
                 return engineeringProject;
@@ -3900,7 +3904,7 @@ namespace NatoliOrderInterface
                     CheckButton.IsEnabled = false;
                     PutOnHoldButton.IsEnabled = false;
                     CancelButton.IsEnabled = false;
-                    ReviseButton.IsEnabled = false;
+                    ReviseButton.IsEnabled = true;
                 }
             }
             catch (Exception ex)
@@ -4079,6 +4083,14 @@ namespace NatoliOrderInterface
             HeadType.IsEnabled = isEnabled;
             CarbideTips.IsEnabled = isEnabled;
             MachineNotes.IsEnabled = isEnabled;
+            UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            DieShapePlaceHolder.Visibility = DieShape.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            NumberOfTipsPlaceHolder.Visibility = NumberOfTips.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            DieODPlaceholder.Visibility = DieOD.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            DieOLPlaceholder.Visibility = DieOL.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         #region Events
@@ -5321,46 +5333,53 @@ namespace NatoliOrderInterface
                 else if (button.Content.ToString() == "Revise")
                 {
                     using var _projectsContext = new ProjectsContext();
-                    EngineeringProjects oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
-                    engineeringProject.RevNumber = short.TryParse(oldEngineeringProject.RevNumber, out short revNumber) ? (revNumber + 1).ToString() : "100";
-                    engineeringProject.TimeSubmitted = oldEngineeringProject.TimeSubmitted;
-                    string body = "To Whom It May Concern,<br><br>" +
-                        "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
-                        "Here are the changes made:<br><b>";
-                    var changed = IMethods.GetChangedProperties(oldEngineeringProject, engineeringProject);
-                    if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
+                    EngineeringProjects oldEngineeringProject = null;
+                    EngineeringArchivedProjects archivedProject = null;
+                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                     {
-                        changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
+                        oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     }
-                    foreach (string change in changed)
+                    else if (_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                     {
-                        if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
+                        archivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    }
+                    EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
+                    engineeringProject.RevNumber = short.TryParse((oldEngineeringProject == null ? archivedProject.RevNumber : oldEngineeringProject.RevNumber), out short revNumber) ? (revNumber + 1).ToString() : "100";
+                    engineeringProject.TimeSubmitted = (oldEngineeringProject == null ? archivedProject.TimeSubmitted : oldEngineeringProject.TimeSubmitted);
+                    List<string> changed = new List<string>();
+                    string body = "To Whom It May Concern,<br><br>";
+                    
+
+                    if (oldEngineeringProject != null)
+                    {
+                        body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
+                        "Here are the changes made:<br><b>";
+                        changed = IMethods.GetChangedProperties(oldEngineeringProject, engineeringProject);
+                        if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
                         {
-                            engineeringProject.Changes += change + "|";
-                            body += change + "<br>";
+                            changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
+                        }
+                        foreach (string change in changed)
+                        {
+                            if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
+                            {
+                                engineeringProject.Changes += change + "|";
+                                body += change + "<br>";
+                            }
                         }
                     }
-                    engineeringProject.RevisedBy = user.GetDWPrincipalId();
-                    List<string> to = new List<string>();
-                    to.Add(engineeringProject.CSR);
-                    to.Add(engineeringProject.ReturnToCSR);
-                    to.Add(engineeringProject.TabletStartedBy);
-                    to.Add(engineeringProject.TabletDrawnBy);
-                    to.Add(engineeringProject.ToolDrawnBy);
-                    to.Add(engineeringProject.ToolDrawnBy);
-                    to.Add(user.GetDWPrincipalId());
-                    to.Distinct();
-                    to.RemoveAll(s => string.IsNullOrEmpty(s));
-                    string subject = "Project: " + projectNumber + "-" + projectRevNumber + " Has Been Revised";
+                    else
+                    {
+                        body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> has been revised out of archive to <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> by <u>" + user.GetUserName() + "</u>." + "<br>";
+                    }
 
                     if (TabletsRequired.IsChecked ?? false)
                     {
                         EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
                         TabletProject.RevNumber = engineeringProject.RevNumber;
-                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber))
+                        if (oldEngineeringProject != null && _projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
                         {
-                            EngineeringTabletProjects oldTabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber);
+                            EngineeringTabletProjects oldTabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
                             var changedTablet = IMethods.GetChangedProperties(oldTabletProject, TabletProject);
                             foreach (string change in changedTablet)
                             {
@@ -5377,9 +5396,9 @@ namespace NatoliOrderInterface
                     {
                         EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
                         ToolProject.RevNumber = engineeringProject.RevNumber;
-                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber))
+                        if (oldEngineeringProject != null && _projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
                         {
-                            EngineeringToolProjects oldToolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == oldEngineeringProject.ProjectNumber && p.RevNumber == oldEngineeringProject.RevNumber);
+                            EngineeringToolProjects oldToolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
                             var changedTool = IMethods.GetChangedProperties(oldToolProject, ToolProject);
                             foreach (string change in changedTool)
                             {
@@ -5393,6 +5412,21 @@ namespace NatoliOrderInterface
                         _projectsContext.Add(ToolProject);
                     }
 
+                    engineeringProject.RevisedBy = user.GetDWPrincipalId();
+                    List<string> to = new List<string>();
+                    to.Add(engineeringProject.CSR);
+                    to.Add(engineeringProject.ReturnToCSR);
+                    to.Add(engineeringProject.TabletStartedBy);
+                    to.Add(engineeringProject.TabletDrawnBy);
+                    to.Add(engineeringProject.ToolDrawnBy);
+                    to.Add(engineeringProject.ToolDrawnBy);
+                    to.Add(user.GetDWPrincipalId());
+                    to.Distinct();
+                    to.RemoveAll(s => string.IsNullOrEmpty(s));
+                    string subject = "Project: " + projectNumber + "-" + projectRevNumber + " Has Been Revised";
+
+                    
+
                     if (!string.IsNullOrEmpty(engineeringProject.Changes))
                     {
                         engineeringProject.Changes = engineeringProject.Changes.TrimEnd('|');
@@ -5401,16 +5435,19 @@ namespace NatoliOrderInterface
                         "Engineering Order Interface<br><br><br>" +
                         "(This E-mail is not monitored by any person(s).)";
                     _projectsContext.Add(engineeringProject);
-                    _projectsContext.Update(oldEngineeringProject);
-                    _projectsContext.Remove(oldEngineeringProject);
+                    if (oldEngineeringProject != null)
+                    {
+                        _projectsContext.Update(oldEngineeringProject);
+                        _projectsContext.Remove(oldEngineeringProject);
+                    }
                     _projectsContext.SaveChanges();
 
-                    if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    if(archivedProject == null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                     {
-                        EngineeringArchivedProjects engineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        engineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-                        engineeringArchivedProject.ArchivedFromRevision = true;
-                        _projectsContext.Update(engineeringArchivedProject);
+                        EngineeringArchivedProjects newEngineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        newEngineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+                        newEngineeringArchivedProject.ArchivedFromRevision = true;
+                        _projectsContext.Update(newEngineeringArchivedProject);
                         _projectsContext.SaveChanges();
                     }
 
@@ -5491,6 +5528,7 @@ namespace NatoliOrderInterface
             CreationBorder.Visibility = Visibility.Visible;
             CreateButton.Content = "Revise";
             AllControlsEnabledOrDisabled(true);
+            SaveButton.IsEnabled = false;
         }
         private void CancelCreateButton_Click(object sender, RoutedEventArgs e)
         {

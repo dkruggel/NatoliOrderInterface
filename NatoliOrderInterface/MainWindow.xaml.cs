@@ -3420,8 +3420,22 @@ namespace NatoliOrderInterface
                 if (ProjectSearchTextBlock.Text.Length > 0)
                 {
                     using var _projectscontext = new ProjectsContext();
-                    var revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => p.RevisionNumber);
-                    ProjectRevNoSearchTextBlock.Text = revNo.ToString();
+                    string revNo = "0";
+                    if (_projectscontext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)))
+                    {
+                        revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => p.RevisionNumber).ToString();
+                    }
+                    else if (_projectscontext.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text).ToString()))
+                    {
+                        revNo = _projectscontext.EngineeringProjects.Where(p => Convert.ToInt32(p.ProjectNumber) == int.Parse(ProjectSearchTextBlock.Text)).Max(p => Convert.ToInt32(p.RevNumber)).ToString();
+                    }
+                    else if (_projectscontext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text).ToString()))
+                    {
+                        revNo = _projectscontext.EngineeringArchivedProjects.Where(p => Convert.ToInt32(p.ProjectNumber) == int.Parse(ProjectSearchTextBlock.Text)).Max(p => Convert.ToInt32(p.RevNumber)).ToString();
+                    }
+
+
+                    ProjectRevNoSearchTextBlock.Text = revNo;
                     _projectscontext.Dispose();
                 }
             }
@@ -3601,23 +3615,23 @@ namespace NatoliOrderInterface
             {
                 try
                 {
-                    int revNo = 0;
+                    string revNo = "0";
                     if (ProjectSearchTextBlock.Text.Length > 0 && ProjectRevNoSearchTextBlock.Text.Length == 0)
                     {
                         using var _projectscontext = new ProjectsContext();
-                        if (_projectscontext.EngineeringProjects.Any(p => p.ProjectNumber == ProjectSearchTextBlock.Text))
+                        if (_projectscontext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)))
                         {
-                            revNo = _projectscontext.EngineeringProjects.Where(p => p.ProjectNumber == ProjectSearchTextBlock.Text).Max(p => Convert.ToInt32(p.RevNumber));
+                            revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => p.RevisionNumber).ToString();
                         }
-                        else if (_projectscontext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == ProjectSearchTextBlock.Text))
+                        else if (_projectscontext.EngineeringProjects.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text).ToString()))
                         {
-                            revNo = _projectscontext.EngineeringArchivedProjects.Where(p => p.ProjectNumber == ProjectSearchTextBlock.Text).Max(p => Convert.ToInt32(p.RevNumber));
+                            revNo = _projectscontext.EngineeringProjects.Where(p => Convert.ToInt32(p.ProjectNumber) == int.Parse(ProjectSearchTextBlock.Text)).Max(p => Convert.ToInt32(p.RevNumber)).ToString();
                         }
-                        else if(_projectscontext.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)))
+                        else if (_projectscontext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text).ToString()))
                         {
-                            revNo = _projectscontext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(ProjectSearchTextBlock.Text)).Max(p => (int)p.RevisionNumber);
+                            revNo = _projectscontext.EngineeringArchivedProjects.Where(p => Convert.ToInt32(p.ProjectNumber) == int.Parse(ProjectSearchTextBlock.Text)).Max(p => Convert.ToInt32(p.RevNumber)).ToString();
                         }
-                        ProjectRevNoSearchTextBlock.Text = revNo.ToString();
+                        ProjectRevNoSearchTextBlock.Text = revNo;
                         _projectscontext.Dispose();
                     }
                 }
