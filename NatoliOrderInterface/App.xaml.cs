@@ -613,7 +613,7 @@ namespace NatoliOrderInterface
                     
 
                     // Buttons
-                    if ((pss != null && pss.HoldStatus == "ON HOLD") || (ep != null && ep.OnHold == true))
+                    if ((pss != null && pss.HoldStatus.Trim() == "ON HOLD") || (ep != null && ep.OnHold == true))
                     {
                         ProjectOnHoldButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                     }
@@ -690,7 +690,7 @@ namespace NatoliOrderInterface
                             nextStep = "Start";
                         }
                     }
-                    if ((pss != null && !(bool)pss.Tablet && (bool)pss.Tools) || (ep != null && !epTablets && epTools))
+                    else if ((pss != null && !(bool)pss.Tablet && (bool)pss.Tools) || (ep != null && !epTablets && epTools))
                     {
                         if (projectFinished)
                         {
