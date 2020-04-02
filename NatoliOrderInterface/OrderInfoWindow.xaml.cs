@@ -845,50 +845,17 @@ namespace NatoliOrderInterface
 
             try
             {
-                DataGrid machineVariablesDataGridOld = Docker.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
-                Border machineVariablesBorderOld = Docker.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
-                Docker.Children.Remove(machineVariablesBorderOld);
-                Docker.Children.Remove(machineVariablesDataGridOld);
-                List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
-                if (machineVariables.Count != 0 && workOrder.CanRunOnAutocell)
-                {
-                    Border machineVariablesBorder = new Border
-                    {
-                        Name = "MachineVariablesBorder",
-                        BorderBrush = System.Windows.Media.Brushes.Gray,
-                        BorderThickness = new Thickness(0, 0, 0, 0),
-                        Margin = new Thickness(0, 0, 0, 0)
-                    };
-                    TextBlock machineVariablesTitle = new TextBlock
-                    {
-                        Name = "MachineVariablesTitle",
-                        Text = "Machine Variables",
-                        FontSize = 20,
-                        FontWeight = FontWeights.Bold,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Margin = new Thickness(0, 10, 0, 0),
-                        Style = (System.Windows.Style)Application.Current.Resources["BoldTextBlock"]
-                    };
-                    machineVariablesBorder.Child = machineVariablesTitle;
-                    machineVariablesBorder.SetValue(DockPanel.DockProperty, Dock.Top);
-                    Docker.Children.Add(machineVariablesBorder);
 
-                    DataGrid machineVariablesDataGrid = new DataGrid
-                    {
-                        Name = "MachineVariablesDataGrid",
-                        ItemsSource = machineVariables,
-                        IsReadOnly = true,
-                        HeadersVisibility = DataGridHeadersVisibility.Column,
-                        VerticalScrollBarVisibility = ScrollBarVisibility.Disabled
-                    };
-                    machineVariablesDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
-                    Docker.Children.Add(machineVariablesDataGrid);
-                }
-                else
+                if (nAT02Context.EoiAllOrdersView.Any(o => o.OrderNumber == this.orderNumber))
                 {
-                    if (workOrder.CanRunOnAutocell)
+                    DataGrid machineVariablesDataGridOld = Docker.Children.OfType<DataGrid>().Where(dg => dg.Name == "MachineVariablesDataGrid").FirstOrDefault() as DataGrid;
+                    Border machineVariablesBorderOld = Docker.Children.OfType<Border>().Where(dg => dg.Name == "MachineVariablesBorder").FirstOrDefault() as Border;
+                    Docker.Children.Remove(machineVariablesBorderOld);
+                    Docker.Children.Remove(machineVariablesDataGridOld);
+                    EoiAllOrdersView eoiAllOrdersView = nAT02Context.EoiAllOrdersView.First(o => o.OrderNumber == this.orderNumber);
+                    if (eoiAllOrdersView.VariablesExist != 0 && nAT02Context.MaMachineVariables.Any(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()))
                     {
+                        List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
                         Border machineVariablesBorder = new Border
                         {
                             Name = "MachineVariablesBorder",
@@ -899,17 +866,55 @@ namespace NatoliOrderInterface
                         TextBlock machineVariablesTitle = new TextBlock
                         {
                             Name = "MachineVariablesTitle",
-                            Text = "No Autocell Data For This Order",
+                            Text = "Machine Variables",
                             FontSize = 20,
                             FontWeight = FontWeights.Bold,
-                            Foreground = System.Windows.Media.Brushes.Crimson,
                             VerticalAlignment = VerticalAlignment.Center,
                             HorizontalAlignment = HorizontalAlignment.Center,
-                            Margin = new Thickness(0, 10, 0, 0)
+                            Margin = new Thickness(0, 10, 0, 0),
+                            Style = (System.Windows.Style)Application.Current.Resources["BoldTextBlock"]
                         };
                         machineVariablesBorder.Child = machineVariablesTitle;
                         machineVariablesBorder.SetValue(DockPanel.DockProperty, Dock.Top);
                         Docker.Children.Add(machineVariablesBorder);
+
+                        DataGrid machineVariablesDataGrid = new DataGrid
+                        {
+                            Name = "MachineVariablesDataGrid",
+                            ItemsSource = machineVariables,
+                            IsReadOnly = true,
+                            HeadersVisibility = DataGridHeadersVisibility.Column,
+                            VerticalScrollBarVisibility = ScrollBarVisibility.Disabled
+                        };
+                        machineVariablesDataGrid.SetValue(DockPanel.DockProperty, Dock.Top);
+                        Docker.Children.Add(machineVariablesDataGrid);
+                    }
+                    else
+                    {
+                        if (workOrder.CanRunOnAutocell)
+                        {
+                            Border machineVariablesBorder = new Border
+                            {
+                                Name = "MachineVariablesBorder",
+                                BorderBrush = System.Windows.Media.Brushes.Gray,
+                                BorderThickness = new Thickness(0, 0, 0, 0),
+                                Margin = new Thickness(0, 0, 0, 0)
+                            };
+                            TextBlock machineVariablesTitle = new TextBlock
+                            {
+                                Name = "MachineVariablesTitle",
+                                Text = "No Autocell Data For This Order",
+                                FontSize = 20,
+                                FontWeight = FontWeights.Bold,
+                                Foreground = System.Windows.Media.Brushes.Crimson,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                Margin = new Thickness(0, 10, 0, 0)
+                            };
+                            machineVariablesBorder.Child = machineVariablesTitle;
+                            machineVariablesBorder.SetValue(DockPanel.DockProperty, Dock.Top);
+                            Docker.Children.Add(machineVariablesBorder);
+                        }
                     }
                 }
             }
