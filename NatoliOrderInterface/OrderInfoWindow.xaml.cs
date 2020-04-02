@@ -853,7 +853,7 @@ namespace NatoliOrderInterface
                     Docker.Children.Remove(machineVariablesBorderOld);
                     Docker.Children.Remove(machineVariablesDataGridOld);
                     EoiAllOrdersView eoiAllOrdersView = nAT02Context.EoiAllOrdersView.First(o => o.OrderNumber == this.orderNumber);
-                    if (eoiAllOrdersView.VariablesExist != 0 && nAT02Context.MaMachineVariables.Any(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()))
+                    if (nAT02Context.MaMachineVariables.Any(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()))
                     {
                         List<MaMachineVariables> machineVariables = nAT02Context.MaMachineVariables.Where(mv => mv.WorkOrderNumber == workOrder.OrderNumber.ToString()).OrderBy(mv => mv.LineNumber).ToList();
                         Border machineVariablesBorder = new Border
@@ -891,7 +891,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
-                        if (workOrder.CanRunOnAutocell)
+                        if (eoiAllOrdersView.VariablesExist == 0)
                         {
                             Border machineVariablesBorder = new Border
                             {
