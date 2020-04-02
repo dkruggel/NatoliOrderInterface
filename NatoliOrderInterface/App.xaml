@@ -2239,8 +2239,6 @@
             </DrawingImage.Drawing>
         </DrawingImage>
         <!--#endregion-->
-
-
         
         <!--#region Image Buttons -->
         <Style x:Key="ShakeButtonIcon" TargetType="Button">
@@ -4443,7 +4441,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="QuotesNotConvertedListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="QuotesNotConvertedListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -4631,7 +4629,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="QuotesToConvertListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="QuotesToConvertListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -4833,7 +4831,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="BeingEnteredListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="BeingEnteredListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -5035,7 +5033,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="InTheOfficeListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="InTheOfficeListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -5230,7 +5228,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="EnteredUnscannedListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="EnteredUnscannedListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -5424,7 +5422,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="InEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="InEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -5618,7 +5616,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="ReadyToPrintListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="ReadyToPrintListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -5812,7 +5810,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="PrintedInEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="1500">
+                                <ListBox x:Name="PrintedInEngineeringListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -6010,7 +6008,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="AllTabletProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="1500">
+                                <ListBox x:Name="AllTabletProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -6025,6 +6023,9 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <ToggleButton x:Name="ToggleButton" PreviewMouseDown="ToggleButton_SingleClick">
+                                                <ToggleButton.ToolTip>
+                                                    <Binding Converter="{StaticResource toolTipConverter}"/>
+                                                </ToggleButton.ToolTip>
                                                 <ToggleButton.Style>
                                                     <Style TargetType="{x:Type ToggleButton}">
                                                         <Setter Property="Template">
@@ -6209,7 +6210,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="AllToolProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="AllToolProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -6224,6 +6225,9 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <ToggleButton x:Name="ToggleButton" PreviewMouseDown="ToggleButton_SingleClick">
+                                                <ToggleButton.ToolTip>
+                                                    <Binding Converter="{StaticResource toolTipConverter}"/>
+                                                </ToggleButton.ToolTip>
                                                 <ToggleButton.Style>
                                                     <Style TargetType="{x:Type ToggleButton}">
                                                         <Setter Property="Template">
@@ -6393,7 +6397,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="DriveWorksQueueListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="DriveWorksQueueListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">
@@ -6544,7 +6548,7 @@
                                         <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
                                     </Border.Effect>
                                 </Border>
-                                <ListBox x:Name="NatoliOrderListListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent" MaxHeight="800">
+                                <ListBox x:Name="NatoliOrderListListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
                                     <ListBox.ItemContainerStyle>
                                         <Style TargetType="ListBoxItem">
                                             <Setter Property="Template">

@@ -10,5 +10,6 @@ namespace NatoliOrderInterface.Models.Projects
         public string HoldStatus1 { get; set; }
         public DateTime? TimeSubmitted { get; set; }
         public string OnHoldComment { get; set; }
+        public string User { get; set; }
     }
 }
