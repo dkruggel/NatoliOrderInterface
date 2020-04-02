@@ -1016,8 +1016,11 @@ namespace NatoliOrderInterface
                 ToolTip = "Creates a new Tablet or Tool Project. It will become active on form submission."
             };
             createProject.Click += CreateProject_Click;
-            if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
-            // if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service") { fileMenu.Items.Add(createProject); }
+            //if (User.EmployeeCode == "E4754") { fileMenu.Items.Add(createProject); }
+            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.Department == "Customer Service")
+            { 
+                fileMenu.Items.Add(createProject); 
+            }
 
             MenuItem projectSearch = new MenuItem()
             {
@@ -4962,35 +4965,35 @@ namespace NatoliOrderInterface
         }
         private void OrdersInTheOfficeSearchBox_TextChanged()
         {
-            Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindInTheOffice());
         }
         private void QuotesNotConvertedSearchBox_TextChanged()
         {
-            Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindQuotesNotConverted());
         }
         private void OrdersEnteredUnscannedSearchBox_TextChanged()
         {
-            Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindEnteredUnscanned());
         }
         private void OrdersInEngineeringUnprintedSearchBox_TextChanged()
         {
-            Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindInEngineering());
         }
         private void QuotesToConvertSearchBox_TextChanged()
         {
-            Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindQuotesToConvert());            
         }
         private void OrdersReadyToPrintSearchBox_TextChanged()
         {
-            Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindReadyToPrint());
         }
         private void OrdersPrintedInEngineeringSearchBox_TextChanged()
         {
-            Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindPrintedInEngineering());
         }
         private void AllTabletProjectsSearchBox_TextChanged()
         {
-            Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()), TaskScheduler.Current);
+            Task.Run(()=>Dispatcher.Invoke(() => BindAllTabletProjects()));
         }
         //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
@@ -5014,7 +5017,7 @@ namespace NatoliOrderInterface
         //}
         private void AllToolProjectsSearchBox_TextChanged()
         {
-            Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindAllToolProjects());
         }
         //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
@@ -5034,11 +5037,11 @@ namespace NatoliOrderInterface
         //}
         private void DriveWorksQueueSearchBox_TextChanged()
         {
-            Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindDriveWorksQueue());
         }
         private void NatoliOrderListSearchBox_TextChanged()
         {
-            Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()), TaskScheduler.Current);
+            Dispatcher.Invoke(() => BindNatoliOrderList());
         }
 #endregion
         #endregion
