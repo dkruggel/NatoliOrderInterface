@@ -106,6 +106,7 @@ namespace NatoliOrderInterface.Models.Projects
         public bool OnHold { get; set; }
         public string OnHoldComment { get; set; }
         public DateTime? OnHoldDateTime { get; set; }
+        public string OnHoldUser { get; set; }
         public string RevisedBy { get; set; }
         public string Changes { get; set; }
     }
