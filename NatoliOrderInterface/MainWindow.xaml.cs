@@ -525,6 +525,7 @@ namespace NatoliOrderInterface
                         DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
                         doubleAnimation.From = null;
                         sb.RepeatBehavior = new RepeatBehavior(1.0);
+                        sb.BeginTime = sb.GetCurrentTime(image);
                         sb.Begin(image, false);
                     }
                     UpdateUI();
