@@ -81,6 +81,8 @@ namespace NatoliOrderInterface
         private readonly System.Timers.Timer oqTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer NatoliOrderListTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer foldersTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer moduleSearchTimer = new System.Timers.Timer();
+        private string searchedFromModuleName = "";
         private int _projectNumber = 0;
         private int? _revNumber = 0;
         private double _quoteNumber = 0;
@@ -679,7 +681,12 @@ namespace NatoliOrderInterface
                 foldersTimer.Interval = 2 * (60 * 60 * 1000); // 2 hours
                 foldersTimer.Enabled = true;
             }
+            moduleSearchTimer.Elapsed += ModuleSearchTimer_Elapsed;
+            moduleSearchTimer.Interval = 0.3 * 1000; // x seconds
         }
+
+        
+
         private void ChangeZoom(decimal? zoom = null)
         {
             try
@@ -4337,14 +4344,18 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("BeingEntered");
 
-            _ordersBeingEntered =
-                _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //_ordersBeingEntered =
+            //    _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //                                   o.QuoteNo.ToString().Contains(searchString) ||
+            //                                   o.CustomerName.ToLower().Contains(searchString))
+            //                       .OrderBy(kvp => kvp.OrderNo)
+            //                       .ToList();
+
+            OrdersBeingEntered = _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                o.QuoteNo.ToString().Contains(searchString) ||
                                                o.CustomerName.ToLower().Contains(searchString))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
-
-            OrdersBeingEntered = _ordersBeingEntered;
         }
         private void GetInTheOffice()
         {
@@ -4363,8 +4374,17 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("InTheOffice");
 
-            _ordersInTheOffice =
-                _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //_ordersInTheOffice =
+            //    _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //                                  o.CustomerName.ToLower().ToString().Contains(searchString) ||
+            //                                  o.EmployeeName.ToLower().Contains(searchString) ||
+            //                                  o.Csr.ToLower().Contains(searchString))
+            //                      .OrderBy(o => o.NumDaysToShip)
+            //                      .ThenBy(o => o.DaysInOffice)
+            //                      .ThenBy(o => o.OrderNo)
+            //                      .ToList();
+
+            OrdersInTheOffice = _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                               o.CustomerName.ToLower().ToString().Contains(searchString) ||
                                               o.EmployeeName.ToLower().Contains(searchString) ||
                                               o.Csr.ToLower().Contains(searchString))
@@ -4372,8 +4392,6 @@ namespace NatoliOrderInterface
                                   .ThenBy(o => o.DaysInOffice)
                                   .ThenBy(o => o.OrderNo)
                                   .ToList();
-
-            OrdersInTheOffice = _ordersInTheOffice;
         }
         private void GetQuotesNotConverted()
         {
@@ -4408,17 +4426,18 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("QuotesNotConverted");
 
+            var _filtered = _quotesNotConverted;
             if (searchString.ToLower().StartsWith("rep:"))
             {
                 searchString = searchString.Substring(4);
-                var _filtered =
+                _filtered =
                 _quotesNotConverted.Where(p => p.RepId.ToLower().Trim() == searchString)
                                    .OrderByDescending(kvp => kvp.QuoteNo)
                                    .ToList();
             }
             else
             {
-                var _filtered =
+                _filtered =
                 _quotesNotConverted.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
                                                p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
                                                p.CustomerName.ToLower().Contains(searchString) ||
@@ -4427,7 +4446,7 @@ namespace NatoliOrderInterface
                                    .ToList();
             }
 
-            QuotesNotConverted = _quotesNotConverted;
+            QuotesNotConverted = _filtered;
         }
         private void GetEnteredUnscanned()
         {
@@ -4446,13 +4465,16 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("EnteredUnscanned");
 
-            _ordersEntered =
-                _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //_ordersEntered =
+            //    _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //                              p.CustomerName.ToLower().Contains(searchString))
+            //                  .OrderBy(kvp => kvp.OrderNo)
+            //                  .ToList();
+
+            OrdersEntered = _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                           p.CustomerName.ToLower().Contains(searchString))
                               .OrderBy(kvp => kvp.OrderNo)
                               .ToList();
-
-            OrdersEntered = _ordersEntered;
         }
         private void GetInEngineering()
         {
@@ -4471,16 +4493,22 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("InEngineering");
 
-            _ordersInEng =
-                _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //_ordersInEng =
+            //    _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //                            p.CustomerName.ToLower().Contains(searchString) ||
+            //                            p.EmployeeName.ToLower().Contains(searchString))
+            //                .OrderByDescending(kvp => kvp.DaysInEng)
+            //                .ThenBy(kvp => kvp.NumDaysToShip)
+            //                .ThenBy(kvp => kvp.OrderNo)
+            //                .ToList();
+
+            OrdersInEng = _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                         p.CustomerName.ToLower().Contains(searchString) ||
                                         p.EmployeeName.ToLower().Contains(searchString))
                             .OrderByDescending(kvp => kvp.DaysInEng)
                             .ThenBy(kvp => kvp.NumDaysToShip)
                             .ThenBy(kvp => kvp.OrderNo)
                             .ToList();
-
-            OrdersInEng = _ordersInEng;
         }
         private void GetQuotesToConvert()
         {
@@ -4514,15 +4542,20 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("QuotesToConvert");
 
-            _quotesToConvert =
-                _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+            //_quotesToConvert =
+            //    _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+            //                                p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
+            //                                p.CustomerName.ToLower().Contains(searchString) ||
+            //                                p.Csr.ToLower().Contains(searchString))
+            //                    .OrderBy(kvp => kvp.TimeSubmitted)
+            //                    .ToList();
+
+            QuotesToConvert = _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
                                             p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
                                             p.CustomerName.ToLower().Contains(searchString) ||
                                             p.Csr.ToLower().Contains(searchString))
                                 .OrderBy(kvp => kvp.TimeSubmitted)
                                 .ToList();
-
-            QuotesToConvert = _quotesToConvert;
         }
         private void GetReadyToPrint()
         {
@@ -4541,15 +4574,20 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("ReadyToPrint");
 
-            _ordersReadyToPrint =
-                _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //_ordersReadyToPrint =
+            //    _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            //                                   p.CustomerName.ToLower().Contains(searchString) ||
+            //                                   p.EmployeeName.ToLower().Contains(searchString) ||
+            //                                   p.CheckedBy.ToLower().Contains(searchString))
+            //                       .OrderBy(kvp => kvp.OrderNo)
+            //                       .ToList();
+
+            OrdersReadyToPrint = _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                p.CustomerName.ToLower().Contains(searchString) ||
                                                p.EmployeeName.ToLower().Contains(searchString) ||
                                                p.CheckedBy.ToLower().Contains(searchString))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
-
-            OrdersReadyToPrint = _ordersReadyToPrint;
         }
         public void GetPrintedInEngineering()
         {
@@ -4569,6 +4607,7 @@ namespace NatoliOrderInterface
             string searchString = GetSearchString("PrintedInEngineering");
 
             string column;
+            var _filtered = _ordersPrinted;
             if (searchString.Contains(":"))
             {
                 column = searchString.Split(':')[0];
@@ -4577,35 +4616,35 @@ namespace NatoliOrderInterface
                 {
                     case "order no":
 
-                        _ordersPrinted =
+                        _filtered =
                             _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     case "customer name":
 
-                        _ordersPrinted =
+                        _filtered =
                             _ordersPrinted.Where(p => p.CustomerName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     case "employee name":
 
-                        _ordersPrinted =
+                        _filtered =
                             _ordersPrinted.Where(p => p.EmployeeName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     case "checker":
 
-                        _ordersPrinted =
+                        _filtered =
                             _ordersPrinted.Where(p => p.CheckedBy.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     default:
 
-                        _ordersPrinted =
+                        _filtered =
                             _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                       p.CustomerName.ToLower().Contains(searchString) ||
                                                       p.EmployeeName.ToLower().Contains(searchString) ||
@@ -4617,7 +4656,7 @@ namespace NatoliOrderInterface
             }
             else
             {
-                _ordersPrinted =
+                _filtered =
                     _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                               p.CustomerName.ToLower().Contains(searchString) ||
                                               p.EmployeeName.ToLower().Contains(searchString) ||
@@ -4626,7 +4665,7 @@ namespace NatoliOrderInterface
                                   .ToList();
             }
 
-            OrdersPrinted = _ordersPrinted;
+            OrdersPrinted = _filtered;
         }
         private void GetAllTabletProjects()
         {
@@ -4683,9 +4722,10 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllTabletProjects");
 
+            var _filtered = _allTabletProjects;
             if (User.DomainName == "mmulaosmanovic")
             {
-                _allTabletProjects =
+                _filtered =
                     _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.CustomerName.ToLower().Contains(searchString) ||
@@ -4699,7 +4739,7 @@ namespace NatoliOrderInterface
             }
             else
             {
-                _allTabletProjects =
+                _filtered =
                     _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.CustomerName.ToLower().Contains(searchString) ||
@@ -4711,7 +4751,7 @@ namespace NatoliOrderInterface
                                       .ToList();
             }
 
-            AllTabletProjects = _allTabletProjects;
+            AllTabletProjects = _filtered;
         }
         private void GetAllToolProjects()
         {
@@ -4768,9 +4808,10 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllToolProjects");
 
+            var _filtered = _allToolProjects;
             if (User.DomainName == "kbergerdine")
             {
-                _allToolProjects =
+                _filtered =
                     _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.CustomerName.ToLower().Contains(searchString) ||
@@ -4784,7 +4825,7 @@ namespace NatoliOrderInterface
             }
             else
             {
-                _allToolProjects =
+                _filtered =
                     _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.CustomerName.ToLower().Contains(searchString) ||
@@ -4796,7 +4837,7 @@ namespace NatoliOrderInterface
                                     .ToList();
             }
 
-            AllToolProjects = _allToolProjects;
+            AllToolProjects = _filtered;
         }
         private void GetDriveWorksQueue()
         {
@@ -4866,24 +4907,25 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("NatoliOrderList");
 
+            var _filtered = _natoliOrderList;
             if (searchString.ToLower().StartsWith("rep:"))
             {
                 searchString = searchString.Substring(4);
-                var _filtered =
+                _filtered =
                 _natoliOrderList.Where(p => p.RepId.ToLower().Trim() == searchString)
                                 .OrderBy(kvp => kvp.ShipDate)
                                 .ToList();
             }
             else
             {
-                var _filtered =
+                _filtered =
                 _natoliOrderList.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                             p.Customer.ToLower().Contains(searchString))
                                 .OrderBy(kvp => kvp.ShipDate)
                                 .ToList();
             }
 
-            NatoliOrderList = _natoliOrderList;
+            NatoliOrderList = _filtered;
         }
 #endregion
         #region Module Search Box Text Changed Events
@@ -4903,6 +4945,51 @@ namespace NatoliOrderInterface
                 string _text = text == null ? "" : (text.Text ?? "");
                 //return _textBox.Text.ToLower(); //x.Text.ToLower();
                 return _text.ToLower();
+            }
+        }
+        private void ModuleSearchTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            moduleSearchTimer.Stop();
+            switch (searchedFromModuleName)
+            {
+                case "BeingEntered":
+                    Dispatcher.Invoke(() => BindBeingEntered());
+                    break;
+                case "InTheOffice":
+                    Dispatcher.Invoke(() => BindInTheOffice());
+                    break;
+                case "QuotesNotConverted":
+                    Dispatcher.Invoke(() => BindQuotesNotConverted());
+                    break;
+                case "EnteredUnscanned":
+                    Dispatcher.Invoke(() => BindEnteredUnscanned());
+                    break;
+                case "InEngineering":
+                    Dispatcher.Invoke(() => BindInEngineering());
+                    break;
+                case "QuotesToConvert":
+                    Dispatcher.Invoke(() => BindQuotesToConvert());
+                    break;
+                case "ReadyToPrint":
+                    Dispatcher.Invoke(() => BindReadyToPrint());
+                    break;
+                case "PrintedInEngineering":
+                    Dispatcher.Invoke(() => BindPrintedInEngineering());
+                    break;
+                case "AllTabletProjects":
+                    Dispatcher.Invoke(() => BindAllTabletProjects());
+                    break;
+                case "AllToolProjects":
+                    Dispatcher.Invoke(() => BindAllToolProjects());
+                    break;
+                case "DriveWorksQueue":
+                    Dispatcher.Invoke(() => BindDriveWorksQueue());
+                    break;
+                case "NatoliOrderList":
+                    Dispatcher.Invoke(() => BindNatoliOrderList());
+                    break;
+                default:
+                    break;
             }
         }
         public void TextChanged(string module)
@@ -4976,39 +5063,57 @@ namespace NatoliOrderInterface
         }
         private void OrdersBeingEnteredSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindBeingEntered());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "BeingEntered";
+            moduleSearchTimer.Start();
         }
         private void OrdersInTheOfficeSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindInTheOffice());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "InTheOffice";
+            moduleSearchTimer.Start();
         }
         private void QuotesNotConvertedSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindQuotesNotConverted());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "QuotesNotConverted";
+            moduleSearchTimer.Start();
         }
         private void OrdersEnteredUnscannedSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindEnteredUnscanned());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "EnteredUnscanned";
+            moduleSearchTimer.Start();
         }
         private void OrdersInEngineeringUnprintedSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindInEngineering());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "InEngineering";
+            moduleSearchTimer.Start();
         }
         private void QuotesToConvertSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindQuotesToConvert());            
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "QuotesToConvert";
+            moduleSearchTimer.Start();
         }
         private void OrdersReadyToPrintSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindReadyToPrint());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "ReadyToPrint";
+            moduleSearchTimer.Start();
         }
         private void OrdersPrintedInEngineeringSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindPrintedInEngineering());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "PrintedInEngineering";
+            moduleSearchTimer.Start();
         }
         private void AllTabletProjectsSearchBox_TextChanged()
         {
-            Task.Run(()=>Dispatcher.Invoke(() => BindAllTabletProjects()));
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "AllTabletProjects";
+            moduleSearchTimer.Start();
         }
         //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
@@ -5032,7 +5137,9 @@ namespace NatoliOrderInterface
         //}
         private void AllToolProjectsSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindAllToolProjects());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "AllToolProjects";
+            moduleSearchTimer.Start();
         }
         //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
@@ -5052,11 +5159,15 @@ namespace NatoliOrderInterface
         //}
         private void DriveWorksQueueSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindDriveWorksQueue());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "DriveWorksQueue";
+            moduleSearchTimer.Start();
         }
         private void NatoliOrderListSearchBox_TextChanged()
         {
-            Dispatcher.Invoke(() => BindNatoliOrderList());
+            moduleSearchTimer.Stop();
+            searchedFromModuleName = "NatoliOrderList";
+            moduleSearchTimer.Start();
         }
 #endregion
         #endregion
