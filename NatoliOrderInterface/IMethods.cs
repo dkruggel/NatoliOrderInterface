@@ -19,6 +19,7 @@ using System.Windows.Markup;
 using MailKit;
 using MimeKit;
 using NatoliOrderInterface.MimeTypes;
+using System.Text.RegularExpressions;
 
 namespace NatoliOrderInterface
 {
@@ -1683,6 +1684,33 @@ namespace NatoliOrderInterface
                             errors.Add("Carbide has not been assigned.");
                         }
 
+                        // Etching info check
+                        List<string> etchings = new List<string>();
+                        string size = quoteDetails[0].Desc2;
+                        bool round = quoteDetails[0].Desc2.Contains("DIAMETER");
+                        string regex = round ? @"^[0-9].[0-9]" : @"[0-9\.mM] x [0-9\.mM]";
+                        PropertyInfo[] properties = quote.GetType().GetProperties();
+                        foreach (PropertyInfo property in properties)
+                        {
+                            if (property.Name.Contains("Etching"))
+                            {
+                                var match = Regex.Match(property.GetValue(quote, null).ToString(), regex);
+                                if (match.Success) { etchings.Add(property.GetValue(quote, null).ToString()); }
+                            }
+                        }
+
+                        foreach (string etching in etchings)
+                        {
+                            if (!quoteDetails[0].Desc2.Contains(etching))
+                            {
+                                if (!quoteDetails[1].Desc2.Contains(etching))
+                                {
+                                    errors.Add("Etched size does not match actual size.");
+                                    break;
+                                }
+                            }
+                        }
+
                         if (quoteLineItems.Count > 1)
                         {
                             // Has shortened lower tip || shallow fill cam || undercut die
@@ -1725,6 +1753,7 @@ namespace NatoliOrderInterface
                                 }
                             }
                         }
+
                     }
                     catch (Exception ex)
                     {

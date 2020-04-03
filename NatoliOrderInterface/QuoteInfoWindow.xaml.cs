@@ -556,8 +556,7 @@ namespace NatoliOrderInterface
                 stackPanel.Children.Add(blank);
             }
         }
-        #endregion
-        
+        #endregion        
         #region SMI/Scratchpad
         private void FillSMIAndScratchPadPage()
         {
@@ -2314,7 +2313,6 @@ namespace NatoliOrderInterface
         }
         #endregion
         #endregion
-
         #region Files
         protected static bool GetFilename(out string filename, DragEventArgs e)
         {
@@ -2561,7 +2559,6 @@ namespace NatoliOrderInterface
         }
         #endregion
         #endregion
-
         #region Order Entry Instructions
         private void ResetInstructionEntering()
         {
@@ -2889,7 +2886,6 @@ namespace NatoliOrderInterface
         }
         #endregion
         #endregion
-
         #region Events
         private void Quote_Info_Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -3399,7 +3395,5 @@ namespace NatoliOrderInterface
             customerNoteWindow.Show();
         }
         #endregion
-
-
     }
 }
