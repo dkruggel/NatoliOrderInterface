@@ -31,15 +31,16 @@ namespace NatoliOrderInterface
             get;
         }
 
+        private List<string> visiblePanels = new List<string>();
         public List<string> VisiblePanels
         {
             get 
             { 
-                return VisiblePanels; 
+                return visiblePanels; 
             }
             set 
             {
-                VisiblePanels = value.Distinct().ToList();
+                visiblePanels = value.Distinct().ToList();
             }
         }
         public List<string> Subscribed
