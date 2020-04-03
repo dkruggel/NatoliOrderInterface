@@ -3477,7 +3477,7 @@ namespace NatoliOrderInterface
             {
                 string projectNumber = ProjectSearchTextBlock.Text;
                 string revNumber = ProjectRevNoSearchTextBlock.Text;
-                if (User.EmployeeCode == "E4754" && (_projectesContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber) || _projectesContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber)))
+                if (_projectesContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber) || _projectesContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber))
                 {
                     try
                     {

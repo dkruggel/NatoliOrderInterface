@@ -1196,6 +1196,12 @@ namespace NatoliOrderInterface
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
+                else if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
+                {
+                    string revNumber = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
+                    projectWindow.Show();
+                }
                 else
                 {
                     string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
