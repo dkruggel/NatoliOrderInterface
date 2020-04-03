@@ -316,23 +316,68 @@
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".xlsm">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".XLSM">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".xlsx">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".XLSX">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource file_tableDrawingImage}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".pdf">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource file_pdfDrawingImage}"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".PDF">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource file_pdfDrawingImage}"/>
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".msg">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource mailDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".MSG">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource mailDrawingImage}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".jpg">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".JPG">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".png">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".PNG">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Path=Item3}" Value=".bmp">
                                                         <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".BMP">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource imageDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".lnk">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource shortcutDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".LNK">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource shortcutDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".txt">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource text_fieldDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".TXT">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource text_fieldDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".docx">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource documentDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".DOCX">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource documentDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".doc">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource documentDrawingImage}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=Item3}" Value=".DOC">
+                                                        <Setter TargetName="image" Property="Source" Value="{DynamicResource documentDrawingImage}"/>
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>

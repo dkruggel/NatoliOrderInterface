@@ -5759,11 +5759,12 @@ namespace NatoliOrderInterface
                             {
                                 nameOfFile = nameOfFile.Replace(c.ToString(), "");
                             }
+                            string newFileName = nameOfFile;
                             foreach (char c in nameOfFile)
                             {
-                                if (!char.IsLetterOrDigit(c))
+                                if (!char.IsLetterOrDigit(c) || c=='-')
                                 {
-                                    nameOfFile.Replace(c.ToString(), "_");
+                                    newFileName = nameOfFile.Replace(c.ToString(), "_");
                                 }
                             }
                             mailitem.SaveAs(path + nameOfFile + ".msg");
@@ -5781,14 +5782,15 @@ namespace NatoliOrderInterface
                     {
                         newFileName = newFileName.Replace(c.ToString(), "");
                     }
+                    string _newFileName = newFileName;
                     foreach (char c in newFileName)
                     {
-                        if (!char.IsLetterOrDigit(c))
+                        if (!char.IsLetterOrDigit(c) || c == '-')
                         {
-                            newFileName.Replace(c.ToString(), "_");
+                            _newFileName = newFileName.Replace(c.ToString(), "_");
                         }
                     }
-                    fp = path + Path.GetFileName(newFileName) + Path.GetExtension(filename).ToLower();
+                    fp = path + Path.GetFileName(_newFileName) + Path.GetExtension(filename).ToLower();
                     System.IO.File.Copy(filename, fp);
                     if (filename.Contains(@"\Local\Temp")) { File.Delete(filename); }
                     //MessageBox.Show(this, "Successful drop.");
