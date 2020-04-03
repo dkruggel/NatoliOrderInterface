@@ -5774,7 +5774,7 @@ namespace NatoliOrderInterface
                 else
                 {
                     string fp = path + nameOfFile + (System.IO.Path.GetExtension(filename).ToLower().StartsWith(".xl") ? ".xlsx" : System.IO.Path.GetExtension(filename));
-                    string newFileName = Path.GetFileName(filename);
+                    string newFileName = Path.GetFileNameWithoutExtension(filename);
 
                     string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
                     foreach (char c in invalid)
@@ -5788,7 +5788,7 @@ namespace NatoliOrderInterface
                             newFileName.Replace(c.ToString(), "_");
                         }
                     }
-                    fp = path + Path.GetFileName(filename);
+                    fp = path + Path.GetFileName(newFileName) + Path.GetExtension(filename).ToLower();
                     System.IO.File.Copy(filename, fp);
                     if (filename.Contains(@"\Local\Temp")) { File.Delete(filename); }
                     //MessageBox.Show(this, "Successful drop.");
