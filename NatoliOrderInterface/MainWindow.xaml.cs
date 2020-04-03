@@ -424,7 +424,6 @@ namespace NatoliOrderInterface
 
         Dictionary<string, string> oeDetailTypes = new Dictionary<string, string>() { { "U", "Upper" }, { "L", "Lower" }, { "D", "Die" }, { "DS", "Die" }, { "R", "Reject" }, { "A", "Alignment" } };
         #endregion
-
         public MainWindow()
         {
             try
@@ -684,9 +683,6 @@ namespace NatoliOrderInterface
             moduleSearchTimer.Elapsed += ModuleSearchTimer_Elapsed;
             moduleSearchTimer.Interval = 0.3 * 1000; // x seconds
         }
-
-        
-
         private void ChangeZoom(decimal? zoom = null)
         {
             try
@@ -771,7 +767,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("ChangeModuleRows", ex.Message, User);
             }
         }
-
         #region Main Window Events
         private void GridWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -988,8 +983,6 @@ namespace NatoliOrderInterface
             ChangeZoom();
         }
         #endregion
-
-
         #region MenuStuff
         public void BuildMenus()
         {
@@ -3353,7 +3346,6 @@ namespace NatoliOrderInterface
         }
 #endregion
 #endregion
-
         #region MainWindowSearches
         private void QuoteSearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -3819,7 +3811,6 @@ namespace NatoliOrderInterface
             listBox.Visibility = Visibility.Collapsed;
         }
 #endregion
-
         #region New Modules
         private void BuildPanels()
         {
@@ -5171,7 +5162,6 @@ namespace NatoliOrderInterface
         }
 #endregion
         #endregion
-
         //#region ModuleBuilding
 
         //#region Panel Construction
@@ -12313,7 +12303,6 @@ namespace NatoliOrderInterface
         //    { }
         //}
         //#endregion276138
-
         #region Folder Management
         private void QuotesAndOrders()
         {
@@ -12517,7 +12506,6 @@ namespace NatoliOrderInterface
             }
         }
 #endregion
-
         #region DataGrid Events
         private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -13936,7 +13924,6 @@ namespace NatoliOrderInterface
             }
         }
 #endregion
-
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
