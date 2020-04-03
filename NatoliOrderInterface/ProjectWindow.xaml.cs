@@ -5767,7 +5767,7 @@ namespace NatoliOrderInterface
                                     newFileName = nameOfFile.Replace(c.ToString(), "_");
                                 }
                             }
-                            mailitem.SaveAs(path + nameOfFile + ".msg");
+                            mailitem.SaveAs(path + newFileName + ".msg");
                             //MessageBox.Show(this, "Successful drop.");
                         }
                     }
