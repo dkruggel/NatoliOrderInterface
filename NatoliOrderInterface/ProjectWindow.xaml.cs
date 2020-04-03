@@ -5754,7 +5754,7 @@ namespace NatoliOrderInterface
                                     nameOfFile = dialog.ReturnString.Length > 0 ? dialog.ReturnString : nameOfFile;
                                 }
                             }
-                            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()) + "'";
                             foreach (char c in invalid)
                             {
                                 nameOfFile = nameOfFile.Replace(c.ToString(), "");
@@ -5777,7 +5777,7 @@ namespace NatoliOrderInterface
                     string fp = path + nameOfFile + (System.IO.Path.GetExtension(filename).ToLower().StartsWith(".xl") ? ".xlsx" : System.IO.Path.GetExtension(filename));
                     string newFileName = Path.GetFileNameWithoutExtension(filename);
 
-                    string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                    string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()) + "'";
                     foreach (char c in invalid)
                     {
                         newFileName = newFileName.Replace(c.ToString(), "");
