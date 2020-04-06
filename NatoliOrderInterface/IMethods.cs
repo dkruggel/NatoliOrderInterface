@@ -1335,7 +1335,7 @@ namespace NatoliOrderInterface
                             //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 
                             
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
+                            if (emailClient.MaxSize > 2000000 && emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
                             {
                                 var maxSize = emailClient.MaxSize;
                                 message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
