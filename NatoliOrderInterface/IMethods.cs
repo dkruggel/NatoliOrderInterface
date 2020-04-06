@@ -1334,7 +1334,7 @@ namespace NatoliOrderInterface
 
                             //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 
-                            emailClient.Send(message);
+                            
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
                             {
                                 var maxSize = emailClient.MaxSize;
@@ -1351,6 +1351,7 @@ namespace NatoliOrderInterface
                                     "This is an automated email and not monitored by any person(s)."
                                 };
                             }
+                            emailClient.Send(message);
 
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
                             {
