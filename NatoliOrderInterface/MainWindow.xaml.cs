@@ -965,15 +965,20 @@ namespace NatoliOrderInterface
                 quoteTimer.Stop();
                 NatoliOrderListTimer.Stop();
             }
-            else if (WindowState != WindowState.Minimized)
+            else
             {
-                if (WindowState != WindowState.Maximized)
+                if (!mainTimer.Enabled)
                 {
-                    MainRefresh();
+                    mainTimer.Start();
                 }
-                mainTimer.Start();
-                quoteTimer.Start();
-                NatoliOrderListTimer.Start();
+                if (!quoteTimer.Enabled)
+                {
+                    quoteTimer.Start();
+                }
+                if (!NatoliOrderListTimer.Enabled)
+                {
+                    NatoliOrderListTimer.Start();
+                }
             }
         }
         private void GridWindow_LayoutUpdated(object sender, EventArgs e)
@@ -1089,13 +1094,13 @@ namespace NatoliOrderInterface
             projectSearch.Click += ProjectSearch_Click;
             fileMenu.Items.Add(projectSearch);
 
-            //MenuItem forceRefresh = new MenuItem
-            //{
-            //    Header = "Force Refresh",
-            //    ToolTip = "Bypass the refresh timer."
-            //};
-            //forceRefresh.Click += ForceRefresh_Click;
-            //fileMenu.Items.Add(forceRefresh);
+            MenuItem forceRefresh = new MenuItem
+            {
+                Header = "Force Refresh",
+                ToolTip = "Bypass the refresh timer."
+            };
+            forceRefresh.Click += ForceRefresh_Click;
+            fileMenu.Items.Add(forceRefresh);
 
             //MenuItem editLayout = new MenuItem
             //{
@@ -1508,31 +1513,31 @@ namespace NatoliOrderInterface
             // Process.Start(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller");
             // System.IO.File.Open(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package.appinstaller", System.IO.FileMode.Open);
         }
-        public void CheckForAvailableUpdatesAndLaunch(User user)
-        {
-            //try
-            //{                
-            //    string currentVersion = user.PackageVersion;
-            //    using var _nat02Context = new NAT02Context();
-            //    string minimumVersion = _nat02Context.EoiSettings.First(s => s.EmployeeId == "EPACKG").PackageVersion;
-            //    _nat02Context.Dispose();
-            //    string[] currentVersionNumbers = currentVersion.Split('.');
-            //    string[] minimumVersionNumbers = minimumVersion.Split('.');
-            //    for (int i = 0; i < 4; i++)
-            //    {
-            //        if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
-            //        {
-            //            Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "Test\\" + "NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "x64.appxbundle");
-            //            break;
-            //        }
-            //    }
+        //public void CheckForAvailableUpdatesAndLaunch(User user)
+        //{
+        //    //try
+        //    //{                
+        //    //    string currentVersion = user.PackageVersion;
+        //    //    using var _nat02Context = new NAT02Context();
+        //    //    string minimumVersion = _nat02Context.EoiSettings.First(s => s.EmployeeId == "EPACKG").PackageVersion;
+        //    //    _nat02Context.Dispose();
+        //    //    string[] currentVersionNumbers = currentVersion.Split('.');
+        //    //    string[] minimumVersionNumbers = minimumVersion.Split('.');
+        //    //    for (int i = 0; i < 4; i++)
+        //    //    {
+        //    //        if (Convert.ToInt32(minimumVersionNumbers[i]) > Convert.ToInt32(currentVersionNumbers[i]))
+        //    //        {
+        //    //            Process _process = System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "Test\\" + "NatoliOrderInterface.Package_" + minimumVersionNumbers[0] + "." + minimumVersionNumbers[1] + "." + minimumVersionNumbers[2] + "." + minimumVersionNumbers[3] + "_" + "x64.appxbundle");
+        //    //            break;
+        //    //        }
+        //    //    }
                 
-            //}
-            //catch (Exception ex)
-            //{
-            //    IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
-            //}
-        }
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    IMethods.WriteToErrorLog("CheckForAvailableUpdatesAndLaunchAsync", ex.Message, User);
+        //    //}
+        //}
         public void SetNotificationPicture()
         {
             Dispatcher.Invoke(() =>
@@ -1688,1373 +1693,1374 @@ namespace NatoliOrderInterface
             User.VisiblePanels = visiblePanels;
         }
         #region Clicks
-        private void StartTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-                        // Get project revision number
-                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                        string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                        // Insert into StartedBy
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.StartProject(project.Item1, project.Item2, "TABLETS", User);
-                        }
-                        else
-                        {
-                            ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
-                            tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
-                            tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
-                            tabletProjectStarted.TimeSubmitted = DateTime.Now;
-                            tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                                         User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                                         User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                            _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
-
-                            // Drive specification transition name to "Started - Tablets"
-                            // Auto archive project specification
-                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Started - Tablets";
-                            _driveworksContext.Specifications.Update(spec);
-                        }
-
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("StartTabletProject_CLick", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                MainRefresh();
-            }
-        }
-        private void FinishTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.DrawProject(project.Item1, project.Item2, "TABLETS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                            // Insert into CheckedBy
-                            TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
-                            tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
-                            tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
-                            tabletDrawnBy.TimeSubmitted = DateTime.Now;
-                            tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-                                                           User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-                            _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
-
-                            // Drive specification transition name to "Drawn - Tablets"
-                            // Auto archive project specification
-                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Drawn - Tablets";
-                            _driveworksContext.Specifications.Update(spec);
-                        }
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-
-                        // Email CSR
-                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("FinishTabletProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                MainRefresh();
-            }
-        }
-        private void SubmitTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) || 
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            //string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                            // Insert into CheckedBy
-                            TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
-                            tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
-                            tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
-                            tabletSubmittedBy.TimeSubmitted = DateTime.Now;
-                            tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-                                                                   User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
-                            _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
-
-                            // Drive specification transition name to "Submitted - Tablets"
-                            // Auto archive project specification
-
-                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-                            {
-                                Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-                                spec.StateName = "Submitted - Tablets";
-                                _driveworksContext.Specifications.Update(spec);
-                            }
-                            else
-                            {
-                                MessageBox.Show(
-                                    "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
-                                    "Perhaps it is in a save state.",
-                                    "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
-                        }
-
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-
-                        // Email CSR
-                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-                        
-                    }
-                    catch (Exception ex)
-                    {
-                        //MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("SubmitTabletProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                selectedProjects.Clear();
-                MainRefresh();
-            }
-        }
-        private void OnHoldTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Uncheck project expander
-                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-                OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                onHoldCommentWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("OnHoldTabletProject_Click", ex.Message, User);
-            }
-        }
-        private void OffHoldTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Uncheck project expander
-                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-
-                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
-                {
-                    IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
-                }
-                else
-                {
-                    if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
-                    {
-                        HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-                        holdStatus.HoldStatus1 = "OFF HOLD";
-                        holdStatus.TimeSubmitted = DateTime.Now;
-                        _projectsContext.HoldStatus.Update(holdStatus);
-                    }
-                    else
-                    {
-                        // Insert into HoldStatus
-                        HoldStatus holdStatus = new HoldStatus();
-                        holdStatus.ProjectNumber = _projectNumber.ToString();
-                        holdStatus.RevisionNumber = _revNumber.ToString();
-                        holdStatus.TimeSubmitted = DateTime.Now;
-                        holdStatus.HoldStatus1 = "OFF HOLD";
-                        _projectsContext.HoldStatus.Add(holdStatus);
-                    }
-
-                    // Drive specification transition name to "Off Hold - Tablets"
-                    string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "Off Hold - Tablets";
-                    _driveworksContext.Specifications.Update(spec);
-                }
-
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("OffHoldTabletProject_Click", ex.Message, User);
-            }
-        }
-        private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                using var _nat02Context = new NAT02Context();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
-                        _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("CompleteTabletProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                _nat02Context.SaveChanges();
-                _nat02Context.Dispose();
-                selectedProjects.Clear();
-
-                MainRefresh();
-            }
-        }
-        private void CheckTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right-clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllTabletProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-                        using var _nat02Context = new NAT02Context();
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-                            // Insert into CheckedBy
-                            TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
-                            tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
-                            tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
-                            tabletCheckedBy.TimeSubmitted = DateTime.Now;
-                            tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
-                            _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
-
-                            // Drive specification transition name to "Completed"
-                            // Auto archive project specification
-                            string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-                            bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-                            spec.IsArchived = (bool)!_tools;
-                            _driveworksContext.Specifications.Update(spec);
-
-
-                            try
-                            {
-                                //Send Email To CSR
-                                if (!(bool)_tools)
-                                {
-                                    List<string> _CSRs = new List<string>();
-
-                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
-                                    {
-                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
-                                    }
-                                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
-                                    {
-                                        _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
-                                    }
-                                    IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, User);
-                                }
-                            }
-                            catch
-                            {
-
-                            }
-                            finally
-                            {
-                                // Save pending changes
-                                _projectsContext.SaveChanges();
-                                _driveworksContext.SaveChanges();
-                            }
-                        }
-                        // Dispose of contexts
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-                        _nat02Context.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("CheckTabletProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                MainRefresh();
-            }
-        }
-        private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = validProjects.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    using var _projectsContext = new ProjectsContext();
-                    using var _driveworksContext = new DriveWorksContext();
-                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                    {
-                        IMethods.CancelProject(project.Item1, project.Item2, User);
-                    }
-                    else
-                    {
-
-                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (res == MessageBoxResult.Yes)
-                        {
-                            try
-                            {
-                                // Uncheck project expander
-                                project.Item3.IsChecked = false;
-
-                                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
-                                {
-                                    // Update data in HoldStatus
-                                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-                                    holdStatus.HoldStatus1 = "CANCELLED";
-                                    holdStatus.TimeSubmitted = DateTime.Now;
-                                    holdStatus.OnHoldComment = "";
-                                    _projectsContext.HoldStatus.Update(holdStatus);
-                                }
-                                else
-                                {
-                                    // Insert into HoldStatus
-                                    HoldStatus holdStatus = new HoldStatus();
-                                    holdStatus.ProjectNumber = project.Item1;
-                                    holdStatus.RevisionNumber = project.Item2;
-                                    holdStatus.TimeSubmitted = DateTime.Now;
-                                    holdStatus.HoldStatus1 = "CANCELLED";
-                                    holdStatus.OnHoldComment = "";
-                                    _projectsContext.HoldStatus.Add(holdStatus);
-                                }
-
-                                // Drive specification transition name to "On Hold - " projectType
-                                string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                                spec.StateName = "Cancelled - Tablets";
-                                spec.IsArchived = true;
-                                _driveworksContext.Specifications.Update(spec);
-
-                                _projectsContext.SaveChanges();
-                                _driveworksContext.SaveChanges();
-                                
-                            }
-                            catch (Exception ex)
-                            {
-                                // MessageBox.Show(ex.Message);
-                                IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
-                            }
-                        }
-                    }
-                    _projectsContext.Dispose();
-                    _driveworksContext.Dispose();
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                MainRefresh();
-            }
-        }
-        private void StartToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllToolProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.StartProject(project.Item1, project.Item2, "TOOLS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-                            string usrName = User.GetUserName().Split(" ")[0];
-                            int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
-                                                                                string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
-                                                                                p.ProjectsId > 80000).Count();
-                            if (false) //(count > 5)
-                            {
-                                MessageBox.Show(
-                                    "Maximum simultaneous projects limit reached.\n" +
-                                    "Please finish a project before starting more.");
-                            }
-                            else
-                            {
-                                // Insert into CheckedBy
-                                ProjectStartedTool toolProjectStarted = new ProjectStartedTool();
-                                toolProjectStarted.ProjectNumber = int.Parse(project.Item1);
-                                toolProjectStarted.RevisionNumber = int.Parse(project.Item2);
-                                toolProjectStarted.TimeSubmitted = DateTime.Now;
-                                toolProjectStarted.ProjectStartedTool1 = User.GetUserName().Split(' ')[0];
-                                _projectsContext.ProjectStartedTool.Add(toolProjectStarted);
-
-                                // Drive specification transition name to "Started - Tools"
-                                // Auto archive project specification
-                                string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                                spec.StateName = "Started - Tools";
-                                _driveworksContext.Specifications.Update(spec);
-
-                                _projectsContext.SaveChanges();
-                                _driveworksContext.SaveChanges();
-                                _projectsContext.Dispose();
-                                _driveworksContext.Dispose();
-
-                                // Email CSR
-                                // SendEmailToCSR(_csr, _projectNumber.ToString());
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("StartToolProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                selectedProjects.Clear();
-                MainRefresh();
-            }
-
-        }
-        private void FinishToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllToolProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        using var _projectsContext = new ProjectsContext();
-                        using var _driveworksContext = new DriveWorksContext();
-
-
-                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                        {
-                            IMethods.DrawProject(project.Item1, project.Item2, "TOOLS", User);
-                        }
-                        else
-                        {
-                            // Get project revision number
-                            // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-                            string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-                            // Insert into CheckedBy
-                            ToolDrawnBy toolDrawnBy = new ToolDrawnBy();
-                            toolDrawnBy.ProjectNumber = int.Parse(project.Item1);
-                            toolDrawnBy.RevisionNumber = int.Parse(project.Item2);
-                            toolDrawnBy.TimeSubmitted = DateTime.Now;
-                            toolDrawnBy.ToolDrawnBy1 = User.GetUserName().Split(' ')[0];
-                            _projectsContext.ToolDrawnBy.Add(toolDrawnBy);
-
-                            // Drive specification transition name to "Drawn - Tools"
-                            // Auto archive project specification
-                            string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                            spec.StateName = "Drawn - Tools";
-                            _driveworksContext.Specifications.Update(spec);
-                        }
-
-                        _projectsContext.SaveChanges();
-                        _driveworksContext.SaveChanges();
-                        _projectsContext.Dispose();
-                        _driveworksContext.Dispose();
-                        // Email CSR
-                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("FinishToolProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                selectedProjects.Clear();
-                MainRefresh();
-            }
-        }
-        private void CheckToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    using var _nat02Context = new NAT02Context();
-                    bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
-                    _nat02Context.Dispose();
-
-                    if (!alreadyThere)
-                    {
-                        try
-                        {
-                            // Check to see if the project is in the correct module
-                            if (project.Item4 == "AllToolProjects")
-                            {
-                                using var _ = new ProjectsContext();
-                                if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                                    string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-                                {
-                                    _.Dispose();
-                                    continue;
-                                }
-                                _.Dispose();
-                            }
-
-                            // Uncheck project expander
-                            project.Item3.IsChecked = false;
-
-                            using var _projectsContext = new ProjectsContext();
-                            using var _driveworksContext = new DriveWorksContext();
-
-
-                            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                            {
-                                IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
-                            }
-                            else
-                            {
-                                // Get project revision number
-                                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-
-                                // Insert into CheckedBy
-                                ToolCheckedBy toolCheckedBy = new ToolCheckedBy();
-                                toolCheckedBy.ProjectNumber = int.Parse(project.Item1);
-                                toolCheckedBy.RevisionNumber = int.Parse(project.Item2);
-                                toolCheckedBy.TimeSubmitted = DateTime.Now;
-                                toolCheckedBy.ToolCheckedBy1 = User.GetUserName().Split(' ')[0];
-                                _projectsContext.ToolCheckedBy.Add(toolCheckedBy);
-
-                                // Drive specification transition name to "Completed"
-                                // Auto archive project specification
-                                string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                                spec.StateName = "Completed";
-                                spec.IsArchived = true;
-                                _driveworksContext.Specifications.Update(spec);
-
-                                //Send Email To CSR
-                                List<string> _CSRs = new List<string>();
-                                _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-                                if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
-                                {
-                                    _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-                                }
-                                IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
-
-                            }
-                            // Save pending changes
-                            _projectsContext.SaveChanges();
-                            _driveworksContext.SaveChanges();
-
-
-                            // Dispose of contexts
-                            _projectsContext.Dispose();
-                            _driveworksContext.Dispose();
-                        }
-                        catch (Exception ex)
-                        {
-                            // MessageBox.Show(ex.Message);
-                            IMethods.WriteToErrorLog("CheckToolProject_Click", ex.Message, User);
-                        }
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                selectedProjects.Clear();
-                MainRefresh();
-            }
-        }
-        private void OnHoldToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                onHoldCommentWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("OnHoldToolProject_Click", ex.Message, User);
-            }
-        }
-        private void OffHoldToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Uncheck project expander
-                selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-                using var _projectsContext = new ProjectsContext();
-                using var _driveworksContext = new DriveWorksContext();
-
-                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
-                {
-                    IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
-                }
-                else
-                {
-                    if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
-                    {
-                        HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-                        holdStatus.HoldStatus1 = "OFF HOLD";
-                        _projectsContext.HoldStatus.Update(holdStatus);
-                    }
-                    else
-                    {
-                        // Insert into HoldStatus
-                        HoldStatus holdStatus = new HoldStatus();
-                        holdStatus.ProjectNumber = _projectNumber.ToString();
-                        holdStatus.RevisionNumber = _revNumber.ToString();
-                        holdStatus.TimeSubmitted = DateTime.Now;
-                        holdStatus.HoldStatus1 = "OFF HOLD";
-                        _projectsContext.HoldStatus.Add(holdStatus);
-                    }
-
-                    // Drive specification transition name to "Off Hold - Tools"
-                    string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                    spec.StateName = "Off Hold - Tools";
-                    _driveworksContext.Specifications.Update(spec);
-                }
-
-                _projectsContext.SaveChanges();
-                _driveworksContext.SaveChanges();
-                _projectsContext.Dispose();
-                _driveworksContext.Dispose();
-                MainRefresh();
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("OffHoldToolProject_Click", ex.Message, User);
-            }
-        }
-        private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                using var _nat02Context = new NAT02Context();
-
-                for (int i = 0; i < validProjects.Count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    try
-                    {
-                        // Check to see if the project is in the correct module
-                        if (project.Item4 == "AllToolProjects")
-                        {
-                            using var _ = new ProjectsContext();
-                            if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-                                string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-                            {
-                                _.Dispose();
-                                continue;
-                            }
-                            _.Dispose();
-                        }
-
-                        // Uncheck project expander
-                        project.Item3.IsChecked = false;
-
-                        EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
-                        _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-                    }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        IMethods.WriteToErrorLog("CompleteToolProject_Click", ex.Message, User);
-                    }
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                _nat02Context.SaveChanges();
-                _nat02Context.Dispose();
-                selectedProjects.Clear();
-
-                MainRefresh();
-            }
-        }
-        private void CancelToolProject_Click(object sender, RoutedEventArgs e)
-        {
-            if (selectedProjects.Count > 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-                //foreach ((string, string, CheckBox) project in selectedProjects)
-                int count = validProjects.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    (string, string, CheckBox, string) project = validProjects[i];
-                    using var _projectsContext = new ProjectsContext();
-                    using var _driveworksContext = new DriveWorksContext();
-
-                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-                    {
-                        IMethods.CancelProject(project.Item1, project.Item2, User);
-                    }
-                    else
-                    {
-                        MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        if (res == MessageBoxResult.Yes)
-                        {
-                            try
-                            {
-                                // Uncheck project expander
-                                project.Item3.IsChecked = false;
-
-                                if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
-                                {
-                                    // Update data in HoldStatus
-                                    HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-                                    holdStatus.HoldStatus1 = "CANCELLED";
-                                    holdStatus.TimeSubmitted = DateTime.Now;
-                                    holdStatus.OnHoldComment = "";
-                                    _projectsContext.HoldStatus.Update(holdStatus);
-                                }
-                                else
-                                {
-                                    // Insert into HoldStatus
-                                    HoldStatus holdStatus = new HoldStatus();
-                                    holdStatus.ProjectNumber = project.Item1;
-                                    holdStatus.RevisionNumber = project.Item2;
-                                    holdStatus.TimeSubmitted = DateTime.Now;
-                                    holdStatus.HoldStatus1 = "CANCELLED";
-                                    holdStatus.OnHoldComment = "";
-                                    _projectsContext.HoldStatus.Add(holdStatus);
-                                }
-
-                                // Drive specification transition name to "On Hold - " projectType
-                                string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-                                Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-                                spec.StateName = "Cancelled - Tools";
-                                spec.IsArchived = true;
-                                _driveworksContext.Specifications.Update(spec);
-
-                                _projectsContext.SaveChanges();
-                                _driveworksContext.SaveChanges();
-                            }
-                            catch (Exception ex)
-                            {
-                                // MessageBox.Show(ex.Message);
-                                IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
-                            }
-                        }
-                    }
-                    _projectsContext.Dispose();
-                    _driveworksContext.Dispose();
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-
-                MainRefresh();
-            }
-        }
-        private void DoNotProcessMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            bool doNotProc = false;
-            DataGrid dataGrid = (DataGrid)sender;
-            DataGridCellInfo cell = dataGrid.SelectedCells[0];
-            string orderNumber = ((TextBlock)cell.Column.GetCellContent(cell.Item)).Text;
-            using var nat02context = new NAT02Context();
-
-            doNotProc = nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == double.Parse(orderNumber)).Any();
-
-            if (doNotProc)
-            {
-                EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber) };
-                nat02context.EoiOrdersDoNotProcess.Add(p);
-                nat02context.SaveChanges();
-            }
-            else
-            {
-                EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber), UserName = User.GetUserName() };
-                nat02context.EoiOrdersDoNotProcess.Remove(p);
-                nat02context.SaveChanges();
-            }
-            doNotProc = !doNotProc;
-            MainRefresh();
-        }
-        private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            // Scan selected orders if there are any and then clear the list
-            if (selectedOrders.Count != 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-                int count = validOrders.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    (string, CheckBox, string) order = validOrders[i];
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
-                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
-                    string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
-                    int retVal = workOrder.TransferOrder(User, "D080", module == "EnteredUnscanned");
-                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-                    if (workOrder.Finished)
-                    {
-                        using var context = new NAT02Context();
-                        if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
-                        {
-                            var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
-                            {
-                                OrderNo = workOrder.OrderNumber
-                            };
-                            context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
-
-                            context.SaveChanges();
-                        }
-                    }
-
-                    // Uncheck order expander
-                    order.Item2.IsChecked = false;
-
-                    DeleteMachineVariables(workOrder.OrderNumber.ToString());
-                }
-
-                try
-                {
-                    Cursor = Cursors.Wait;
-                    Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
-                    Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
-                        app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", validOrders.Select(o => o.Item1));
-                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
-                    mailItem.Body = "";
-                    mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
-                    mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
-                    mailItem.Display(false);
-                    Cursor = Cursors.Arrow;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    Cursor = Cursors.Arrow;
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-            }
-            // Scan just the order that was right clicked if nothing else has been selected
-            else
-            {
-                workOrder = new WorkOrder((int)_orderNumber, this);
-                int retVal = workOrder.TransferOrder(User, "D080");
-                if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-                if (workOrder.Finished)
-                {
-                    using var context = new NAT02Context();
-                    if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
-                    {
-                        var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
-                        {
-                            OrderNo = workOrder.OrderNumber
-                        };
-                        context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
-
-                        context.SaveChanges();
-                    }
-                }
-                try
-                {
-                    Cursor = Cursors.Wait;
-                    Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
-                    Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
-                        app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-                    mailItem.Subject = "REQUEST FOR CHANGES WO# " + ((int)_orderNumber).ToString();
-                    mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
-                    mailItem.Body = "";
-                    mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
-                    mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
-                    mailItem.Display(false);
-                    Cursor = Cursors.Arrow;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    Cursor = Cursors.Arrow;
-                }
-
-                DeleteMachineVariables(((int)_orderNumber).ToString());
-            }
-
-            MainRefresh();
-        }
-        private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
-        {
-            // Scan selected orders if there are any and then clear the list
-            if (selectedOrders.Count != 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-                int count = validOrders.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    (string, CheckBox, string) order = validOrders[i];
-                    var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-                    var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
-                    string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
-                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
-                    int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
-                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-                    // Uncheck order expander
-                    order.Item2.IsChecked = false;
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-            }
-
-            MainRefresh();
-        }
-        private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
-        {
-            // Scan selected orders if there are any and then clear the list
-            if (selectedOrders.Count != 0)
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-                int count = validOrders.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    (string, CheckBox, string) order = validOrders[i];
-                    using var nat02context = new NAT02Context();
-                    if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
-                    {
-                        nat02context.Dispose();
-                        continue;
-                    }
-                    else
-                    {
-                        nat02context.Dispose();
-                    }
-                    workOrder = new WorkOrder(int.Parse(order.Item1), this);
-                    int retVal = workOrder.TransferOrder(User, "D921");
-                    if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-                    // Uncheck order expander
-                    order.Item2.IsChecked = false;
-
-                    // Check EOI_TrackedDocuments table to see if this order needs a notification
-                    using var _nat02context = new NAT02Context();
-                    bool tracked = _nat02context.EoiTrackedDocuments.Any(d => d.Number == order.Item1 && d.MovementId == 3);
-                    if (tracked)
-                    {
-                        // Retrieve tracked document
-                        EoiTrackedDocuments trackedDoc = _nat02context.EoiTrackedDocuments.Single(d => d.Number == order.Item1 && d.MovementId == 3);
-
-                        // Insert into EOI_Notifications_Active
-                        EoiNotificationsActive _active = new EoiNotificationsActive()
-                        {
-                            Type = trackedDoc.Type,
-                            Number = trackedDoc.Number,
-                            Message = "Document has moved to production",
-                            User = trackedDoc.User,
-                            Timestamp = DateTime.Now
-                        };
-                        _nat02context.EoiNotificationsActive.Add(_active);
-
-                        // Delete from EOI_TrackedDocuments
-                        _nat02context.EoiTrackedDocuments.Remove(trackedDoc);
-
-                        // Save context transactions
-                        _nat02context.SaveChanges();
-                    }
-                    _nat02context.Dispose();
-                }
-
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-            }
-
-            MainRefresh();
-        }
-        private void ReadyToPrintMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            MainRefresh();
-        }
+        //private void StartTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllTabletProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+
+        //                // Get project revision number
+        //                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+        //                string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+        //                // Insert into StartedBy
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.StartProject(project.Item1, project.Item2, "TABLETS", User);
+        //                }
+        //                else
+        //                {
+        //                    ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
+        //                    tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
+        //                    tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
+        //                    tabletProjectStarted.TimeSubmitted = DateTime.Now;
+        //                    tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+        //                                                                 User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+        //                                                                 User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+        //                    _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
+
+        //                    // Drive specification transition name to "Started - Tablets"
+        //                    // Auto archive project specification
+        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                    spec.StateName = "Started - Tablets";
+        //                    _driveworksContext.Specifications.Update(spec);
+        //                }
+
+        //                _projectsContext.SaveChanges();
+        //                _driveworksContext.SaveChanges();
+        //                _projectsContext.Dispose();
+        //                _driveworksContext.Dispose();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("StartTabletProject_CLick", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        MainRefresh("AllTabletProjects");
+        //    }
+        //}
+        //private void FinishTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllTabletProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.DrawProject(project.Item1, project.Item2, "TABLETS", User);
+        //                }
+        //                else
+        //                {
+        //                    // Get project revision number
+        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+        //                    // Insert into CheckedBy
+        //                    TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
+        //                    tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
+        //                    tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
+        //                    tabletDrawnBy.TimeSubmitted = DateTime.Now;
+        //                    tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+        //                                                   User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
+        //                                                   User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
+        //                    _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
+
+        //                    // Drive specification transition name to "Drawn - Tablets"
+        //                    // Auto archive project specification
+        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                    spec.StateName = "Drawn - Tablets";
+        //                    _driveworksContext.Specifications.Update(spec);
+        //                }
+        //                _projectsContext.SaveChanges();
+        //                _driveworksContext.SaveChanges();
+        //                _projectsContext.Dispose();
+        //                _driveworksContext.Dispose();
+
+        //                // Email CSR
+        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("FinishTabletProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        MainRefresh("AllTabletProjects");
+        //    }
+        //}
+        //private void SubmitTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllTabletProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) || 
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
+        //                }
+        //                else
+        //                {
+        //                    // Get project revision number
+        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+        //                    //string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+        //                    // Insert into CheckedBy
+        //                    TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
+        //                    tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
+        //                    tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
+        //                    tabletSubmittedBy.TimeSubmitted = DateTime.Now;
+        //                    tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
+        //                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
+        //                    _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
+
+        //                    // Drive specification transition name to "Submitted - Tablets"
+        //                    // Auto archive project specification
+
+        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
+        //                    {
+        //                        Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
+        //                        spec.StateName = "Submitted - Tablets";
+        //                        _driveworksContext.Specifications.Update(spec);
+        //                    }
+        //                    else
+        //                    {
+        //                        MessageBox.Show(
+        //                            "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
+        //                            "Perhaps it is in a save state.",
+        //                            "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
+        //                    }
+        //                }
+
+        //                _projectsContext.SaveChanges();
+        //                _driveworksContext.SaveChanges();
+        //                _projectsContext.Dispose();
+        //                _driveworksContext.Dispose();
+
+        //                // Email CSR
+        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                //MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("SubmitTabletProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        selectedProjects.Clear();
+        //        MainRefresh("AllTabletProjects");
+        //    }
+        //}
+        //private void OnHoldTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        // Uncheck project expander
+        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
+        //        OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
+        //        {
+        //            Left = Left,
+        //            Top = Top
+        //        };
+        //        onHoldCommentWindow.Show();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IMethods.WriteToErrorLog("OnHoldTabletProject_Click", ex.Message, User);
+        //    }
+        //    MainRefresh("AllTabletProjects");
+        //}
+        //private void OffHoldTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        // Uncheck project expander
+        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
+        //        using var _projectsContext = new ProjectsContext();
+        //        using var _driveworksContext = new DriveWorksContext();
+
+        //        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
+        //        {
+        //            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+        //        }
+        //        else
+        //        {
+        //            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+        //            {
+        //                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
+        //                holdStatus.HoldStatus1 = "OFF HOLD";
+        //                holdStatus.TimeSubmitted = DateTime.Now;
+        //                _projectsContext.HoldStatus.Update(holdStatus);
+        //            }
+        //            else
+        //            {
+        //                // Insert into HoldStatus
+        //                HoldStatus holdStatus = new HoldStatus();
+        //                holdStatus.ProjectNumber = _projectNumber.ToString();
+        //                holdStatus.RevisionNumber = _revNumber.ToString();
+        //                holdStatus.TimeSubmitted = DateTime.Now;
+        //                holdStatus.HoldStatus1 = "OFF HOLD";
+        //                _projectsContext.HoldStatus.Add(holdStatus);
+        //            }
+
+        //            // Drive specification transition name to "Off Hold - Tablets"
+        //            string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
+        //            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //            spec.StateName = "Off Hold - Tablets";
+        //            _driveworksContext.Specifications.Update(spec);
+        //        }
+
+        //        _projectsContext.SaveChanges();
+        //        _driveworksContext.SaveChanges();
+        //        _projectsContext.Dispose();
+        //        _driveworksContext.Dispose();
+        //        MainRefresh();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("OffHoldTabletProject_Click", ex.Message, User);
+        //    }
+        //}
+        //private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        using var _nat02Context = new NAT02Context();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllTabletProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
+        //                _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("CompleteTabletProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        _nat02Context.SaveChanges();
+        //        _nat02Context.Dispose();
+        //        selectedProjects.Clear();
+
+        //        MainRefresh();
+        //    }
+        //}
+        //private void CheckTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right-clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllTabletProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+        //                using var _nat02Context = new NAT02Context();
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
+        //                }
+        //                else
+        //                {
+        //                    // Get project revision number
+        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+
+        //                    // Insert into CheckedBy
+        //                    TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
+        //                    tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
+        //                    tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
+        //                    tabletCheckedBy.TimeSubmitted = DateTime.Now;
+        //                    tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
+        //                    _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
+
+        //                    // Drive specification transition name to "Completed"
+        //                    // Auto archive project specification
+        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                    bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
+        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                    spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
+        //                    spec.IsArchived = (bool)!_tools;
+        //                    _driveworksContext.Specifications.Update(spec);
+
+
+        //                    try
+        //                    {
+        //                        //Send Email To CSR
+        //                        if (!(bool)_tools)
+        //                        {
+        //                            List<string> _CSRs = new List<string>();
+
+        //                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
+        //                            {
+        //                                _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
+        //                            }
+        //                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
+        //                            {
+        //                                _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
+        //                            }
+        //                            IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, User);
+        //                        }
+        //                    }
+        //                    catch
+        //                    {
+
+        //                    }
+        //                    finally
+        //                    {
+        //                        // Save pending changes
+        //                        _projectsContext.SaveChanges();
+        //                        _driveworksContext.SaveChanges();
+        //                    }
+        //                }
+        //                // Dispose of contexts
+        //                _projectsContext.Dispose();
+        //                _driveworksContext.Dispose();
+        //                _nat02Context.Dispose();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("CheckTabletProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        MainRefresh();
+        //    }
+        //}
+        //private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        //foreach ((string, string, CheckBox) project in selectedProjects)
+        //        int count = validProjects.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            using var _projectsContext = new ProjectsContext();
+        //            using var _driveworksContext = new DriveWorksContext();
+        //            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //            {
+        //                IMethods.CancelProject(project.Item1, project.Item2, User);
+        //            }
+        //            else
+        //            {
+
+        //                MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        //                if (res == MessageBoxResult.Yes)
+        //                {
+        //                    try
+        //                    {
+        //                        // Uncheck project expander
+        //                        project.Item3.IsChecked = false;
+
+        //                        if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+        //                        {
+        //                            // Update data in HoldStatus
+        //                            HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
+        //                            holdStatus.HoldStatus1 = "CANCELLED";
+        //                            holdStatus.TimeSubmitted = DateTime.Now;
+        //                            holdStatus.OnHoldComment = "";
+        //                            _projectsContext.HoldStatus.Update(holdStatus);
+        //                        }
+        //                        else
+        //                        {
+        //                            // Insert into HoldStatus
+        //                            HoldStatus holdStatus = new HoldStatus();
+        //                            holdStatus.ProjectNumber = project.Item1;
+        //                            holdStatus.RevisionNumber = project.Item2;
+        //                            holdStatus.TimeSubmitted = DateTime.Now;
+        //                            holdStatus.HoldStatus1 = "CANCELLED";
+        //                            holdStatus.OnHoldComment = "";
+        //                            _projectsContext.HoldStatus.Add(holdStatus);
+        //                        }
+
+        //                        // Drive specification transition name to "On Hold - " projectType
+        //                        string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                        spec.StateName = "Cancelled - Tablets";
+        //                        spec.IsArchived = true;
+        //                        _driveworksContext.Specifications.Update(spec);
+
+        //                        _projectsContext.SaveChanges();
+        //                        _driveworksContext.SaveChanges();
+
+        //                    }
+        //                    catch (Exception ex)
+        //                    {
+        //                        // MessageBox.Show(ex.Message);
+        //                        IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
+        //                    }
+        //                }
+        //            }
+        //            _projectsContext.Dispose();
+        //            _driveworksContext.Dispose();
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        MainRefresh();
+        //    }
+        //}
+        //private void StartToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllToolProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.StartProject(project.Item1, project.Item2, "TOOLS", User);
+        //                }
+        //                else
+        //                {
+        //                    // Get project revision number
+        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+        //                    string usrName = User.GetUserName().Split(" ")[0];
+        //                    int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
+        //                                                                        string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
+        //                                                                        p.ProjectsId > 80000).Count();
+        //                    if (false) //(count > 5)
+        //                    {
+        //                        MessageBox.Show(
+        //                            "Maximum simultaneous projects limit reached.\n" +
+        //                            "Please finish a project before starting more.");
+        //                    }
+        //                    else
+        //                    {
+        //                        // Insert into CheckedBy
+        //                        ProjectStartedTool toolProjectStarted = new ProjectStartedTool();
+        //                        toolProjectStarted.ProjectNumber = int.Parse(project.Item1);
+        //                        toolProjectStarted.RevisionNumber = int.Parse(project.Item2);
+        //                        toolProjectStarted.TimeSubmitted = DateTime.Now;
+        //                        toolProjectStarted.ProjectStartedTool1 = User.GetUserName().Split(' ')[0];
+        //                        _projectsContext.ProjectStartedTool.Add(toolProjectStarted);
+
+        //                        // Drive specification transition name to "Started - Tools"
+        //                        // Auto archive project specification
+        //                        string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                        spec.StateName = "Started - Tools";
+        //                        _driveworksContext.Specifications.Update(spec);
+
+        //                        _projectsContext.SaveChanges();
+        //                        _driveworksContext.SaveChanges();
+        //                        _projectsContext.Dispose();
+        //                        _driveworksContext.Dispose();
+
+        //                        // Email CSR
+        //                        // SendEmailToCSR(_csr, _projectNumber.ToString());
+        //                    }
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("StartToolProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        selectedProjects.Clear();
+        //        MainRefresh();
+        //    }
+
+        //}
+        //private void FinishToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllToolProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                using var _projectsContext = new ProjectsContext();
+        //                using var _driveworksContext = new DriveWorksContext();
+
+
+        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                {
+        //                    IMethods.DrawProject(project.Item1, project.Item2, "TOOLS", User);
+        //                }
+        //                else
+        //                {
+        //                    // Get project revision number
+        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+        //                    // Insert into CheckedBy
+        //                    ToolDrawnBy toolDrawnBy = new ToolDrawnBy();
+        //                    toolDrawnBy.ProjectNumber = int.Parse(project.Item1);
+        //                    toolDrawnBy.RevisionNumber = int.Parse(project.Item2);
+        //                    toolDrawnBy.TimeSubmitted = DateTime.Now;
+        //                    toolDrawnBy.ToolDrawnBy1 = User.GetUserName().Split(' ')[0];
+        //                    _projectsContext.ToolDrawnBy.Add(toolDrawnBy);
+
+        //                    // Drive specification transition name to "Drawn - Tools"
+        //                    // Auto archive project specification
+        //                    string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                    spec.StateName = "Drawn - Tools";
+        //                    _driveworksContext.Specifications.Update(spec);
+        //                }
+
+        //                _projectsContext.SaveChanges();
+        //                _driveworksContext.SaveChanges();
+        //                _projectsContext.Dispose();
+        //                _driveworksContext.Dispose();
+        //                // Email CSR
+        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("FinishToolProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        selectedProjects.Clear();
+        //        MainRefresh();
+        //    }
+        //}
+        //private void CheckToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            using var _nat02Context = new NAT02Context();
+        //            bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
+        //            _nat02Context.Dispose();
+
+        //            if (!alreadyThere)
+        //            {
+        //                try
+        //                {
+        //                    // Check to see if the project is in the correct module
+        //                    if (project.Item4 == "AllToolProjects")
+        //                    {
+        //                        using var _ = new ProjectsContext();
+        //                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
+        //                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+        //                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+        //                        {
+        //                            _.Dispose();
+        //                            continue;
+        //                        }
+        //                        _.Dispose();
+        //                    }
+
+        //                    // Uncheck project expander
+        //                    project.Item3.IsChecked = false;
+
+        //                    using var _projectsContext = new ProjectsContext();
+        //                    using var _driveworksContext = new DriveWorksContext();
+
+
+        //                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //                    {
+        //                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
+        //                    }
+        //                    else
+        //                    {
+        //                        // Get project revision number
+        //                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+
+
+        //                        // Insert into CheckedBy
+        //                        ToolCheckedBy toolCheckedBy = new ToolCheckedBy();
+        //                        toolCheckedBy.ProjectNumber = int.Parse(project.Item1);
+        //                        toolCheckedBy.RevisionNumber = int.Parse(project.Item2);
+        //                        toolCheckedBy.TimeSubmitted = DateTime.Now;
+        //                        toolCheckedBy.ToolCheckedBy1 = User.GetUserName().Split(' ')[0];
+        //                        _projectsContext.ToolCheckedBy.Add(toolCheckedBy);
+
+        //                        // Drive specification transition name to "Completed"
+        //                        // Auto archive project specification
+        //                        string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
+        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                        spec.StateName = "Completed";
+        //                        spec.IsArchived = true;
+        //                        _driveworksContext.Specifications.Update(spec);
+
+        //                        //Send Email To CSR
+        //                        List<string> _CSRs = new List<string>();
+        //                        _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+        //                        if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
+        //                        {
+        //                            _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
+        //                        }
+        //                        IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
+
+        //                    }
+        //                    // Save pending changes
+        //                    _projectsContext.SaveChanges();
+        //                    _driveworksContext.SaveChanges();
+
+
+        //                    // Dispose of contexts
+        //                    _projectsContext.Dispose();
+        //                    _driveworksContext.Dispose();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    // MessageBox.Show(ex.Message);
+        //                    IMethods.WriteToErrorLog("CheckToolProject_Click", ex.Message, User);
+        //                }
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        selectedProjects.Clear();
+        //        MainRefresh();
+        //    }
+        //}
+        //private void OnHoldToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
+        //        {
+        //            Left = Left,
+        //            Top = Top
+        //        };
+        //        onHoldCommentWindow.Show();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IMethods.WriteToErrorLog("OnHoldToolProject_Click", ex.Message, User);
+        //    }
+        //}
+        //private void OffHoldToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        // Uncheck project expander
+        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
+
+        //        using var _projectsContext = new ProjectsContext();
+        //        using var _driveworksContext = new DriveWorksContext();
+
+        //        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
+        //        {
+        //            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+        //        }
+        //        else
+        //        {
+        //            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
+        //            {
+        //                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
+        //                holdStatus.HoldStatus1 = "OFF HOLD";
+        //                _projectsContext.HoldStatus.Update(holdStatus);
+        //            }
+        //            else
+        //            {
+        //                // Insert into HoldStatus
+        //                HoldStatus holdStatus = new HoldStatus();
+        //                holdStatus.ProjectNumber = _projectNumber.ToString();
+        //                holdStatus.RevisionNumber = _revNumber.ToString();
+        //                holdStatus.TimeSubmitted = DateTime.Now;
+        //                holdStatus.HoldStatus1 = "OFF HOLD";
+        //                _projectsContext.HoldStatus.Add(holdStatus);
+        //            }
+
+        //            // Drive specification transition name to "Off Hold - Tools"
+        //            string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
+        //            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //            spec.StateName = "Off Hold - Tools";
+        //            _driveworksContext.Specifications.Update(spec);
+        //        }
+
+        //        _projectsContext.SaveChanges();
+        //        _driveworksContext.SaveChanges();
+        //        _projectsContext.Dispose();
+        //        _driveworksContext.Dispose();
+        //        MainRefresh();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("OffHoldToolProject_Click", ex.Message, User);
+        //    }
+        //}
+        //private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        using var _nat02Context = new NAT02Context();
+
+        //        for (int i = 0; i < validProjects.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            try
+        //            {
+        //                // Check to see if the project is in the correct module
+        //                if (project.Item4 == "AllToolProjects")
+        //                {
+        //                    using var _ = new ProjectsContext();
+        //                    if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
+        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
+        //                    {
+        //                        _.Dispose();
+        //                        continue;
+        //                    }
+        //                    _.Dispose();
+        //                }
+
+        //                // Uncheck project expander
+        //                project.Item3.IsChecked = false;
+
+        //                EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+        //                _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // MessageBox.Show(ex.Message);
+        //                IMethods.WriteToErrorLog("CompleteToolProject_Click", ex.Message, User);
+        //            }
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        _nat02Context.SaveChanges();
+        //        _nat02Context.Dispose();
+        //        selectedProjects.Clear();
+
+        //        MainRefresh();
+        //    }
+        //}
+        //private void CancelToolProject_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (selectedProjects.Count > 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
+
+        //        //foreach ((string, string, CheckBox) project in selectedProjects)
+        //        int count = validProjects.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            (string, string, CheckBox, string) project = validProjects[i];
+        //            using var _projectsContext = new ProjectsContext();
+        //            using var _driveworksContext = new DriveWorksContext();
+
+        //            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+        //            {
+        //                IMethods.CancelProject(project.Item1, project.Item2, User);
+        //            }
+        //            else
+        //            {
+        //                MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        //                if (res == MessageBoxResult.Yes)
+        //                {
+        //                    try
+        //                    {
+        //                        // Uncheck project expander
+        //                        project.Item3.IsChecked = false;
+
+        //                        if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
+        //                        {
+        //                            // Update data in HoldStatus
+        //                            HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
+        //                            holdStatus.HoldStatus1 = "CANCELLED";
+        //                            holdStatus.TimeSubmitted = DateTime.Now;
+        //                            holdStatus.OnHoldComment = "";
+        //                            _projectsContext.HoldStatus.Update(holdStatus);
+        //                        }
+        //                        else
+        //                        {
+        //                            // Insert into HoldStatus
+        //                            HoldStatus holdStatus = new HoldStatus();
+        //                            holdStatus.ProjectNumber = project.Item1;
+        //                            holdStatus.RevisionNumber = project.Item2;
+        //                            holdStatus.TimeSubmitted = DateTime.Now;
+        //                            holdStatus.HoldStatus1 = "CANCELLED";
+        //                            holdStatus.OnHoldComment = "";
+        //                            _projectsContext.HoldStatus.Add(holdStatus);
+        //                        }
+
+        //                        // Drive specification transition name to "On Hold - " projectType
+        //                        string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
+        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+        //                        spec.StateName = "Cancelled - Tools";
+        //                        spec.IsArchived = true;
+        //                        _driveworksContext.Specifications.Update(spec);
+
+        //                        _projectsContext.SaveChanges();
+        //                        _driveworksContext.SaveChanges();
+        //                    }
+        //                    catch (Exception ex)
+        //                    {
+        //                        // MessageBox.Show(ex.Message);
+        //                        IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
+        //                    }
+        //                }
+        //            }
+        //            _projectsContext.Dispose();
+        //            _driveworksContext.Dispose();
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+
+        //        MainRefresh();
+        //    }
+        //}
+        //private void DoNotProcessMenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    bool doNotProc = false;
+        //    DataGrid dataGrid = (DataGrid)sender;
+        //    DataGridCellInfo cell = dataGrid.SelectedCells[0];
+        //    string orderNumber = ((TextBlock)cell.Column.GetCellContent(cell.Item)).Text;
+        //    using var nat02context = new NAT02Context();
+
+        //    doNotProc = nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == double.Parse(orderNumber)).Any();
+
+        //    if (doNotProc)
+        //    {
+        //        EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber) };
+        //        nat02context.EoiOrdersDoNotProcess.Add(p);
+        //        nat02context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber), UserName = User.GetUserName() };
+        //        nat02context.EoiOrdersDoNotProcess.Remove(p);
+        //        nat02context.SaveChanges();
+        //    }
+        //    doNotProc = !doNotProc;
+        //    MainRefresh();
+        //}
+        //private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Scan selected orders if there are any and then clear the list
+        //    if (selectedOrders.Count != 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+        //        int count = validOrders.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            (string, CheckBox, string) order = validOrders[i];
+        //            var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+        //            var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
+        //            string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
+        //            int retVal = workOrder.TransferOrder(User, "D080", module == "EnteredUnscanned");
+        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+        //            if (workOrder.Finished)
+        //            {
+        //                using var context = new NAT02Context();
+        //                if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
+        //                {
+        //                    var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
+        //                    {
+        //                        OrderNo = workOrder.OrderNumber
+        //                    };
+        //                    context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
+
+        //                    context.SaveChanges();
+        //                }
+        //            }
+
+        //            // Uncheck order expander
+        //            order.Item2.IsChecked = false;
+
+        //            DeleteMachineVariables(workOrder.OrderNumber.ToString());
+        //        }
+
+        //        try
+        //        {
+        //            Cursor = Cursors.Wait;
+        //            Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
+        //            Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
+        //                app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
+        //            mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", validOrders.Select(o => o.Item1));
+        //            mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
+        //            mailItem.Body = "";
+        //            mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
+        //            mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
+        //            mailItem.Display(false);
+        //            Cursor = Cursors.Arrow;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //            Cursor = Cursors.Arrow;
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+        //    }
+        //    // Scan just the order that was right clicked if nothing else has been selected
+        //    else
+        //    {
+        //        workOrder = new WorkOrder((int)_orderNumber, this);
+        //        int retVal = workOrder.TransferOrder(User, "D080");
+        //        if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+        //        if (workOrder.Finished)
+        //        {
+        //            using var context = new NAT02Context();
+        //            if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
+        //            {
+        //                var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
+        //                {
+        //                    OrderNo = workOrder.OrderNumber
+        //                };
+        //                context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
+
+        //                context.SaveChanges();
+        //            }
+        //        }
+        //        try
+        //        {
+        //            Cursor = Cursors.Wait;
+        //            Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
+        //            Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
+        //                app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
+        //            mailItem.Subject = "REQUEST FOR CHANGES WO# " + ((int)_orderNumber).ToString();
+        //            mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
+        //            mailItem.Body = "";
+        //            mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
+        //            mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
+        //            mailItem.Display(false);
+        //            Cursor = Cursors.Arrow;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //            Cursor = Cursors.Arrow;
+        //        }
+
+        //        DeleteMachineVariables(((int)_orderNumber).ToString());
+        //    }
+
+        //    MainRefresh();
+        //}
+        //private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Scan selected orders if there are any and then clear the list
+        //    if (selectedOrders.Count != 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+        //        int count = validOrders.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            (string, CheckBox, string) order = validOrders[i];
+        //            var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
+        //            var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
+        //            string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
+        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
+        //            int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
+        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+        //            // Uncheck order expander
+        //            order.Item2.IsChecked = false;
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+        //    }
+
+        //    MainRefresh();
+        //}
+        //private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Scan selected orders if there are any and then clear the list
+        //    if (selectedOrders.Count != 0)
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
+
+        //        int count = validOrders.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            (string, CheckBox, string) order = validOrders[i];
+        //            using var nat02context = new NAT02Context();
+        //            if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
+        //            {
+        //                nat02context.Dispose();
+        //                continue;
+        //            }
+        //            else
+        //            {
+        //                nat02context.Dispose();
+        //            }
+        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
+        //            int retVal = workOrder.TransferOrder(User, "D921");
+        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
+
+        //            // Uncheck order expander
+        //            order.Item2.IsChecked = false;
+
+        //            // Check EOI_TrackedDocuments table to see if this order needs a notification
+        //            using var _nat02context = new NAT02Context();
+        //            bool tracked = _nat02context.EoiTrackedDocuments.Any(d => d.Number == order.Item1 && d.MovementId == 3);
+        //            if (tracked)
+        //            {
+        //                // Retrieve tracked document
+        //                EoiTrackedDocuments trackedDoc = _nat02context.EoiTrackedDocuments.Single(d => d.Number == order.Item1 && d.MovementId == 3);
+
+        //                // Insert into EOI_Notifications_Active
+        //                EoiNotificationsActive _active = new EoiNotificationsActive()
+        //                {
+        //                    Type = trackedDoc.Type,
+        //                    Number = trackedDoc.Number,
+        //                    Message = "Document has moved to production",
+        //                    User = trackedDoc.User,
+        //                    Timestamp = DateTime.Now
+        //                };
+        //                _nat02context.EoiNotificationsActive.Add(_active);
+
+        //                // Delete from EOI_TrackedDocuments
+        //                _nat02context.EoiTrackedDocuments.Remove(trackedDoc);
+
+        //                // Save context transactions
+        //                _nat02context.SaveChanges();
+        //            }
+        //            _nat02context.Dispose();
+        //        }
+
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+        //    }
+
+        //    MainRefresh();
+        //}
+        //private void ReadyToPrintMenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    MainRefresh();
+        //}
         private void ForceRefresh_Click(object sender, RoutedEventArgs e)
         {
             MainRefresh();
@@ -3066,7 +3072,7 @@ namespace NatoliOrderInterface
             int engProjMax = projectsContext.EngineeringProjects.Any() ? Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1 : 0;
             int engProjArchMax = Convert.ToInt32(projectsContext.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
             string projectNumber = engProjArchMax > engProjMax ? engProjArchMax.ToString() : engProjMax.ToString();
-            
+
 
             // Dispose of project context
             projectsContext.Dispose();
@@ -3088,11 +3094,11 @@ namespace NatoliOrderInterface
             projectSearchWindow.Show();
             projectSearchWindow.Dispose();
         }
-        private void EditLayout_Click(object sender, RoutedEventArgs e)
-        {
-            EditLayoutWindow editLayoutWindow = new EditLayoutWindow(User, this);
-            editLayoutWindow.Show();
-        }
+        //private void EditLayout_Click(object sender, RoutedEventArgs e)
+        //{
+        //    EditLayoutWindow editLayoutWindow = new EditLayoutWindow(User, this);
+        //    editLayoutWindow.Show();
+        //}
         private void CheckMissingVariables_Click(object sender, RoutedEventArgs e)
         {
             Window missing = new Window()
@@ -3125,217 +3131,217 @@ namespace NatoliOrderInterface
             MainGrid.Children.Add(textBlock);
             missing.Show();
         }
-        private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
-        {
-            using var _nat02context = new NAT02Context();
+        //private void CompletedQuoteCheck_Click(object sender, RoutedEventArgs e)
+        //{
+        //    using var _nat02context = new NAT02Context();
 
-            try
-            {
-                // New list of projects that are in the same module that was right clicked inside of
-                List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+        //    try
+        //    {
+        //        // New list of projects that are in the same module that was right clicked inside of
+        //        List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
 
-                if (validQuotes.Any())
-                {
-                    for (int i = 0; i < validQuotes.Count; i++)
-                    {
-                        (string, string, CheckBox, string) quote = validQuotes[i];
-                        quote.Item3.IsChecked = false;
+        //        if (validQuotes.Any())
+        //        {
+        //            for (int i = 0; i < validQuotes.Count; i++)
+        //            {
+        //                (string, string, CheckBox, string) quote = validQuotes[i];
+        //                quote.Item3.IsChecked = false;
 
-                        EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
-                        {
-                            QuoteNo = double.Parse(quote.Item1),
-                            QuoteRevNo = int.Parse(quote.Item2),
-                            TimeSubmitted = DateTime.Now,
-                            FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
-                        };
-                        _nat02context.Add(q);
-                    }
-                }
-            }
-            catch
-            {
+        //                EoiQuotesOneWeekCompleted q = new EoiQuotesOneWeekCompleted()
+        //                {
+        //                    QuoteNo = double.Parse(quote.Item1),
+        //                    QuoteRevNo = int.Parse(quote.Item2),
+        //                    TimeSubmitted = DateTime.Now,
+        //                    FollowUpsCompleted = _nat02context.EoiQuotesOneWeekCompleted.Count(m => m.QuoteNo == double.Parse(quote.Item1) && m.QuoteRevNo == int.Parse(quote.Item2)) + 1
+        //                };
+        //                _nat02context.Add(q);
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
 
-            }
-            _nat02context.SaveChanges();
-            _nat02context.Dispose();
-            MainRefresh();
-        }
-        private void SubmitQuote_Click(object sender, RoutedEventArgs e)
-        {
-            Cursor = Cursors.AppStarting;
-            using var context = new NAT01Context();
-            using var nat02Context = new NAT02Context();
-            using var necContext = new NECContext();
-            // New list of projects that are in the same module that was right clicked inside of
-            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
-            List<Tuple<int, short>> quotes = new List<Tuple<int, short>>();
-            List<Quote> quoteItems = new List<Quote>();
-            List<string> quoteErrorNumbers = new List<string>();
-            if (validQuotes.Any())
-            {
+        //    }
+        //    _nat02context.SaveChanges();
+        //    _nat02context.Dispose();
+        //    MainRefresh();
+        //}
+        //private void SubmitQuote_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Cursor = Cursors.AppStarting;
+        //    using var context = new NAT01Context();
+        //    using var nat02Context = new NAT02Context();
+        //    using var necContext = new NECContext();
+        //    // New list of projects that are in the same module that was right clicked inside of
+        //    List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+        //    List<Tuple<int, short>> quotes = new List<Tuple<int, short>>();
+        //    List<Quote> quoteItems = new List<Quote>();
+        //    List<string> quoteErrorNumbers = new List<string>();
+        //    if (validQuotes.Any())
+        //    {
 
-                for (int i = 0; i < validQuotes.Count; i++)
-                {
-                    quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
-                }
-                OrderingWindow orderingWindow = new OrderingWindow(quotes, User);
-                if (orderingWindow.ShowDialog() == true)
-                {
-                    foreach (Tuple<int, short> quote in quotes)
-                    {
-                        if (IMethods.QuoteErrors(quote.Item1.ToString(), quote.Item2.ToString(), User).Count > 0)
-                        {
-                            quoteErrorNumbers.Add(quote.Item1.ToString() + "-" + quote.Item2.ToString());
-                        }
-                        quoteItems.Add(new Quote(quote.Item1, quote.Item2));
-                    }
-                    if (quoteErrorNumbers.Any() && MessageBoxResult.Yes != MessageBox.Show((quoteErrorNumbers.Count == 1 ? "Quote" : "Quotes") + string.Concat(quoteErrorNumbers.Select(q => q + ", ")).TrimEnd().TrimEnd(',') + (quoteErrorNumbers.Count == 1 ? " has" : " have") + " quote check errors.\n\nWould you still like to submit these quotes?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
-                    {
-                        // Do nothing
-                    }
-                    else
-                    {
-                        foreach (Quote quote in quoteItems)
-                        {
-                            QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                            string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                            string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                            EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                            {
-                                QuoteNo = quote.QuoteNumber,
-                                QuoteRevNo = quote.QuoteRevNo,
-                                CustomerName = customerName,
-                                Csr = csr,
-                                CsrMarked = User.GetUserName(),
-                                TimeSubmitted = DateTime.Now,
-                                Rush = r.RushYorN
-                            };
-                            nat02Context.EoiQuotesMarkedForConversion.Add(q);
-                            quote.Dispose();
-                        }
-                    }
-                }
+        //        for (int i = 0; i < validQuotes.Count; i++)
+        //        {
+        //            quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
+        //        }
+        //        OrderingWindow orderingWindow = new OrderingWindow(quotes, User);
+        //        if (orderingWindow.ShowDialog() == true)
+        //        {
+        //            foreach (Tuple<int, short> quote in quotes)
+        //            {
+        //                if (IMethods.QuoteErrors(quote.Item1.ToString(), quote.Item2.ToString(), User).Count > 0)
+        //                {
+        //                    quoteErrorNumbers.Add(quote.Item1.ToString() + "-" + quote.Item2.ToString());
+        //                }
+        //                quoteItems.Add(new Quote(quote.Item1, quote.Item2));
+        //            }
+        //            if (quoteErrorNumbers.Any() && MessageBoxResult.Yes != MessageBox.Show((quoteErrorNumbers.Count == 1 ? "Quote" : "Quotes") + string.Concat(quoteErrorNumbers.Select(q => q + ", ")).TrimEnd().TrimEnd(',') + (quoteErrorNumbers.Count == 1 ? " has" : " have") + " quote check errors.\n\nWould you still like to submit these quotes?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+        //            {
+        //                // Do nothing
+        //            }
+        //            else
+        //            {
+        //                foreach (Quote quote in quoteItems)
+        //                {
+        //                    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+        //                    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+        //                    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+        //                    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+        //                    {
+        //                        QuoteNo = quote.QuoteNumber,
+        //                        QuoteRevNo = quote.QuoteRevNo,
+        //                        CustomerName = customerName,
+        //                        Csr = csr,
+        //                        CsrMarked = User.GetUserName(),
+        //                        TimeSubmitted = DateTime.Now,
+        //                        Rush = r.RushYorN
+        //                    };
+        //                    nat02Context.EoiQuotesMarkedForConversion.Add(q);
+        //                    quote.Dispose();
+        //                }
+        //            }
+        //        }
 
-                //for (int i = 0; i < validQuotes.Count; i++)
-                //{
-                //    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
-                //    selectedQuote.Item3.IsChecked = false;
+        //        //for (int i = 0; i < validQuotes.Count; i++)
+        //        //{
+        //        //    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
+        //        //    selectedQuote.Item3.IsChecked = false;
 
-                //    Quote quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
+        //        //    Quote quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
 
-                //    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), User).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
-                //    {
-                //        // Do nothing
-                //    }
-                //    else
-                //    {
-                //        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                //        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                //        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                //        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                //        {
-                //            QuoteNo = quote.QuoteNumber,
-                //            QuoteRevNo = quote.QuoteRevNo,
-                //            CustomerName = customerName,
-                //            Csr = csr,
-                //            CsrMarked = User.GetUserName(),
-                //            TimeSubmitted = DateTime.Now,
-                //            Rush = r.RushYorN
-                //        };
-                //        nat02Context.EoiQuotesMarkedForConversion.Add(q);
-                //    }
-                //}
+        //        //    if (IMethods.QuoteErrors(quote.QuoteNumber.ToString(), quote.QuoteRevNo.ToString(), User).Count > 0 && MessageBoxResult.Yes != MessageBox.Show("Quote " + quote.QuoteNumber.ToString() + "-" + quote.QuoteRevNo.ToString() + " has quote check errors.\n Would you still like to submit this quote?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+        //        //    {
+        //        //        // Do nothing
+        //        //    }
+        //        //    else
+        //        //    {
+        //        //        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+        //        //        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+        //        //        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+        //        //        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+        //        //        {
+        //        //            QuoteNo = quote.QuoteNumber,
+        //        //            QuoteRevNo = quote.QuoteRevNo,
+        //        //            CustomerName = customerName,
+        //        //            Csr = csr,
+        //        //            CsrMarked = User.GetUserName(),
+        //        //            TimeSubmitted = DateTime.Now,
+        //        //            Rush = r.RushYorN
+        //        //        };
+        //        //        nat02Context.EoiQuotesMarkedForConversion.Add(q);
+        //        //    }
+        //        //}
 
 
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
 
-            }
+        //    }
 
-            nat02Context.SaveChanges();
-            nat02Context.Dispose();
-            necContext.Dispose();
-            context.Dispose();
-            Cursor = Cursors.Arrow;
-            MainRefresh();
-        }
-        private void RecallQuote_Click(object sender, RoutedEventArgs e)
-        {
-            Cursor = Cursors.AppStarting;
-            using var context = new NAT01Context();
-            using var nat02Context = new NAT02Context();
-            using var necContext = new NECContext();
-            // New list of projects that are in the same module that was right clicked inside of
-            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
+        //    nat02Context.SaveChanges();
+        //    nat02Context.Dispose();
+        //    necContext.Dispose();
+        //    context.Dispose();
+        //    Cursor = Cursors.Arrow;
+        //    MainRefresh();
+        //}
+        //private void RecallQuote_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Cursor = Cursors.AppStarting;
+        //    using var context = new NAT01Context();
+        //    using var nat02Context = new NAT02Context();
+        //    using var necContext = new NECContext();
+        //    // New list of projects that are in the same module that was right clicked inside of
+        //    List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == rClickModule).ToList();
 
-            if (validQuotes.Any())
-            {
-                for (int i = 0; i < validQuotes.Count; i++)
-                {
-                    (string, string, CheckBox, string) selectedQuote = validQuotes[i];
-                    selectedQuote.Item3.IsChecked = false;
+        //    if (validQuotes.Any())
+        //    {
+        //        for (int i = 0; i < validQuotes.Count; i++)
+        //        {
+        //            (string, string, CheckBox, string) selectedQuote = validQuotes[i];
+        //            selectedQuote.Item3.IsChecked = false;
 
-                    quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
-                    QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                    string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                    string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                    EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                    {
-                        QuoteNo = quote.QuoteNumber,
-                        QuoteRevNo = quote.QuoteRevNo,
-                        CustomerName = customerName,
-                        Csr = csr,
-                        CsrMarked = User.GetUserName(),
-                        TimeSubmitted = DateTime.Now,
-                        Rush = r.RushYorN
-                    };
-                    nat02Context.EoiQuotesMarkedForConversion.Remove(q);
-                }
+        //            quote = new Quote(int.Parse(selectedQuote.Item1), short.Parse(selectedQuote.Item2));
+        //            QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+        //            string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+        //            string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+        //            EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+        //            {
+        //                QuoteNo = quote.QuoteNumber,
+        //                QuoteRevNo = quote.QuoteRevNo,
+        //                CustomerName = customerName,
+        //                Csr = csr,
+        //                CsrMarked = User.GetUserName(),
+        //                TimeSubmitted = DateTime.Now,
+        //                Rush = r.RushYorN
+        //            };
+        //            nat02Context.EoiQuotesMarkedForConversion.Remove(q);
+        //        }
 
-                // Uncheck Check All CheckBox
-                //var x = MainGrid.Children;
-                //foreach (Border border in x.OfType<Border>())
-                //{
-                //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-                //    {
-                //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-                //    }
-                //}
-            }
-            else
-            {
-                quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
-                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                {
-                    QuoteNo = quote.QuoteNumber,
-                    QuoteRevNo = quote.QuoteRevNo,
-                    CustomerName = customerName,
-                    Csr = csr,
-                    CsrMarked = User.GetUserName(),
-                    TimeSubmitted = DateTime.Now,
-                    Rush = r.RushYorN
-                };
-                nat02Context.EoiQuotesMarkedForConversion.Remove(q);
-            }
-            nat02Context.SaveChanges();
-            nat02Context.Dispose();
-            necContext.Dispose();
-            context.Dispose();
-            Cursor = Cursors.Arrow;
-            MainRefresh();
-        }
+        //        // Uncheck Check All CheckBox
+        //        //var x = MainGrid.Children;
+        //        //foreach (Border border in x.OfType<Border>())
+        //        //{
+        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
+        //        //    {
+        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
+        //        //    }
+        //        //}
+        //    }
+        //    else
+        //    {
+        //        quote = new Quote((int)_quoteNumber, (short)_quoteRevNumber);
+        //        QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+        //        string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+        //        string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+        //        EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+        //        {
+        //            QuoteNo = quote.QuoteNumber,
+        //            QuoteRevNo = quote.QuoteRevNo,
+        //            CustomerName = customerName,
+        //            Csr = csr,
+        //            CsrMarked = User.GetUserName(),
+        //            TimeSubmitted = DateTime.Now,
+        //            Rush = r.RushYorN
+        //        };
+        //        nat02Context.EoiQuotesMarkedForConversion.Remove(q);
+        //    }
+        //    nat02Context.SaveChanges();
+        //    nat02Context.Dispose();
+        //    necContext.Dispose();
+        //    context.Dispose();
+        //    Cursor = Cursors.Arrow;
+        //    MainRefresh();
+        //}
         private void FilterProjects_Click(object sender, RoutedEventArgs e)
         {
             _filterProjects = !_filterProjects;
@@ -3349,29 +3355,29 @@ namespace NatoliOrderInterface
             MainRefresh("AllTabletProjects");
             MainRefresh("AllToolProjects");
         }
-        private void LineItemCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            var order = ((((checkBox.Parent as Grid).Parent as StackPanel).Parent as Expander).Header as Grid).Children[0].GetValue(ContentProperty).ToString();
-            int lineNumber = int.Parse((checkBox.Parent as Grid).Tag.ToString());
-            string travellerNumber = "1" + lineNumber.ToString("00") + order + "00";
-            selectedLineItems.Add(travellerNumber);
-        }
-        private void LineItemCheckBox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                CheckBox checkBox = sender as CheckBox;
-                var order = ((((checkBox.Parent as Grid).Parent as StackPanel).Parent as Expander).Header as Grid).Children[0].GetValue(ContentProperty).ToString();
-                int lineNumber = int.Parse((checkBox.Parent as Grid).Tag.ToString());
-                string travellerNumber = "1" + lineNumber.ToString("00") + order + "00";
-                selectedLineItems.Remove(travellerNumber);
-            }
-            catch
-            {
+        //private void LineItemCheckBox_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    CheckBox checkBox = sender as CheckBox;
+        //    var order = ((((checkBox.Parent as Grid).Parent as StackPanel).Parent as Expander).Header as Grid).Children[0].GetValue(ContentProperty).ToString();
+        //    int lineNumber = int.Parse((checkBox.Parent as Grid).Tag.ToString());
+        //    string travellerNumber = "1" + lineNumber.ToString("00") + order + "00";
+        //    selectedLineItems.Add(travellerNumber);
+        //}
+        //private void LineItemCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        CheckBox checkBox = sender as CheckBox;
+        //        var order = ((((checkBox.Parent as Grid).Parent as StackPanel).Parent as Expander).Header as Grid).Children[0].GetValue(ContentProperty).ToString();
+        //        int lineNumber = int.Parse((checkBox.Parent as Grid).Tag.ToString());
+        //        string travellerNumber = "1" + lineNumber.ToString("00") + order + "00";
+        //        selectedLineItems.Remove(travellerNumber);
+        //    }
+        //    catch
+        //    {
 
-            }
-        }
+        //    }
+        //}
         private void Subscriptions_SubmenuClosed(object sender, RoutedEventArgs e)
         {
             try
@@ -12619,1408 +12625,1408 @@ namespace NatoliOrderInterface
                 Console.WriteLine("Exception: " + eSql.Message);
             }
         }
-#endregion
+        #endregion
         #region DataGrid Events
-        private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            using var _context = new NAT02Context();
-            using var _nat01context = new NAT01Context();
-            Expander expander = (Expander)sender;
-            Cursor = Cursors.AppStarting;
-
-            try
-            {
-                Grid grid = expander.Header as Grid;
-                string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                workOrder = new WorkOrder(int.Parse(orderNumber), this);
-                WindowCollection collection = App.Current.Windows;
-                foreach (Window w in collection)
-                {
-                    if (w.Title.Contains(workOrder.OrderNumber.ToString()))
-                    {
-                        _context.Dispose();
-                        _nat01context.Dispose();
-                        w.WindowState = WindowState.Normal;
-                        w.Show();
-                        goto AlreadyOpen2;
-                    }
-                }
-                if (_context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()))
-                {
-                    MessageBox.Show("BEWARE!!\n" + _context.EoiOrdersBeingChecked.Where(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()).FirstOrDefault().User + " is in this order at the moment.");
-                    mainTimer.Stop();
-                }
-                else if (_context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User == User.GetUserName()))
-                {
-                    MessageBox.Show("You already have this order open.");
-                    _context.Dispose();
-                    _nat01context.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            try
-            {
-                string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
-
-                OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                orderInfoWindow.Show();
-                orderInfoWindow.Dispose();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-        AlreadyOpen2:
-            _context.Dispose();
-            _nat01context.Dispose();
-            expander.IsExpanded = false;
-            Cursor = Cursors.Arrow;
-        }
-        private void OrderDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Cursor = Cursors.AppStarting;
-                Expander expander = (Expander)sender;
-                using var context = new NAT02Context();
-                using NAT01Context nat01context = new NAT01Context();
-                try
-                {
-                    Grid grid = expander.Header as Grid;
-                    string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                    workOrder = new WorkOrder(int.Parse(orderNumber), this);
-                    WindowCollection collection = App.Current.Windows;
-                    foreach (Window w in collection)
-                    {
-                        if (w.Title.Contains(workOrder.OrderNumber.ToString()))
-                        {
-                            context.Dispose();
-                            nat01context.Dispose();
-                            w.WindowState = WindowState.Normal;
-                            w.Show();
-                            goto AlreadyOpen;
-                        }
-                    }
-                    if (context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()))
-                    {
-                        MessageBox.Show("BEWARE!!\n" + context.EoiOrdersBeingChecked.Where(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()).FirstOrDefault().User + " is in this order at the moment.");
-                        mainTimer.Stop();
-                    }
-                    else if (context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User == User.GetUserName()))
-                    {
-                        MessageBox.Show("You already have this order open.");
-                        context.Dispose();
-                        nat01context.Dispose();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                try
-                {
-                    string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
-                    OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
-                    {
-                        Left = Left,
-                        Top = Top
-                    };
-                    orderInfoWindow.Show();
-                    orderInfoWindow.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            AlreadyOpen:
-                context.Dispose();
-                nat01context.Dispose();
-                Cursor = Cursors.Arrow;
-            }
-        }
-        private void QuoteDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            using var nat01context = new NAT01Context();
-            Expander expander = sender as Expander;
-            Grid grid = expander.Header as Grid;
-            Cursor = Cursors.AppStarting;
-            try
-            {
-                int quoteNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                short revNumber = short.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-                WindowCollection collection = App.Current.Windows;
-                foreach (Window w in collection)
-                {
-                    if (w.Title.Contains(quoteNumber.ToString()))
-                    {
-                        nat01context.Dispose();
-                        w.WindowState = WindowState.Normal;
-                        w.Show();
-                        goto AlreadyOpen;
-                    }
-                }
-                quote = new Quote(quoteNumber, revNumber);
-                mainTimer.Stop();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            try
-            {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                quoteInfoWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        AlreadyOpen:
-            nat01context.Dispose();
-            Cursor = Cursors.Arrow;
-        }
-        private void QuoteDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Cursor = Cursors.AppStarting;
-                using var nat01context = new NAT01Context();
-                Expander expander = sender as Expander;
-                Grid grid = expander.Header as Grid;
-                Cursor = Cursors.AppStarting;
-                try
-                {
-                    int quoteNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    short revNumber = short.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-                    WindowCollection collection = App.Current.Windows;
-                    foreach (Window w in collection)
-                    {
-                        if (w.Title.Contains(quoteNumber.ToString()))
-                        {
-                            nat01context.Dispose();
-                            w.WindowState = WindowState.Normal;
-                            w.Show();
-                            goto AlreadyOpen;
-                        }
-                    }
-                    quote = new Quote(quoteNumber, revNumber);
-                    mainTimer.Stop();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                try
-                {
-                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
-                    {
-                        Left = Left,
-                        Top = Top
-                    };
-                    quoteInfoWindow.Show();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            AlreadyOpen:
-                nat01context.Dispose();
-                Cursor = Cursors.Arrow;
-            }
-        }
-        private void OrderDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || sender.GetType().Name == "Expander")
-            {
-
-            }
-            else
-            {
-                //(sender as DataGrid).SelectedItem = null;
-            }
-        }
-        private void QuoteDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-
-            }
-            else
-            {
-                //(sender as DataGrid).SelectedItem = null;
-            }
-        }
-        private void OrdersBeingEnteredExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem toOfficeOrder = new MenuItem
-            {
-                Header = "Send to Office"
-            };
-
-            Expander expander = sender as Expander;
-            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "BeingEntered";
-
-            RightClickMenu.Items.Add(toOfficeOrder);
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void OrdersEnteredUnscannedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem toOfficeOrder = new MenuItem
-            {
-                Header = "Send to Office"
-            };
-            MenuItem startOrder = new MenuItem
-            {
-                Header = "Start Order"
-            };
-
-            Expander expander = sender as Expander;
-            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
-            startOrder.Click += StartWorkOrder_Click;
-
-            RightClickMenu.Items.Add(toOfficeOrder);
-            RightClickMenu.Items.Add(startOrder);
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "EnteredUnscanned";
-
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void OrdersInEngineeringUnprintedExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem toOfficeOrder = new MenuItem
-            {
-                Header = "Send to Office"
-            };
-
-            Expander expander = sender as Expander;
-            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "InEngineering";
-
-            RightClickMenu.Items.Add(toOfficeOrder);
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void OrdersReadyToPrintExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem toOfficeOrder = new MenuItem
-            {
-                Header = "Send to Office"
-            };
-
-            Expander expander = sender as Expander;
-            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "ReadyToPrint";
-
-            RightClickMenu.Items.Add(toOfficeOrder);
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void OrderPrintedInEngineeringDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem toOfficeOrder = new MenuItem
-            {
-                Header = "Send to Office"
-            };
-            MenuItem toProdManOrder = new MenuItem
-            {
-                Header = "Send to Production"
-            };
-
-            Expander expander = sender as Expander;
-            toOfficeOrder.Click += SendToOfficeMenuItem_Click;
-            toProdManOrder.Click += ToProdManOrder_Click;
-
-            RightClickMenu.Items.Add(toOfficeOrder);
-            if (User.Department == "Engineering" || User.Department == "Order Entry")
-            {
-                RightClickMenu.Items.Add(toProdManOrder);
-            }
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "PrintedInEngineering";
-
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void OrdersInTheOfficeExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            ContextMenu RightClickMenu = new ContextMenu();
-
-            MenuItem startOrder = new MenuItem
-            {
-                Header = "Start Order"
-            };
-
-            Expander expander = sender as Expander;
-            startOrder.Click += StartWorkOrder_Click;
-            
-            RightClickMenu.Items.Add(startOrder);
-
-            expander.ContextMenu = RightClickMenu;
-            expander.ContextMenu.Tag = "RightClickMenu";
-            expander.ContextMenu.Closed += ContextMenu_Closed;
-
-            // Check the checkbox for the right-clicked expander
-            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-            // Set the right click module variable
-            rClickModule = "InTheOffice";
-
-            _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
-        }
-        private void ProjectDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            Expander expander = sender as Expander;
-            Grid grid = expander.Header as Grid;
-            Cursor = Cursors.AppStarting;
-            try
-            {
-                string projectNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                string revNumber = grid.Children[1].GetValue(ContentProperty).ToString();
-                try
-                {
-                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
-                    if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path);
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
-                    //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
-                    //projectWindow.Show();
-                    //projectWindow.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            Cursor = Cursors.Arrow;
-        }
-        private void ProjectDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                Cursor = Cursors.AppStarting;
-                try
-                {
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-                    string projectNumber = grid.Children[0].GetValue(ContentProperty).ToString();
-                    string revNumber = grid.Children[1].GetValue(ContentProperty).ToString();
-                    try
-                    {
-                        string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
-                        if (!System.IO.Directory.Exists(path))
-                            System.IO.Directory.CreateDirectory(path);
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                Cursor = Cursors.Arrow;
-            }
-        }
-        private void ProjectDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-
-            }
-            else
-            {
-                // (sender as DataGrid).SelectedItem = null;
-            }
-        }
-        private void AllTabletProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                ContextMenu RightClickMenu = new ContextMenu();
-                MenuItem completedTabletProject = new MenuItem
-                {
-                    Header = "Completed",
-                    IsEnabled = false
-                };
-                MenuItem startTabletProject = new MenuItem
-                {
-                    Header = "Start",
-                    IsEnabled = false
-                };
-                MenuItem finishTabletProject = new MenuItem
-                {
-                    Header = "Finish",
-                    IsEnabled = false
-                };
-                MenuItem submitTabletProject = new MenuItem
-                {
-                    Header = "Submit",
-                    IsEnabled = false
-                };
-                MenuItem checkTabletProject = new MenuItem
-                {
-                    Header = "Check",
-                    IsEnabled = false
-                };
-                MenuItem onHoldTabletProject = new MenuItem
-                {
-                    Header = "Put On Hold"
-                };
-                MenuItem offHoldTabletProject = new MenuItem
-                {
-                    Header = "Put Off Hold"
-                };
-                MenuItem cancelTabletProject = new MenuItem
-                {
-                    Header = "Cancel",
-                    IsEnabled = true
-                };
-                startTabletProject.Click += StartTabletProject_Click;
-                finishTabletProject.Click += FinishTabletProject_Click;
-                submitTabletProject.Click += SubmitTabletProject_Click;
-                checkTabletProject.Click += CheckTabletProject_Click;
-                onHoldTabletProject.Click += OnHoldTabletProject_Click;
-                offHoldTabletProject.Click += OffHoldTabletProject_Click;
-                completedTabletProject.Click += CompleteTabletProject_Click;
-                cancelTabletProject.Click += CancelTabletProject_Click;
-                Expander expander = sender as Expander;
-                Grid grid = expander.Header as Grid;
-
-                // Check the checkbox for the right-clicked expander
-                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                // Set the right click module variable
-                rClickModule = "AllTabletProjects";
-
-                _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-                using var _nat02context = new NAT02Context();
-                bool _finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _notStarted = _nat02context.EoiTabletProjectsNotStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _started = _nat02context.EoiTabletProjectsStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _drawn = _nat02context.EoiTabletProjectsDrawn.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _submitted = _nat02context.EoiTabletProjectsSubmitted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                _nat02context.Dispose();
-                if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
-                {
-                    if (_finished)
-                    {
-                        completedTabletProject.IsEnabled = true;
-                    }
-                    else if (_submitted)
-                    {
-                        checkTabletProject.IsEnabled = true;
-                    }
-                    else if (_drawn)
-                    {
-                        submitTabletProject.IsEnabled = true;
-                    }
-                    else if (_started)
-                    {
-                        finishTabletProject.IsEnabled = true;
-                    }
-                    else if (_notStarted)
-                    {
-                        startTabletProject.IsEnabled = true;
-                    }
-                    cancelTabletProject.IsEnabled = true;
-                }
-                else if (User.Department == "Engineering")
-                {
-                    if (_submitted)
-                    {
-                        checkTabletProject.IsEnabled = true;
-                    }
-                    else if (_drawn)
-                    {
-                        submitTabletProject.IsEnabled = true;
-                    }
-                    else if (_started)
-                    {
-                        finishTabletProject.IsEnabled = true;
-                    }
-                    else if (_notStarted)
-                    {
-                        startTabletProject.IsEnabled = true;
-                    }
-                    completedTabletProject.IsEnabled = false;
-                    cancelTabletProject.IsEnabled = true;
-                }
-                else if (User.Department == "Customer Service")
-                {
-                    if (_finished)
-                    {
-                        completedTabletProject.IsEnabled = true;
-                    }
-                }
-                RightClickMenu.Items.Add(startTabletProject);
-                RightClickMenu.Items.Add(finishTabletProject);
-                RightClickMenu.Items.Add(checkTabletProject);
-                RightClickMenu.Items.Add(submitTabletProject);
-                RightClickMenu.Items.Add(completedTabletProject);
-                RightClickMenu.Items.Add(onHoldTabletProject);
-                if (User.Department == "Engineering") { RightClickMenu.Items.Add(offHoldTabletProject); }
-                RightClickMenu.Items.Add(cancelTabletProject);
-                expander.ContextMenu = RightClickMenu;
-                expander.ContextMenu.Tag = "RightClickMenu";
-                expander.ContextMenu.Closed += ContextMenu_Closed;
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("AllTabletProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void AllToolProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                ContextMenu RightClickMenu = new ContextMenu();
-                MenuItem completedToolProject = new MenuItem
-                {
-                    Header = "Completed",
-                    IsEnabled = false
-                };
-                MenuItem startToolProject = new MenuItem
-                {
-                    Header = "Start",
-                    IsEnabled = false
-                };
-                MenuItem finishToolProject = new MenuItem
-                {
-                    Header = "Finish",
-                    IsEnabled = false
-                };
-                MenuItem checkToolProject = new MenuItem
-                {
-                    Header = "Check",
-                    IsEnabled = false
-                };
-                MenuItem onHoldToolProject = new MenuItem
-                {
-                    Header = "Put On Hold"
-                };
-                MenuItem offHoldToolProject = new MenuItem
-                {
-                    Header = "Put Off Hold"
-                };
-                MenuItem cancelToolProject = new MenuItem
-                {
-                    Header = "Cancel",
-                    IsEnabled = true
-                };
-                startToolProject.Click += StartToolProject_Click;
-                finishToolProject.Click += FinishToolProject_Click;
-                checkToolProject.Click += CheckToolProject_Click;
-                onHoldToolProject.Click += OnHoldToolProject_Click;
-                offHoldToolProject.Click += OffHoldToolProject_Click;
-                completedToolProject.Click += CompleteToolProject_Click;
-                cancelToolProject.Click += CancelToolProject_Click;
-                Expander expander = sender as Expander;
-                Grid grid = expander.Header as Grid;
-
-                // Check the checkbox for the right-clicked expander
-                var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                // Set the right click module variable
-                rClickModule = "AllToolProjects";
-
-                _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-                using var _nat02context = new NAT02Context();
-                bool _finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _notStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _started = _nat02context.EoiToolProjectsStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                bool _drawn = _nat02context.EoiToolProjectsDrawn.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
-                _nat02context.Dispose();
-                if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
-                {
-                    if (_finished)
-                    {
-                        completedToolProject.IsEnabled = true;
-                    }
-                    else if (_drawn)
-                    {
-                        checkToolProject.IsEnabled = true;
-                    }
-                    else if (_started)
-                    {
-                        finishToolProject.IsEnabled = true;
-                    }
-                    else if (_notStarted)
-                    {
-                        startToolProject.IsEnabled = true;
-                    }
-                    cancelToolProject.IsEnabled = true;
-                }
-                else if (User.EmployeeCode == "E4345") // Phyllis
-                {
-                    cancelToolProject.IsEnabled = true;
-                }
-                else if (User.Department == "Engineering")
-                {
-                    if (_drawn)
-                    {
-                        checkToolProject.IsEnabled = true;
-                    }
-                    else if (_started)
-                    {
-                        finishToolProject.IsEnabled = true;
-                    }
-                    else if (_notStarted)
-                    {
-                        startToolProject.IsEnabled = true;
-                    }
-                    completedToolProject.IsEnabled = true;
-                    cancelToolProject.IsEnabled = true;
-                }
-                else if (User.Department == "Customer Service")
-                {
-                    if (_finished)
-                    {
-                        completedToolProject.IsEnabled = true;
-                    }
-                }
-                RightClickMenu.Items.Add(startToolProject);
-                RightClickMenu.Items.Add(finishToolProject);
-                RightClickMenu.Items.Add(checkToolProject);
-                RightClickMenu.Items.Add(completedToolProject);
-                RightClickMenu.Items.Add(onHoldToolProject);
-                if (User.Department == "Engineering") { RightClickMenu.Items.Add(offHoldToolProject); }
-                RightClickMenu.Items.Add(cancelToolProject);
-                expander.ContextMenu = RightClickMenu;
-                expander.ContextMenu.Tag = "RightClickMenu";
-                expander.ContextMenu.Closed += ContextMenu_Closed;
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("AllToolProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void TabletProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem startTabletProject = new MenuItem
-                    {
-                        Header = "Start"
-                    };
-                    startTabletProject.Click += StartTabletProject_Click;
-
-                    MenuItem onHoldTabletProject = new MenuItem
-                    {
-                        Header = "Set On Hold"
-                    };
-                    onHoldTabletProject.Click += OnHoldTabletProject_Click;
-
-                    MenuItem cancelTabletProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelTabletProject.Click += CancelTabletProject_Click;
-
-                    RightClickMenu.Items.Add(startTabletProject);
-                    RightClickMenu.Items.Add(onHoldTabletProject);
-                    RightClickMenu.Items.Add(cancelTabletProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "TabletProjectsNotStarted";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("TabletProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void TabletProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem drawnTabletProject = new MenuItem
-                    {
-                        Header = "Finish"
-                    };
-                    drawnTabletProject.Click += FinishTabletProject_Click;
-
-                    MenuItem onHoldTabletProject = new MenuItem
-                    {
-                        Header = "Set On Hold"
-                    };
-                    onHoldTabletProject.Click += OnHoldTabletProject_Click;
-
-                    MenuItem cancelTabletProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelTabletProject.Click += CancelTabletProject_Click;
-
-                    RightClickMenu.Items.Add(drawnTabletProject);
-                    RightClickMenu.Items.Add(onHoldTabletProject);
-                    RightClickMenu.Items.Add(cancelTabletProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "TabletProjectsStarted";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("TabletProjectStartedDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void TabletProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-                    MenuItem finishTabletProject = new MenuItem
-                    {
-                        Header = "Submit"
-                    };
-                    finishTabletProject.Click += SubmitTabletProject_Click;
-
-                    MenuItem onHoldTabletProject = new MenuItem
-                    {
-                        Header = "Set On Hold"
-                    };
-                    onHoldTabletProject.Click += OnHoldTabletProject_Click;
-
-                    MenuItem cancelTabletProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelTabletProject.Click += CancelTabletProject_Click;
-
-                    RightClickMenu.Items.Add(finishTabletProject);
-                    RightClickMenu.Items.Add(onHoldTabletProject);
-                    RightClickMenu.Items.Add(cancelTabletProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "TabletProjectsDrawn";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("TabletProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void TabletProjectSubmittedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem submitTabletProject = new MenuItem
-                    {
-                        Header = "Check"
-                    };
-                    submitTabletProject.Click += CheckTabletProject_Click;
-
-                    MenuItem onHoldTabletProject = new MenuItem
-                    {
-                        Header = "Set On Hold"
-                    };
-                    onHoldTabletProject.Click += OnHoldTabletProject_Click;
-
-                    MenuItem cancelTabletProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelTabletProject.Click += CancelTabletProject_Click;
-
-                    RightClickMenu.Items.Add(submitTabletProject);
-                    RightClickMenu.Items.Add(onHoldTabletProject);
-                    RightClickMenu.Items.Add(cancelTabletProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "TabletProjectsSubmitted";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("TabletProjectSubmittedDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void TabletProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem offHoldTabletProject = new MenuItem
-                    {
-                        Header = "Take Off Hold"
-                    };
-                    offHoldTabletProject.Click += OffHoldTabletProject_Click;
-
-                    MenuItem cancelTabletProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelTabletProject.Click += CancelTabletProject_Click;
-
-                    RightClickMenu.Items.Add(offHoldTabletProject);
-                    RightClickMenu.Items.Add(cancelTabletProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "TabletProjectsOnHold";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("TabletProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void ToolProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem startToolProject = new MenuItem
-                    {
-                        Header = "Start"
-                    };
-                    startToolProject.Click += StartToolProject_Click;
-
-                    MenuItem onHoldToolProject = new MenuItem
-                    {
-                        Header = "Put On Hold"
-                    };
-                    onHoldToolProject.Click += OnHoldToolProject_Click;
-
-                    MenuItem cancelToolProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelToolProject.Click += CancelToolProject_Click;
-
-                    RightClickMenu.Items.Add(startToolProject);
-                    RightClickMenu.Items.Add(onHoldToolProject);
-                    RightClickMenu.Items.Add(cancelToolProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "ToolProjectsNotStarted";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void ToolProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem finishToolProject = new MenuItem
-                    {
-                        Header = "Finish"
-                    };
-                    finishToolProject.Click += FinishToolProject_Click;
-
-                    MenuItem onHoldToolProject = new MenuItem
-                    {
-                        Header = "Put On Hold"
-                    };
-                    onHoldToolProject.Click += OnHoldToolProject_Click;
-
-                    MenuItem cancelToolProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelToolProject.Click += CancelToolProject_Click;
-
-                    RightClickMenu.Items.Add(finishToolProject);
-                    RightClickMenu.Items.Add(onHoldToolProject);
-                    RightClickMenu.Items.Add(cancelToolProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "ToolProjectsStarted";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void ToolProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem checkToolProject = new MenuItem
-                    {
-                        Header = "Check"
-                    };
-                    checkToolProject.Click += CheckToolProject_Click;
-
-                    MenuItem onHoldToolProject = new MenuItem
-                    {
-                        Header = "Put On Hold"
-                    };
-                    onHoldToolProject.Click += OnHoldToolProject_Click;
-
-                    MenuItem cancelToolProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelToolProject.Click += CancelToolProject_Click;
-
-                    RightClickMenu.Items.Add(checkToolProject);
-                    RightClickMenu.Items.Add(onHoldToolProject);
-                    RightClickMenu.Items.Add(cancelToolProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "ToolProjectsDrawn";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("ToolProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void ToolProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
-                {
-
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem offHoldToolProject = new MenuItem
-                    {
-                        Header = "Off Hold"
-                    };
-                    offHoldToolProject.Click += OffHoldToolProject_Click;
-
-                    MenuItem cancelToolProject = new MenuItem
-                    {
-                        Header = "Cancel",
-                        IsEnabled = true
-                    };
-                    cancelToolProject.Click += CancelToolProject_Click;
-
-                    RightClickMenu.Items.Add(offHoldToolProject);
-                    RightClickMenu.Items.Add(cancelToolProject);
-
-                    Expander expander = sender as Expander;
-                    Grid grid = expander.Header as Grid;
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "ToolProjectsOnHold";
-
-                    _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
-                    _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("ToolProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void QuotesNotConverted_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Customer Service" || User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
-                {
-                    Expander expander = sender as Expander;
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem completedQuoteCheck = new MenuItem
-                    {
-                        Header = "Completed Follow-up"
-                    };
-                    MenuItem submitQuote = new MenuItem
-                    {
-                        Header = "Submit Quote"
-                    };
-                    completedQuoteCheck.Click += CompletedQuoteCheck_Click;
-                    submitQuote.Click += SubmitQuote_Click;
-
-                    RightClickMenu.Items.Add(completedQuoteCheck);
-                    RightClickMenu.Items.Add(submitQuote);
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "QuotesNotConverted";
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                    _quoteNumber = double.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-                    _quoteRevNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void QuotesToConvert_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (User.Department == "Customer Service" || User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
-                {
-                    Expander expander = sender as Expander;
-                    ContextMenu RightClickMenu = new ContextMenu();
-
-                    MenuItem recallQuote = new MenuItem
-                    {
-                        Header = "Recall Quote"
-                    };
-                    recallQuote.Click += RecallQuote_Click;
-
-                    RightClickMenu.Items.Add(recallQuote);
-
-                    // Check the checkbox for the right-clicked expander
-                    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
-                    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
-
-                    // Set the right click module variable
-                    rClickModule = "QuotesToConvert";
-
-                    expander.ContextMenu = RightClickMenu;
-                    expander.ContextMenu.Tag = "RightClickMenu";
-                    expander.ContextMenu.Closed += ContextMenu_Closed;
-                    _quoteNumber = double.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
-                    _quoteRevNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
-            }
-        }
-        private void ContextMenu_Closed(object sender, RoutedEventArgs e)
-        {
-            //foreach (StackPanel stackPanel in MainGrid.Children.OfType<StackPanel>())
-            //{
-            //    try
-            //    {
-            //        DataGrid dataGrid = stackPanel.Children.OfType<DataGrid>().First();
-            //        if (dataGrid.ContextMenu != null && dataGrid.ContextMenu.Tag.ToString() == "RightClickMenu")
-            //        {
-            //            dataGrid.ContextMenu = null;
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        // MessageBox.Show(ex.Message);
-            //        IMethods.WriteToErrorLog("ContextMenu_Closed", ex.Message, User);
-            //    }
-            //}
-        }
-        private void Checkbox_Checked(object sender, RoutedEventArgs e)
-        {
-            CheckBox checkBox = sender as CheckBox;
-            Expander expander = (((checkBox.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).TemplatedParent as Expander;
-            string header = (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-            bool quote = headers.First(h => h.Value == header).Key.Contains("Quote");
-            bool project = headers.First(h => h.Value == header).Key.Contains("Project");
-            bool order = !headers.First(h => h.Value == header).Key.Contains("Queue") &&
-                         !headers.First(h => h.Value == header).Key.Contains("List") &&
-                         !headers.First(h => h.Value == header).Key.Contains("Quote") &&
-                         !headers.First(h => h.Value == header).Key.Contains("Project");
-            string col0val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[0].GetValue(ContentProperty).ToString();
-            string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
-            if (quote)
-            {
-                selectedQuotes.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
-            }
-            else if (project)
-            {
-                selectedProjects.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
-            }
-            else if (order)
-            {
-                selectedOrders.Add((col0val, checkBox, headers.Single(h => h.Value == header).Key));
-                if (expander.IsExpanded)
-                {
-                    foreach (Grid grid in (expander.Content as StackPanel).Children)
-                    {
-                        (grid.Children[0] as CheckBox).IsChecked = true;
-                    }
-                }
-            }
-        }
-        private void Checkbox_Unchecked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                CheckBox checkBox = sender as CheckBox;
-                Expander expander = (((checkBox.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).TemplatedParent as Expander;
-                string header = (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-                bool quote = headers.First(h => h.Value == header).Key.Contains("Quote");
-                bool project = headers.First(h => h.Value == header).Key.Contains("Project");
-                bool order = !headers.First(h => h.Value == header).Key.Contains("Queue") &&
-                             !headers.First(h => h.Value == header).Key.Contains("List") &&
-                             !headers.First(h => h.Value == header).Key.Contains("Quote") &&
-                             !headers.First(h => h.Value == header).Key.Contains("Project");
-                string col0val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[0].GetValue(ContentProperty).ToString();
-                string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
-                if (quote)
-                {
-                    selectedQuotes.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
-                }
-                else if (project)
-                {
-                    selectedProjects.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
-                }
-                else if (order)
-                {
-                    selectedOrders.Remove((col0val, checkBox, headers.Single(h => h.Value == header).Key));
-                    foreach (Grid grid in (expander.Content as StackPanel).Children)
-                    {
-                        (grid.Children[0] as CheckBox).IsChecked = false;
-                    }
-                }
-            }
-            catch
-            {
-
-            }
-        }
+        //private void OrderDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    using var _context = new NAT02Context();
+        //    using var _nat01context = new NAT01Context();
+        //    Expander expander = (Expander)sender;
+        //    Cursor = Cursors.AppStarting;
+
+        //    try
+        //    {
+        //        Grid grid = expander.Header as Grid;
+        //        string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
+        //        workOrder = new WorkOrder(int.Parse(orderNumber), this);
+        //        WindowCollection collection = App.Current.Windows;
+        //        foreach (Window w in collection)
+        //        {
+        //            if (w.Title.Contains(workOrder.OrderNumber.ToString()))
+        //            {
+        //                _context.Dispose();
+        //                _nat01context.Dispose();
+        //                w.WindowState = WindowState.Normal;
+        //                w.Show();
+        //                goto AlreadyOpen2;
+        //            }
+        //        }
+        //        if (_context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()))
+        //        {
+        //            MessageBox.Show("BEWARE!!\n" + _context.EoiOrdersBeingChecked.Where(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()).FirstOrDefault().User + " is in this order at the moment.");
+        //            mainTimer.Stop();
+        //        }
+        //        else if (_context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User == User.GetUserName()))
+        //        {
+        //            MessageBox.Show("You already have this order open.");
+        //            _context.Dispose();
+        //            _nat01context.Dispose();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    try
+        //    {
+        //        string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
+
+        //        OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
+        //        {
+        //            Left = Left,
+        //            Top = Top
+        //        };
+        //        orderInfoWindow.Show();
+        //        orderInfoWindow.Dispose();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+
+        //AlreadyOpen2:
+        //    _context.Dispose();
+        //    _nat01context.Dispose();
+        //    expander.IsExpanded = false;
+        //    Cursor = Cursors.Arrow;
+        //}
+        //private void OrderDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        Cursor = Cursors.AppStarting;
+        //        Expander expander = (Expander)sender;
+        //        using var context = new NAT02Context();
+        //        using NAT01Context nat01context = new NAT01Context();
+        //        try
+        //        {
+        //            Grid grid = expander.Header as Grid;
+        //            string orderNumber = grid.Children[0].GetValue(ContentProperty).ToString();
+        //            workOrder = new WorkOrder(int.Parse(orderNumber), this);
+        //            WindowCollection collection = App.Current.Windows;
+        //            foreach (Window w in collection)
+        //            {
+        //                if (w.Title.Contains(workOrder.OrderNumber.ToString()))
+        //                {
+        //                    context.Dispose();
+        //                    nat01context.Dispose();
+        //                    w.WindowState = WindowState.Normal;
+        //                    w.Show();
+        //                    goto AlreadyOpen;
+        //                }
+        //            }
+        //            if (context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()))
+        //            {
+        //                MessageBox.Show("BEWARE!!\n" + context.EoiOrdersBeingChecked.Where(o => o.OrderNo == workOrder.OrderNumber && o.User != User.GetUserName()).FirstOrDefault().User + " is in this order at the moment.");
+        //                mainTimer.Stop();
+        //            }
+        //            else if (context.EoiOrdersBeingChecked.Any(o => o.OrderNo == workOrder.OrderNumber && o.User == User.GetUserName()))
+        //            {
+        //                MessageBox.Show("You already have this order open.");
+        //                context.Dispose();
+        //                nat01context.Dispose();
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        try
+        //        {
+        //            string location = headers.Where(kvp => kvp.Value == (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString()).First().Key;
+        //            OrderInfoWindow orderInfoWindow = new OrderInfoWindow(workOrder, this, location, User)
+        //            {
+        //                Left = Left,
+        //                Top = Top
+        //            };
+        //            orderInfoWindow.Show();
+        //            orderInfoWindow.Dispose();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //    AlreadyOpen:
+        //        context.Dispose();
+        //        nat01context.Dispose();
+        //        Cursor = Cursors.Arrow;
+        //    }
+        //}
+        //private void QuoteDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    using var nat01context = new NAT01Context();
+        //    Expander expander = sender as Expander;
+        //    Grid grid = expander.Header as Grid;
+        //    Cursor = Cursors.AppStarting;
+        //    try
+        //    {
+        //        int quoteNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //        short revNumber = short.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+        //        WindowCollection collection = App.Current.Windows;
+        //        foreach (Window w in collection)
+        //        {
+        //            if (w.Title.Contains(quoteNumber.ToString()))
+        //            {
+        //                nat01context.Dispose();
+        //                w.WindowState = WindowState.Normal;
+        //                w.Show();
+        //                goto AlreadyOpen;
+        //            }
+        //        }
+        //        quote = new Quote(quoteNumber, revNumber);
+        //        mainTimer.Stop();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    try
+        //    {
+        //        QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
+        //        {
+        //            Left = Left,
+        //            Top = Top
+        //        };
+        //        quoteInfoWindow.Show();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //AlreadyOpen:
+        //    nat01context.Dispose();
+        //    Cursor = Cursors.Arrow;
+        //}
+        //private void QuoteDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        Cursor = Cursors.AppStarting;
+        //        using var nat01context = new NAT01Context();
+        //        Expander expander = sender as Expander;
+        //        Grid grid = expander.Header as Grid;
+        //        Cursor = Cursors.AppStarting;
+        //        try
+        //        {
+        //            int quoteNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            short revNumber = short.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+        //            WindowCollection collection = App.Current.Windows;
+        //            foreach (Window w in collection)
+        //            {
+        //                if (w.Title.Contains(quoteNumber.ToString()))
+        //                {
+        //                    nat01context.Dispose();
+        //                    w.WindowState = WindowState.Normal;
+        //                    w.Show();
+        //                    goto AlreadyOpen;
+        //                }
+        //            }
+        //            quote = new Quote(quoteNumber, revNumber);
+        //            mainTimer.Stop();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        try
+        //        {
+        //            QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
+        //            {
+        //                Left = Left,
+        //                Top = Top
+        //            };
+        //            quoteInfoWindow.Show();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //    AlreadyOpen:
+        //        nat01context.Dispose();
+        //        Cursor = Cursors.Arrow;
+        //    }
+        //}
+        //private void OrderDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl) || sender.GetType().Name == "Expander")
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        //(sender as DataGrid).SelectedItem = null;
+        //    }
+        //}
+        //private void QuoteDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        //(sender as DataGrid).SelectedItem = null;
+        //    }
+        //}
+        //private void OrdersBeingEnteredExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem toOfficeOrder = new MenuItem
+        //    {
+        //        Header = "Send to Office"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "BeingEntered";
+
+        //    RightClickMenu.Items.Add(toOfficeOrder);
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void OrdersEnteredUnscannedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem toOfficeOrder = new MenuItem
+        //    {
+        //        Header = "Send to Office"
+        //    };
+        //    MenuItem startOrder = new MenuItem
+        //    {
+        //        Header = "Start Order"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+        //    startOrder.Click += StartWorkOrder_Click;
+
+        //    RightClickMenu.Items.Add(toOfficeOrder);
+        //    RightClickMenu.Items.Add(startOrder);
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "EnteredUnscanned";
+
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void OrdersInEngineeringUnprintedExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem toOfficeOrder = new MenuItem
+        //    {
+        //        Header = "Send to Office"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "InEngineering";
+
+        //    RightClickMenu.Items.Add(toOfficeOrder);
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void OrdersReadyToPrintExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem toOfficeOrder = new MenuItem
+        //    {
+        //        Header = "Send to Office"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "ReadyToPrint";
+
+        //    RightClickMenu.Items.Add(toOfficeOrder);
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void OrderPrintedInEngineeringDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem toOfficeOrder = new MenuItem
+        //    {
+        //        Header = "Send to Office"
+        //    };
+        //    MenuItem toProdManOrder = new MenuItem
+        //    {
+        //        Header = "Send to Production"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    toOfficeOrder.Click += SendToOfficeMenuItem_Click;
+        //    toProdManOrder.Click += ToProdManOrder_Click;
+
+        //    RightClickMenu.Items.Add(toOfficeOrder);
+        //    if (User.Department == "Engineering" || User.Department == "Order Entry")
+        //    {
+        //        RightClickMenu.Items.Add(toProdManOrder);
+        //    }
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "PrintedInEngineering";
+
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void OrdersInTheOfficeExpander_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    ContextMenu RightClickMenu = new ContextMenu();
+
+        //    MenuItem startOrder = new MenuItem
+        //    {
+        //        Header = "Start Order"
+        //    };
+
+        //    Expander expander = sender as Expander;
+        //    startOrder.Click += StartWorkOrder_Click;
+
+        //    RightClickMenu.Items.Add(startOrder);
+
+        //    expander.ContextMenu = RightClickMenu;
+        //    expander.ContextMenu.Tag = "RightClickMenu";
+        //    expander.ContextMenu.Closed += ContextMenu_Closed;
+
+        //    // Check the checkbox for the right-clicked expander
+        //    var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //    ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //    // Set the right click module variable
+        //    rClickModule = "InTheOffice";
+
+        //    _orderNumber = double.Parse(((Grid)expander.Header).Children[0].GetValue(ContentProperty).ToString());
+        //}
+        //private void ProjectDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    Expander expander = sender as Expander;
+        //    Grid grid = expander.Header as Grid;
+        //    Cursor = Cursors.AppStarting;
+        //    try
+        //    {
+        //        string projectNumber = grid.Children[0].GetValue(ContentProperty).ToString();
+        //        string revNumber = grid.Children[1].GetValue(ContentProperty).ToString();
+        //        try
+        //        {
+        //            string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
+        //            if (!System.IO.Directory.Exists(path))
+        //                System.IO.Directory.CreateDirectory(path);
+        //            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+        //            //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+        //            //projectWindow.Show();
+        //            //projectWindow.Dispose();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //    Cursor = Cursors.Arrow;
+        //}
+        //private void ProjectDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        Cursor = Cursors.AppStarting;
+        //        try
+        //        {
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+        //            string projectNumber = grid.Children[0].GetValue(ContentProperty).ToString();
+        //            string revNumber = grid.Children[1].GetValue(ContentProperty).ToString();
+        //            try
+        //            {
+        //                string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
+        //                if (!System.IO.Directory.Exists(path))
+        //                    System.IO.Directory.CreateDirectory(path);
+        //                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show(ex.Message);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //        Cursor = Cursors.Arrow;
+        //    }
+        //}
+        //private void ProjectDataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (e.ChangedButton == MouseButton.Right || Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        // (sender as DataGrid).SelectedItem = null;
+        //    }
+        //}
+        //private void AllTabletProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        ContextMenu RightClickMenu = new ContextMenu();
+        //        MenuItem completedTabletProject = new MenuItem
+        //        {
+        //            Header = "Completed",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem startTabletProject = new MenuItem
+        //        {
+        //            Header = "Start",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem finishTabletProject = new MenuItem
+        //        {
+        //            Header = "Finish",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem submitTabletProject = new MenuItem
+        //        {
+        //            Header = "Submit",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem checkTabletProject = new MenuItem
+        //        {
+        //            Header = "Check",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem onHoldTabletProject = new MenuItem
+        //        {
+        //            Header = "Put On Hold"
+        //        };
+        //        MenuItem offHoldTabletProject = new MenuItem
+        //        {
+        //            Header = "Put Off Hold"
+        //        };
+        //        MenuItem cancelTabletProject = new MenuItem
+        //        {
+        //            Header = "Cancel",
+        //            IsEnabled = true
+        //        };
+        //        startTabletProject.Click += StartTabletProject_Click;
+        //        finishTabletProject.Click += FinishTabletProject_Click;
+        //        submitTabletProject.Click += SubmitTabletProject_Click;
+        //        checkTabletProject.Click += CheckTabletProject_Click;
+        //        onHoldTabletProject.Click += OnHoldTabletProject_Click;
+        //        offHoldTabletProject.Click += OffHoldTabletProject_Click;
+        //        completedTabletProject.Click += CompleteTabletProject_Click;
+        //        cancelTabletProject.Click += CancelTabletProject_Click;
+        //        Expander expander = sender as Expander;
+        //        Grid grid = expander.Header as Grid;
+
+        //        // Check the checkbox for the right-clicked expander
+        //        var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //        ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //        // Set the right click module variable
+        //        rClickModule = "AllTabletProjects";
+
+        //        _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //        _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+        //        using var _nat02context = new NAT02Context();
+        //        bool _finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _notStarted = _nat02context.EoiTabletProjectsNotStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _started = _nat02context.EoiTabletProjectsStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _drawn = _nat02context.EoiTabletProjectsDrawn.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _submitted = _nat02context.EoiTabletProjectsSubmitted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        _nat02context.Dispose();
+        //        if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+        //        {
+        //            if (_finished)
+        //            {
+        //                completedTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_submitted)
+        //            {
+        //                checkTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_drawn)
+        //            {
+        //                submitTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_started)
+        //            {
+        //                finishTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_notStarted)
+        //            {
+        //                startTabletProject.IsEnabled = true;
+        //            }
+        //            cancelTabletProject.IsEnabled = true;
+        //        }
+        //        else if (User.Department == "Engineering")
+        //        {
+        //            if (_submitted)
+        //            {
+        //                checkTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_drawn)
+        //            {
+        //                submitTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_started)
+        //            {
+        //                finishTabletProject.IsEnabled = true;
+        //            }
+        //            else if (_notStarted)
+        //            {
+        //                startTabletProject.IsEnabled = true;
+        //            }
+        //            completedTabletProject.IsEnabled = false;
+        //            cancelTabletProject.IsEnabled = true;
+        //        }
+        //        else if (User.Department == "Customer Service")
+        //        {
+        //            if (_finished)
+        //            {
+        //                completedTabletProject.IsEnabled = true;
+        //            }
+        //        }
+        //        RightClickMenu.Items.Add(startTabletProject);
+        //        RightClickMenu.Items.Add(finishTabletProject);
+        //        RightClickMenu.Items.Add(checkTabletProject);
+        //        RightClickMenu.Items.Add(submitTabletProject);
+        //        RightClickMenu.Items.Add(completedTabletProject);
+        //        RightClickMenu.Items.Add(onHoldTabletProject);
+        //        if (User.Department == "Engineering") { RightClickMenu.Items.Add(offHoldTabletProject); }
+        //        RightClickMenu.Items.Add(cancelTabletProject);
+        //        expander.ContextMenu = RightClickMenu;
+        //        expander.ContextMenu.Tag = "RightClickMenu";
+        //        expander.ContextMenu.Closed += ContextMenu_Closed;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("AllTabletProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void AllToolProjectsDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        ContextMenu RightClickMenu = new ContextMenu();
+        //        MenuItem completedToolProject = new MenuItem
+        //        {
+        //            Header = "Completed",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem startToolProject = new MenuItem
+        //        {
+        //            Header = "Start",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem finishToolProject = new MenuItem
+        //        {
+        //            Header = "Finish",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem checkToolProject = new MenuItem
+        //        {
+        //            Header = "Check",
+        //            IsEnabled = false
+        //        };
+        //        MenuItem onHoldToolProject = new MenuItem
+        //        {
+        //            Header = "Put On Hold"
+        //        };
+        //        MenuItem offHoldToolProject = new MenuItem
+        //        {
+        //            Header = "Put Off Hold"
+        //        };
+        //        MenuItem cancelToolProject = new MenuItem
+        //        {
+        //            Header = "Cancel",
+        //            IsEnabled = true
+        //        };
+        //        startToolProject.Click += StartToolProject_Click;
+        //        finishToolProject.Click += FinishToolProject_Click;
+        //        checkToolProject.Click += CheckToolProject_Click;
+        //        onHoldToolProject.Click += OnHoldToolProject_Click;
+        //        offHoldToolProject.Click += OffHoldToolProject_Click;
+        //        completedToolProject.Click += CompleteToolProject_Click;
+        //        cancelToolProject.Click += CancelToolProject_Click;
+        //        Expander expander = sender as Expander;
+        //        Grid grid = expander.Header as Grid;
+
+        //        // Check the checkbox for the right-clicked expander
+        //        var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //        ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //        // Set the right click module variable
+        //        rClickModule = "AllToolProjects";
+
+        //        _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //        _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+        //        using var _nat02context = new NAT02Context();
+        //        bool _finished = _nat02context.EoiProjectsFinished.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _notStarted = _nat02context.EoiToolProjectsNotStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _started = _nat02context.EoiToolProjectsStarted.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        bool _drawn = _nat02context.EoiToolProjectsDrawn.Where(p => p.ProjectNumber == _projectNumber && p.RevisionNumber == _revNumber).Any();
+        //        _nat02context.Dispose();
+        //        if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+        //        {
+        //            if (_finished)
+        //            {
+        //                completedToolProject.IsEnabled = true;
+        //            }
+        //            else if (_drawn)
+        //            {
+        //                checkToolProject.IsEnabled = true;
+        //            }
+        //            else if (_started)
+        //            {
+        //                finishToolProject.IsEnabled = true;
+        //            }
+        //            else if (_notStarted)
+        //            {
+        //                startToolProject.IsEnabled = true;
+        //            }
+        //            cancelToolProject.IsEnabled = true;
+        //        }
+        //        else if (User.EmployeeCode == "E4345") // Phyllis
+        //        {
+        //            cancelToolProject.IsEnabled = true;
+        //        }
+        //        else if (User.Department == "Engineering")
+        //        {
+        //            if (_drawn)
+        //            {
+        //                checkToolProject.IsEnabled = true;
+        //            }
+        //            else if (_started)
+        //            {
+        //                finishToolProject.IsEnabled = true;
+        //            }
+        //            else if (_notStarted)
+        //            {
+        //                startToolProject.IsEnabled = true;
+        //            }
+        //            completedToolProject.IsEnabled = true;
+        //            cancelToolProject.IsEnabled = true;
+        //        }
+        //        else if (User.Department == "Customer Service")
+        //        {
+        //            if (_finished)
+        //            {
+        //                completedToolProject.IsEnabled = true;
+        //            }
+        //        }
+        //        RightClickMenu.Items.Add(startToolProject);
+        //        RightClickMenu.Items.Add(finishToolProject);
+        //        RightClickMenu.Items.Add(checkToolProject);
+        //        RightClickMenu.Items.Add(completedToolProject);
+        //        RightClickMenu.Items.Add(onHoldToolProject);
+        //        if (User.Department == "Engineering") { RightClickMenu.Items.Add(offHoldToolProject); }
+        //        RightClickMenu.Items.Add(cancelToolProject);
+        //        expander.ContextMenu = RightClickMenu;
+        //        expander.ContextMenu.Tag = "RightClickMenu";
+        //        expander.ContextMenu.Closed += ContextMenu_Closed;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("AllToolProjectsDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void TabletProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem startTabletProject = new MenuItem
+        //            {
+        //                Header = "Start"
+        //            };
+        //            startTabletProject.Click += StartTabletProject_Click;
+
+        //            MenuItem onHoldTabletProject = new MenuItem
+        //            {
+        //                Header = "Set On Hold"
+        //            };
+        //            onHoldTabletProject.Click += OnHoldTabletProject_Click;
+
+        //            MenuItem cancelTabletProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelTabletProject.Click += CancelTabletProject_Click;
+
+        //            RightClickMenu.Items.Add(startTabletProject);
+        //            RightClickMenu.Items.Add(onHoldTabletProject);
+        //            RightClickMenu.Items.Add(cancelTabletProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "TabletProjectsNotStarted";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("TabletProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void TabletProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem drawnTabletProject = new MenuItem
+        //            {
+        //                Header = "Finish"
+        //            };
+        //            drawnTabletProject.Click += FinishTabletProject_Click;
+
+        //            MenuItem onHoldTabletProject = new MenuItem
+        //            {
+        //                Header = "Set On Hold"
+        //            };
+        //            onHoldTabletProject.Click += OnHoldTabletProject_Click;
+
+        //            MenuItem cancelTabletProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelTabletProject.Click += CancelTabletProject_Click;
+
+        //            RightClickMenu.Items.Add(drawnTabletProject);
+        //            RightClickMenu.Items.Add(onHoldTabletProject);
+        //            RightClickMenu.Items.Add(cancelTabletProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "TabletProjectsStarted";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("TabletProjectStartedDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void TabletProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+        //            MenuItem finishTabletProject = new MenuItem
+        //            {
+        //                Header = "Submit"
+        //            };
+        //            finishTabletProject.Click += SubmitTabletProject_Click;
+
+        //            MenuItem onHoldTabletProject = new MenuItem
+        //            {
+        //                Header = "Set On Hold"
+        //            };
+        //            onHoldTabletProject.Click += OnHoldTabletProject_Click;
+
+        //            MenuItem cancelTabletProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelTabletProject.Click += CancelTabletProject_Click;
+
+        //            RightClickMenu.Items.Add(finishTabletProject);
+        //            RightClickMenu.Items.Add(onHoldTabletProject);
+        //            RightClickMenu.Items.Add(cancelTabletProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "TabletProjectsDrawn";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("TabletProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void TabletProjectSubmittedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem submitTabletProject = new MenuItem
+        //            {
+        //                Header = "Check"
+        //            };
+        //            submitTabletProject.Click += CheckTabletProject_Click;
+
+        //            MenuItem onHoldTabletProject = new MenuItem
+        //            {
+        //                Header = "Set On Hold"
+        //            };
+        //            onHoldTabletProject.Click += OnHoldTabletProject_Click;
+
+        //            MenuItem cancelTabletProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelTabletProject.Click += CancelTabletProject_Click;
+
+        //            RightClickMenu.Items.Add(submitTabletProject);
+        //            RightClickMenu.Items.Add(onHoldTabletProject);
+        //            RightClickMenu.Items.Add(cancelTabletProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "TabletProjectsSubmitted";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("TabletProjectSubmittedDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void TabletProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem offHoldTabletProject = new MenuItem
+        //            {
+        //                Header = "Take Off Hold"
+        //            };
+        //            offHoldTabletProject.Click += OffHoldTabletProject_Click;
+
+        //            MenuItem cancelTabletProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelTabletProject.Click += CancelTabletProject_Click;
+
+        //            RightClickMenu.Items.Add(offHoldTabletProject);
+        //            RightClickMenu.Items.Add(cancelTabletProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "TabletProjectsOnHold";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("TabletProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void ToolProjectNotStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem startToolProject = new MenuItem
+        //            {
+        //                Header = "Start"
+        //            };
+        //            startToolProject.Click += StartToolProject_Click;
+
+        //            MenuItem onHoldToolProject = new MenuItem
+        //            {
+        //                Header = "Put On Hold"
+        //            };
+        //            onHoldToolProject.Click += OnHoldToolProject_Click;
+
+        //            MenuItem cancelToolProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelToolProject.Click += CancelToolProject_Click;
+
+        //            RightClickMenu.Items.Add(startToolProject);
+        //            RightClickMenu.Items.Add(onHoldToolProject);
+        //            RightClickMenu.Items.Add(cancelToolProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "ToolProjectsNotStarted";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void ToolProjectStartedDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem finishToolProject = new MenuItem
+        //            {
+        //                Header = "Finish"
+        //            };
+        //            finishToolProject.Click += FinishToolProject_Click;
+
+        //            MenuItem onHoldToolProject = new MenuItem
+        //            {
+        //                Header = "Put On Hold"
+        //            };
+        //            onHoldToolProject.Click += OnHoldToolProject_Click;
+
+        //            MenuItem cancelToolProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelToolProject.Click += CancelToolProject_Click;
+
+        //            RightClickMenu.Items.Add(finishToolProject);
+        //            RightClickMenu.Items.Add(onHoldToolProject);
+        //            RightClickMenu.Items.Add(cancelToolProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "ToolProjectsStarted";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("ToolProjectNotStartedDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void ToolProjectDrawnDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem checkToolProject = new MenuItem
+        //            {
+        //                Header = "Check"
+        //            };
+        //            checkToolProject.Click += CheckToolProject_Click;
+
+        //            MenuItem onHoldToolProject = new MenuItem
+        //            {
+        //                Header = "Put On Hold"
+        //            };
+        //            onHoldToolProject.Click += OnHoldToolProject_Click;
+
+        //            MenuItem cancelToolProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelToolProject.Click += CancelToolProject_Click;
+
+        //            RightClickMenu.Items.Add(checkToolProject);
+        //            RightClickMenu.Items.Add(onHoldToolProject);
+        //            RightClickMenu.Items.Add(cancelToolProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "ToolProjectsDrawn";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("ToolProjectDrawnDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void ToolProjectOnHoldDataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Engineering" || User.GetUserName().Contains("Phyllis"))
+        //        {
+
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem offHoldToolProject = new MenuItem
+        //            {
+        //                Header = "Off Hold"
+        //            };
+        //            offHoldToolProject.Click += OffHoldToolProject_Click;
+
+        //            MenuItem cancelToolProject = new MenuItem
+        //            {
+        //                Header = "Cancel",
+        //                IsEnabled = true
+        //            };
+        //            cancelToolProject.Click += CancelToolProject_Click;
+
+        //            RightClickMenu.Items.Add(offHoldToolProject);
+        //            RightClickMenu.Items.Add(cancelToolProject);
+
+        //            Expander expander = sender as Expander;
+        //            Grid grid = expander.Header as Grid;
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "ToolProjectsOnHold";
+
+        //            _projectNumber = int.Parse(grid.Children[0].GetValue(ContentProperty).ToString());
+        //            _revNumber = int.Parse(grid.Children[1].GetValue(ContentProperty).ToString());
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("ToolProjectOnHoldDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void QuotesNotConverted_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Customer Service" || User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+        //        {
+        //            Expander expander = sender as Expander;
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem completedQuoteCheck = new MenuItem
+        //            {
+        //                Header = "Completed Follow-up"
+        //            };
+        //            MenuItem submitQuote = new MenuItem
+        //            {
+        //                Header = "Submit Quote"
+        //            };
+        //            completedQuoteCheck.Click += CompletedQuoteCheck_Click;
+        //            submitQuote.Click += SubmitQuote_Click;
+
+        //            RightClickMenu.Items.Add(completedQuoteCheck);
+        //            RightClickMenu.Items.Add(submitQuote);
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "QuotesNotConverted";
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //            _quoteNumber = double.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //            _quoteRevNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void QuotesToConvert_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (User.Department == "Customer Service" || User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754" || User.EmployeeCode == "E4509")
+        //        {
+        //            Expander expander = sender as Expander;
+        //            ContextMenu RightClickMenu = new ContextMenu();
+
+        //            MenuItem recallQuote = new MenuItem
+        //            {
+        //                Header = "Recall Quote"
+        //            };
+        //            recallQuote.Click += RecallQuote_Click;
+
+        //            RightClickMenu.Items.Add(recallQuote);
+
+        //            // Check the checkbox for the right-clicked expander
+        //            var x = ((VisualTreeHelper.GetChild(expander as DependencyObject, 0) as Border).Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Grid>().First();
+        //            ((VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(x, 0), 0) as Border).Child as Grid).Children.OfType<CheckBox>().First().IsChecked = true;
+
+        //            // Set the right click module variable
+        //            rClickModule = "QuotesToConvert";
+
+        //            expander.ContextMenu = RightClickMenu;
+        //            expander.ContextMenu.Tag = "RightClickMenu";
+        //            expander.ContextMenu.Closed += ContextMenu_Closed;
+        //            _quoteNumber = double.Parse((expander.Header as Grid).Children[0].GetValue(ContentProperty).ToString());
+        //            _quoteRevNumber = int.Parse((expander.Header as Grid).Children[1].GetValue(ContentProperty).ToString());
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // MessageBox.Show(ex.Message);
+        //        IMethods.WriteToErrorLog("QuoteDataGrid_MouseRightButtonUp", ex.Message, User);
+        //    }
+        //}
+        //private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+        //{
+        //    //foreach (StackPanel stackPanel in MainGrid.Children.OfType<StackPanel>())
+        //    //{
+        //    //    try
+        //    //    {
+        //    //        DataGrid dataGrid = stackPanel.Children.OfType<DataGrid>().First();
+        //    //        if (dataGrid.ContextMenu != null && dataGrid.ContextMenu.Tag.ToString() == "RightClickMenu")
+        //    //        {
+        //    //            dataGrid.ContextMenu = null;
+        //    //        }
+        //    //    }
+        //    //    catch (Exception ex)
+        //    //    {
+        //    //        // MessageBox.Show(ex.Message);
+        //    //        IMethods.WriteToErrorLog("ContextMenu_Closed", ex.Message, User);
+        //    //    }
+        //    //}
+        //}
+        //private void Checkbox_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    CheckBox checkBox = sender as CheckBox;
+        //    Expander expander = (((checkBox.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).TemplatedParent as Expander;
+        //    string header = (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //    bool quote = headers.First(h => h.Value == header).Key.Contains("Quote");
+        //    bool project = headers.First(h => h.Value == header).Key.Contains("Project");
+        //    bool order = !headers.First(h => h.Value == header).Key.Contains("Queue") &&
+        //                 !headers.First(h => h.Value == header).Key.Contains("List") &&
+        //                 !headers.First(h => h.Value == header).Key.Contains("Quote") &&
+        //                 !headers.First(h => h.Value == header).Key.Contains("Project");
+        //    string col0val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[0].GetValue(ContentProperty).ToString();
+        //    string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
+        //    if (quote)
+        //    {
+        //        selectedQuotes.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
+        //    }
+        //    else if (project)
+        //    {
+        //        selectedProjects.Add((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
+        //    }
+        //    else if (order)
+        //    {
+        //        selectedOrders.Add((col0val, checkBox, headers.Single(h => h.Value == header).Key));
+        //        if (expander.IsExpanded)
+        //        {
+        //            foreach (Grid grid in (expander.Content as StackPanel).Children)
+        //            {
+        //                (grid.Children[0] as CheckBox).IsChecked = true;
+        //            }
+        //        }
+        //    }
+        //}
+        //private void Checkbox_Unchecked(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        CheckBox checkBox = sender as CheckBox;
+        //        Expander expander = (((checkBox.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).TemplatedParent as Expander;
+        //        string header = (((expander.Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
+        //        bool quote = headers.First(h => h.Value == header).Key.Contains("Quote");
+        //        bool project = headers.First(h => h.Value == header).Key.Contains("Project");
+        //        bool order = !headers.First(h => h.Value == header).Key.Contains("Queue") &&
+        //                     !headers.First(h => h.Value == header).Key.Contains("List") &&
+        //                     !headers.First(h => h.Value == header).Key.Contains("Quote") &&
+        //                     !headers.First(h => h.Value == header).Key.Contains("Project");
+        //        string col0val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[0].GetValue(ContentProperty).ToString();
+        //        string col1val = (((checkBox.Parent as Grid).Children[1] as ContentPresenter).Content as Grid).Children[1].GetValue(ContentProperty).ToString();
+        //        if (quote)
+        //        {
+        //            selectedQuotes.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
+        //        }
+        //        else if (project)
+        //        {
+        //            selectedProjects.Remove((col0val, col1val, checkBox, headers.Single(h => h.Value == header).Key));
+        //        }
+        //        else if (order)
+        //        {
+        //            selectedOrders.Remove((col0val, checkBox, headers.Single(h => h.Value == header).Key));
+        //            foreach (Grid grid in (expander.Content as StackPanel).Children)
+        //            {
+        //                (grid.Children[0] as CheckBox).IsChecked = false;
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //}
         private void GridWindow_Drop(object sender, DragEventArgs e)
         {
             try
