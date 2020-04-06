@@ -2489,7 +2489,7 @@
         <!--#endregion-->
         
         <!--#region ShadowDrops -->
-        <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.85" BlurRadius="2"/>
+        <DropShadowEffect x:Key="NotificationRowBorderEffect" ShadowDepth="1.5" Direction="269" Color="Black" Opacity="0.5" BlurRadius="4"/>
         <DropShadowEffect x:Key="NoRowBorderEffect" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
         <DropShadowEffect x:Key="NotificationRowBorderEffectBottom" ShadowDepth="2" Direction="315" Color="Black" Opacity="0.75" BlurRadius="8"/>
         <DropShadowEffect x:Key="NoRowBorderEffectBottom" ShadowDepth="0" Direction="0" Color="Transparent" Opacity="0.0" BlurRadius="0"/>
@@ -3944,10 +3944,10 @@
         <!--#region Module Grids -->
         <Storyboard x:Key="listBoxHighlight">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
-                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Medium}"/>
+                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Dark}"/>
             </ObjectAnimationUsingKeyFrames>
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderBrush">
-                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Transparent}"/>
+                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource Bright}"/>
             </ObjectAnimationUsingKeyFrames>
             <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="BorderThickness">
                 <SplineThicknessKeyFrame KeyTime="0" Value="0,1,0,0"/>
@@ -3958,7 +3958,7 @@
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="Effect" AutoReverse="True">
                 <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource NotificationRowBorderEffect}"/>
             </ObjectAnimationUsingKeyFrames>
-            <DoubleAnimation Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Opacity" To="1.0" Duration="0"/>
+            <DoubleAnimation Storyboard.TargetName="TopBorder" Storyboard.TargetProperty="Opacity" To="0.2" Duration="0"/>
         </Storyboard>
         <Style x:Key="CustomerNotesModule" TargetType="Label">
             <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
@@ -5074,22 +5074,22 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                            <Grid Margin="0,0">
-                                                <Grid.Background>
+                                                                    <Grid Margin="0,0">
+                                                                        <Grid.Background>
                                                                             <Binding ElementName="OrderNumber" Path="Text" Converter="{StaticResource backgroundConverter}" ConverterParameter="Orders" NotifyOnSourceUpdated="True"/>
-                                                </Grid.Background>
-                                                <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="50"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysInArea" Width="55"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="135"/>
-                                                        <ColumnDefinition Width="135"/>
-                                                    </Grid.ColumnDefinitions>
+                                                                        </Grid.Background>
+                                                                        <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysToShip" Width="50"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysInArea" Width="55"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Employee" Width="135"/>
+                                                                                <ColumnDefinition Width="135"/>
+                                                                            </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
                                                                                 <CheckBox.IsChecked>
@@ -5105,13 +5105,13 @@
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                                             <TextBlock Tag="DaysInArea" Text="{Binding DaysInOffice, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
                                                                             <TextBlock Tag="EmployeeName" Text="{Binding EmployeeName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="5" Margin="10,0"/>
-                                                    <Grid Grid.Column="6">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
+                                                                            <Grid Grid.Column="6">
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition/>
+                                                                                    <ColumnDefinition Width="Auto"/>
+                                                                                </Grid.ColumnDefinitions>
                                                                                 <TextBlock Tag="CSR" Text="{Binding Csr, NotifyOnSourceUpdated=True}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="10,0"/>
-                                                        <!--<StackPanel Grid.Column="1">
+                                                                                <!--<StackPanel Grid.Column="1">
                                                             <Image x:Name="OpenImage" Height="35" Width="35" Source="{DynamicResource window_plusDrawingImage}" Cursor="Hand" Visibility="Visible" MouseUp="OpenOrderButton_Click">
                                                                 <Image.Style>
                                                                     <Style>
@@ -5129,8 +5129,8 @@
                                                                 </Image.Style>
                                                             </Image>
                                                         </StackPanel>-->
-                                                    </Grid>
-                                                </Grid>
+                                                                            </Grid>
+                                                                        </Grid>
                                                                         <Grid.Triggers>
                                                                             <EventTrigger RoutedEvent="MouseEnter">
                                                                                 <BeginStoryboard Name="Highlight" Storyboard="{StaticResource listBoxHighlight}"/>
@@ -5657,21 +5657,21 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                            <Grid Margin="0,0">
-                                                <Grid.Background>
+                                                                    <Grid x:Name="GridBackGround" Margin="0,0">
+                                                                        <Grid.Background>
                                                                             <Binding ElementName="OrderNumber" Path="Text" Converter="{StaticResource backgroundConverter}" ConverterParameter="Orders" NotifyOnSourceUpdated="True"/>
-                                                </Grid.Background>
-                                                <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
-                                                <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
-                                                        <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
-                                                        <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
-                                                        <ColumnDefinition Width="135"/>
-                                                    </Grid.ColumnDefinitions>
+                                                                        </Grid.Background>
+                                                                        <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition SharedSizeGroup="Checkbox" Width="35"/>
+                                                                                <ColumnDefinition SharedSizeGroup="OrderNumber" Width="70"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DaysToShip" Width="60"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Employee" Width="140"/>
+                                                                                <ColumnDefinition Width="135"/>
+                                                                            </Grid.ColumnDefinitions>
                                                                             <CheckBox x:Name="CheckBox" Grid.Column="0" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked">
                                                                                 <!-- IsChecked="{Binding ElementName=HeaderCheckBox, Path=IsChecked, Mode=OneWay}"-->
                                                                                 <CheckBox.IsChecked>
@@ -5686,32 +5686,32 @@
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                                             <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
-                                                    <Grid Grid.Column="5">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*" MinWidth="100"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
+                                                                            <Grid Grid.Column="5">
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition Width="*" MinWidth="100"/>
+                                                                                    <ColumnDefinition Width="Auto"/>
+                                                                                </Grid.ColumnDefinitions>
                                                                                 <TextBlock Tag="Checker" Text="{Binding CheckedBy}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis"/>
-                                                        <!--<StackPanel Grid.Column="1">
-                                                            <Image x:Name="OpenImage" Height="35" Width="35" Source="{DynamicResource window_plusDrawingImage}" Cursor="Hand" Visibility="Visible" MouseUp="OpenOrderButton_Click">
-                                                                <Image.Style>
-                                                                    <Style>
-                                                                        <Style.Triggers>
-                                                                            <Trigger Property="Image.IsMouseOver" Value="True">
-                                                                                <Setter Property="Image.Opacity" Value="1"/>
-                                                                                <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                            </Trigger>
-                                                                            <Trigger Property="Image.IsMouseOver" Value="False">
-                                                                                <Setter Property="Image.Opacity" Value="0.4"/>
-                                                                                <Setter Property="Image.Cursor" Value="Hand"/>
-                                                                            </Trigger>
-                                                                        </Style.Triggers>
-                                                                    </Style>
-                                                                </Image.Style>
-                                                            </Image>
-                                                        </StackPanel>-->
-                                                    </Grid>
-                                                </Grid>
+                                                                                <!--<StackPanel Grid.Column="1">
+                                                                <Image x:Name="OpenImage" Height="35" Width="35" Source="{DynamicResource window_plusDrawingImage}" Cursor="Hand" Visibility="Visible" MouseUp="OpenOrderButton_Click">
+                                                                    <Image.Style>
+                                                                        <Style>
+                                                                            <Style.Triggers>
+                                                                                <Trigger Property="Image.IsMouseOver" Value="True">
+                                                                                    <Setter Property="Image.Opacity" Value="1"/>
+                                                                                    <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                                </Trigger>
+                                                                                <Trigger Property="Image.IsMouseOver" Value="False">
+                                                                                    <Setter Property="Image.Opacity" Value="0.4"/>
+                                                                                    <Setter Property="Image.Cursor" Value="Hand"/>
+                                                                                </Trigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                            </StackPanel>-->
+                                                                            </Grid>
+                                                                        </Grid>
                                                                         <Grid.Triggers>
                                                                             <EventTrigger RoutedEvent="MouseEnter">
                                                                                 <BeginStoryboard Name="Highlight" Storyboard="{StaticResource listBoxHighlight}"/>

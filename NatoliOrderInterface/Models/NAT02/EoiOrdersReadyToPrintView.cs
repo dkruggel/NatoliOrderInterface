@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using NatoliOrderInterface;
+using System.Windows;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 
 namespace NatoliOrderInterface.Models
 {
@@ -20,8 +26,32 @@ namespace NatoliOrderInterface.Models
 
         public bool Equals(EoiOrdersReadyToPrintView other)
         {
+            
             if (other is null)
                 return false;
+
+
+            //try
+            //{
+            //    if ((Application.Current.MainWindow as MainWindow) != null && (Application.Current.MainWindow as MainWindow).OrdersReadyToPrintListBox.HasItems)
+            //    {
+            //        int index = 0;
+            //        ListBox listBox = (Application.Current.MainWindow as MainWindow).OrdersReadyToPrintListBox;
+            //        List<double> orders = new List<double>();
+            //        foreach(EoiOrdersReadyToPrintView o in (listBox.ItemsSource as List<EoiOrdersReadyToPrintView>))
+            //        {
+            //            orders.Add(o.OrderNo);
+            //        }
+            //        index = orders.IndexOf(other.OrderNo);
+            //        (listBox[0] as ListBoxItem).Template
+            //        ControlTemplate controlTemplate = listBox.Template;
+            //        var grid = controlTemplate.FindName("GridBackGround", listBox);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    string x = ex.Message;
+            //}
 
             return this.OrderNo == other.OrderNo &&
                    this.CustomerName == other.CustomerName &&
