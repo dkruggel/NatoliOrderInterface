@@ -2160,13 +2160,13 @@ namespace NatoliOrderInterface
                                         }
 
                                         // Exotic or Semi-exotic hob for this die number
-                                        if (_nat01Context.HobList.Any(h => h.DieId == die.DieId && die.ShapeId != 1 && die.ShapeId != 2 && die.ShapeId != 3 && die.ShapeId != 4 && die.ShapeId != 5
+                                        if (_nat01Context.HobList.Any(h => h.DieId == die.DieId && die.ShapeId != 1 && die.ShapeId != 2 && die.ShapeId != 3 && die.ShapeId != 4 && die.ShapeId != 5 && die.ShapeId != 28 && die.ShapeId != 33 && die.ShapeId != 38 && die.ShapeId != 39 && die.ShapeId != 48 && die.ShapeId != 58
                                         && (h.Class == "EX" || h.Class == "SX")))
                                         {
                                             // Material is NOT A2 steel
                                             if (!quoteLineItem.Material.Contains("A2"))
                                             {
-                                                errors.Add("Dies are required to be A2 steel if the hob is exotic or semi-exotic.");
+                                                errors.Add("Dies are required to be A2 steel if the hob is exotic or semi-exotic (and not regular indent).");
                                             }
                                         }
                                     }
