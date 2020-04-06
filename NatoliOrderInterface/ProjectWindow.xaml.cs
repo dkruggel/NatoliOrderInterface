@@ -99,6 +99,7 @@ namespace NatoliOrderInterface
         public static string Units = "in";
         Quote quote = null;
         private bool validData = false;
+        private bool timersEnabled = false;
 
 
 
@@ -119,6 +120,11 @@ namespace NatoliOrderInterface
             {
                 LoadEngineeringProject();
             }
+            //if (mainWindow.WindowState == WindowState.Maximized)
+            //{
+            //    this.WindowState = WindowState.Maximized;
+            //}
+            timersEnabled = true;
         }
 
         /// <summary>
@@ -427,10 +433,14 @@ namespace NatoliOrderInterface
             IntPtr hwnd = new WindowInteropHelper(mainWindow).Handle;
             Rect windowRect = new Rect();
             GetWindowRect(hwnd, ref windowRect);
-            Top = windowRect.Top + 8;
-            Left = windowRect.Left + 8;
+            
+            Top = windowRect.Top;
+            //Top = mainWindow.Top;
+            Left = windowRect.Left;
+            //Left = mainWindow.Left;
             Width = mainWindow.Width;
             Height = mainWindow.Height;
+            
 
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
@@ -5123,14 +5133,17 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CustomerNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!projectLinkedToQuote)
+            if (timersEnabled)
             {
-                if (sender is TextBox textBox)
+                if (!projectLinkedToQuote)
                 {
-                    EditedTimer.Stop();
-                    editedText = textBox.Text.ToString();
-                    editedTextBoxName = textBox.Name.ToString();
-                    EditedTimer.Start();
+                    if (sender is TextBox textBox)
+                    {
+                        EditedTimer.Stop();
+                        editedText = textBox.Text.ToString();
+                        editedTextBoxName = textBox.Name.ToString();
+                        EditedTimer.Start();
+                    }
                 }
             }
         }
@@ -5141,14 +5154,17 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void MachineNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!projectLinkedToQuote)
+            if (timersEnabled)
             {
-                if (sender is TextBox textBox)
+                if (!projectLinkedToQuote)
                 {
-                    EditedTimer.Stop();
-                    editedText = textBox.Text.ToString();
-                    editedTextBoxName = textBox.Name.ToString();
-                    EditedTimer.Start();
+                    if (sender is TextBox textBox)
+                    {
+                        EditedTimer.Stop();
+                        editedText = textBox.Text.ToString();
+                        editedTextBoxName = textBox.Name.ToString();
+                        EditedTimer.Start();
+                    }
                 }
             }
         }
@@ -5159,24 +5175,27 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void HobOrDieNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox textBox)
+            if (timersEnabled)
             {
-                EditedTimer.Stop();
-                editedText = textBox.Text.ToString();
-                editedTextBoxName = textBox.Name.ToString();
-                upperCupType = UpperCupType.Text.ToString();
-                upperCupDepth = UpperCupDepth.Text.ToString();
-                lowerCupType = LowerCupType.Text.ToString();
-                lowerCupDepth = LowerCupDepth.Text.ToString();
-                shortRejectCupType = ShortRejectCupType.Text.ToString();
-                shortRejectCupDepth = ShortRejectCupDepth.Text.ToString();
-                longRejectCupType = LongRejectCupType.Text.ToString();
-                longRejectCupDepth = LongRejectCupDepth.Text.ToString();
-                upperLand = UpperLand.Text.ToString();
-                lowerLand = LowerLand.Text.ToString();
-                shortRejectLand = ShortRejectLand.Text.ToString();
-                longRejectLand = LongRejectLand.Text.ToString();
-                EditedTimer.Start();
+                if (sender is TextBox textBox)
+                {
+                    EditedTimer.Stop();
+                    editedText = textBox.Text.ToString();
+                    editedTextBoxName = textBox.Name.ToString();
+                    upperCupType = UpperCupType.Text.ToString();
+                    upperCupDepth = UpperCupDepth.Text.ToString();
+                    lowerCupType = LowerCupType.Text.ToString();
+                    lowerCupDepth = LowerCupDepth.Text.ToString();
+                    shortRejectCupType = ShortRejectCupType.Text.ToString();
+                    shortRejectCupDepth = ShortRejectCupDepth.Text.ToString();
+                    longRejectCupType = LongRejectCupType.Text.ToString();
+                    longRejectCupDepth = LongRejectCupDepth.Text.ToString();
+                    upperLand = UpperLand.Text.ToString();
+                    lowerLand = LowerLand.Text.ToString();
+                    shortRejectLand = ShortRejectLand.Text.ToString();
+                    longRejectLand = LongRejectLand.Text.ToString();
+                    EditedTimer.Start();
+                }
             }
         }
         /// <summary>
@@ -5186,12 +5205,15 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void SketchID_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (sender is TextBox textBox)
+            if (timersEnabled)
             {
-                EditedTimer.Stop();
-                editedText = textBox.Text.ToString();
-                editedTextBoxName = textBox.Name.ToString();
-                EditedTimer.Start();
+                if (sender is TextBox textBox)
+                {
+                    EditedTimer.Stop();
+                    editedText = textBox.Text.ToString();
+                    editedTextBoxName = textBox.Name.ToString();
+                    EditedTimer.Start();
+                }
             }
         }
         #endregion
