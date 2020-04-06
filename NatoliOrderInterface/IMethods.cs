@@ -1334,7 +1334,35 @@ namespace NatoliOrderInterface
 
                             //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
 
-                            
+                            try
+                            {
+                                emailClient.Send(message);
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.Message.StartsWith("5.3.4"))
+                                {
+                                    var maxSize = emailClient.MaxSize;
+                                    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                                    {
+                                        Text = "Dear " + CSRs.First() + ",<br><br>" +
+
+                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                    "Thanks,<br>" +
+                                    "Engineering Team<br><br><br>" +
+
+
+                                    "This is an automated email and not monitored by any person(s)."
+                                    };
+                                    emailClient.Send(message);
+                                }
+                                else
+                                {
+                                    IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                }
+                                return null;
+                            }
                             if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
                             {
                                 var maxSize = emailClient.MaxSize;
@@ -1351,37 +1379,43 @@ namespace NatoliOrderInterface
                                     "This is an automated email and not monitored by any person(s)."
                                 };
                             }
-                            emailClient.Send(message);
 
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
-                            {
-                                var text = "The SMTP server supports delivery-status notifications.";
-                            }
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
+                            //{
+                            //    var text = "The SMTP server supports delivery-status notifications.";
+                            //}
 
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
-                            {
-                                var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
-                            }
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
+                            //{
+                            //    var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
+                            //}
 
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
-                            {
-                                var text = "The SMTP server supports Content-Transfer-Encoding: binary";
-                            }
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
+                            //{
+                            //    var text = "The SMTP server supports Content-Transfer-Encoding: binary";
+                            //}
 
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
-                            {
-                                var text = "The SMTP server supports UTF-8 in message headers.";
-                            }
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
+                            //{
+                            //    var text = "The SMTP server supports UTF-8 in message headers.";
+                            //}
                             emailClient.Disconnect(true);
                             emailClient.Dispose();
                         }
                         catch (Exception ex)
                         {
-                            emailClient.Disconnect(true);
-                            if (!ex.Message.StartsWith("5.3.4"))
+                            
+                            try
                             {
-                                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                emailClient.Disconnect(true);
                             }
+                            catch { }
+                            try
+                            {
+                                emailClient.Dispose();
+                            }
+                            catch { }
+                            IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
                             return null;
                         }
                     }
