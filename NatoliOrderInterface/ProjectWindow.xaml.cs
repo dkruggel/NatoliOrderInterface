@@ -4110,6 +4110,20 @@ namespace NatoliOrderInterface
             Dispose();
         }
         /// <summary>
+        /// Prevents a screen capture using the print screen key
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ProjectWindow_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.PrintScreen)
+            {
+                this.Hide();
+                System.Threading.Thread.Sleep(15);
+                this.Show();
+            }
+        }
+        /// <summary>
         /// Changes the units on the project from mm to in or vice-versa
         /// </summary>
         /// <param name="sender"></param>
