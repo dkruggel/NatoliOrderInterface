@@ -634,7 +634,7 @@ namespace NatoliOrderInterface
                         }
                         else if ((pss != null && pss.TabletDrawnBy.Length > 0) || (ep != null && ep.TabletDrawn))
                         {
-                            ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectDrawnButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Submit";
                         }
                         else if ((pss != null && pss.ProjectStartedTablet.Length > 0) || (ep != null && ep.TabletStarted))
@@ -676,7 +676,7 @@ namespace NatoliOrderInterface
                         }
                         else if ((pss != null && pss.TabletDrawnBy.Length > 0) || (ep != null && ep.TabletDrawn))
                         {
-                            ProjectDrawnButtons(projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
+                            ProjectDrawnButtons(projectPreviousStepButton, projectOnHoldButton, projectOffHoldButton, projectNextStepButton, projectCompleteButton, projectCancelButton);
                             nextStep = "Submit";
                         }
                         else if ((pss != null && pss.ProjectStartedTablet.Length > 0) || (ep != null && ep.TabletStarted))
@@ -967,7 +967,7 @@ namespace NatoliOrderInterface
             projectCompleteButton.IsEnabled = false;
             projectCompleteButton.ToolTip = "";
         }
-        private void ProjectDrawnButtons(Button projectOnHoldButton, Button projectOffHoldButton, Button projectNextStepButton,
+        private void ProjectDrawnButtons(Button projectPreviousStepButton, Button projectOnHoldButton, Button projectOffHoldButton, Button projectNextStepButton,
                                          Button projectCompleteButton, Button projectCancelButton)
         {
             // On Hold: Enabled, "Put On Hold"
@@ -977,6 +977,12 @@ namespace NatoliOrderInterface
             // Off Hold: Disabled, No Tooltip
             projectOffHoldButton.IsEnabled = false;
             projectOffHoldButton.ToolTip = "";
+
+            // Previous Step: Enabled, "Send Back To Drafter"
+            projectPreviousStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
+            projectPreviousStepButton.IsEnabled = true;
+            projectPreviousStepButton.ToolTip = "Send Back To Drafter";
+            projectPreviousStepButton.Click += PreviousStepProject_Click;
 
             // Next Step: Enabled, "Mark As Submitted"
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;

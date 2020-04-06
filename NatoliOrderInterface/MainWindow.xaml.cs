@@ -264,7 +264,36 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersReadyToPrint).Count() > 0 || ordersReadyToPrint.Except(value).Count() > 0)
+                List<bool> incBack = new List<bool>();
+                List<bool> outBack = new List<bool>();
+
+                try
+                {
+                    // Bool for missing drawings changing state
+                    // Get current background color
+                    var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(OrdersReadyToPrintListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                    foreach (UIElement el in kid)
+                    {
+                        incBack.Add((el.GetValue(BackgroundProperty) as SolidColorBrush) == new SolidColorBrush(Colors.MediumPurple));
+                    }
+
+                    // Get future background color
+                    foreach (EoiOrdersReadyToPrintView order in value)
+                    {
+                        int index = value.IndexOf(order);
+                        using var _nat02Context = new NAT02Context();
+                        EoiAllOrdersView o = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == order.OrderNo);
+                        _nat02Context.Dispose();
+                        outBack.Add(CheckIfPrintsAreMissing(o));
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                if (value.Except(ordersReadyToPrint).Count() > 0 || ordersReadyToPrint.Except(value).Count() > 0 || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
                 {
                     ordersReadyToPrint = value;
                     OrdersReadyToPrintListBox.ItemsSource = null;
@@ -285,7 +314,36 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersPrinted).Count() > 0 || ordersPrinted.Except(value).Count() > 0)
+                List<bool> incBack = new List<bool>();
+                List<bool> outBack = new List<bool>();
+
+                try
+                {
+                    // Bool for missing drawings changing state
+                    // Get current background color
+                    var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(OrdersPrintedListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                    foreach (UIElement el in kid)
+                    {
+                        incBack.Add((el.GetValue(BackgroundProperty) as SolidColorBrush) == new SolidColorBrush(Colors.MediumPurple));
+                    }
+
+                    // Get future background color
+                    foreach (EoiOrdersPrintedInEngineeringView order in value)
+                    {
+                        int index = value.IndexOf(order);
+                        using var _nat02Context = new NAT02Context();
+                        EoiAllOrdersView o = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == order.OrderNo);
+                        _nat02Context.Dispose();
+                        outBack.Add(CheckIfPrintsAreMissing(o));
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                if (value.Except(ordersPrinted).Count() > 0 || ordersPrinted.Except(value).Count() > 0 || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
                 {
                     ordersPrinted = value;
                     OrdersPrintedListBox.ItemsSource = null;
@@ -4316,6 +4374,61 @@ namespace NatoliOrderInterface
                 
             }
         }
+        private bool CheckIfPrintsAreMissing(EoiAllOrdersView order)
+        {
+            using var nat01context = new NAT01Context();
+            if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
+            {
+                bool tm2 = System.Convert.ToBoolean(order.Tm2);
+                bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
+                bool toolPrints = System.Convert.ToBoolean(order.Tool);
+                List<OrderDetails> orderDetails;
+                OrderHeader orderHeader;
+                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
+                orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
+
+                if (tm2 || tabletPrints)
+                {
+                    foreach (OrderDetails od in orderDetails)
+                    {
+                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                        {
+                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+                            if (!System.IO.File.Exists(path))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                if (tm2 || toolPrints)
+                {
+                    foreach (OrderDetails od in orderDetails)
+                    {
+                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                        {
+                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                            detailType = detailType == "MISC" ? "REJECT" : detailType;
+                            string international = orderHeader.UnitOfMeasure;
+                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
+                            if (!System.IO.File.Exists(path))
+                            {
+                                return true;
+                            }
+                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            nat01context.Dispose();
+
+            return false;
+        }
 
         #region Gets And Binds
         private void GetBeingEntered()
@@ -4342,7 +4455,8 @@ namespace NatoliOrderInterface
             //                       .OrderBy(kvp => kvp.OrderNo)
             //                       .ToList();
 
-            OrdersBeingEntered = _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            OrdersBeingEntered =
+                _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                o.QuoteNo.ToString().Contains(searchString) ||
                                                o.CustomerName.ToLower().Contains(searchString))
                                    .OrderBy(kvp => kvp.OrderNo)
