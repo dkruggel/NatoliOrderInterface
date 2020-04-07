@@ -1861,34 +1861,27 @@ namespace NatoliOrderInterface
                 {
                     if (w.Title.Contains(quoteNumber))
                     {
-                        nat01context.Dispose();
                         w.WindowState = WindowState.Normal;
                         w.Show();
                         goto AlreadyOpen;
                     }
                 }
-                quote = new Quote(int.Parse(quoteNumber), short.Parse(revNumber));
-                nat01context.Dispose();
+                if (nat01context.QuoteHeader.Any(q => q.QuoteNo == double.Parse(quoteNumber) && q.QuoteRevNo == short.Parse(revNumber)))
+                {
+                    quote = new Quote(int.Parse(quoteNumber), short.Parse(revNumber));
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
+                    {
+                        Left = Left,
+                        Top = Top
+                    };
+                    quoteInfoWindow.Show();
+                }
                 mainTimer.Stop();
             }
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteSearchButton_Click - Before new window instance", ex.Message, User);
-            }
-            try
-            {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                quoteInfoWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteSearchButton_Click - After new window instance, quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, User);
+                IMethods.WriteToErrorLog("QuoteSearchButton_Click", ex.Message, User);
             }
         AlreadyOpen:
             nat01context.Dispose();
