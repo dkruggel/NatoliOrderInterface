@@ -771,7 +771,6 @@ namespace NatoliOrderInterface
                 App.user = User;
                 // User = new User("jwillis");
                 // User = new User("mbouzitoun");
-                // User = new User("mbouzitoun");
                 // User = new User("billt");
             }
             catch (Exception ex)
@@ -1593,31 +1592,25 @@ namespace NatoliOrderInterface
         {
             Dispatcher.BeginInvoke((Action)(() =>
             {
-                //    // Check for new notifications
-                //    using var _nat02context = new NAT02Context();
-                //    try
-                //    {
-                //        int active = _nat02context.EoiNotificationsActive.Where(n => n.User == User.DomainName).Count();
-                //        if (active > 0)
-                //        {
-                //            //MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                //            var bell = App.Current.Resources["bell_alt_ringDrawingImage"] as DrawingImage;
-                //            var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
-                //            image.Source = bell as ImageSource;
-                //        }
-                //        else
-                //        {
-                //            //MenuItem notificationMenu = MainMenu.Items.GetItemAt(3) as MenuItem;
-                //            var bell = App.Current.Resources["bellDrawingImage"] as DrawingImage;
-                //            var image = ((notificationMenu.Template.FindName("Border", notificationMenu) as Border).Child as Grid).Children.OfType<Image>().First();
-                //            image.Source = bell as ImageSource;
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
+                // Check for new notifications
+                using var _nat02context = new NAT02Context();
+                try
+                {
+                    int active = _nat02context.EoiNotificationsActive.Where(n => n.User == User.DomainName).Count();
+                    if (active > 0)
+                    {
+                        NotificationButton.Tag = App.Current.Resources["bell_alt_ringDrawingImage"] as DrawingImage;
+                    }
+                    else
+                    {
+                        NotificationButton.Tag = App.Current.Resources["bellDrawingImage"] as DrawingImage;
+                    }
+                }
+                catch (Exception ex)
+                {
 
-                //    }
-                //    _nat02context.Dispose();
+                }
+                _nat02context.Dispose();
             }
             ), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
