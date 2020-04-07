@@ -3128,10 +3128,10 @@ namespace NatoliOrderInterface
                                                 if (clearance < (decimal).001)
                                                 {
                                                     // No hold low tip size toleracne
-                                                    if (!quoteLineItem.OptionNumbers.Contains("207"))
-                                                    {
-                                                        errors.Add("'" + quoteLineItem.LineItemType + "' should have HOLD LOW TIP SIZE TOLERANCE (207) because the clearance is " + clearance + "\"");
-                                                    }
+                                                    //if (!quoteLineItem.OptionNumbers.Contains("207"))
+                                                    //{
+                                                    //    errors.Add("'" + quoteLineItem.LineItemType + "' should have HOLD LOW TIP SIZE TOLERANCE (207) because the clearance is " + clearance + "\"");
+                                                    //}
                                                     // No tip concentricity or 100% interx
                                                     if (!quoteLineItem.OptionNumbers.Contains("202") && !quoteLineItem.OptionNumbers.Contains("160"))
                                                     {
