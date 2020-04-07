@@ -118,7 +118,7 @@ namespace NatoliOrderInterface
             Image image = sender as Image;
             BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as BeginStoryboard;
             Storyboard sb = beginStoryboard.Storyboard;
-            sb.RepeatBehavior = RepeatBehavior.Forever;
+            //sb.RepeatBehavior = RepeatBehavior.Forever;
             DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
             doubleAnimation.From = 0;
             sb.Begin(image, true);

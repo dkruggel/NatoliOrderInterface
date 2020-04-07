@@ -11,8 +11,8 @@
         <local:ModuleHeightConvertor x:Key="moduleHeightConvertor"/>
         <local:MainWindow x:Key="MainWindow"/>
         <BeginStoryboard x:Key="RotateIt">
-            <Storyboard x:Name="Rotation">
-                <DoubleAnimation Storyboard.TargetName="Orientation" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:.5"/>
+            <Storyboard x:Name="Rotation" RepeatBehavior="2x">
+                <DoubleAnimation Storyboard.TargetName="Orientation" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:.65"/>
             </Storyboard>
         </BeginStoryboard>
         
