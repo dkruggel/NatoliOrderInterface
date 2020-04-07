@@ -553,42 +553,118 @@ namespace NatoliOrderInterface
         }
         public async void MainRefresh(string module = "")
         {
-            //BindData("Main");
-            //BindData("QuotesNotConverted");
-            //BindData("NatoliOrderList");
-
-            //UpdateUI();
-
             if (string.IsNullOrEmpty(module))
             {
-                List<string> timers = new List<string>();
-                timers.Add("Main");
-                if (User.VisiblePanels.Contains("QuotesNotConverted"))
+                List<Task> taskList = new List<Task>();
+                foreach (string mod in User.VisiblePanels)
                 {
-                    timers.Add("QuotesNotConverted");
-                }
-                if (User.VisiblePanels.Contains("NatoliOrderList"))
-                {
-                    timers.Add("NatoliOrderList");
-                }
-                await Task.Run(() => GetData(timers));
-                Dispatcher.Invoke(() =>
-                {
-                    RefreshButton.ApplyTemplate();
-                    var template = RefreshButton.Template;
-                    var image = (Image)template.FindName("Image", RefreshButton);
-                    System.Windows.Media.Animation.BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as System.Windows.Media.Animation.BeginStoryboard;
-                    Storyboard sb = beginStoryboard.Storyboard;
-                    if (sb.RepeatBehavior == RepeatBehavior.Forever)
+                    switch (mod)
                     {
-                        DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
-                        doubleAnimation.From = null;
-                        sb.RepeatBehavior = new RepeatBehavior(1.0);
-                        sb.BeginTime = sb.GetCurrentTime(image);
-                        sb.Begin(image, false);
+                        case "BeingEntered":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetBeingEntered());
+                                Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "InTheOffice":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetInTheOffice());
+                                Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "QuotesNotConverted":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetQuotesNotConverted());
+                                Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "EnteredUnscanned":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetEnteredUnscanned());
+                                Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "InEngineering":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetInEngineering());
+                                Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "QuotesToConvert":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetQuotesToConvert());
+                                Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "ReadyToPrint":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetReadyToPrint());
+                                Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "PrintedInEngineering":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetPrintedInEngineering());
+                                Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "AllTabletProjects":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetAllTabletProjects());
+                                Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "AllToolProjects":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetAllToolProjects());
+                                Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "DriveWorksQueue":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetDriveWorksQueue());
+                                Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        case "NatoliOrderList":
+                            taskList.Add(Task.Run(async () =>
+                            {
+                                await Task.Run(() => GetNatoliOrderList());
+                                Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            }));
+                            break;
+                        default:
+                            break;
                     }
-                    UpdateUI();
-                });
+                }
+                //await Task.WhenAll(taskList.ToArray());
+                //Dispatcher.BeginInvoke((Action)(() =>
+                //{
+                //    RefreshButton.ApplyTemplate();
+                //    var template = RefreshButton.Template;
+                //    var image = (Image)template.FindName("Image", RefreshButton);
+                //    System.Windows.Media.Animation.BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as System.Windows.Media.Animation.BeginStoryboard;
+                //    Storyboard sb = beginStoryboard.Storyboard;
+                //    if (sb.RepeatBehavior == RepeatBehavior.Forever)
+                //    {
+                //        DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
+                //        doubleAnimation.From = null;
+                //        sb.RepeatBehavior = new RepeatBehavior(1.0);
+                //        sb.BeginTime = sb.GetCurrentTime(image);
+                //        sb.Begin(image, false);
+                //    }
+                //}),System.Windows.Threading.DispatcherPriority.Normal);
             }
             else
             {
@@ -596,51 +672,51 @@ namespace NatoliOrderInterface
                 {
                     case "BeingEntered":
                         await Task.Run(() => GetBeingEntered());
-                        Dispatcher.Invoke(() => BindBeingEntered());
+                        Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "InTheOffice":
                         await Task.Run(() => GetInTheOffice());
-                        Dispatcher.Invoke(() => BindInTheOffice());
+                        Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "QuotesNotConverted":
                         await Task.Run(() => GetQuotesNotConverted());
-                        Dispatcher.Invoke(() => BindQuotesNotConverted());
+                        Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "EnteredUnscanned":
                         await Task.Run(() => GetEnteredUnscanned());
-                        Dispatcher.Invoke(() => BindEnteredUnscanned());
+                        Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "InEngineering":
                         await Task.Run(() => GetInEngineering());
-                        Dispatcher.Invoke(() => BindInEngineering());
+                        Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "QuotesToConvert":
                         await Task.Run(() => GetQuotesToConvert());
-                        Dispatcher.Invoke(() => BindQuotesToConvert());
+                        Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "ReadyToPrint":
                         await Task.Run(() => GetReadyToPrint());
-                        Dispatcher.Invoke(() => BindReadyToPrint());
+                        Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "PrintedInEngineering":
                         await Task.Run(() => GetPrintedInEngineering());
-                        Dispatcher.Invoke(() => BindPrintedInEngineering());
+                        Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "AllTabletProjects":
                         await Task.Run(() => GetAllTabletProjects());
-                        Dispatcher.Invoke(() => BindAllTabletProjects());
+                        Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "AllToolProjects":
                         await Task.Run(() => GetAllToolProjects());
-                        Dispatcher.Invoke(() => BindAllToolProjects());
+                        Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "DriveWorksQueue":
                         await Task.Run(() => GetDriveWorksQueue());
-                        Dispatcher.Invoke(() => BindDriveWorksQueue());
+                        Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "NatoliOrderList":
                         await Task.Run(() => GetNatoliOrderList());
-                        Dispatcher.Invoke(() => BindNatoliOrderList());
+                        Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     default:
                         break;
@@ -849,13 +925,13 @@ namespace NatoliOrderInterface
             t.Start();
             t.Wait();
 
-            Dispatcher.Invoke(() => UpdateUI());
-            Dispatcher.Invoke(() => SetNotificationPicture());
+            Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            Dispatcher.BeginInvoke((Action)SetNotificationPicture, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
         private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             await Task.Run(() => GetData(new List<string> { "Main" }));
-            Dispatcher.Invoke(() => UpdateUI());
+            Dispatcher.BeginInvoke((Action)UpdateUI,System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
         private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -863,8 +939,8 @@ namespace NatoliOrderInterface
             if (User.VisiblePanels.Contains("QuotesNotConverted"))
             {
                 await Task.Run(() => GetData(new List<string> { "QuotesNotConverted" }));
-                Dispatcher.Invoke(() => UpdateUI());
-                Dispatcher.Invoke(() => SetNotificationPicture());
+                Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                Dispatcher.BeginInvoke((Action)SetNotificationPicture, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -885,7 +961,7 @@ namespace NatoliOrderInterface
             if (User.VisiblePanels.Contains("NatoliOrderList"))
             {
                 await Task.Run(() => GetData(new List<string> { "NatoliOrderList" }));
-                Dispatcher.Invoke(() => UpdateUI());
+                Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
             
         }
@@ -1540,7 +1616,7 @@ namespace NatoliOrderInterface
         //}
         public void SetNotificationPicture()
         {
-            Dispatcher.Invoke(() =>
+            Dispatcher.BeginInvoke((Action)(() =>
             {
                 //    // Check for new notifications
                 //    using var _nat02context = new NAT02Context();
@@ -1568,7 +1644,7 @@ namespace NatoliOrderInterface
                 //    }
                 //    _nat02context.Dispose();
             }
-            );
+            ), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
         private void PrintDrawings_Click(object sender, RoutedEventArgs e)
         {
@@ -1693,1374 +1769,6 @@ namespace NatoliOrderInterface
             User.VisiblePanels = visiblePanels;
         }
         #region Clicks
-        //private void StartTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllTabletProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-
-        //                // Get project revision number
-        //                // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-        //                string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-        //                // Insert into StartedBy
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.StartProject(project.Item1, project.Item2, "TABLETS", User);
-        //                }
-        //                else
-        //                {
-        //                    ProjectStartedTablet tabletProjectStarted = new ProjectStartedTablet();
-        //                    tabletProjectStarted.ProjectNumber = int.Parse(project.Item1);
-        //                    tabletProjectStarted.RevisionNumber = int.Parse(project.Item2);
-        //                    tabletProjectStarted.TimeSubmitted = DateTime.Now;
-        //                    tabletProjectStarted.ProjectStartedTablet1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-        //                                                                 User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-        //                                                                 User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-        //                    _projectsContext.ProjectStartedTablet.Add(tabletProjectStarted);
-
-        //                    // Drive specification transition name to "Started - Tablets"
-        //                    // Auto archive project specification
-        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                    spec.StateName = "Started - Tablets";
-        //                    _driveworksContext.Specifications.Update(spec);
-        //                }
-
-        //                _projectsContext.SaveChanges();
-        //                _driveworksContext.SaveChanges();
-        //                _projectsContext.Dispose();
-        //                _driveworksContext.Dispose();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("StartTabletProject_CLick", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        MainRefresh("AllTabletProjects");
-        //    }
-        //}
-        //private void FinishTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllTabletProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.DrawProject(project.Item1, project.Item2, "TABLETS", User);
-        //                }
-        //                else
-        //                {
-        //                    // Get project revision number
-        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-        //                    // Insert into CheckedBy
-        //                    TabletDrawnBy tabletDrawnBy = new TabletDrawnBy();
-        //                    tabletDrawnBy.ProjectNumber = int.Parse(project.Item1);
-        //                    tabletDrawnBy.RevisionNumber = int.Parse(project.Item2);
-        //                    tabletDrawnBy.TimeSubmitted = DateTime.Now;
-        //                    tabletDrawnBy.TabletDrawnBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-        //                                                   User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" :
-        //                                                   User.GetUserName().Split(' ')[0] == "Phyllis" ? new InputBox("Drafter?", "Whom?", this).ReturnString : User.GetUserName().Split(' ')[0];
-        //                    _projectsContext.TabletDrawnBy.Add(tabletDrawnBy);
-
-        //                    // Drive specification transition name to "Drawn - Tablets"
-        //                    // Auto archive project specification
-        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                    spec.StateName = "Drawn - Tablets";
-        //                    _driveworksContext.Specifications.Update(spec);
-        //                }
-        //                _projectsContext.SaveChanges();
-        //                _driveworksContext.SaveChanges();
-        //                _projectsContext.Dispose();
-        //                _driveworksContext.Dispose();
-
-        //                // Email CSR
-        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
-
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("FinishTabletProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        MainRefresh("AllTabletProjects");
-        //    }
-        //}
-        //private void SubmitTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllTabletProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) || 
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.SubmitProject(project.Item1, project.Item2, "TABLETS", User);
-        //                }
-        //                else
-        //                {
-        //                    // Get project revision number
-        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-        //                    //string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-        //                    // Insert into CheckedBy
-        //                    TabletSubmittedBy tabletSubmittedBy = new TabletSubmittedBy();
-        //                    tabletSubmittedBy.ProjectNumber = int.Parse(project.Item1);
-        //                    tabletSubmittedBy.RevisionNumber = int.Parse(project.Item2);
-        //                    tabletSubmittedBy.TimeSubmitted = DateTime.Now;
-        //                    tabletSubmittedBy.TabletSubmittedBy1 = User.GetUserName().Split(' ')[0] == "Floyd" ? "Joe" :
-        //                                                           User.GetUserName().Split(' ')[0] == "Ronald" ? "Ron" : User.GetUserName().Split(' ')[0];
-        //                    _projectsContext.TabletSubmittedBy.Add(tabletSubmittedBy);
-
-        //                    // Drive specification transition name to "Submitted - Tablets"
-        //                    // Auto archive project specification
-
-        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                    if (_driveworksContext.Specifications.Any(s => s.Name == _name))
-        //                    {
-        //                        Specifications spec = _driveworksContext.Specifications.First(s => s.Name == _name);
-        //                        spec.StateName = "Submitted - Tablets";
-        //                        _driveworksContext.Specifications.Update(spec);
-        //                    }
-        //                    else
-        //                    {
-        //                        MessageBox.Show(
-        //                            "It appears there is not a specification matching this Project Number and Revision Number in the Specifications table.\n" +
-        //                            "Perhaps it is in a save state.",
-        //                            "No Specification by that Name", MessageBoxButton.OK, MessageBoxImage.Information);
-        //                    }
-        //                }
-
-        //                _projectsContext.SaveChanges();
-        //                _driveworksContext.SaveChanges();
-        //                _projectsContext.Dispose();
-        //                _driveworksContext.Dispose();
-
-        //                // Email CSR
-        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
-
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                //MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("SubmitTabletProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        selectedProjects.Clear();
-        //        MainRefresh("AllTabletProjects");
-        //    }
-        //}
-        //private void OnHoldTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // Uncheck project expander
-        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-        //        OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tablets", _projectNumber, _revNumber, this, User)
-        //        {
-        //            Left = Left,
-        //            Top = Top
-        //        };
-        //        onHoldCommentWindow.Show();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        IMethods.WriteToErrorLog("OnHoldTabletProject_Click", ex.Message, User);
-        //    }
-        //    MainRefresh("AllTabletProjects");
-        //}
-        //private void OffHoldTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // Uncheck project expander
-        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-        //        using var _projectsContext = new ProjectsContext();
-        //        using var _driveworksContext = new DriveWorksContext();
-
-        //        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
-        //        {
-        //            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
-        //        }
-        //        else
-        //        {
-        //            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
-        //            {
-        //                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-        //                holdStatus.HoldStatus1 = "OFF HOLD";
-        //                holdStatus.TimeSubmitted = DateTime.Now;
-        //                _projectsContext.HoldStatus.Update(holdStatus);
-        //            }
-        //            else
-        //            {
-        //                // Insert into HoldStatus
-        //                HoldStatus holdStatus = new HoldStatus();
-        //                holdStatus.ProjectNumber = _projectNumber.ToString();
-        //                holdStatus.RevisionNumber = _revNumber.ToString();
-        //                holdStatus.TimeSubmitted = DateTime.Now;
-        //                holdStatus.HoldStatus1 = "OFF HOLD";
-        //                _projectsContext.HoldStatus.Add(holdStatus);
-        //            }
-
-        //            // Drive specification transition name to "Off Hold - Tablets"
-        //            string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-        //            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //            spec.StateName = "Off Hold - Tablets";
-        //            _driveworksContext.Specifications.Update(spec);
-        //        }
-
-        //        _projectsContext.SaveChanges();
-        //        _driveworksContext.SaveChanges();
-        //        _projectsContext.Dispose();
-        //        _driveworksContext.Dispose();
-        //        MainRefresh();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // MessageBox.Show(ex.Message);
-        //        IMethods.WriteToErrorLog("OffHoldTabletProject_Click", ex.Message, User);
-        //    }
-        //}
-        //private void CompleteTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        using var _nat02Context = new NAT02Context();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllTabletProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First();
-        //                _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("CompleteTabletProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        _nat02Context.SaveChanges();
-        //        _nat02Context.Dispose();
-        //        selectedProjects.Clear();
-
-        //        MainRefresh();
-        //    }
-        //}
-        //private void CheckTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right-clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllTabletProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletCheckedBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletSubmittedBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).TabletDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTablet))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-        //                using var _nat02Context = new NAT02Context();
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.CheckProject(project.Item1, project.Item2, "TABLETS", User);
-        //                }
-        //                else
-        //                {
-        //                    // Get project revision number
-        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-        //                    // Insert into CheckedBy
-        //                    TabletCheckedBy tabletCheckedBy = new TabletCheckedBy();
-        //                    tabletCheckedBy.ProjectNumber = int.Parse(project.Item1);
-        //                    tabletCheckedBy.RevisionNumber = int.Parse(project.Item2);
-        //                    tabletCheckedBy.TimeSubmitted = DateTime.Now;
-        //                    tabletCheckedBy.TabletCheckedBy1 = User.GetUserName().Split(' ')[0];
-        //                    _projectsContext.TabletCheckedBy.Add(tabletCheckedBy);
-
-        //                    // Drive specification transition name to "Completed"
-        //                    // Auto archive project specification
-        //                    string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                    bool? _tools = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Tools;
-        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                    spec.StateName = _tools == true ? "Sent to Tools" : "Completed";
-        //                    spec.IsArchived = (bool)!_tools;
-        //                    _driveworksContext.Specifications.Update(spec);
-
-
-        //                    try
-        //                    {
-        //                        //Send Email To CSR
-        //                        if (!(bool)_tools)
-        //                        {
-        //                            List<string> _CSRs = new List<string>();
-
-        //                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr))
-        //                            {
-        //                                _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Csr);
-        //                            }
-        //                            if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr))
-        //                            {
-        //                                _CSRs.Add(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ReturnToCsr);
-        //                            }
-        //                            IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, project.Item1, project.Item2, User);
-        //                        }
-        //                    }
-        //                    catch
-        //                    {
-
-        //                    }
-        //                    finally
-        //                    {
-        //                        // Save pending changes
-        //                        _projectsContext.SaveChanges();
-        //                        _driveworksContext.SaveChanges();
-        //                    }
-        //                }
-        //                // Dispose of contexts
-        //                _projectsContext.Dispose();
-        //                _driveworksContext.Dispose();
-        //                _nat02Context.Dispose();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("CheckTabletProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        MainRefresh();
-        //    }
-        //}
-        //private void CancelTabletProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        //foreach ((string, string, CheckBox) project in selectedProjects)
-        //        int count = validProjects.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            using var _projectsContext = new ProjectsContext();
-        //            using var _driveworksContext = new DriveWorksContext();
-        //            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //            {
-        //                IMethods.CancelProject(project.Item1, project.Item2, User);
-        //            }
-        //            else
-        //            {
-
-        //                MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + int.Parse(project.Item1) + "_" + int.Parse(project.Item2) + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-        //                if (res == MessageBoxResult.Yes)
-        //                {
-        //                    try
-        //                    {
-        //                        // Uncheck project expander
-        //                        project.Item3.IsChecked = false;
-
-        //                        if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
-        //                        {
-        //                            // Update data in HoldStatus
-        //                            HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-        //                            holdStatus.HoldStatus1 = "CANCELLED";
-        //                            holdStatus.TimeSubmitted = DateTime.Now;
-        //                            holdStatus.OnHoldComment = "";
-        //                            _projectsContext.HoldStatus.Update(holdStatus);
-        //                        }
-        //                        else
-        //                        {
-        //                            // Insert into HoldStatus
-        //                            HoldStatus holdStatus = new HoldStatus();
-        //                            holdStatus.ProjectNumber = project.Item1;
-        //                            holdStatus.RevisionNumber = project.Item2;
-        //                            holdStatus.TimeSubmitted = DateTime.Now;
-        //                            holdStatus.HoldStatus1 = "CANCELLED";
-        //                            holdStatus.OnHoldComment = "";
-        //                            _projectsContext.HoldStatus.Add(holdStatus);
-        //                        }
-
-        //                        // Drive specification transition name to "On Hold - " projectType
-        //                        string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                        spec.StateName = "Cancelled - Tablets";
-        //                        spec.IsArchived = true;
-        //                        _driveworksContext.Specifications.Update(spec);
-
-        //                        _projectsContext.SaveChanges();
-        //                        _driveworksContext.SaveChanges();
-
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        // MessageBox.Show(ex.Message);
-        //                        IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
-        //                    }
-        //                }
-        //            }
-        //            _projectsContext.Dispose();
-        //            _driveworksContext.Dispose();
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        MainRefresh();
-        //    }
-        //}
-        //private void StartToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllToolProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.StartProject(project.Item1, project.Item2, "TOOLS", User);
-        //                }
-        //                else
-        //                {
-        //                    // Get project revision number
-        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-        //                    string usrName = User.GetUserName().Split(" ")[0];
-        //                    int count = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectStartedTool == usrName && string.IsNullOrEmpty(p.ToolDrawnBy) &&
-        //                                                                        string.IsNullOrEmpty(p.ToolCheckedBy) && p.HoldStatus != "CANCELED" && !p.HoldStatus.Contains("ON HOLD") &&
-        //                                                                        p.ProjectsId > 80000).Count();
-        //                    if (false) //(count > 5)
-        //                    {
-        //                        MessageBox.Show(
-        //                            "Maximum simultaneous projects limit reached.\n" +
-        //                            "Please finish a project before starting more.");
-        //                    }
-        //                    else
-        //                    {
-        //                        // Insert into CheckedBy
-        //                        ProjectStartedTool toolProjectStarted = new ProjectStartedTool();
-        //                        toolProjectStarted.ProjectNumber = int.Parse(project.Item1);
-        //                        toolProjectStarted.RevisionNumber = int.Parse(project.Item2);
-        //                        toolProjectStarted.TimeSubmitted = DateTime.Now;
-        //                        toolProjectStarted.ProjectStartedTool1 = User.GetUserName().Split(' ')[0];
-        //                        _projectsContext.ProjectStartedTool.Add(toolProjectStarted);
-
-        //                        // Drive specification transition name to "Started - Tools"
-        //                        // Auto archive project specification
-        //                        string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                        spec.StateName = "Started - Tools";
-        //                        _driveworksContext.Specifications.Update(spec);
-
-        //                        _projectsContext.SaveChanges();
-        //                        _driveworksContext.SaveChanges();
-        //                        _projectsContext.Dispose();
-        //                        _driveworksContext.Dispose();
-
-        //                        // Email CSR
-        //                        // SendEmailToCSR(_csr, _projectNumber.ToString());
-        //                    }
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("StartToolProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        selectedProjects.Clear();
-        //        MainRefresh();
-        //    }
-
-        //}
-        //private void FinishToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllToolProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                using var _projectsContext = new ProjectsContext();
-        //                using var _driveworksContext = new DriveWorksContext();
-
-
-        //                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                {
-        //                    IMethods.DrawProject(project.Item1, project.Item2, "TOOLS", User);
-        //                }
-        //                else
-        //                {
-        //                    // Get project revision number
-        //                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-        //                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
-
-        //                    // Insert into CheckedBy
-        //                    ToolDrawnBy toolDrawnBy = new ToolDrawnBy();
-        //                    toolDrawnBy.ProjectNumber = int.Parse(project.Item1);
-        //                    toolDrawnBy.RevisionNumber = int.Parse(project.Item2);
-        //                    toolDrawnBy.TimeSubmitted = DateTime.Now;
-        //                    toolDrawnBy.ToolDrawnBy1 = User.GetUserName().Split(' ')[0];
-        //                    _projectsContext.ToolDrawnBy.Add(toolDrawnBy);
-
-        //                    // Drive specification transition name to "Drawn - Tools"
-        //                    // Auto archive project specification
-        //                    string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-        //                    Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                    spec.StateName = "Drawn - Tools";
-        //                    _driveworksContext.Specifications.Update(spec);
-        //                }
-
-        //                _projectsContext.SaveChanges();
-        //                _driveworksContext.SaveChanges();
-        //                _projectsContext.Dispose();
-        //                _driveworksContext.Dispose();
-        //                // Email CSR
-        //                // SendEmailToCSR(_csr, _projectNumber.ToString());
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("FinishToolProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        selectedProjects.Clear();
-        //        MainRefresh();
-        //    }
-        //}
-        //private void CheckToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            using var _nat02Context = new NAT02Context();
-        //            bool alreadyThere = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).Any();
-        //            _nat02Context.Dispose();
-
-        //            if (!alreadyThere)
-        //            {
-        //                try
-        //                {
-        //                    // Check to see if the project is in the correct module
-        //                    if (project.Item4 == "AllToolProjects")
-        //                    {
-        //                        using var _ = new ProjectsContext();
-        //                        if (!string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-        //                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-        //                            string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-        //                        {
-        //                            _.Dispose();
-        //                            continue;
-        //                        }
-        //                        _.Dispose();
-        //                    }
-
-        //                    // Uncheck project expander
-        //                    project.Item3.IsChecked = false;
-
-        //                    using var _projectsContext = new ProjectsContext();
-        //                    using var _driveworksContext = new DriveWorksContext();
-
-
-        //                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //                    {
-        //                        IMethods.CheckProject(project.Item1, project.Item2, "TOOLS", User);
-        //                    }
-        //                    else
-        //                    {
-        //                        // Get project revision number
-        //                        // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
-
-
-        //                        // Insert into CheckedBy
-        //                        ToolCheckedBy toolCheckedBy = new ToolCheckedBy();
-        //                        toolCheckedBy.ProjectNumber = int.Parse(project.Item1);
-        //                        toolCheckedBy.RevisionNumber = int.Parse(project.Item2);
-        //                        toolCheckedBy.TimeSubmitted = DateTime.Now;
-        //                        toolCheckedBy.ToolCheckedBy1 = User.GetUserName().Split(' ')[0];
-        //                        _projectsContext.ToolCheckedBy.Add(toolCheckedBy);
-
-        //                        // Drive specification transition name to "Completed"
-        //                        // Auto archive project specification
-        //                        string _name = int.Parse(project.Item1).ToString() + (int.Parse(project.Item2) > 0 ? "_" + int.Parse(project.Item2) : "");
-        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                        spec.StateName = "Completed";
-        //                        spec.IsArchived = true;
-        //                        _driveworksContext.Specifications.Update(spec);
-
-        //                        //Send Email To CSR
-        //                        List<string> _CSRs = new List<string>();
-        //                        _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-        //                        if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr))
-        //                        {
-        //                            _CSRs.Add(_projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr);
-        //                        }
-        //                        IMethods.SendProjectCompletedEmailToCSRAsync(_CSRs, int.Parse(project.Item1).ToString(), int.Parse(project.Item2).ToString(), User);
-
-        //                    }
-        //                    // Save pending changes
-        //                    _projectsContext.SaveChanges();
-        //                    _driveworksContext.SaveChanges();
-
-
-        //                    // Dispose of contexts
-        //                    _projectsContext.Dispose();
-        //                    _driveworksContext.Dispose();
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    // MessageBox.Show(ex.Message);
-        //                    IMethods.WriteToErrorLog("CheckToolProject_Click", ex.Message, User);
-        //                }
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        selectedProjects.Clear();
-        //        MainRefresh();
-        //    }
-        //}
-        //private void OnHoldToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow("Tools", _projectNumber, _revNumber, this, User)
-        //        {
-        //            Left = Left,
-        //            Top = Top
-        //        };
-        //        onHoldCommentWindow.Show();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        IMethods.WriteToErrorLog("OnHoldToolProject_Click", ex.Message, User);
-        //    }
-        //}
-        //private void OffHoldToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // Uncheck project expander
-        //        selectedProjects.First(p => p.Item1 == _projectNumber.ToString() && p.Item2 == _revNumber.ToString()).Item3.IsChecked = false;
-
-        //        using var _projectsContext = new ProjectsContext();
-        //        using var _driveworksContext = new DriveWorksContext();
-
-        //        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
-        //        {
-        //            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
-        //        }
-        //        else
-        //        {
-        //            if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()))
-        //            {
-        //                HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == _projectNumber.ToString() && p.RevisionNumber == _revNumber.ToString()).First();
-        //                holdStatus.HoldStatus1 = "OFF HOLD";
-        //                _projectsContext.HoldStatus.Update(holdStatus);
-        //            }
-        //            else
-        //            {
-        //                // Insert into HoldStatus
-        //                HoldStatus holdStatus = new HoldStatus();
-        //                holdStatus.ProjectNumber = _projectNumber.ToString();
-        //                holdStatus.RevisionNumber = _revNumber.ToString();
-        //                holdStatus.TimeSubmitted = DateTime.Now;
-        //                holdStatus.HoldStatus1 = "OFF HOLD";
-        //                _projectsContext.HoldStatus.Add(holdStatus);
-        //            }
-
-        //            // Drive specification transition name to "Off Hold - Tools"
-        //            string _name = _projectNumber.ToString() + (_revNumber > 0 ? "_" + _revNumber : "");
-        //            Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //            spec.StateName = "Off Hold - Tools";
-        //            _driveworksContext.Specifications.Update(spec);
-        //        }
-
-        //        _projectsContext.SaveChanges();
-        //        _driveworksContext.SaveChanges();
-        //        _projectsContext.Dispose();
-        //        _driveworksContext.Dispose();
-        //        MainRefresh();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // MessageBox.Show(ex.Message);
-        //        IMethods.WriteToErrorLog("OffHoldToolProject_Click", ex.Message, User);
-        //    }
-        //}
-        //private void CompleteToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        using var _nat02Context = new NAT02Context();
-
-        //        for (int i = 0; i < validProjects.Count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            try
-        //            {
-        //                // Check to see if the project is in the correct module
-        //                if (project.Item4 == "AllToolProjects")
-        //                {
-        //                    using var _ = new ProjectsContext();
-        //                    if (string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolCheckedBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ToolDrawnBy) ||
-        //                        string.IsNullOrEmpty(_.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).ProjectStartedTool))
-        //                    {
-        //                        _.Dispose();
-        //                        continue;
-        //                    }
-        //                    _.Dispose();
-        //                }
-
-        //                // Uncheck project expander
-        //                project.Item3.IsChecked = false;
-
-        //                EoiProjectsFinished projectsFinished = _nat02Context.EoiProjectsFinished.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
-        //                _nat02Context.EoiProjectsFinished.Remove(projectsFinished);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // MessageBox.Show(ex.Message);
-        //                IMethods.WriteToErrorLog("CompleteToolProject_Click", ex.Message, User);
-        //            }
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        _nat02Context.SaveChanges();
-        //        _nat02Context.Dispose();
-        //        selectedProjects.Clear();
-
-        //        MainRefresh();
-        //    }
-        //}
-        //private void CancelToolProject_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (selectedProjects.Count > 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, string, CheckBox, string)> validProjects = selectedProjects.Where(p => p.Item4 == rClickModule).ToList();
-
-        //        //foreach ((string, string, CheckBox) project in selectedProjects)
-        //        int count = validProjects.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            (string, string, CheckBox, string) project = validProjects[i];
-        //            using var _projectsContext = new ProjectsContext();
-        //            using var _driveworksContext = new DriveWorksContext();
-
-        //            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
-        //            {
-        //                IMethods.CancelProject(project.Item1, project.Item2, User);
-        //            }
-        //            else
-        //            {
-        //                MessageBoxResult res = MessageBox.Show("Are you sure you want to cancel project# " + project.Item1 + "_" + project.Item2 + "?", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-        //                if (res == MessageBoxResult.Yes)
-        //                {
-        //                    try
-        //                    {
-        //                        // Uncheck project expander
-        //                        project.Item3.IsChecked = false;
-
-        //                        if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2))
-        //                        {
-        //                            // Update data in HoldStatus
-        //                            HoldStatus holdStatus = _projectsContext.HoldStatus.Where(p => p.ProjectNumber == project.Item1 && p.RevisionNumber == project.Item2).First();
-        //                            holdStatus.HoldStatus1 = "CANCELLED";
-        //                            holdStatus.TimeSubmitted = DateTime.Now;
-        //                            holdStatus.OnHoldComment = "";
-        //                            _projectsContext.HoldStatus.Update(holdStatus);
-        //                        }
-        //                        else
-        //                        {
-        //                            // Insert into HoldStatus
-        //                            HoldStatus holdStatus = new HoldStatus();
-        //                            holdStatus.ProjectNumber = project.Item1;
-        //                            holdStatus.RevisionNumber = project.Item2;
-        //                            holdStatus.TimeSubmitted = DateTime.Now;
-        //                            holdStatus.HoldStatus1 = "CANCELLED";
-        //                            holdStatus.OnHoldComment = "";
-        //                            _projectsContext.HoldStatus.Add(holdStatus);
-        //                        }
-
-        //                        // Drive specification transition name to "On Hold - " projectType
-        //                        string _name = project.Item1 + (Convert.ToInt32(project.Item2) > 0 ? "_" + project.Item2 : "");
-        //                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
-        //                        spec.StateName = "Cancelled - Tools";
-        //                        spec.IsArchived = true;
-        //                        _driveworksContext.Specifications.Update(spec);
-
-        //                        _projectsContext.SaveChanges();
-        //                        _driveworksContext.SaveChanges();
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        // MessageBox.Show(ex.Message);
-        //                        IMethods.WriteToErrorLog("SetOnHold", ex.Message, User);
-        //                    }
-        //                }
-        //            }
-        //            _projectsContext.Dispose();
-        //            _driveworksContext.Dispose();
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-
-        //        MainRefresh();
-        //    }
-        //}
-        //private void DoNotProcessMenuItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    bool doNotProc = false;
-        //    DataGrid dataGrid = (DataGrid)sender;
-        //    DataGridCellInfo cell = dataGrid.SelectedCells[0];
-        //    string orderNumber = ((TextBlock)cell.Column.GetCellContent(cell.Item)).Text;
-        //    using var nat02context = new NAT02Context();
-
-        //    doNotProc = nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == double.Parse(orderNumber)).Any();
-
-        //    if (doNotProc)
-        //    {
-        //        EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber) };
-        //        nat02context.EoiOrdersDoNotProcess.Add(p);
-        //        nat02context.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        EoiOrdersDoNotProcess p = new EoiOrdersDoNotProcess() { OrderNo = double.Parse(orderNumber), UserName = User.GetUserName() };
-        //        nat02context.EoiOrdersDoNotProcess.Remove(p);
-        //        nat02context.SaveChanges();
-        //    }
-        //    doNotProc = !doNotProc;
-        //    MainRefresh();
-        //}
-        //private void SendToOfficeMenuItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Scan selected orders if there are any and then clear the list
-        //    if (selectedOrders.Count != 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-        //        int count = validOrders.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            (string, CheckBox, string) order = validOrders[i];
-        //            var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-        //            var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
-        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
-        //            string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
-        //            int retVal = workOrder.TransferOrder(User, "D080", module == "EnteredUnscanned");
-        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-        //            if (workOrder.Finished)
-        //            {
-        //                using var context = new NAT02Context();
-        //                if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
-        //                {
-        //                    var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
-        //                    {
-        //                        OrderNo = workOrder.OrderNumber
-        //                    };
-        //                    context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
-
-        //                    context.SaveChanges();
-        //                }
-        //            }
-
-        //            // Uncheck order expander
-        //            order.Item2.IsChecked = false;
-
-        //            DeleteMachineVariables(workOrder.OrderNumber.ToString());
-        //        }
-
-        //        try
-        //        {
-        //            Cursor = Cursors.Wait;
-        //            Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
-        //            Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
-        //                app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-        //            mailItem.Subject = "REQUEST FOR CHANGES WO# " + string.Join(",", validOrders.Select(o => o.Item1));
-        //            mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
-        //            mailItem.Body = "";
-        //            mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
-        //            mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
-        //            mailItem.Display(false);
-        //            Cursor = Cursors.Arrow;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //            Cursor = Cursors.Arrow;
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-        //    }
-        //    // Scan just the order that was right clicked if nothing else has been selected
-        //    else
-        //    {
-        //        workOrder = new WorkOrder((int)_orderNumber, this);
-        //        int retVal = workOrder.TransferOrder(User, "D080");
-        //        if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-        //        if (workOrder.Finished)
-        //        {
-        //            using var context = new NAT02Context();
-        //            if (context.EoiOrdersMarkedForChecking.Where(o => o.OrderNo == workOrder.OrderNumber).Any())
-        //            {
-        //                var orderMarkedForChecking = new EoiOrdersMarkedForChecking()
-        //                {
-        //                    OrderNo = workOrder.OrderNumber
-        //                };
-        //                context.EoiOrdersMarkedForChecking.Remove(orderMarkedForChecking);
-
-        //                context.SaveChanges();
-        //            }
-        //        }
-        //        try
-        //        {
-        //            Cursor = Cursors.Wait;
-        //            Microsoft.Office.Interop.Outlook.Application app = new Microsoft.Office.Interop.Outlook.Application();
-        //            Microsoft.Office.Interop.Outlook.MailItem mailItem = (Microsoft.Office.Interop.Outlook.MailItem)
-        //                app.Application.CreateItem(Microsoft.Office.Interop.Outlook.OlItemType.olMailItem);
-        //            mailItem.Subject = "REQUEST FOR CHANGES WO# " + ((int)_orderNumber).ToString();
-        //            mailItem.To = IMethods.GetEmailAddress(workOrder.Csr);
-        //            mailItem.Body = "";
-        //            mailItem.BCC = "intlcs6@natoli.com;customerservice5@natoli.com";
-        //            mailItem.Importance = Microsoft.Office.Interop.Outlook.OlImportance.olImportanceHigh;
-        //            mailItem.Display(false);
-        //            Cursor = Cursors.Arrow;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //            Cursor = Cursors.Arrow;
-        //        }
-
-        //        DeleteMachineVariables(((int)_orderNumber).ToString());
-        //    }
-
-        //    MainRefresh();
-        //}
-        //private void StartWorkOrder_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Scan selected orders if there are any and then clear the list
-        //    if (selectedOrders.Count != 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-        //        int count = validOrders.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            (string, CheckBox, string) order = validOrders[i];
-        //            var item = (((((((order.Item2.Parent as Grid).Parent as Border).TemplatedParent as ToggleButton).Parent as Grid).Parent as Grid).Parent as DockPanel).Parent as Border);
-        //            var item2 = ((((item.TemplatedParent as Expander).Parent as StackPanel).Parent as ScrollViewer).Parent as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First();
-        //            string module = headers.First(kvp => kvp.Value == item2.Content.ToString()).Key;
-        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
-        //            int retVal = workOrder.TransferOrder(User, "D040", module == "EnteredUnscanned");
-        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-        //            // Uncheck order expander
-        //            order.Item2.IsChecked = false;
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-        //    }
-
-        //    MainRefresh();
-        //}
-        //private void ToProdManOrder_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Scan selected orders if there are any and then clear the list
-        //    if (selectedOrders.Count != 0)
-        //    {
-        //        // New list of projects that are in the same module that was right clicked inside of
-        //        List<(string, CheckBox, string)> validOrders = selectedOrders.Where(p => p.Item3 == rClickModule).ToList();
-
-        //        int count = validOrders.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            (string, CheckBox, string) order = validOrders[i];
-        //            using var nat02context = new NAT02Context();
-        //            if (!nat02context.EoiOrdersPrintedInEngineeringView.Any(o => o.OrderNo.ToString() == order.Item1))
-        //            {
-        //                nat02context.Dispose();
-        //                continue;
-        //            }
-        //            else
-        //            {
-        //                nat02context.Dispose();
-        //            }
-        //            workOrder = new WorkOrder(int.Parse(order.Item1), this);
-        //            int retVal = workOrder.TransferOrder(User, "D921");
-        //            if (retVal == 1) { MessageBox.Show(workOrder.OrderNumber.ToString() + " was not transferred sucessfully."); }
-
-        //            // Uncheck order expander
-        //            order.Item2.IsChecked = false;
-
-        //            // Check EOI_TrackedDocuments table to see if this order needs a notification
-        //            using var _nat02context = new NAT02Context();
-        //            bool tracked = _nat02context.EoiTrackedDocuments.Any(d => d.Number == order.Item1 && d.MovementId == 3);
-        //            if (tracked)
-        //            {
-        //                // Retrieve tracked document
-        //                EoiTrackedDocuments trackedDoc = _nat02context.EoiTrackedDocuments.Single(d => d.Number == order.Item1 && d.MovementId == 3);
-
-        //                // Insert into EOI_Notifications_Active
-        //                EoiNotificationsActive _active = new EoiNotificationsActive()
-        //                {
-        //                    Type = trackedDoc.Type,
-        //                    Number = trackedDoc.Number,
-        //                    Message = "Document has moved to production",
-        //                    User = trackedDoc.User,
-        //                    Timestamp = DateTime.Now
-        //                };
-        //                _nat02context.EoiNotificationsActive.Add(_active);
-
-        //                // Delete from EOI_TrackedDocuments
-        //                _nat02context.EoiTrackedDocuments.Remove(trackedDoc);
-
-        //                // Save context transactions
-        //                _nat02context.SaveChanges();
-        //            }
-        //            _nat02context.Dispose();
-        //        }
-
-        //        // Uncheck Check All CheckBox
-        //        //var x = MainGrid.Children;
-        //        //foreach (Border border in x.OfType<Border>())
-        //        //{
-        //        //    string header = (border.Child as DockPanel).Children.OfType<Grid>().First().Children.OfType<Label>().First().Content.ToString();
-        //        //    if (headers.Single(h => h.Value == header).Key == rClickModule)
-        //        //    {
-        //        //        ((border.Child as DockPanel).Children.OfType<Border>().First().Child as Grid).Children.OfType<CheckBox>().First().IsChecked = false;
-        //        //    }
-        //        //}
-        //    }
-
-        //    MainRefresh();
-        //}
-        //private void ReadyToPrintMenuItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    MainRefresh();
-        //}
         private void ForceRefresh_Click(object sender, RoutedEventArgs e)
         {
             MainRefresh();
@@ -3930,7 +2638,7 @@ namespace NatoliOrderInterface
 
                     OrdersBeingEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()));
+                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.BeginInvoke((Action) BindBeingEntered,System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersBeingEnteredListBox.ItemsSource = null;
                     OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
@@ -3956,7 +2664,7 @@ namespace NatoliOrderInterface
 
                     OrdersInTheOfficeListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()));
+                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersInTheOfficeListBox.ItemsSource = null;
                     OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
@@ -3982,7 +2690,7 @@ namespace NatoliOrderInterface
 
                     QuotesNotConvertedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesNotConverted()));
+                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     QuotesNotConvertedListBox.ItemsSource = null;
                     QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
@@ -4008,7 +2716,7 @@ namespace NatoliOrderInterface
 
                     OrdersEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()));
+                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersEnteredListBox.ItemsSource = null;
                     OrdersEnteredListBox.ItemsSource = ordersEntered;
@@ -4034,7 +2742,7 @@ namespace NatoliOrderInterface
 
                     OrdersInEngListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()));
+                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersInEngListBox.ItemsSource = null;
                     OrdersInEngListBox.ItemsSource = ordersInEng;
@@ -4060,7 +2768,7 @@ namespace NatoliOrderInterface
 
                     QuotesToConvertListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.Invoke(() => BindQuotesToConvert()));
+                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     QuotesToConvertListBox.ItemsSource = null;
                     QuotesToConvertListBox.ItemsSource = quotesToConvert;
@@ -4086,7 +2794,7 @@ namespace NatoliOrderInterface
 
                     OrdersReadyToPrintListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()));
+                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersReadyToPrintListBox.ItemsSource = null;
                     OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
@@ -4112,7 +2820,7 @@ namespace NatoliOrderInterface
 
                     OrdersPrintedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()));
+                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersPrintedListBox.ItemsSource = null;
                     OrdersPrintedListBox.ItemsSource = ordersPrinted;
@@ -4138,26 +2846,11 @@ namespace NatoliOrderInterface
 
                     AllTabletProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllTabletProjects()));
+                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     AllTabletProjectsListBox.ItemsSource = null;
                     AllTabletProjectsListBox.ItemsSource = allTabletProjects;
                     return grid;
-                //case ("TabletProjectsNotStarted", "Main"):
-                //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsStarted", "Main"):
-                //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsDrawn", "Main"):
-                //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsSubmitted", "Main"):
-                //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsOnHold", "Main"):
-                //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-                //    break;
                 case ("AllToolProjects", "Main"):
                     label = new Label
                     {
@@ -4179,23 +2872,11 @@ namespace NatoliOrderInterface
 
                     AllToolProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.Invoke(() => BindAllToolProjects()));
+                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     AllToolProjectsListBox.ItemsSource = null;
                     AllToolProjectsListBox.ItemsSource = allToolProjects;
                     return grid;
-                //case ("ToolProjectsNotStarted", "Main"):
-                //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsStarted", "Main"):
-                //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsDrawn", "Main"):
-                //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsOnHold", "Main"):
-                //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-                //    break;
                 case ("DriveWorksQueue", "Main"):
                     label = new Label
                     {
@@ -4217,7 +2898,7 @@ namespace NatoliOrderInterface
 
                     DriveWorksQueueListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.Invoke(() => BindDriveWorksQueue()));
+                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     DriveWorksQueueListBox.ItemsSource = null;
                     DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
@@ -4243,7 +2924,7 @@ namespace NatoliOrderInterface
 
                     NatoliOrderListListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.Invoke(() => BindNatoliOrderList()));
+                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     NatoliOrderListListBox.ItemsSource = null;
                     NatoliOrderListListBox.ItemsSource = natoliOrderList;
@@ -4264,85 +2945,40 @@ namespace NatoliOrderInterface
                         switch (panel, timer)
                         {
                             case ("BeingEntered", "Main"):
-                                //Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.Invoke(() => BindBeingEntered()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetBeingEntered()));
-                                //tasks.Add(Task.Run(() => GetBeingEntered()));
                                 break;
                             case ("InTheOffice", "Main"):
-                                //Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.Invoke(() => BindInTheOffice()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetInTheOffice()));
-                                //tasks.Add(Task.Run(() => GetInTheOffice()));
                                 break;
                             case ("QuotesNotConverted", "QuotesNotConverted"):
                                 tasks.Add(new Task(() => GetQuotesNotConverted()));
-                                //tasks.Add(Task.Run(() => GetQuotesNotConverted()));
                                 break;
                             case ("EnteredUnscanned", "Main"):
-                                //Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.Invoke(() => BindEnteredUnscanned()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetEnteredUnscanned()));
-                                //tasks.Add(Task.Run(() => GetEnteredUnscanned()));
                                 break;
                             case ("InEngineering", "Main"):
-                                //Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindInEngineering()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetInEngineering()));
-                                //tasks.Add(Task.Run(() => GetInEngineering()));
                                 break;
                             case ("QuotesToConvert", "Main"):
                                 tasks.Add(new Task(() => GetQuotesToConvert()));
-                                //tasks.Add(Task.Run(() => GetQuotesToConvert()));
                                 break;
                             case ("ReadyToPrint", "Main"):
-                                //Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.Invoke(() => BindReadyToPrint()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetReadyToPrint()));
-                                //tasks.Add(Task.Run(() => GetReadyToPrint()));
                                 break;
                             case ("PrintedInEngineering", "Main"):
-                                //Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.Invoke(() => BindPrintedInEngineering()), TaskScheduler.Current);
                                 tasks.Add(new Task(() => GetPrintedInEngineering()));
-                                //tasks.Add(Task.Run(() => GetPrintedInEngineering()));
                                 break;
                             case ("AllTabletProjects", "Main"):
                                 tasks.Add(new Task(() => GetAllTabletProjects()));
-                                //tasks.Add(Task.Run(() => GetAllTabletProjects()));
                                 break;
-                            //case ("TabletProjectsNotStarted", "Main"):
-                            //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-                            //    break;
-                            //case ("TabletProjectsStarted", "Main"):
-                            //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-                            //    break;
-                            //case ("TabletProjectsDrawn", "Main"):
-                            //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-                            //    break;
-                            //case ("TabletProjectsSubmitted", "Main"):
-                            //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-                            //    break;
-                            //case ("TabletProjectsOnHold", "Main"):
-                            //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-                            //    break;
                             case ("AllToolProjects", "Main"):
                                 tasks.Add(new Task(() => GetAllToolProjects()));
-                                //tasks.Add(Task.Run(() => GetAllToolProjects()));
                                 break;
-                            //case ("ToolProjectsNotStarted", "Main"):
-                            //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-                            //    break;
-                            //case ("ToolProjectsStarted", "Main"):
-                            //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-                            //    break;
-                            //case ("ToolProjectsDrawn", "Main"):
-                            //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-                            //    break;
-                            //case ("ToolProjectsOnHold", "Main"):
-                            //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-                            //    break;
                             case ("DriveWorksQueue", "Main"):
                                 tasks.Add(new Task(() => GetDriveWorksQueue()));
-                                //tasks.Add(Task.Run(() => GetDriveWorksQueue()));
                                 break;
                             case ("NatoliOrderList", "NatoliOrderList"):
                                 tasks.Add(new Task(() => GetNatoliOrderList()));
-                                //tasks.Add(Task.Run(() => GetNatoliOrderList()));
                                 break;
                             default:
                                 break;
@@ -4362,18 +2998,62 @@ namespace NatoliOrderInterface
         {
             try
             {
-                Task.Run(() => Dispatcher.Invoke(() => BindQuotesNotConverted()));
-                Task.Run(() => Dispatcher.Invoke(() => BindQuotesToConvert()));
-                Task.Run(() => Dispatcher.Invoke(() => BindBeingEntered()));
-                Task.Run(() => Dispatcher.Invoke(() => BindInTheOffice()));
-                Task.Run(() => Dispatcher.Invoke(() => BindEnteredUnscanned()));
-                Task.Run(() => Dispatcher.Invoke(() => BindInEngineering()));
-                Task.Run(() => Dispatcher.Invoke(() => BindReadyToPrint()));
-                Task.Run(() => Dispatcher.Invoke(() => BindPrintedInEngineering()));
-                Task.Run(() => Dispatcher.Invoke(() => BindAllTabletProjects()));
-                Task.Run(() => Dispatcher.Invoke(() => BindAllToolProjects()));
-                Task.Run(() => Dispatcher.Invoke(() => BindDriveWorksQueue()));
-                Task.Run(() => Dispatcher.Invoke(() => BindNatoliOrderList()));
+                foreach (string mod in User.VisiblePanels)
+                {
+                    switch (mod)
+                    {
+                        case "BeingEntered":
+                            Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "InTheOffice":
+                            Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "QuotesNotConverted":
+                            Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "EnteredUnscanned":
+                            Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "InEngineering":
+                            Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "QuotesToConvert":
+                            Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "ReadyToPrint":
+                            Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "PrintedInEngineering":
+                            Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "AllTabletProjects":
+                            Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "AllToolProjects":
+                            Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "DriveWorksQueue":
+                            Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        case "NatoliOrderList":
+                            Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                //Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             }
             catch (Exception ex)
             {
@@ -5064,40 +3744,40 @@ namespace NatoliOrderInterface
             switch (searchedFromModuleName)
             {
                 case "BeingEntered":
-                    Dispatcher.Invoke(() => BindBeingEntered());
+                    Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "InTheOffice":
-                    Dispatcher.Invoke(() => BindInTheOffice());
+                    Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "QuotesNotConverted":
-                    Dispatcher.Invoke(() => BindQuotesNotConverted());
+                    Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "EnteredUnscanned":
-                    Dispatcher.Invoke(() => BindEnteredUnscanned());
+                    Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "InEngineering":
-                    Dispatcher.Invoke(() => BindInEngineering());
+                    Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "QuotesToConvert":
-                    Dispatcher.Invoke(() => BindQuotesToConvert());
+                    Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "ReadyToPrint":
-                    Dispatcher.Invoke(() => BindReadyToPrint());
+                    Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "PrintedInEngineering":
-                    Dispatcher.Invoke(() => BindPrintedInEngineering());
+                    Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "AllTabletProjects":
-                    Dispatcher.Invoke(() => BindAllTabletProjects());
+                    Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "AllToolProjects":
-                    Dispatcher.Invoke(() => BindAllToolProjects());
+                    Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "DriveWorksQueue":
-                    Dispatcher.Invoke(() => BindDriveWorksQueue());
+                    Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "NatoliOrderList":
-                    Dispatcher.Invoke(() => BindNatoliOrderList());
+                    Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 default:
                     break;
@@ -5134,34 +3814,9 @@ namespace NatoliOrderInterface
                 case "AllTabletProjects":
                     AllTabletProjectsSearchBox_TextChanged();
                     break;
-                //case ("TabletProjectsNotStarted", "Main"):
-                //    break;
-                //case ("TabletProjectsStarted", "Main"):
-                //    break;
-                //case ("TabletProjectsDrawn", "Main"):
-                //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsSubmitted", "Main"):
-                //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-                //    break;
-                //case ("TabletProjectsOnHold", "Main"):
-                //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-                //    break;
                 case "AllToolProjects":
                     AllToolProjectsSearchBox_TextChanged();
                     break;
-                //case ("ToolProjectsNotStarted", "Main"):
-                //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsStarted", "Main"):
-                //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsDrawn", "Main"):
-                //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-                //    break;
-                //case ("ToolProjectsOnHold", "Main"):
-                //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-                //    break;
                 case "DriveWorksQueue":
                     DriveWorksQueueSearchBox_TextChanged();
                     break;
@@ -5226,48 +3881,12 @@ namespace NatoliOrderInterface
             searchedFromModuleName = "AllTabletProjects";
             moduleSearchTimer.Start();
         }
-        //private void TabletProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetTabletProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsNotStarted()), TaskScheduler.Current);
-        //}
-        //private void TabletProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetTabletProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsStarted()), TaskScheduler.Current);
-        //}
-        //private void TabletProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetTabletProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsDrawn()), TaskScheduler.Current);
-        //}
-        //private void TabletProjectsSubmittedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetTabletProjectsSubmitted()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsSubmitted()), TaskScheduler.Current);
-        //}
-        //private void TabletProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetTabletProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindTabletProjectsOnHold()), TaskScheduler.Current);
-        //}
         private void AllToolProjectsSearchBox_TextChanged()
         {
             moduleSearchTimer.Stop();
             searchedFromModuleName = "AllToolProjects";
             moduleSearchTimer.Start();
         }
-        //private void ToolProjectsNotStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetToolProjectsNotStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsNotStarted()), TaskScheduler.Current);
-        //}
-        //private void ToolProjectsStartedSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetToolProjectsStarted()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsStarted()), TaskScheduler.Current);
-        //}
-        //private void ToolProjectsDrawnSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetToolProjectsDrawn()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsDrawn()), TaskScheduler.Current);
-        //}
-        //private void ToolProjectsOnHoldSearchBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Task.Run(() => GetToolProjectsOnHold()).ContinueWith(t => Dispatcher.Invoke(() => BindToolProjectsOnHold()), TaskScheduler.Current);
-        //}
         private void DriveWorksQueueSearchBox_TextChanged()
         {
             moduleSearchTimer.Stop();
