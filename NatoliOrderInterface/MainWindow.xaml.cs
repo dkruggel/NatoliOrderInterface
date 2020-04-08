@@ -1855,34 +1855,27 @@ namespace NatoliOrderInterface
                 {
                     if (w.Title.Contains(quoteNumber))
                     {
-                        nat01context.Dispose();
                         w.WindowState = WindowState.Normal;
                         w.Show();
                         goto AlreadyOpen;
                     }
                 }
-                quote = new Quote(int.Parse(quoteNumber), short.Parse(revNumber));
-                nat01context.Dispose();
+                if (nat01context.QuoteHeader.Any(q => q.QuoteNo == double.Parse(quoteNumber) && q.QuoteRevNo == short.Parse(revNumber)))
+                {
+                    quote = new Quote(int.Parse(quoteNumber), short.Parse(revNumber));
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
+                    {
+                        Left = Left,
+                        Top = Top
+                    };
+                    quoteInfoWindow.Show();
+                }
                 mainTimer.Stop();
             }
             catch (Exception ex)
             {
                 // MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteSearchButton_Click - Before new window instance", ex.Message, User);
-            }
-            try
-            {
-                QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, this, User)
-                {
-                    Left = Left,
-                    Top = Top
-                };
-                quoteInfoWindow.Show();
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                IMethods.WriteToErrorLog("QuoteSearchButton_Click - After new window instance, quote: " + quote.QuoteNumber + "-" + quote.QuoteRevNo, ex.Message, User);
+                IMethods.WriteToErrorLog("QuoteSearchButton_Click", ex.Message, User);
             }
         AlreadyOpen:
             nat01context.Dispose();
@@ -2867,7 +2860,7 @@ namespace NatoliOrderInterface
             OrdersBeingEntered =
                 _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                o.QuoteNo.ToString().Contains(searchString) ||
-                                               o.CustomerName.ToLower().Contains(searchString))
+                                               (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
         }
@@ -2899,9 +2892,9 @@ namespace NatoliOrderInterface
             //                      .ToList();
 
             OrdersInTheOffice = _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                              o.CustomerName.ToLower().ToString().Contains(searchString) ||
-                                              o.EmployeeName.ToLower().Contains(searchString) ||
-                                              o.Csr.ToLower().Contains(searchString))
+                                              (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)) ||
+                                              (!string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString)) ||
+                                              (!string.IsNullOrEmpty(o.Csr) && o.Csr.ToLower().Contains(searchString)))
                                   .OrderBy(o => o.NumDaysToShip)
                                   .ThenBy(o => o.DaysInOffice)
                                   .ThenBy(o => o.OrderNo)
@@ -2945,7 +2938,7 @@ namespace NatoliOrderInterface
             {
                 searchString = searchString.Substring(4);
                 _filtered =
-                _quotesNotConverted.Where(p => p.RepId.ToLower().Trim() == searchString)
+                _quotesNotConverted.Where(p => !string.IsNullOrEmpty(p.RepId) && p.RepId.ToLower().Trim() == searchString)
                                    .OrderByDescending(kvp => kvp.QuoteNo)
                                    .ToList();
             }
@@ -2954,8 +2947,8 @@ namespace NatoliOrderInterface
                 _filtered =
                 _quotesNotConverted.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
                                                p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
-                                               p.CustomerName.ToLower().Contains(searchString) ||
-                                               p.Csr.ToLower().Contains(searchString))
+                                               (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                               (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)))
                                    .OrderByDescending(kvp => kvp.QuoteNo)
                                    .ToList();
             }
@@ -2986,7 +2979,7 @@ namespace NatoliOrderInterface
             //                  .ToList();
 
             OrdersEntered = _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                          p.CustomerName.ToLower().Contains(searchString))
+                                          (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
                               .OrderBy(kvp => kvp.OrderNo)
                               .ToList();
         }
@@ -3017,8 +3010,8 @@ namespace NatoliOrderInterface
             //                .ToList();
 
             OrdersInEng = _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                        p.CustomerName.ToLower().Contains(searchString) ||
-                                        p.EmployeeName.ToLower().Contains(searchString))
+                                        (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                        (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)))
                             .OrderByDescending(kvp => kvp.DaysInEng)
                             .ThenBy(kvp => kvp.NumDaysToShip)
                             .ThenBy(kvp => kvp.OrderNo)
@@ -3066,8 +3059,8 @@ namespace NatoliOrderInterface
 
             QuotesToConvert = _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
                                             p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
-                                            p.CustomerName.ToLower().Contains(searchString) ||
-                                            p.Csr.ToLower().Contains(searchString))
+                                            (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)))
                                 .OrderBy(kvp => kvp.TimeSubmitted)
                                 .ToList();
         }
@@ -3097,9 +3090,9 @@ namespace NatoliOrderInterface
             //                       .ToList();
 
             OrdersReadyToPrint = _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                               p.CustomerName.ToLower().Contains(searchString) ||
-                                               p.EmployeeName.ToLower().Contains(searchString) ||
-                                               p.CheckedBy.ToLower().Contains(searchString))
+                                               (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                               (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
+                                               (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
         }
@@ -3138,21 +3131,21 @@ namespace NatoliOrderInterface
                     case "customer name":
 
                         _filtered =
-                            _ordersPrinted.Where(p => p.CustomerName.ToLower().Contains(searchString))
+                            _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     case "employee name":
 
                         _filtered =
-                            _ordersPrinted.Where(p => p.EmployeeName.ToLower().Contains(searchString))
+                            _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
                     case "checker":
 
                         _filtered =
-                            _ordersPrinted.Where(p => p.CheckedBy.ToLower().Contains(searchString))
+                            _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
@@ -3160,9 +3153,9 @@ namespace NatoliOrderInterface
 
                         _filtered =
                             _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                                      p.CustomerName.ToLower().Contains(searchString) ||
-                                                      p.EmployeeName.ToLower().Contains(searchString) ||
-                                                      p.CheckedBy.ToLower().Contains(searchString))
+                                                      (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                      (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
+                                                      (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
                                           .OrderBy(kvp => kvp.OrderNo)
                                           .ToList();
                         break;
@@ -3171,12 +3164,12 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                    _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                              p.CustomerName.ToLower().Contains(searchString) ||
-                                              p.EmployeeName.ToLower().Contains(searchString) ||
-                                              p.CheckedBy.ToLower().Contains(searchString))
-                                  .OrderBy(kvp => kvp.OrderNo)
-                                  .ToList();
+                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                                      (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                      (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
+                                                      (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
             }
 
             OrdersPrinted = _filtered;
@@ -3242,9 +3235,9 @@ namespace NatoliOrderInterface
                 _filtered =
                     _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.CustomerName.ToLower().Contains(searchString) ||
-                                                  p.Csr.ToLower().Contains(searchString) ||
-                                                  p.Drafter.ToLower().Contains(searchString))
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3256,9 +3249,9 @@ namespace NatoliOrderInterface
                 _filtered =
                     _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                                  p.CustomerName.ToLower().Contains(searchString) ||
-                                                  p.Csr.ToLower().Contains(searchString) ||
-                                                  p.Drafter.ToLower().Contains(searchString))
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
@@ -3328,9 +3321,9 @@ namespace NatoliOrderInterface
                 _filtered =
                     _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.CustomerName.ToLower().Contains(searchString) ||
-                                                p.Csr.ToLower().Contains(searchString) ||
-                                                p.Drafter.ToLower().Contains(searchString))
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                     .OrderByDescending(kvp => kvp.Complete)
                                     .ThenByDescending(kvp => kvp.MarkedPriority)
                                     .ThenBy(kvp => kvp.DueDate)
@@ -3342,9 +3335,9 @@ namespace NatoliOrderInterface
                 _filtered =
                     _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
-                                                p.CustomerName.ToLower().Contains(searchString) ||
-                                                p.Csr.ToLower().Contains(searchString) ||
-                                                p.Drafter.ToLower().Contains(searchString))
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                     .OrderByDescending(kvp => kvp.MarkedPriority)
                                     .ThenBy(kvp => kvp.DueDate)
                                     .ThenBy(kvp => kvp.ProjectNumber)
@@ -3426,7 +3419,7 @@ namespace NatoliOrderInterface
             {
                 searchString = searchString.Substring(4);
                 _filtered =
-                _natoliOrderList.Where(p => p.RepId.ToLower().Trim() == searchString)
+                _natoliOrderList.Where(p => !string.IsNullOrEmpty(p.RepId) && p.RepId.ToLower().Trim() == searchString)
                                 .OrderBy(kvp => kvp.ShipDate)
                                 .ToList();
             }
@@ -3434,7 +3427,7 @@ namespace NatoliOrderInterface
             {
                 _filtered =
                 _natoliOrderList.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                            p.Customer.ToLower().Contains(searchString))
+                                            !string.IsNullOrEmpty(p.Customer) && p.Customer.ToLower().Contains(searchString))
                                 .OrderBy(kvp => kvp.ShipDate)
                                 .ToList();
             }

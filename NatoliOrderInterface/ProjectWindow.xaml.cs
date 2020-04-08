@@ -3916,6 +3916,13 @@ namespace NatoliOrderInterface
                     CheckButton.IsEnabled = false;
                     PutOnHoldButton.IsEnabled = false;
                     CancelButton.IsEnabled = false;
+                }
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()) || _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()))
+                { 
+                    ReviseButton.IsEnabled = false;
+                }
+                else
+                {
                     ReviseButton.IsEnabled = true;
                 }
             }
