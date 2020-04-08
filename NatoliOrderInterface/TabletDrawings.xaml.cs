@@ -195,30 +195,10 @@ namespace NatoliOrderInterface
             itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
             itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
             itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.MouseDoubleClickEvent, new MouseButtonEventHandler(file_MouseDoubleClick)));
             UpperDrawingListBox.ItemContainerStyle = itemContainerStyle;
-
-            //itemContainerStyle = LowerDrawingListBox.ItemContainerStyle;
-            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
             LowerDrawingListBox.ItemContainerStyle = itemContainerStyle;
-
-            //itemContainerStyle = ShortRejectDrawingListBox.ItemContainerStyle;
-            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
             ShortRejectDrawingListBox.ItemContainerStyle = itemContainerStyle;
-
-            //itemContainerStyle = LongRejectDrawingListBox.ItemContainerStyle;
-            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
-            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
             LongRejectDrawingListBox.ItemContainerStyle = itemContainerStyle;
         }
         /// <summary>
@@ -230,25 +210,13 @@ namespace NatoliOrderInterface
         {
             try
             {
-                ListBox listBox = sender as ListBox;
-                Tuple<string, string, string> file = null;
-                switch (listBox.Name)
+                if(sender is ListBoxItem)
                 {
-                    case "UpperDrawingListBox":
-                        file = upperTabletDrawings[listBox.SelectedIndex];
-                        break;
-                    case "LowerDrawingListBox":
-                        file = lowerTabletDrawings[listBox.SelectedIndex];
-                        break;
-                    case "ShortRejectDrawingsListBox":
-                        file = ShortRejectTabletDrawings[listBox.SelectedIndex];
-                        break;
-                    case "LongRejectDrawingsListBox":
-                        file = LongRejectTabletDrawings[listBox.SelectedIndex];
-                        break;
+                    ListBoxItem listBoxItem = sender as ListBoxItem;
+                    Tuple<string, string, string> file = listBoxItem.Content as Tuple<string, string, string>;
+                    string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
                 }
-                string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
-                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
             }
             catch (Exception ex)
             {
@@ -448,25 +416,6 @@ namespace NatoliOrderInterface
             }
         }
 
-        private void ListBox_DragEnter(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void ListBox_DragLeave(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void ListBox_DragOver(object sender, DragEventArgs e)
-        {
-
-        }
-
-        private void ListBox_Drop(object sender, DragEventArgs e)
-        {
-
-        }
         public void ListBoxItem_PreviewDragLeave(object sender, DragEventArgs e)
         {
 

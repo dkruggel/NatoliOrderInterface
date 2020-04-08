@@ -21,19 +21,19 @@
         <TextBlock x:Name="Header" Style="{StaticResource BoldTextBlock}" FontSize="24" HorizontalAlignment="Center" Text="Tablet Drawings For Project#" Grid.ColumnSpan="999"/>
         <DockPanel Grid.Column="0" Grid.Row="1" Margin="4,4">
             <TextBlock Style="{StaticResource BoldTextBlock}" Text="Upper Hob" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-            <ListBox DockPanel.Dock="Top" Style="{StaticResource FilePicker}"  x:Name="UpperDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple" MouseDoubleClick="file_MouseDoubleClick" DragEnter="ListBox_DragEnter" DragLeave="ListBox_DragLeave" DragOver="ListBox_DragOver" Drop="ListBox_Drop"/>
+            <ListBox DockPanel.Dock="Top" Style="{StaticResource FilePicker}"  x:Name="UpperDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple"/>
         </DockPanel>
         <DockPanel Grid.Column="1" Grid.Row="1" Margin="4,4">
             <TextBlock Style="{StaticResource BoldTextBlock}" Text="Lower Hob" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-            <ListBox Style="{StaticResource FilePicker}"  x:Name="LowerDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple" MouseDoubleClick="file_MouseDoubleClick" DragEnter="ListBox_DragEnter" DragLeave="ListBox_DragLeave" DragOver="ListBox_DragOver" Drop="ListBox_Drop"/>
+            <ListBox Style="{StaticResource FilePicker}"  x:Name="LowerDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple"/>
         </DockPanel>
         <DockPanel Grid.Column="2" Grid.Row="1" Margin="4,4">
             <TextBlock Style="{StaticResource BoldTextBlock}" Text="ShortReject Hob" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-            <ListBox Style="{StaticResource FilePicker}"  x:Name="ShortRejectDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple" MouseDoubleClick="file_MouseDoubleClick" DragEnter="ListBox_DragEnter" DragLeave="ListBox_DragLeave" DragOver="ListBox_DragOver" Drop="ListBox_Drop"/>
+            <ListBox Style="{StaticResource FilePicker}"  x:Name="ShortRejectDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple"/>
         </DockPanel>
         <DockPanel Grid.Column="3" Grid.Row="1" Margin="4,4">
             <TextBlock Style="{StaticResource BoldTextBlock}" Text="LongReject Hob" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
-            <ListBox Style="{StaticResource FilePicker}"  x:Name="LongRejectDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple" MouseDoubleClick="file_MouseDoubleClick" DragEnter="ListBox_DragEnter" DragLeave="ListBox_DragLeave" DragOver="ListBox_DragOver" Drop="ListBox_Drop"/>
+            <ListBox Style="{StaticResource FilePicker}"  x:Name="LongRejectDrawingListBox" Width="200" MinHeight="80" SelectionMode="Multiple" />
         </DockPanel>
         <DockPanel Grid.Row="3" Grid.Column="0" LastChildFill="False" Grid.ColumnSpan="999" Margin="4,8">
             <Grid Margin="8,0" DockPanel.Dock="Right">
