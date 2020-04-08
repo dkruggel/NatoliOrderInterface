@@ -2250,6 +2250,7 @@ namespace NatoliOrderInterface
         {
             string filename;
             string tempFile;
+            string newPath = @"\\nshare\users\" + user.DomainName + @"\WorkOrdersToPrint\";
 
             var passCert = user.Password;
             foreach (string file in filePaths)
@@ -2294,7 +2295,6 @@ namespace NatoliOrderInterface
                 signer.SetFieldName("Signature" + count);
                 signer.SetSignDate(System.DateTime.Now);
                 var pathToCert = @"C:\Users\" + user.DomainName + @"\Desktop\cert.pfx";
-                //var passCert = "614_Biltmore";
                 var pass = passCert.ToCharArray();
                 FileStream fs;
                 fs = new FileStream(pathToCert, FileMode.Open);
@@ -2323,7 +2323,14 @@ namespace NatoliOrderInterface
                 string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
                 int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
                 file_count = lineItemName.EndsWith("_M") ? lineItemNumber * 2 : lineItemNumber * 2 - 1;
-                File.Copy(filename, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", false);
+                if (user.EmployeeCode == "E4408")
+                {
+                    File.Copy(filename, newPath + workOrder.OrderNumber + "_" + file_count + ".pdf", false);
+                }
+                else
+                {
+                    File.Copy(filename, @"C:\Users\" + user.DomainName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", false);
+                }
             end:;
                 pdfReader.Close();
                 pdfWriter.Dispose();

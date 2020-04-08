@@ -201,6 +201,7 @@ namespace NatoliOrderInterface
             string[] oldFiles = Directory.GetFiles(directory);
             string userName;
             if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
+            string path = user.EmployeeCode == "E4408" ? @"\\nshare\users\" + userName + @"\WorkOrdersToPrint\" : @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\";
             foreach (TextBlock textBlock in ListBox1.ItemsSource)
             {
                 string file = directory + "\\" + textBlock.Text.ToString() + ".pdf";
@@ -208,7 +209,7 @@ namespace NatoliOrderInterface
                 // Delete files already in the folder to move to on first loop
                 if (tempFile == "")
                 {
-                    string[] filesAlreadyInDirectory = Directory.GetFiles(@"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\", "*" + woFolderName + "*");
+                    string[] filesAlreadyInDirectory = Directory.GetFiles(path, "*" + woFolderName + "*");
                     foreach (string fileToDelete in filesAlreadyInDirectory)
                     {
                         File.Delete(fileToDelete);
@@ -231,7 +232,7 @@ namespace NatoliOrderInterface
                     }
                     document.Close();
                     File.Move(tempFile, file, true);
-                    File.Copy(file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                    File.Copy(file, path + woFolderName + "_" + file_count + ".pdf", true);
                     if (file != oldFile)
                     {
                         File.Delete(oldFile);
@@ -239,7 +240,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
-                    File.Copy(file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + woFolderName + "_" + file_count + ".pdf", true);
+                    File.Copy(file, path + woFolderName + "_" + file_count + ".pdf", true);
                 }
                 file_count++;
             }

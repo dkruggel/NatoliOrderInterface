@@ -1616,38 +1616,32 @@ namespace NatoliOrderInterface
         }
         private void PrintDrawings_Click(object sender, RoutedEventArgs e)
         {
-            //if (User.EmployeeCode == "E4408")
-            //{
-            //    foreach (string file in System.IO.Directory.GetFiles(@"C:\Users\" + User.DomainName + @"\Desktop\WorkOrdersToPrint\").AsEnumerable().OrderBy(f => f))
-            //    {
-            //        Acrobat.AcroAVDoc doc = new Acrobat.AcroAVDoc();
-            //        doc.Open(file, "");
-            //        Acrobat.CAcroPDDoc tempDoc = (Acrobat.CAcroPDDoc)doc.GetPDDoc();
-            //        doc.PrintPagesSilentEx(1, tempDoc.GetNumPages(), 0, 0, 1, 0, 0, 0, 0);
-            //        tempDoc.Close();
-            //    }
-            //}
-            //else
-            //{
-            //    //PdfPrinter.PrintHelper printHelper = new PdfPrinter.PrintHelper().PrintHelperFactory();
-            //    //string ret = printHelper.PrintAllFiles();
-            //}
-            //PdfPrinter.PrintHelper printHelper = new PdfPrinter.PrintHelper().PrintHelperFactory();
-            //string ret = printHelper.PrintAllFiles();
+            // Opens folder with drawings
+            string path = @"C:\Users\" + User.DomainName + @"\Desktop\WorkOrdersToPrint\";
+            string newPath = @"\\nshare\users\" + User.DomainName + @"\WorkOrdersToPrint\";
 
-            MessageBoxResult res = MessageBox.Show("Delete pdfs?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            switch (res)
+            if (User.EmployeeCode == "E4408")
             {
-                case MessageBoxResult.Yes:
-                    foreach (string file in System.IO.Directory.GetFiles(@"C:\Users\" + User.DomainName + @"\Desktop\WorkOrdersToPrint\").AsEnumerable().OrderBy(f => f))
-                    {
-                        System.IO.File.Delete(file);
-                    }
-                    break;
-                case MessageBoxResult.No:
-                    break;
-                default:
-                    break;
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", newPath);
+
+                //MessageBoxResult res = MessageBox.Show("Delete pdfs?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                //switch (res)
+                //{
+                //    case MessageBoxResult.Yes:
+                //        foreach (string file in System.IO.Directory.GetFiles(newPath).AsEnumerable().OrderBy(f => f))
+                //        {
+                //            System.IO.File.Delete(file);
+                //        }
+                //        break;
+                //    case MessageBoxResult.No:
+                //        break;
+                //    default:
+                //        break;
+                //}
+            }
+            else
+            {
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
             }
         }
         public void DeleteMachineVariables(string orderNo, int lineNumber = 0)
