@@ -31,6 +31,7 @@ namespace NatoliOrderInterface
     public partial class TabletDrawings : Window
     {
         private readonly string eDrawDirectory = @"\\nsql03\data1\DRAW\E-DRAWINGS\";
+        private readonly string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
 
         private List<Tuple<string,string,string>> upperTabletDrawings = new List<Tuple<string,string,string>>();
         private List<Tuple<string,string,string>> lowerTabletDrawings = new List<Tuple<string,string,string>>();
@@ -79,6 +80,7 @@ namespace NatoliOrderInterface
         }
 
         private string projectNumber = "";
+        private List<string> hobNumbers = new List<string>();
 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -95,6 +97,7 @@ namespace NatoliOrderInterface
             public int Bottom { get; set; }
         }
         /// <summary>
+        /// Creates a new Window with listboxes containing the relevant tablet drawings.
         /// Hob Numbers must be in order of Upper, Lower, Short Reject, Long Reject.
         /// </summary>
         /// <param name="hobNumbers"></param>
@@ -105,26 +108,36 @@ namespace NatoliOrderInterface
             IntPtr hwnd = new WindowInteropHelper(window).Handle;
             Rect windowRect = new Rect();
             GetWindowRect(hwnd, ref windowRect);
-
+            this.hobNumbers = hobNumbers;
             Top = windowRect.Top;
             Left = windowRect.Left + (((window).Width - this.Width) / 2);
             Header.Text = projectNumber == "" ? "Tablet Drawings" : "Tablet Drawings For Project# " + projectNumber + "-" + projectRevNumber;
             this.projectNumber = projectNumber;
+
+            SetDragDropEvents();
+            FillTabletDrawingsData();
+            this.Show();
+        }
+        /// <summary>
+        /// Populates the data for the listboxes
+        /// </summary>
+        private void FillTabletDrawingsData()
+        {
             int i = 0;
-            foreach(string hobNumberString in hobNumbers)
+            foreach (string hobNumberString in hobNumbers)
             {
                 if (int.TryParse(hobNumberString, out int hobNumber))
                 {
                     string folderPrefix = IMethods.GetEDrawingsFolderPrefix(hobNumber);
                     string folderLocation = eDrawDirectory + folderPrefix + @"-E-DRAWINGS\";
                     IEnumerable<string> files = Directory.EnumerateFiles(eDrawDirectory + folderPrefix + @"-E-DRAWINGS\", hobNumber.ToString() + "*", new EnumerationOptions { RecurseSubdirectories = false, MatchType = MatchType.Simple, MatchCasing = MatchCasing.CaseInsensitive });
-                    if(files.Any())
-                    { 
-                        switch(i)
+                    if (files.Any())
+                    {
+                        switch (i)
                         {
                             case 0:
-                                List<Tuple<string,string,string>> upperTabletDrawings = new List<Tuple<string, string, string>>();
-                                foreach(string file in files)
+                                List<Tuple<string, string, string>> upperTabletDrawings = new List<Tuple<string, string, string>>();
+                                foreach (string file in files)
                                 {
                                     string directory = Path.GetDirectoryName(file);
                                     string fileName = Path.GetFileNameWithoutExtension(file);
@@ -173,9 +186,46 @@ namespace NatoliOrderInterface
                 }
                 i++;
             }
-            this.Show();
         }
-        
+        private void SetDragDropEvents()
+        {
+            Style itemContainerStyle = new System.Windows.Style(typeof(ListBoxItem));
+            itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
+            itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+            UpperDrawingListBox.ItemContainerStyle = itemContainerStyle;
+
+            //itemContainerStyle = LowerDrawingListBox.ItemContainerStyle;
+            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+            LowerDrawingListBox.ItemContainerStyle = itemContainerStyle;
+
+            //itemContainerStyle = ShortRejectDrawingListBox.ItemContainerStyle;
+            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+            ShortRejectDrawingListBox.ItemContainerStyle = itemContainerStyle;
+
+            //itemContainerStyle = LongRejectDrawingListBox.ItemContainerStyle;
+            //itemContainerStyle.Setters.Add(new Setter(ListBoxItem.AllowDropProperty, true));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewDragLeaveEvent, new DragEventHandler(ListBoxItem_PreviewDragLeave)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.PreviewMouseMoveEvent, new MouseEventHandler(ListBoxItem_PreviewMouseMove)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.DropEvent, new DragEventHandler(ListBoxItem_Dropping)));
+            //itemContainerStyle.Setters.Add(new EventSetter(ListBoxItem.GiveFeedbackEvent, new GiveFeedbackEventHandler(ListBoxItem_DraggingFeedback)));
+            LongRejectDrawingListBox.ItemContainerStyle = itemContainerStyle;
+        }
+        /// <summary>
+        /// Handles the listbox doubleclick event to open the file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void file_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -205,12 +255,15 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Could not open the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
             }
         }
-
+        /// <summary>
+        /// Copies the selected files out of all the list boxes and moves it to the project folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CopySelectedToProject_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
                 List<Tuple<string, string, string>> tabletDrawings = new List<Tuple<string, string, string>>();
                 foreach (Tuple<string, string, string> listBoxItem in UpperDrawingListBox.SelectedItems)
@@ -252,12 +305,15 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click()", ex.Message, new User());
             }
         }
-
+        /// <summary>
+        /// Copies all files out of all the list boxes and moves it to the project folder
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CopyAllToProject_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
                 List<Tuple<string, string, string>> tabletDrawings = new List<Tuple<string, string, string>>();
                 foreach (Tuple<string, string, string> tabletDrawing in upperTabletDrawings)
@@ -295,12 +351,15 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("TabletDrawings => CopyAllToProject_Click()", ex.Message, new User());
             }
         }
-
+        /// <summary>
+        /// Copies the selected files out of all the list boxes and moves it to the "FILES_FOR_CUSTOMER" folder.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CopyAllToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
                 List<Tuple<string, string, string>> tabletDrawings = new List<Tuple<string, string, string>>();
                 foreach (Tuple<string, string, string> tabletDrawing in upperTabletDrawings)
@@ -338,12 +397,15 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("TabletDrawings => CopyAllToFilesForCustomer_Click()", ex.Message, new User());
             }
         }
-
+        /// <summary>
+        /// Copies all files out of all the list boxes and moves it to the "FILES_FOR_CUSTOMER" folder.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CopySelectedToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
                 List<Tuple<string, string, string>> tabletDrawings = new List<Tuple<string, string, string>>();
                 foreach (Tuple<string, string, string> listBoxItem in UpperDrawingListBox.SelectedItems)
@@ -383,6 +445,82 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToFilesForCustomer_Click()", ex.Message, new User());
+            }
+        }
+
+        private void ListBox_DragEnter(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private void ListBox_DragLeave(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private void ListBox_DragOver(object sender, DragEventArgs e)
+        {
+
+        }
+
+        private void ListBox_Drop(object sender, DragEventArgs e)
+        {
+
+        }
+        public void ListBoxItem_PreviewDragLeave(object sender, DragEventArgs e)
+        {
+
+        }
+        public void ListBoxItem_DraggingFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            
+        }
+        public void ListBoxItem_Dropping(object sender, DragEventArgs e)
+        {
+           
+        }
+        public void ListBoxItem_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (e.LeftButton == MouseButtonState.Pressed && sender is ListBoxItem)
+                {
+                    ListBoxItem draggedItem = sender as ListBoxItem;
+                    draggedItem.IsSelected = true;
+                    List<Tuple<string, string, string>> tabletDrawings = new List<Tuple<string, string, string>>();
+                    foreach (Tuple<string, string, string> listBoxItem in UpperDrawingListBox.SelectedItems)
+                    {
+                        Tuple<string, string, string> tabletDrawing = upperTabletDrawings[UpperDrawingListBox.Items.IndexOf(listBoxItem)];
+                        tabletDrawings.Add(tabletDrawing);
+                    }
+                    foreach (Tuple<string, string, string> listBoxItem in LowerDrawingListBox.SelectedItems)
+                    {
+                        Tuple<string, string, string> tabletDrawing = lowerTabletDrawings[LowerDrawingListBox.Items.IndexOf(listBoxItem)];
+                        tabletDrawings.Add(tabletDrawing);
+                    }
+                    foreach (Tuple<string, string, string> listBoxItem in ShortRejectDrawingListBox.SelectedItems)
+                    {
+                        Tuple<string, string, string> tabletDrawing = shortRejectTabletDrawings[ShortRejectDrawingListBox.Items.IndexOf(listBoxItem)];
+                        tabletDrawings.Add(tabletDrawing);
+                    }
+                    foreach (Tuple<string, string, string> listBoxItem in LongRejectDrawingListBox.SelectedItems)
+                    {
+                        Tuple<string, string, string> tabletDrawing = longRejectTabletDrawings[LongRejectDrawingListBox.Items.IndexOf(listBoxItem)];
+                        tabletDrawings.Add(tabletDrawing);
+                    }
+
+                    List<string> paths = new List<string>();
+                    foreach (Tuple<string, string, string> tabletDrawing in tabletDrawings)
+                    {
+                        paths.Add(tabletDrawing.Item2 + "\\" + tabletDrawing.Item1 + tabletDrawing.Item3);
+                    }
+
+                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.FileDrop, paths.ToArray()), DragDropEffects.Copy);
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("TabletDrawings.xaml.cs => ListBoxItem_PreviewMouseMove", ex.Message, new User());
             }
         }
     }
