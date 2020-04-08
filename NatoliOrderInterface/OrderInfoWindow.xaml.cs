@@ -2295,7 +2295,6 @@ namespace NatoliOrderInterface
                 signer.SetFieldName("Signature" + count);
                 signer.SetSignDate(System.DateTime.Now);
                 var pathToCert = @"C:\Users\" + user.DomainName + @"\Desktop\cert.pfx";
-                //var passCert = "614_Biltmore";
                 var pass = passCert.ToCharArray();
                 FileStream fs;
                 fs = new FileStream(pathToCert, FileMode.Open);
