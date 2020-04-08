@@ -295,13 +295,14 @@
                         <DockPanel HorizontalAlignment="Stretch" Margin="5,0,5,0">
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="ProjectFolderButton" Content="Project Folder" Click="ProjectFolderButton_Click"/>
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="QuoteFolderButton" Content="Quote Folder" Click="QuoteFolderButton_Click"/>
+                            <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="TabletDrawingsButton" Content="Tablet Drawings" Click="TabletDrawingsButton_Click"/>
                             <Button Style="{StaticResource Button}" Height="24" DockPanel.Dock="Top" x:Name="SpecificationsButton" Content="Specifications" Click="SpecificationsButton_Click"/>
                             <Border DockPanel.Dock="Bottom" BorderThickness="0,2,0,0" Margin="-5,0" BorderBrush="Black" x:Name="AttachFilesBorder" AllowDrop="True" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop">
                                 <DockPanel VerticalAlignment="Center">
                                     <TextBlock DockPanel.Dock="Top" Text="FILES" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Style="{StaticResource BoldTextBlock}"/>
                                     <!--<Image DockPanel.Dock="Top" Margin="4,0,4,0" Source="{StaticResource add_item_altDrawingImage}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="60"/>-->
-                                    <ListBox x:Name="FilesListBox" DockPanel.Dock="Top" Height="190" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single">
-                                        <ListBox.ItemTemplate>
+                                    <ListBox x:Name="FilesListBox" Style="{DynamicResource FilePicker}" DockPanel.Dock="Top" Height="146" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single">
+                                        <!--<ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Name="stackPanel">
                                                     <Border Name="button" Padding="0" BorderBrush="Transparent" Background="Transparent" ToolTip="{Binding Item3}">
@@ -380,7 +381,7 @@
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>
-                                        </ListBox.ItemTemplate>
+                                        </ListBox.ItemTemplate>-->
                                     </ListBox>
                                     <!--<TextBlock Margin="0,20,0,0" FontSize="10" HorizontalAlignment="Center" TextWrapping="Wrap" Style="{StaticResource NormalTextBlock}" Visibility="Collapsed"><Run Text="Icon made by "/><Hyperlink NavigateUri="https://www.freepik.com/home" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Freepik"/></Hyperlink><Run Text=" from "/><Hyperlink NavigateUri="http://www.flaticon.com/" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="www.flaticon.com"/></Hyperlink></TextBlock>-->
                                 </DockPanel>
