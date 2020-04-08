@@ -27,8 +27,8 @@ namespace NatoliOrderInterface
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
-    
-    public partial class ProjectWindow : Window, IDisposable , IMethods
+
+    public partial class ProjectWindow : Window, IDisposable, IMethods
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr FindWindow(string strClassName, string strWindowName);
@@ -140,56 +140,56 @@ namespace NatoliOrderInterface
             if (!isTabletProject && !isToolProject)
             {
                 MessageBox.Show("Please select a project Type (Tablet or Tools).", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (string.IsNullOrWhiteSpace(UnitOfMeasure.Text))
             {
                 MessageBox.Show("Please enter a Unit Of Measure.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (string.IsNullOrWhiteSpace(CustomerName.Text) && string.IsNullOrWhiteSpace(ShipToName.Text) && string.IsNullOrWhiteSpace(EndUserName.Text))
             {
                 MessageBox.Show("Please enter a Customer/Ship To/End User name.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (string.IsNullOrWhiteSpace(DueDate.Text))
             {
                 MessageBox.Show("Please enter a due date for the project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (string.IsNullOrWhiteSpace(Notes.Text))
             {
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
             {
                 MessageBox.Show("Please enter a tablet size.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (!string.IsNullOrWhiteSpace(TabletWidth.Text) && !DieShape.Text.Trim().ToUpper().Contains("DIAMETER") && !DieShape.Text.Trim().ToUpper().Contains("ROUND") && string.IsNullOrWhiteSpace(TabletLength.Text))
             {
                 MessageBox.Show("Please enter a tablet length or indicate Die Shape as Diameter.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false;;
+                return false; ;
             }
             if (isTabletProject)
             {
                 if (string.IsNullOrWhiteSpace(DieTolerances.Text))
                 {
                     MessageBox.Show("Please enter Tolerance for Die.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (UpperTabletDrawing.IsChecked == true)
                 {
                     if (string.IsNullOrWhiteSpace(UpperHobDescription.Text))
                     {
                         MessageBox.Show("Please enter a Hob Description for Upper.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                     if (string.IsNullOrWhiteSpace(UpperTolerances.Text))
                     {
                         MessageBox.Show("Please enter Tolerance for Upper.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                 }
                 if (LowerTabletDrawing.IsChecked == true)
@@ -197,12 +197,12 @@ namespace NatoliOrderInterface
                     if (string.IsNullOrWhiteSpace(LowerHobDescription.Text))
                     {
                         MessageBox.Show("Please enter a Hob Description for Lower.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                     if (string.IsNullOrWhiteSpace(LowerTolerances.Text))
                     {
                         MessageBox.Show("Please enter Tolerance for Lower.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                 }
                 if (ShortRejectTabletDrawing.IsChecked == true)
@@ -210,12 +210,12 @@ namespace NatoliOrderInterface
                     if (string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text))
                     {
                         MessageBox.Show("Please enter a Hob Description for Short Reject.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                     if (string.IsNullOrWhiteSpace(ShortRejectTolerances.Text))
                     {
                         MessageBox.Show("Please enter Tolerance for Short Reject.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                 }
                 if (LongRejectTabletDrawing.IsChecked == true)
@@ -223,12 +223,12 @@ namespace NatoliOrderInterface
                     if (string.IsNullOrWhiteSpace(LongRejectHobDescription.Text))
                     {
                         MessageBox.Show("Please enter a Hob Description for Long Reject.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                     if (string.IsNullOrWhiteSpace(LongRejectTolerances.Text))
                     {
                         MessageBox.Show("Please enter Tolerance for Long Reject.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                        return false;;
+                        return false; ;
                     }
                 }
             }
@@ -237,182 +237,182 @@ namespace NatoliOrderInterface
                 if (UpperPunch.IsChecked == true && string.IsNullOrWhiteSpace(UpperPunchSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Upper Punch.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (UpperCap.IsChecked == true && string.IsNullOrWhiteSpace(UpperCapSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Upper Cap.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (UpperHolder.IsChecked == true && string.IsNullOrWhiteSpace(UpperHolderSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Upper Holder.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (UpperHead.IsChecked == true && string.IsNullOrWhiteSpace(UpperHeadSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Upper Head.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (UpperTip.IsChecked == true && string.IsNullOrWhiteSpace(UpperTipSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Upper Tip.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LowerPunch.IsChecked == true && string.IsNullOrWhiteSpace(LowerPunchSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Punch.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LowerCap.IsChecked == true && string.IsNullOrWhiteSpace(LowerCapSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Cap.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LowerHolder.IsChecked == true && string.IsNullOrWhiteSpace(LowerHolderSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Holder.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LowerHead.IsChecked == true && string.IsNullOrWhiteSpace(LowerHeadSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Head.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LowerTip.IsChecked == true && string.IsNullOrWhiteSpace(LowerTipSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Tip.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (CoreRod && string.IsNullOrWhiteSpace(CoreRodSteelID))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Core Rod.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (CoreRodPunch && string.IsNullOrWhiteSpace(CoreRodPunchSteelID))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Core Rod Punch.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (CoreRodKey && string.IsNullOrWhiteSpace(CoreRodKeySteelID))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Core Rod Key.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (CoreRodKeyCollar && string.IsNullOrWhiteSpace(CoreRodKeyCollarSteelID))
                 {
                     MessageBox.Show("Please enter SteelID for Lower Core Rod Key Collar.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (ShortRejectPunch.IsChecked == true && string.IsNullOrWhiteSpace(ShortRejectPunchSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for ShortReject Punch.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (ShortRejectCap.IsChecked == true && string.IsNullOrWhiteSpace(ShortRejectCapSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Short Reject Cap.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (ShortRejectHolder.IsChecked == true && string.IsNullOrWhiteSpace(ShortRejectHolderSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Short Reject Holder.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (ShortRejectHead.IsChecked == true && string.IsNullOrWhiteSpace(ShortRejectHeadSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Short Reject Head.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (ShortRejectTip.IsChecked == true && string.IsNullOrWhiteSpace(ShortRejectTipSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Short Reject Tip.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LongRejectPunch.IsChecked == true && string.IsNullOrWhiteSpace(LongRejectPunchSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for LongR eject Punch.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LongRejectCap.IsChecked == true && string.IsNullOrWhiteSpace(LongRejectCapSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Long Reject Cap.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LongRejectHolder.IsChecked == true && string.IsNullOrWhiteSpace(LongRejectHolderSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Long Reject Holder.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LongRejectHead.IsChecked == true && string.IsNullOrWhiteSpace(LongRejectHeadSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Long Reject Head.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (LongRejectTip.IsChecked == true && string.IsNullOrWhiteSpace(LongRejectTipSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Long Reject Tip.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (Die.IsChecked == true && string.IsNullOrWhiteSpace(DieSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (DieComponent.IsChecked == true && string.IsNullOrWhiteSpace(DieComponentSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die Component.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (DieHolder.IsChecked == true && string.IsNullOrWhiteSpace(DieHolderSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die Holder.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (DieInsert.IsChecked == true && string.IsNullOrWhiteSpace(DieInsertSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die Insert.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (DiePlate.IsChecked == true && string.IsNullOrWhiteSpace(DiePlateSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die Plate.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (DieSegment.IsChecked == true && string.IsNullOrWhiteSpace(DieSegmentSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Die Segment.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (Alignment.IsChecked == true && string.IsNullOrWhiteSpace(AlignmentSteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Alignment Tool.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (Key.IsChecked == true && string.IsNullOrWhiteSpace(KeySteelID.Text))
                 {
                     MessageBox.Show("Please enter SteelID for Key.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (Misc.IsChecked == true && string.IsNullOrWhiteSpace(MiscSteelID.Text))
                 {
                     MessageBox.Show("Please enter material for Misc Item.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (string.IsNullOrWhiteSpace(KeyType.Text) && (UpperKeyed.IsChecked == true || LowerKeyed.IsChecked == true || ShortRejectKeyed.IsChecked == true || LongRejectKeyed.IsChecked == true))
                 {
                     MessageBox.Show("Please enter Key Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (string.IsNullOrWhiteSpace(UpperGrooveType.Text) && (UpperGroove.IsChecked == true || ShortRejectGroove.IsChecked == true || LongRejectGroove.IsChecked == true))
                 {
                     MessageBox.Show("Please enter an Upper Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (string.IsNullOrWhiteSpace(LowerGrooveType.Text) && LowerGroove.IsChecked == true)
                 {
                     MessageBox.Show("Please enter a Lower Groove Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
                 if (string.IsNullOrWhiteSpace(HeadType.Text) && (UpperPunch.IsChecked == true || UpperHolder.IsChecked == true || UpperHead.IsChecked == true || UpperHolder.IsChecked == true ||
                     LowerPunch.IsChecked == true || LowerHolder.IsChecked == true || LowerHead.IsChecked == true || LowerHolder.IsChecked == true ||
@@ -420,7 +420,7 @@ namespace NatoliOrderInterface
                     LongRejectPunch.IsChecked == true || LongRejectHolder.IsChecked == true || LongRejectHead.IsChecked == true || LongRejectHolder.IsChecked == true))
                 {
                     MessageBox.Show("Please enter a Head Type.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                    return false;;
+                    return false; ;
                 }
             }
             return true;
@@ -433,14 +433,14 @@ namespace NatoliOrderInterface
             IntPtr hwnd = new WindowInteropHelper(mainWindow).Handle;
             Rect windowRect = new Rect();
             GetWindowRect(hwnd, ref windowRect);
-            
+
             Top = windowRect.Top;
             //Top = mainWindow.Top;
             Left = windowRect.Left;
             //Left = mainWindow.Left;
             Width = mainWindow.Width;
             Height = mainWindow.Height;
-            
+
 
             EditedTimer.Elapsed += EditedTimer_Elapsed;
             Title = "Project# " + projectNumber + "-" + projectRevNumber;
@@ -504,16 +504,16 @@ namespace NatoliOrderInterface
             ProjectFiles = GetProjectFiles(projectNumber);
         }
 
-        private List<Tuple<string,string,string>> GetProjectFiles(string projectNumber)
+        private List<Tuple<string, string, string>> GetProjectFiles(string projectNumber)
         {
             string rootDir = projectsDirectory + projectNumber + "\\";
-            if(!Directory.Exists(rootDir))
+            if (!Directory.Exists(rootDir))
             {
                 Directory.CreateDirectory(rootDir);
             }
             string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
-            List<Tuple<string, string,string>> files = new List<Tuple<string, string,string>>();
-            foreach(string file in filePaths)
+            List<Tuple<string, string, string>> files = new List<Tuple<string, string, string>>();
+            foreach (string file in filePaths)
             {
                 string directory = Path.GetDirectoryName(file);
                 string fileName = Path.GetFileNameWithoutExtension(file);
@@ -527,7 +527,7 @@ namespace NatoliOrderInterface
         /// </summary>
         private void PopulateBlankWindow()
         {
-            if (!Directory.Exists(projectsDirectory + projectNumber+ "\\"))
+            if (!Directory.Exists(projectsDirectory + projectNumber + "\\"))
             {
                 Directory.CreateDirectory(projectsDirectory + projectNumber + "\\");
             }
@@ -625,7 +625,7 @@ namespace NatoliOrderInterface
 
                     RevisedBy.Text = engineeringProject.RevisedBy;
                     RevisedBy.IsEnabled = false;
-                    if(_projectsContext.EngineeringArchivedProjects.Any(eap=> eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber)-1).ToString()))
+                    if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
                     {
                         DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
                         date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
@@ -970,7 +970,7 @@ namespace NatoliOrderInterface
                         Misc.IsEnabled = false;
                         MiscSteelID.Text = toolProject.MiscSteelID;
                         MiscSteelID.IsEnabled = false;
-                        NumberOfTips.Text = engineeringProject.NumberOfTips.ToString();
+                        NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
                         NumberOfTips.IsEnabled = false;
                         Die.IsChecked = toolProject.Die;
                         Die.IsEnabled = false;
@@ -1032,6 +1032,10 @@ namespace NatoliOrderInterface
                         CarbideTips.IsEnabled = false;
                         MachineNotes.Text = toolProject.MachineNotes;
                         MachineNotes.IsEnabled = false;
+                        if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            ToolsTabItem.IsSelected = true;
+                        }
                     }
                     else
                     {
@@ -1403,7 +1407,7 @@ namespace NatoliOrderInterface
                         Misc.IsEnabled = false;
                         MiscSteelID.Text = toolProject.MiscSteelID;
                         MiscSteelID.IsEnabled = false;
-                        NumberOfTips.Text = engineeringProject.NumberOfTips.ToString();
+                        NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
                         NumberOfTips.IsEnabled = false;
                         Die.IsChecked = toolProject.Die;
                         Die.IsEnabled = false;
@@ -1477,7 +1481,7 @@ namespace NatoliOrderInterface
             {
                 _projectsContext.Dispose();
                 _nat01Context.Dispose();
-                if (MessageBox.Show("This project does not exist in the database.\n This window will now close", "Cannot Find Project", MessageBoxButton.OK, MessageBoxImage.Error,MessageBoxResult.OK) == MessageBoxResult.OK)
+                if (MessageBox.Show("This project does not exist in the database.\n This window will now close", "Cannot Find Project", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK) == MessageBoxResult.OK)
                 {
                     Dispose();
                     string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
@@ -1510,6 +1514,10 @@ namespace NatoliOrderInterface
                     }
                     Close();
                 }
+            }
+            if (MultiTipSketch.IsChecked != true)
+            {
+                MultiTipSketchTabItem.IsEnabled = false;
             }
             _projectsContext.Dispose();
             _nat01Context.Dispose();
@@ -1872,7 +1880,7 @@ namespace NatoliOrderInterface
                                     // Take the cup depth from other items
                                     if (quoteDetailOptionsDictionary.Any(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW"))
                                     {
-                                        var _key =quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
+                                        var _key = quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "U" || kvp.Key.DetailTypeId.Trim() == "UT" || kvp.Key.DetailTypeId.Trim() == "L" || kvp.Key.DetailTypeId.Trim() == "LT") && !string.IsNullOrEmpty(kvp.Key.HobNoShapeId) && kvp.Key.HobNoShapeId.Trim().ToUpper() != "NEW").Key;
                                         if (_nat01Context.HobList.Any(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0)))
                                         {
                                             HobList hob = _nat01Context.HobList.First(h => h.HobNo == _key.HobNoShapeId && h.TipQty == (_key.TipQty ?? 1) && h.BoreCircle == (_key.BoreCircle ?? 0));
@@ -3518,12 +3526,12 @@ namespace NatoliOrderInterface
                     }
                     #endregion
                 }
-        }
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-    _nat01Context.Dispose();
+            _nat01Context.Dispose();
             _necContext.Dispose();
         }
         /// <summary>
@@ -3599,7 +3607,7 @@ namespace NatoliOrderInterface
                     TimeSubmitted = DateTime.UtcNow,
                     DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
                     Priority = Priority.IsChecked ?? false,
-                    TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false: oldEngineeringProject.TabletStarted) : false,
+                    TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
                     TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
                     TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
                     TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
@@ -3784,11 +3792,125 @@ namespace NatoliOrderInterface
                 LowerCoreRodPunchSteelID = CoreRodPunchSteelID,
                 MachineNotes = !string.IsNullOrEmpty(MachineNotes.Text) ? MachineNotes.Text.Trim() : "",
                 UpperGrooveType = !string.IsNullOrEmpty(UpperGrooveType.Text) ? MachineNotes.Text.Trim() : "",
-                LowerGrooveType =!string.IsNullOrEmpty(LowerGrooveType.Text) ? MachineNotes.Text.Trim() : ""
+                LowerGrooveType = !string.IsNullOrEmpty(LowerGrooveType.Text) ? MachineNotes.Text.Trim() : ""
             };
             _projectsContext.Dispose();
             return engineeringToolProject;
         }
+        /// <summary>
+        /// Enables or disables tablet drawings button based on hob numbers and drawings available.
+        /// </summary>
+        private void EnableTabletDrawingsButton()
+        {
+            if (!string.IsNullOrEmpty(UpperHobNumber.Text) || !string.IsNullOrEmpty(LowerHobDescription.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text))
+            {
+                if (!string.IsNullOrEmpty(UpperHobNumber.Text))
+                {
+                    if (int.TryParse(UpperHobNumber.Text, out int hobNumber))
+                    {
+                        string folderPrefix = IMethods.GetEDrawingsFolderPrefix(hobNumber);
+                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS\" + folderPrefix + @"-E-DRAWINGS\", hobNumber.ToString() + " * ");
+                        if (files.Length > 0)
+                        {
+                            TabletDrawingsButton.IsEnabled = true;
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(LowerHobNumber.Text))
+                {
+                    if (int.TryParse(LowerHobNumber.Text, out int hobNumber))
+                    {
+                        string folderPrefix = "00";
+                        if (hobNumber < 1000)
+                        {
+                            folderPrefix = "00";
+                        }
+                        else if (hobNumber < 10000)
+                        {
+                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                        }
+                        else if (hobNumber < 100000)
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 2);
+                        }
+                        else
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 3);
+                        }
+                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                        if (files.Length > 0)
+                        {
+                            TabletDrawingsButton.IsEnabled = true;
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(ShortRejectHobNumber.Text))
+                {
+                    if (int.TryParse(ShortRejectHobNumber.Text, out int hobNumber))
+                    {
+                        string folderPrefix = "00";
+                        if (hobNumber < 1000)
+                        {
+                            folderPrefix = "00";
+                        }
+                        else if (hobNumber < 10000)
+                        {
+                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                        }
+                        else if (hobNumber < 100000)
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 2);
+                        }
+                        else
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 3);
+                        }
+                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                        if (files.Length > 0)
+                        {
+                            TabletDrawingsButton.IsEnabled = true;
+                        }
+                    }
+                }
+                else if (!string.IsNullOrEmpty(LongRejectHobNumber.Text))
+                {
+                    if (int.TryParse(LongRejectHobNumber.Text, out int hobNumber))
+                    {
+                        string folderPrefix = "00";
+                        if (hobNumber < 1000)
+                        {
+                            folderPrefix = "00";
+                        }
+                        else if (hobNumber < 10000)
+                        {
+                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                        }
+                        else if (hobNumber < 100000)
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 2);
+                        }
+                        else
+                        {
+                            folderPrefix = hobNumber.ToString().Substring(0, 3);
+                        }
+                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                        if (files.Length > 0)
+                        {
+                            TabletDrawingsButton.IsEnabled = true;
+                        }
+                    }
+                }
+                else
+                {
+                    TabletDrawingsButton.IsEnabled = false;
+                }
+            }
+            else
+            {
+                TabletDrawingsButton.IsEnabled = false;
+            }
+        }
+
         /// <summary>
         /// Checks the project state (based on the switch button) and enables/disables the correct routing buttons.
         /// </summary>
@@ -3918,7 +4040,7 @@ namespace NatoliOrderInterface
                     CancelButton.IsEnabled = false;
                 }
                 if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()) || _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()))
-                { 
+                {
                     ReviseButton.IsEnabled = false;
                 }
                 else
@@ -3930,7 +4052,7 @@ namespace NatoliOrderInterface
             {
                 MessageBox.Show(ex.Message);
             }
-                _projectsContext.Dispose();
+            _projectsContext.Dispose();
         }
         /// <summary>
         /// Enables or Disables all controls.
@@ -4357,7 +4479,7 @@ namespace NatoliOrderInterface
         {
             if (CurrentProjectType.Text == "TABLETS")
             {
-                CurrentProjectType.Text="TOOLS";
+                CurrentProjectType.Text = "TOOLS";
                 RefreshRoutingButtons();
             }
             else
@@ -4384,9 +4506,9 @@ namespace NatoliOrderInterface
                 {
                     NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
                 }
-                
+
             }
-            else if(sender is TextBox textBox)
+            else if (sender is TextBox textBox)
             {
                 string name = textBox.Name.ToString();
                 switch (name)
@@ -4562,7 +4684,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void TabletsRequired_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true || ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true)
+            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
             {
                 MultiTipSketchTabItem.IsEnabled = true;
             }
@@ -4574,7 +4696,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void ToolsRequired_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true || ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true)
+            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
             {
                 MultiTipSketchTabItem.IsEnabled = true;
             }
@@ -4586,10 +4708,35 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void MultiTipSketch_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true || ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true)
+            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
             {
                 MultiTipSketchTabItem.IsEnabled = true;
             }
+        }
+        private void TabletDrawingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> hobNumbers = new List<string>();
+            if (int.TryParse(UpperHobNumber.Text, out int upperHobNumber) && upperHobNumber > 0)
+            {
+                hobNumbers.Add(upperHobNumber.ToString());
+            }
+            if (int.TryParse(LowerHobNumber.Text, out int lowerHobNumber) && lowerHobNumber > 0)
+            {
+                hobNumbers.Add(lowerHobNumber.ToString());
+            }
+            if (int.TryParse(ShortRejectHobNumber.Text, out int shortRejectHobNumber) && shortRejectHobNumber > 0)
+            {
+                hobNumbers.Add(shortRejectHobNumber.ToString());
+            }
+            if (int.TryParse(LongRejectHobNumber.Text, out int longRejectHobNumber) && longRejectHobNumber > 0)
+            {
+                hobNumbers.Add(longRejectHobNumber.ToString());
+            }
+            if (hobNumbers.Count > 0)
+            {
+                TabletDrawings tabletDrawings = new TabletDrawings(hobNumbers, this as Window, projectNumber, projectRevNumber);
+            }
+
         }
 
         #region TextBox Changes And Timer
@@ -4695,7 +4842,7 @@ namespace NatoliOrderInterface
                                 UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
                                 UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
                                 DieNumber.Text = hob.DieId.Trim();
-                            })) ;
+                            }));
                             if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
@@ -5131,7 +5278,7 @@ namespace NatoliOrderInterface
                 _nat02Context.Dispose();
                 EditedTimer.Stop();
             }
-
+            EnableTabletDrawingsButton();
         }
         /// <summary>
         /// Resets the timer and changes the "editedText" and "editedTextBoxName" to be used by EditedTimer_Elapsed.
@@ -5224,7 +5371,7 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
-       
+
 
         #region Project Routing
         /// <summary>
@@ -5239,7 +5386,7 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
 
             IMethods.StartProject(projectNumber, projectRevNumber, CurrentProjectType.Text, user);
-            
+
             RefreshRoutingButtons();
             Cursor = Cursors.Arrow;
             mainWindow.BoolValue = true;
@@ -5342,39 +5489,46 @@ namespace NatoliOrderInterface
                 Button button = sender as Button;
                 if (button.Content.ToString() == "Create")
                 {
-                    using var _projectsContext = new ProjectsContext();
-                    EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
-                    _projectsContext.Update(engineeringProject);
-                    if (TabletsRequired.IsChecked ?? false)
+                    try
                     {
-                        EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
-                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        using var _projectsContext = new ProjectsContext();
+                        EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
+                        _projectsContext.Update(engineeringProject);
+                        if (TabletsRequired.IsChecked ?? false)
                         {
-                            _projectsContext.Update(TabletProject);
+                            EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
+                            if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            {
+                                _projectsContext.Update(TabletProject);
+                            }
+                            else
+                            {
+                                _projectsContext.Add(TabletProject);
+                            }
                         }
-                        else
+                        if (ToolsRequired.IsChecked ?? false)
                         {
-                            _projectsContext.Add(TabletProject);
+                            EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
+                            if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            {
+                                _projectsContext.Update(ToolProject);
+                            }
+                            else
+                            {
+                                _projectsContext.Add(ToolProject);
+                            }
                         }
-                    }
-                    if (ToolsRequired.IsChecked ?? false)
-                    {
-                        EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
-                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                        {
-                            _projectsContext.Update(ToolProject);
-                        }
-                        else
-                        {
-                            _projectsContext.Add(ToolProject);
-                        }
-                    }
-                    _projectsContext.SaveChanges();
-                    _projectsContext.Dispose();
-                    Dispose();
-                    Directory.CreateDirectory(projectsDirectory + "\\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER");
-                    Close();
+                        _projectsContext.SaveChanges();
+                        _projectsContext.Dispose();
+                        Directory.CreateDirectory(projectsDirectory + "\\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER");
 
+                    }
+                    catch (Exception ex)
+                    {
+                        IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click() - Create", ex.Message, user);
+                    }
+                    Dispose();
+                    Close();
                 }
                 else if (button.Content.ToString() == "Revise")
                 {
@@ -5394,7 +5548,7 @@ namespace NatoliOrderInterface
                     engineeringProject.TimeSubmitted = (oldEngineeringProject == null ? archivedProject.TimeSubmitted : oldEngineeringProject.TimeSubmitted);
                     List<string> changed = new List<string>();
                     string body = "To Whom It May Concern,<br><br>";
-                    
+
 
                     if (oldEngineeringProject != null)
                     {
@@ -5471,7 +5625,7 @@ namespace NatoliOrderInterface
                     to.RemoveAll(s => string.IsNullOrEmpty(s));
                     string subject = "Project: " + projectNumber + "-" + projectRevNumber + " Has Been Revised";
 
-                    
+
 
                     if (!string.IsNullOrEmpty(engineeringProject.Changes))
                     {
@@ -5488,7 +5642,7 @@ namespace NatoliOrderInterface
                     }
                     _projectsContext.SaveChanges();
 
-                    if(archivedProject == null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    if (archivedProject == null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                     {
                         EngineeringArchivedProjects newEngineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                         newEngineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
@@ -5536,8 +5690,8 @@ namespace NatoliOrderInterface
                 _projectsContext.Add(engineeringProject);
             }
             if (TabletsRequired.IsChecked ?? false)
-            { 
-               EngineeringTabletProjects engineeringTabletProject = GetTabletProjectFromCurrentForm();
+            {
+                EngineeringTabletProjects engineeringTabletProject = GetTabletProjectFromCurrentForm();
                 if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                 {
                     _projectsContext.EngineeringTabletProjects.Update(engineeringTabletProject);
@@ -5549,7 +5703,7 @@ namespace NatoliOrderInterface
             }
             if (ToolsRequired.IsChecked ?? false)
             {
-               EngineeringToolProjects engineeringToolProject = GetToolProjectFromCurrentForm();
+                EngineeringToolProjects engineeringToolProject = GetToolProjectFromCurrentForm();
                 if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
                 {
                     _projectsContext.EngineeringToolProjects.Update(engineeringToolProject);
@@ -5584,7 +5738,7 @@ namespace NatoliOrderInterface
             {
                 Close();
             }
-            
+
         }
         #endregion
 
@@ -5805,7 +5959,7 @@ namespace NatoliOrderInterface
                             string newFileName = nameOfFile;
                             foreach (char c in nameOfFile)
                             {
-                                if (!char.IsLetterOrDigit(c) || c=='-')
+                                if (!char.IsLetterOrDigit(c) || c == '-')
                                 {
                                     newFileName = nameOfFile.Replace(c.ToString(), "_");
                                 }
@@ -5845,7 +5999,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("ProjectWindow.xaml.cs => AttachFilesBorder_Drop()", ex.Message, user);
             }
         }
-        
+
         private void file_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -5917,12 +6071,8 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
-
-
-
-
-
-
         #endregion
+
+
     }
 }

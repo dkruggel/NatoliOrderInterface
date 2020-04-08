@@ -82,7 +82,7 @@ namespace NatoliOrderInterface
                 string existing = sr.ReadToEnd();
                 existing = existing.TrimEnd();
                 sr.Close();
-                
+
                 try
                 {
                     userFallback = Environment.UserDomainName + "\\" + Environment.UserName;
@@ -169,10 +169,10 @@ namespace NatoliOrderInterface
         /// </summary>
         /// <param name="renamedFolders"></param>
         /// <param name="user"></param>
-        public static void WriteToFoldersRenamedLog(List<Tuple<string,string>> renamedFolders, User user)
+        public static void WriteToFoldersRenamedLog(List<Tuple<string, string>> renamedFolders, User user)
         {
             string path = @"\\engserver\workstations\NatoliOrderInterfaceErrorLog\Folder_Management_Log\Folders_Renamed_Log.txt";
-            
+
             try
             {
                 System.IO.StreamReader sr = new System.IO.StreamReader(path);
@@ -662,7 +662,7 @@ namespace NatoliOrderInterface
             {
                 if (projectType == "TABLETS")
                 {
-                    bool _tools = _projectsContext.EngineeringToolProjects.Any(p=> p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    bool _tools = _projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                     engineeringProject.TabletChecked = true;
                     engineeringProject.TabletCheckedDateTime = DateTime.UtcNow;
@@ -1014,7 +1014,7 @@ namespace NatoliOrderInterface
             try
             {
                 // Get process Name
-                
+
                 process = System.Diagnostics.Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(processName))[0];
             }
             catch
@@ -1088,7 +1088,7 @@ namespace NatoliOrderInterface
                 {
                     return "";
                 }
-                
+
             }
             catch (Exception eSql)
             {
@@ -1248,17 +1248,17 @@ namespace NatoliOrderInterface
                     var message = new MimeMessage();
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-                    
+
                     string cust = "";
                     using var _ = new ProjectsContext();
-                    if(_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)))
+                    if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)))
                     {
                         cust = _.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
                     }
-                    else if(_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()))
+                    else if (_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()))
                     {
-                        cust = string.IsNullOrEmpty(_.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName) ? 
-                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).CustomerName : 
+                        cust = string.IsNullOrEmpty(_.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName) ?
+                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).CustomerName :
                             _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName;
                     }
                     _.Dispose();
@@ -1266,7 +1266,7 @@ namespace NatoliOrderInterface
 
                     string comments = "";
 
-                    foreach(string textFile in Directory.GetFiles(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber, "*.txt"))
+                    foreach (string textFile in Directory.GetFiles(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber, "*.txt"))
                     {
                         string text = File.ReadAllText(textFile);
                         string name = Path.GetFileName(textFile);
@@ -1277,12 +1277,12 @@ namespace NatoliOrderInterface
                         comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br><br>-End Comments-<br><br>";
                     }
                     string debugTest = "";
-//#if DEBUG
-//                    debugTest = "****************<br>This is a test e-mail. Please ignore.<br>****************<br><br>";
-//#endif
+                    //#if DEBUG
+                    //                    debugTest = "****************<br>This is a test e-mail. Please ignore.<br>****************<br><br>";
+                    //#endif
                     var body = new TextPart(MimeKit.Text.TextFormat.Html)
                     {
-                        Text = debugTest+ "Dear " + CSRs.First() + ",<br><br>" +
+                        Text = debugTest + "Dear " + CSRs.First() + ",<br><br>" +
 
                         @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                         "The drawings for the customer are attached.<br><br>" +
@@ -1404,7 +1404,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            
+
                             try
                             {
                                 emailClient.Disconnect(true);
@@ -1525,7 +1525,7 @@ namespace NatoliOrderInterface
             try
             {
                 string zipfile = await Task<string>.Factory.StartNew(() => SendProjectCompletedEmailToCSR(CSRs, _projectNumber, _revNo, user), System.Threading.CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default).ConfigureAwait(false);
-                
+
                 if (zipfile != null)
                 {
                     int totalTime = 0;
@@ -1634,7 +1634,7 @@ namespace NatoliOrderInterface
             try
             {
                 // When querying option values be sure to check if it exists in QuoteLineItem.OptionNumber before directly querying the optionvalue table to avoid orphan data.
-                
+
                 List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
                 List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
                 foreach (QuoteDetails line in quoteDetails)
@@ -1693,11 +1693,11 @@ namespace NatoliOrderInterface
                                     machine.MachineNo == 1015)
                                 {
                                     // Has A Hob W/ a Die ID of width or length > 1.0
-                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" && 
-                                    qli.LineItemType != "DS" && qli.LineItemType != "DA" && 
+                                    if (quoteLineItems.Any(qli => qli.LineItemType != "D" &&
+                                    qli.LineItemType != "DS" && qli.LineItemType != "DA" &&
                                     qli.LineItemType != "DC" && qli.LineItemType != "DI" && qli.LineItemType != "DP" && qli.LineItemType != "A" &&
-                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) && 
-                                     _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) && 
+                                     (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) &&
+                                     _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) &&
                                      _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId == _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)).DieId && (d.LengthMajorAxis > 1.0 || d.WidthMinorAxis > 1.0)))))
                                     {
                                         errors.Add("Tablet is too large for press.");
@@ -2105,7 +2105,7 @@ namespace NatoliOrderInterface
                                     {
                                         errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
                                     }
-                                   
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -2537,7 +2537,7 @@ namespace NatoliOrderInterface
                                                             errors.Add("More than one key exist at that size. Make sure that your key number is correct and a Key Line Item is added if we do not keep it in stock.");
                                                         }
                                                     }
-                                                    else if(!(width == .1865 && length == .75))
+                                                    else if (!(width == .1865 && length == .75))
                                                     {
                                                         errors.Add("No keys with key size: " + width + " X " + length + " exist in the Keys table.");
                                                     }
@@ -2643,7 +2643,7 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' has a 441 style head but the machine is a normal 'D' machine.");
                                             }
                                             // Has special head flat .775 & does not have gauge number in engineering notes
-                                            if(quoteLineItem.optionValuesA.Any(o=>o.OptionCode == "020" && o.Number1 == 0.775) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
+                                            if (quoteLineItem.optionValuesA.Any(o => o.OptionCode == "020" && o.Number1 == 0.775) && !ContainsAny(string.Join(",", quote.EngineeringNote1), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture) && !ContainsAny(string.Join(",", quote.EngineeringNote2), new List<string> { "11185", "00023", "23", "00147", "147" }, StringComparison.CurrentCulture))
                                             {
                                                 errors.Add("Engineering Note needs to specify head gauge number to differentiate between gauges of the same head flat (11185, HG-00023-SH001, HG-00147-SH001).");
                                             }
@@ -2877,7 +2877,7 @@ namespace NatoliOrderInterface
                                         }
 
                                     }
-                                    
+
                                     // Has HobNo in HobList
                                     if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                                     {
@@ -3314,7 +3314,7 @@ namespace NatoliOrderInterface
 
                         }
                     }
-                    
+
                     if (errors.Count > 0)
                     {
                         errors.Sort();
@@ -3441,7 +3441,7 @@ namespace NatoliOrderInterface
                 unRecommendables = unRecommendables.Distinct().ToList();
                 foreach (string optionCode in unRecommendables)
                 {
-                    optionStrings.RemoveAll(o => o ==optionCode);
+                    optionStrings.RemoveAll(o => o == optionCode);
                 }
                 int modeCount = Math.Min(optionStrings.Distinct().Count(), 3);
                 List<string> optionRecommendations = optionStrings.GroupBy(os => os).OrderByDescending(x => x.Count()).ThenBy(x => x.Key).Select(x => x.Key).Take(modeCount).ToList();
@@ -3465,6 +3465,37 @@ namespace NatoliOrderInterface
                 return (lineItemTypeToDescription[quoteLineItem.LineItemType], recommendations);
             }
         }
+       /// <summary>
+       /// Returns Folder Prefix for E-Drawings folder.
+       /// </summary>
+       /// <param name="hobNumber"></param>
+       /// <returns></returns>
+        public static string GetEDrawingsFolderPrefix(int hobNumber)
+        {
+            string folderPrefix = "00";
+            if (hobNumber > 0)
+            {
+                if (hobNumber < 1000)
+                {
+                    folderPrefix = "00";
+                }
+                else if (hobNumber < 10000)
+                {
+                    folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                }
+                else if (hobNumber < 100000)
+                {
+                    folderPrefix = hobNumber.ToString().Substring(0, 2);
+                }
+                else
+                {
+                    folderPrefix = hobNumber.ToString().Substring(0, 3);
+                }
+            }
+            return folderPrefix;
+
+        }
+
         /// <summary>
         /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
         /// </summary>
@@ -3515,5 +3546,9 @@ namespace NatoliOrderInterface
         //        return (lineItemTypeToDescription[lineItemType], recommendations);
         //    }
         //}
+
+
+
+        
     }
 }
