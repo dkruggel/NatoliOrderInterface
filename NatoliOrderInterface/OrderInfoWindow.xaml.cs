@@ -1448,7 +1448,15 @@ namespace NatoliOrderInterface
                         {
                             string userName;
                             if (user.DomainName == "dsachuk") { userName = "dsachuk.NATOLI"; } else { userName = user.DomainName; }
-                            File.Copy(_file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
+                            string newPath = @"\\nshare\users\" + userName + @"\WorkOrdersToPrint\";
+                            if (user.EmployeeCode == "E4408")
+                            {
+                                File.Copy(_file, newPath + workOrder.OrderNumber + "_" + file_count + ".pdf", false);
+                            }
+                            else
+                            {
+                                File.Copy(_file, @"C:\Users\" + userName + @"\Desktop\WorkOrdersToPrint\" + workOrder.OrderNumber + "_" + file_count + ".pdf", true);
+                            }
                         }
                         catch (Exception ex)
                         {
