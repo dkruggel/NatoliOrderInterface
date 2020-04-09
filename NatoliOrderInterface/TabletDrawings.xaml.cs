@@ -230,6 +230,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CopySelectedToProject_Click(object sender, RoutedEventArgs e)
         {
+            List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
@@ -264,7 +265,83 @@ namespace NatoliOrderInterface
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
+                        if(ex.Message.Contains("already exists"))
+                        {
+                            existingFiles.Add(tabletDrawing);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Could not copy " + tabletDrawing.Item1 + " because:" + Environment.NewLine + ex.Message);
+                        }
+                        
+                    }
+                }
+                if (existingFiles.Count > 0)
+                {
+
+                    if (existingFiles.Count == 1)
+                    {
+                        try
+                        {
+                            MessageBoxResult result = MessageBox.Show(existingFiles[0].Item1 + existingFiles[0].Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                            string fullFilePath = existingFiles[0].Item2 + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3;
+                            switch (result)
+                            {
+                                case MessageBoxResult.Yes:
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    break;
+                                case MessageBoxResult.No:
+                                    InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
+                                    inputBox.ShowDialog();
+                                    string newName = inputBox.ReturnString;
+                                    newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFiles[0].Item3);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, string> existingFile in existingFiles)
+                        {
+                            try
+                            {
+                                MessageBoxResult result = MessageBox.Show(existingFile.Item1 + existingFile.Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                                string fullFilePath = existingFile.Item2 + "\\" + existingFile.Item1 + existingFile.Item3;
+                                switch (result)
+                                {
+                                    case MessageBoxResult.Yes:
+                                        File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        break;
+                                    case MessageBoxResult.No:
+                                        InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3+"." +Environment.NewLine+  "Do NOT include the file extension.", "Rename File", this);
+                                        inputBox.ShowDialog();
+                                        string newName = inputBox.ReturnString;
+                                        if (newName.Length > 0)
+                                        {
+                                            newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                            File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFile.Item3);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("File not copied because the file name was empty.");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                            }
+                        }
                     }
                 }
             }
@@ -280,6 +357,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CopyAllToProject_Click(object sender, RoutedEventArgs e)
         {
+            List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
@@ -313,6 +391,74 @@ namespace NatoliOrderInterface
                         MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
                     }
                 }
+                if (existingFiles.Count > 0)
+                {
+
+                    if (existingFiles.Count == 1)
+                    {
+                        try
+                        {
+                            MessageBoxResult result = MessageBox.Show(existingFiles[0].Item1 + existingFiles[0].Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                            string fullFilePath = existingFiles[0].Item2 + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3;
+                            switch (result)
+                            {
+                                case MessageBoxResult.Yes:
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    break;
+                                case MessageBoxResult.No:
+                                    InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
+                                    inputBox.ShowDialog();
+                                    string newName = inputBox.ReturnString;
+                                    newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFiles[0].Item3);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, string> existingFile in existingFiles)
+                        {
+                            try
+                            {
+                                MessageBoxResult result = MessageBox.Show(existingFile.Item1 + existingFile.Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                                string fullFilePath = existingFile.Item2 + "\\" + existingFile.Item1 + existingFile.Item3;
+                                switch (result)
+                                {
+                                    case MessageBoxResult.Yes:
+                                        File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        break;
+                                    case MessageBoxResult.No:
+                                        InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
+                                        inputBox.ShowDialog();
+                                        string newName = inputBox.ReturnString;
+                                        if (newName.Length > 0)
+                                        {
+                                            newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                            File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFile.Item3);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("File not copied because the file name was empty.");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -326,6 +472,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CopyAllToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
+            List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
@@ -359,6 +506,74 @@ namespace NatoliOrderInterface
                         MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
                     }
                 }
+                if (existingFiles.Count > 0)
+                {
+
+                    if (existingFiles.Count == 1)
+                    {
+                        try
+                        {
+                            MessageBoxResult result = MessageBox.Show(existingFiles[0].Item1 + existingFiles[0].Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                            string fullFilePath = existingFiles[0].Item2 + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3;
+                            switch (result)
+                            {
+                                case MessageBoxResult.Yes:
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    break;
+                                case MessageBoxResult.No:
+                                    InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
+                                    inputBox.ShowDialog();
+                                    string newName = inputBox.ReturnString;
+                                    newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFiles[0].Item3);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, string> existingFile in existingFiles)
+                        {
+                            try
+                            {
+                                MessageBoxResult result = MessageBox.Show(existingFile.Item1 + existingFile.Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                                string fullFilePath = existingFile.Item2 + "\\" + existingFile.Item1 + existingFile.Item3;
+                                switch (result)
+                                {
+                                    case MessageBoxResult.Yes:
+                                        File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        break;
+                                    case MessageBoxResult.No:
+                                        InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
+                                        inputBox.ShowDialog();
+                                        string newName = inputBox.ReturnString;
+                                        if (newName.Length > 0)
+                                        {
+                                            newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                            File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFile.Item3);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("File not copied because the file name was empty.");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -372,6 +587,7 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CopySelectedToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
+            List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
@@ -407,6 +623,74 @@ namespace NatoliOrderInterface
                     catch (Exception ex)
                     {
                         MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
+                    }
+                }
+                if (existingFiles.Count > 0)
+                {
+
+                    if (existingFiles.Count == 1)
+                    {
+                        try
+                        {
+                            MessageBoxResult result = MessageBox.Show(existingFiles[0].Item1 + existingFiles[0].Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                            string fullFilePath = existingFiles[0].Item2 + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3;
+                            switch (result)
+                            {
+                                case MessageBoxResult.Yes:
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    break;
+                                case MessageBoxResult.No:
+                                    InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
+                                    inputBox.ShowDialog();
+                                    string newName = inputBox.ReturnString;
+                                    newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                    File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFiles[0].Item3);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                        }
+                    }
+                    else
+                    {
+                        foreach (Tuple<string, string, string> existingFile in existingFiles)
+                        {
+                            try
+                            {
+                                MessageBoxResult result = MessageBox.Show(existingFile.Item1 + existingFile.Item3 + " could not be copied because a file of that name already exists. Would you like to overwrite the file?" + Environment.NewLine + "Yes to overwrite." + Environment.NewLine + "No to rename." + Environment.NewLine + "Cancel to cancel copying this file.", "File Exists", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                                string fullFilePath = existingFile.Item2 + "\\" + existingFile.Item1 + existingFile.Item3;
+                                switch (result)
+                                {
+                                    case MessageBoxResult.Yes:
+                                        File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        break;
+                                    case MessageBoxResult.No:
+                                        InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
+                                        inputBox.ShowDialog();
+                                        string newName = inputBox.ReturnString;
+                                        if (newName.Length > 0)
+                                        {
+                                            newName = IMethods.GetFileNameWOIllegalCharacters(newName);
+                                            File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFile.Item3);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("File not copied because the file name was empty.");
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                            }
+                        }
                     }
                 }
             }
