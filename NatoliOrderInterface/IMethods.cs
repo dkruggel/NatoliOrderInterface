@@ -1723,7 +1723,7 @@ namespace NatoliOrderInterface
                         List<string> etchings = new List<string>();
                         string size = quoteDetails[0].Desc2;
                         bool round = quoteDetails[0].Desc2.Contains("DIAMETER");
-                        string regex = round ? @"^[0-9].[0-9]" : @"[0-9\.mM] x [0-9\.mM]";
+                        string regex = round ? @"^\d*\.\d" : @"[0-9\.mM] x [0-9\.mM]";
                         PropertyInfo[] properties = quote.GetType().GetProperties();
                         foreach (PropertyInfo property in properties)
                         {
