@@ -9,11 +9,11 @@
         Title="Project Search"
         Height="1000" Width="1800" Loaded="Window_Loaded" Closing="Window_Closing" UseLayoutRounding="True">
     <DockPanel x:Name="MainDock">
-        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}">
+        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" Height="34">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Menu x:Name="MainMenu" Height="25" Grid.Column="0">
                 <MenuItem x:Name="FileMenu" Header="File" Margin="0,3">
@@ -71,7 +71,7 @@
                         <Label Content="Notes" HorizontalAlignment="Left" Grid.Column="20"/>
                     </Grid>
                 </Border>
-                <StackPanel x:Name="ProjectsStackPanel"/>
+                <StackPanel x:Name="ProjectsStackPanel" DockPanel.Dock="Top"/>
             </DockPanel>
         </ScrollViewer>
     </DockPanel>
