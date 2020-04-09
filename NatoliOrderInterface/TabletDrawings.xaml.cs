@@ -231,6 +231,7 @@ namespace NatoliOrderInterface
         private void CopySelectedToProject_Click(object sender, RoutedEventArgs e)
         {
             List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
+            List<Tuple<string, string, string>> transferedFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
@@ -262,6 +263,7 @@ namespace NatoliOrderInterface
                     try
                     {
                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + tabletDrawing.Item1 + tabletDrawing.Item3);
+                        transferedFiles.Add(tabletDrawing);
                     }
                     catch (Exception ex)
                     {
@@ -289,6 +291,7 @@ namespace NatoliOrderInterface
                             {
                                 case MessageBoxResult.Yes:
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 case MessageBoxResult.No:
                                     InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
@@ -296,6 +299,7 @@ namespace NatoliOrderInterface
                                     string newName = inputBox.ReturnString;
                                     newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFiles[0].Item3);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 default:
                                     break;
@@ -318,6 +322,7 @@ namespace NatoliOrderInterface
                                 {
                                     case MessageBoxResult.Yes:
                                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        transferedFiles.Add(existingFile);
                                         break;
                                     case MessageBoxResult.No:
                                         InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3+"." +Environment.NewLine+  "Do NOT include the file extension.", "Rename File", this);
@@ -327,6 +332,7 @@ namespace NatoliOrderInterface
                                         {
                                             newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                             File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFile.Item3);
+                                            transferedFiles.Add(existingFile);
                                         }
                                         else
                                         {
@@ -344,6 +350,10 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+                if (transferedFiles.Count > 0)
+                {
+                    MessageBox.Show("Successfully transfered " + transferedFiles.Count + " files to '" + projectNumber + "'.");
+                }
             }
             catch (Exception ex)
             {
@@ -358,6 +368,7 @@ namespace NatoliOrderInterface
         private void CopyAllToProject_Click(object sender, RoutedEventArgs e)
         {
             List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
+            List<Tuple<string, string, string>> transferedFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\");
@@ -385,10 +396,18 @@ namespace NatoliOrderInterface
                     try
                     {
                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + tabletDrawing.Item1 + tabletDrawing.Item3);
+                        transferedFiles.Add(tabletDrawing);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
+                        if (ex.Message.Contains("already exists"))
+                        {
+                            existingFiles.Add(tabletDrawing);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Could not copy " + tabletDrawing.Item1 + " because:" + Environment.NewLine + ex.Message);
+                        }
                     }
                 }
                 if (existingFiles.Count > 0)
@@ -404,6 +423,7 @@ namespace NatoliOrderInterface
                             {
                                 case MessageBoxResult.Yes:
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 case MessageBoxResult.No:
                                     InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
@@ -411,6 +431,7 @@ namespace NatoliOrderInterface
                                     string newName = inputBox.ReturnString;
                                     newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFiles[0].Item3);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 default:
                                     break;
@@ -433,6 +454,7 @@ namespace NatoliOrderInterface
                                 {
                                     case MessageBoxResult.Yes:
                                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        transferedFiles.Add(existingFile);
                                         break;
                                     case MessageBoxResult.No:
                                         InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
@@ -442,6 +464,7 @@ namespace NatoliOrderInterface
                                         {
                                             newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                             File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + newName + existingFile.Item3);
+                                            transferedFiles.Add(existingFile);
                                         }
                                         else
                                         {
@@ -459,6 +482,10 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+                if (transferedFiles.Count > 0)
+                {
+                    MessageBox.Show("Successfully transfered " + transferedFiles.Count + " files to '" + projectNumber + "'.");
+                }
             }
             catch (Exception ex)
             {
@@ -473,6 +500,7 @@ namespace NatoliOrderInterface
         private void CopyAllToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
             List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
+            List<Tuple<string, string, string>> transferedFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
@@ -500,10 +528,18 @@ namespace NatoliOrderInterface
                     try
                     {
                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + tabletDrawing.Item1 + tabletDrawing.Item3);
+                        transferedFiles.Add(tabletDrawing);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
+                        if (ex.Message.Contains("already exists"))
+                        {
+                            existingFiles.Add(tabletDrawing);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Could not copy " + tabletDrawing.Item1 + " because:" + Environment.NewLine + ex.Message);
+                        }
                     }
                 }
                 if (existingFiles.Count > 0)
@@ -519,6 +555,7 @@ namespace NatoliOrderInterface
                             {
                                 case MessageBoxResult.Yes:
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 case MessageBoxResult.No:
                                     InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
@@ -526,6 +563,7 @@ namespace NatoliOrderInterface
                                     string newName = inputBox.ReturnString;
                                     newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFiles[0].Item3);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 default:
                                     break;
@@ -548,6 +586,7 @@ namespace NatoliOrderInterface
                                 {
                                     case MessageBoxResult.Yes:
                                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        transferedFiles.Add(existingFile);
                                         break;
                                     case MessageBoxResult.No:
                                         InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
@@ -557,6 +596,7 @@ namespace NatoliOrderInterface
                                         {
                                             newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                             File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFile.Item3);
+                                            transferedFiles.Add(existingFile);
                                         }
                                         else
                                         {
@@ -574,6 +614,10 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
+                if (transferedFiles.Count > 0)
+                {
+                    MessageBox.Show("Successfully transfered " + transferedFiles.Count + " files to 'FILES_FOR_CUSTOMER'.");
+                }
             }
             catch (Exception ex)
             {
@@ -588,6 +632,7 @@ namespace NatoliOrderInterface
         private void CopySelectedToFilesForCustomer_Click(object sender, RoutedEventArgs e)
         {
             List<Tuple<string, string, string>> existingFiles = new List<Tuple<string, string, string>>();
+            List<Tuple<string, string, string>> transferedFiles = new List<Tuple<string, string, string>>();
             try
             {
                 Directory.CreateDirectory(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\");
@@ -619,10 +664,18 @@ namespace NatoliOrderInterface
                     try
                     {
                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + tabletDrawing.Item1 + tabletDrawing.Item3);
+                        transferedFiles.Add(tabletDrawing);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Could not copy " + tabletDrawing.Item1 + "because:" + Environment.NewLine + ex.Message);
+                        if (ex.Message.Contains("already exists"))
+                        {
+                            existingFiles.Add(tabletDrawing);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Could not copy " + tabletDrawing.Item1 + " because:" + Environment.NewLine + ex.Message);
+                        }
                     }
                 }
                 if (existingFiles.Count > 0)
@@ -638,6 +691,7 @@ namespace NatoliOrderInterface
                             {
                                 case MessageBoxResult.Yes:
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFiles[0].Item1 + existingFiles[0].Item3, true);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 case MessageBoxResult.No:
                                     InputBox inputBox = new InputBox("Please enter the new name for " + existingFiles[0].Item1 + existingFiles[0].Item3 + ". Do NOT include the file extension.", "Rename File", this);
@@ -645,6 +699,7 @@ namespace NatoliOrderInterface
                                     string newName = inputBox.ReturnString;
                                     newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                     File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFiles[0].Item3);
+                                    transferedFiles.Add(existingFiles[0]);
                                     break;
                                 default:
                                     break;
@@ -667,6 +722,7 @@ namespace NatoliOrderInterface
                                 {
                                     case MessageBoxResult.Yes:
                                         File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + existingFile.Item1 + existingFile.Item3, true);
+                                        transferedFiles.Add(existingFile);
                                         break;
                                     case MessageBoxResult.No:
                                         InputBox inputBox = new InputBox("Please enter the new name for " + existingFile.Item1 + existingFile.Item3 + "." + Environment.NewLine + "Do NOT include the file extension.", "Rename File", this);
@@ -676,6 +732,7 @@ namespace NatoliOrderInterface
                                         {
                                             newName = IMethods.GetFileNameWOIllegalCharacters(newName);
                                             File.Copy(fullFilePath, projectDirectory + projectNumber + "\\" + "FILES_FOR_CUSTOMER" + "\\" + newName + existingFile.Item3);
+                                            transferedFiles.Add(existingFile);
                                         }
                                         else
                                         {
@@ -692,6 +749,10 @@ namespace NatoliOrderInterface
                             }
                         }
                     }
+                }
+                if (transferedFiles.Count > 0)
+                {
+                    MessageBox.Show("Successfully transfered " + transferedFiles.Count + " files to 'FILES_FOR_CUSTOMER'.");
                 }
             }
             catch (Exception ex)
