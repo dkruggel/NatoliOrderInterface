@@ -868,18 +868,18 @@ namespace NatoliOrderInterface
                 string col1val = (x[2] as TextBlock).Text;
                 if (quote)
                 {
-                    selectedQuotes.RemoveAll(sq=> sq == (col0val, col1val, checkBox, type));
+                    selectedQuotes.RemoveAll(sq=> sq.Item1 == col0val && sq.Item2 == col1val && sq.Item4 == type);
                     selectedQuotes = selectedQuotes.Distinct().ToList();
                 }
                 else if (project)
                 {
                     string nextStep = selectedProjects.First(p => p.Item1 == col0val && p.Item2 == col1val).Item5;
-                    selectedProjects.RemoveAll(sp => sp == (col0val, col1val, checkBox, type, nextStep));
+                    selectedProjects.RemoveAll(sp => sp.Item1 == col0val && sp.Item2 == col1val && sp.Item4 == type && sp.Item5 == nextStep);
                     selectedProjects = selectedProjects.Distinct().ToList();
                 }
                 else if (order)
                 {
-                    selectedOrders.RemoveAll(so => so == (col0val, checkBox, type));
+                    selectedOrders.RemoveAll(so => so.Item1 == col0val && so.Item3 == type);
                     selectedOrders = selectedOrders.Distinct().ToList();
                 }
 

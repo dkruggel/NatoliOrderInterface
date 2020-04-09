@@ -2276,49 +2276,7 @@ namespace NatoliOrderInterface
                         document.Add(image);
                     }
                 }
-
-                PdfFormField pdfSignatureFormField = PdfFormField.CreateSignature(pdfDocument, new Rectangle(950, 20, 35, 20))
-                                                                .SetFieldName("Signature" + count)
-                                                                .SetVisibility(PdfFormField.VISIBLE)
-                                                                .SetPage(1);
-                acroForm.AddField(pdfSignatureFormField);
                 document.Close();
-
-                PdfReader reader = new PdfReader(tempFile);
-                PdfSigner signer = new PdfSigner(reader, new FileStream(filename, FileMode.Open), new StampingProperties());
-                PdfSignatureAppearance appearance = signer.GetSignatureAppearance()
-                                                        .SetImage(ImageDataFactory.Create(@"C:\Users\" + user.DomainName + @"\Desktop\John Hancock.png"))
-                                                        .SetReuseAppearance(false)
-                                                        .SetLayer2Text("")
-                                                        .SetPageNumber(1);
-
-                signer.SetFieldName("Signature" + count);
-                signer.SetSignDate(System.DateTime.Now);
-                var pathToCert = @"C:\Users\" + user.DomainName + @"\Desktop\cert.pfx";
-                var pass = passCert.ToCharArray();
-                FileStream fs;
-                fs = new FileStream(pathToCert, FileMode.Open);
-                var store = new Pkcs12Store(fs, pass);
-                fs.Close();
-                var alias = "";
-                // searching for private key
-                foreach (string al in store.Aliases)
-                    if (store.IsKeyEntry(al) && store.GetKey(al).Key.IsPrivate)
-                    {
-                        alias = al;
-                        break;
-                    }
-
-                var pk = store.GetKey(alias);
-
-                ICollection<X509Certificate> chain = store.GetCertificateChain(alias).Select(c => c.Certificate).ToList();
-                Org.BouncyCastle.X509.X509Certificate[] x509Certificates = chain.ToArray();
-
-                var parameters = pk.Key as RsaPrivateCrtKeyParameters;
-                IExternalSignature pks = new PrivateKeySignature(parameters, DigestAlgorithms.SHA256);
-                signer.SignDetached(pks, x509Certificates, null, null, null, 0, PdfSigner.CryptoStandard.CMS);
-                reader.Close();
-                File.Delete(tempFile);
                 int file_count;
                 string lineItemName = file.Substring(file.LastIndexOf("\\") + 1, file.IndexOf(".pdf") - file.LastIndexOf("\\") - 1);
                 int lineItemNumber = workOrder.lineItems.Where(l => lineItemName.StartsWith(l.Value)).First().Key;
