@@ -316,8 +316,8 @@ namespace NatoliOrderInterface
             AddColumn(grid, CreateColumnDefinition(new GridLength(250)), CreateLabel(kvp.Key.LowerHobDescription.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.DieNumber.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.DieShape.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)kvp.Key.Width, 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)kvp.Key.Length, 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)(kvp.Key.Width ?? 0), 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
+            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)(kvp.Key.Length ?? 0), 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
             AddColumn(grid, CreateColumnDefinition(new GridLength(500)), CreateLabel(kvp.Key.Notes, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
 
             Expander expander = new Expander()

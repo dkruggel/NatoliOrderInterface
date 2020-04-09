@@ -3495,6 +3495,32 @@ namespace NatoliOrderInterface
             return folderPrefix;
 
         }
+        public static string GetFileNameWOIllegalCharacters(string fileNameWithoutExtension)
+        {
+            try
+            {
+                string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()) + "'";
+                string originalFileName = fileNameWithoutExtension;
+                foreach (char c in invalid)
+                {
+                    fileNameWithoutExtension = fileNameWithoutExtension.Replace(c.ToString(), "");
+                }
+                string newFileName = fileNameWithoutExtension;
+                foreach (char c in newFileName)
+                {
+                    if (!char.IsLetterOrDigit(c) || c == '-' && c != '_')
+                    {
+                        fileNameWithoutExtension = fileNameWithoutExtension.Replace(c.ToString(), "_");
+                    }
+                }
+                return fileNameWithoutExtension;
+            }
+            catch (Exception ex)
+            {
+                WriteToErrorLog("IMethods.GetFileNameWOIllegalCharacters()", ex.Message, new User());
+                return fileNameWithoutExtension;
+            }
+        }
 
         /// <summary>
         /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
