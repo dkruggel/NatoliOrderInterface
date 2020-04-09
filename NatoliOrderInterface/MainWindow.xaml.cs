@@ -3822,22 +3822,25 @@ namespace NatoliOrderInterface
         }
         #endregion
         #region DataGrid Events
-        private void GridWindow_Drop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
-                List<string> filePaths = filePathArray.ToList();
-                if (filePaths[0].Contains("WorkOrdersToPrint"))
-                {
-                    OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, User, this);
-                }
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("MainWindow => GridWindow_Drop", ex.Message, User);
-            }
-        }
+        //private void GridWindow_Drop(object sender, DragEventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (e.Data.GetData(DataFormats.FileDrop) != null)
+        //        {
+        //            string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
+        //            List<string> filePaths = filePathArray.ToList();
+        //            if (filePaths[0].Contains("WorkOrdersToPrint"))
+        //            {
+        //                OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, User, this);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        IMethods.WriteToErrorLog("MainWindow => GridWindow_Drop", ex.Message, User);
+        //    }
+        //}
 #endregion
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
