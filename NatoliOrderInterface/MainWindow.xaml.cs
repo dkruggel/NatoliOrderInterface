@@ -3358,7 +3358,8 @@ namespace NatoliOrderInterface
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
-                                      .ThenBy(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
