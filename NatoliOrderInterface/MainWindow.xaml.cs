@@ -772,7 +772,7 @@ namespace NatoliOrderInterface
                 // User = new User("mbouzitoun");
                 // User = new User("billt");
                 // User = new User("rfaltus");
-                //User = new User(Environment.UserName);
+                User = new User(Environment.UserName);
                 App.user = User;
             }
             catch (Exception ex)
