@@ -768,7 +768,8 @@ namespace NatoliOrderInterface
         {
             try
             {
-                User = new User(Environment.UserName);
+                User = new User("jnorman");
+                // User = new User(Environment.UserName);
                 App.user = User;
                 // User = new User("jwillis");
                 // User = new User("mbouzitoun");
