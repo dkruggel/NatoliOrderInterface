@@ -346,7 +346,7 @@ namespace NatoliOrderInterface
                 else
                 {
                     DateTime day = DateTime.Today.AddDays(i);
-                    if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday && IsHoliday(day))
+                    if (day.DayOfWeek != DayOfWeek.Saturday && day.DayOfWeek != DayOfWeek.Sunday && !IsHoliday(day))
                     {
                         openDates.Add(i + " Day(s) | " + day.ToString("d"));
                     }
