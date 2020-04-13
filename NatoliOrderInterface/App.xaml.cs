@@ -866,31 +866,82 @@ namespace NatoliOrderInterface
 
                 // Get Buttons
                 var buttons = dockPanel.Children.OfType<StackPanel>().First().Children.OfType<Button>();
+                
 
                 string col0val = (x[1] as TextBlock).Text;
                 string col1val = (x[2] as TextBlock).Text;
                 if (quote)
                 {
+                    
                     selectedQuotes.RemoveAll(sq=> sq.Item1 == col0val && sq.Item2 == col1val && sq.Item4 == type);
                     selectedQuotes = selectedQuotes.Distinct().ToList();
+
+                    var uniqueTypes = selectedQuotes.Select(q => q.Item4).Distinct();
+
+                    if (uniqueTypes.Count() == 1)
+                    {
+                        if (type == "QuotesNotConverted")
+                        {
+                            Button submitQuoteButton = buttons.Single(b => b.Name == "SubmitQuoteButton");
+                            Button followUpButton = buttons.Single(b => b.Name == "FollowUpButton");
+                            submitQuoteButton.Visibility = Visibility.Visible;
+                            followUpButton.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            Button recallQuoteButton = buttons.Single(b => b.Name == "RecallQuoteButton");
+                            recallQuoteButton.Visibility = Visibility.Visible;
+                        }
+                    }
+                    else
+                    {
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
+                        
                 }
                 else if (project)
                 {
                     string nextStep = selectedProjects.First(p => p.Item1 == col0val && p.Item2 == col1val).Item5;
                     selectedProjects.RemoveAll(sp => sp.Item1 == col0val && sp.Item2 == col1val && sp.Item4 == type && sp.Item5 == nextStep);
                     selectedProjects = selectedProjects.Distinct().ToList();
+                    if (selectedProjects.Any() && selectedProjects.All(sp => sp.Item4 == selectedProjects.First().Item4 && sp.Item5 == nextStep))
+                    {
+                    }
+                    else
+                    {
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
                 }
                 else if (order)
                 {
                     selectedOrders.RemoveAll(so => so.Item1 == col0val && so.Item3 == type);
                     selectedOrders = selectedOrders.Distinct().ToList();
-                }
-
-                foreach (Button button in buttons)
-                {
-                    if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                    if (selectedOrders.Any() && selectedOrders.All(so => so.Item3 == type))
+                    { }
+                    else
                     {
-                        button.Visibility = Visibility.Collapsed;
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
                     }
                 }
             }

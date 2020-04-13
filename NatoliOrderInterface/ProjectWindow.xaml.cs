@@ -157,10 +157,15 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please enter a due date for the project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false; ;
             }
+            if( Priority.IsChecked == false && (DueDate.Text.StartsWith('0') || (DueDate.Text.StartsWith('1') && DateTime.Now.TimeOfDay>new TimeSpan(14,0,0))))
+            {
+                MessageBox.Show("Please mark Priority for this rush.", "Rush Needs Priority", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(Notes.Text))
             {
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false; ;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
             {
@@ -4805,7 +4810,7 @@ namespace NatoliOrderInterface
                             // Use Note2 from Die List if present
                             if (!string.IsNullOrWhiteSpace(die.Note2))
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                             }
                             // Use the shape ID description
@@ -4848,7 +4853,7 @@ namespace NatoliOrderInterface
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = die.Note2.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
                                 // Use the shape ID description
@@ -4942,7 +4947,7 @@ namespace NatoliOrderInterface
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
                                 // Use the shape ID description
@@ -5031,7 +5036,7 @@ namespace NatoliOrderInterface
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
                                 // Use the shape ID description
@@ -5120,7 +5125,7 @@ namespace NatoliOrderInterface
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
                                 // Use the shape ID description
@@ -5278,7 +5283,7 @@ namespace NatoliOrderInterface
                 _nat02Context.Dispose();
                 EditedTimer.Stop();
             }
-            EnableTabletDrawingsButton();
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EnableTabletDrawingsButton()));
         }
         /// <summary>
         /// Resets the timer and changes the "editedText" and "editedTextBoxName" to be used by EditedTimer_Elapsed.
