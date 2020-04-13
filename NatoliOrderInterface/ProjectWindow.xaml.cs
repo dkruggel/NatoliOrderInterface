@@ -3791,8 +3791,8 @@ namespace NatoliOrderInterface
                 LowerCoreRodPunch = CoreRodPunch,
                 LowerCoreRodPunchSteelID = CoreRodPunchSteelID,
                 MachineNotes = !string.IsNullOrEmpty(MachineNotes.Text) ? MachineNotes.Text.Trim() : "",
-                UpperGrooveType = !string.IsNullOrEmpty(UpperGrooveType.Text) ? MachineNotes.Text.Trim() : "",
-                LowerGrooveType = !string.IsNullOrEmpty(LowerGrooveType.Text) ? MachineNotes.Text.Trim() : ""
+                UpperGrooveType = !string.IsNullOrEmpty(UpperGrooveType.Text) ? UpperGrooveType.Text.Trim() : "",
+                LowerGrooveType = !string.IsNullOrEmpty(LowerGrooveType.Text) ? LowerGrooveType.Text.Trim() : ""
             };
             _projectsContext.Dispose();
             return engineeringToolProject;

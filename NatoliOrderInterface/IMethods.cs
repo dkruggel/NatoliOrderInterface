@@ -3517,7 +3517,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                WriteToErrorLog("IMethods.GetFileNameWOIllegalCharacters()", ex.Message, new User());
+                WriteToErrorLog("IMethods.GetFileNameWOIllegalCharacters()", ex.Message, App.user);
                 return fileNameWithoutExtension;
             }
         }

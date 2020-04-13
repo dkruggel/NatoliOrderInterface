@@ -1600,7 +1600,14 @@ namespace NatoliOrderInterface
                         OrderNo = double.Parse(order.Item1),
                         UserName = user.GetUserName()
                     };
-                    nat02context.EoiOrdersDoNotProcess.Add(_);
+                    if (nat02context.EoiOrdersDoNotProcess.Any(o => o.OrderNo == _.OrderNo))
+                    {
+                        nat02context.EoiOrdersDoNotProcess.Update(_);
+                    }
+                    else
+                    {
+                        nat02context.EoiOrdersDoNotProcess.Add(_);
+                    }
                     nat02context.SaveChanges();
                     nat02context.Dispose();
                 }
@@ -1627,8 +1634,8 @@ namespace NatoliOrderInterface
                     using var nat02context = new NAT02Context();
                     if (nat02context.EoiOrdersDoNotProcess.Any(o => o.OrderNo == double.Parse(order.Item1)))
                     {
-                        EoiOrdersDoNotProcess _ = nat02context.EoiOrdersDoNotProcess.Single(o => o.OrderNo == double.Parse(order.Item1));
-                        nat02context.EoiOrdersDoNotProcess.Remove(_);
+                        List<EoiOrdersDoNotProcess> _ = nat02context.EoiOrdersDoNotProcess.Where(o => o.OrderNo == double.Parse(order.Item1)).ToList();
+                        nat02context.EoiOrdersDoNotProcess.RemoveRange(_);
                     }
                     nat02context.SaveChanges();
                     nat02context.Dispose();

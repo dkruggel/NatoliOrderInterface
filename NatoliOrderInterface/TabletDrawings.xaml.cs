@@ -307,7 +307,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, App.user);
                         }
                     }
                     else
@@ -345,7 +345,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, App.user);
                             }
                         }
                     }
@@ -357,7 +357,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click()", ex.Message, new User());
+                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click()", ex.Message, App.user);
             }
         }
         /// <summary>
@@ -439,7 +439,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, App.user);
                         }
                     }
                     else
@@ -477,7 +477,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, App.user);
                             }
                         }
                     }
@@ -489,7 +489,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("TabletDrawings => CopyAllToProject_Click()", ex.Message, new User());
+                IMethods.WriteToErrorLog("TabletDrawings => CopyAllToProject_Click()", ex.Message, App.user);
             }
         }
         /// <summary>
@@ -571,7 +571,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, App.user);
                         }
                     }
                     else
@@ -609,7 +609,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, App.user);
                             }
                         }
                     }
@@ -621,7 +621,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("TabletDrawings => CopyAllToFilesForCustomer_Click()", ex.Message, new User());
+                IMethods.WriteToErrorLog("TabletDrawings => CopyAllToFilesForCustomer_Click()", ex.Message, App.user);
             }
         }
         /// <summary>
@@ -707,7 +707,7 @@ namespace NatoliOrderInterface
                         }
                         catch (Exception ex)
                         {
-                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, new User());
+                            IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files == 1", ex.Message, App.user);
                         }
                     }
                     else
@@ -745,7 +745,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, new User());
+                                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToProject_Click() => Existing files > 1", ex.Message, App.user);
                             }
                         }
                     }
@@ -757,7 +757,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToFilesForCustomer_Click()", ex.Message, new User());
+                IMethods.WriteToErrorLog("TabletDrawings => CopySelectedToFilesForCustomer_Click()", ex.Message, App.user);
             }
         }
 
@@ -814,7 +814,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("TabletDrawings.xaml.cs => ListBoxItem_PreviewMouseMove", ex.Message, new User());
+                IMethods.WriteToErrorLog("TabletDrawings.xaml.cs => ListBoxItem_PreviewMouseMove", ex.Message, App.user);
             }
         }
     }
