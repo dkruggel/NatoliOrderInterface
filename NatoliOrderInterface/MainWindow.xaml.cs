@@ -3246,6 +3246,23 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
             }
+            else if(User.Department == "Engineering")
+            {
+                _filtered =
+                    _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp=> string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+            }
             else
             {
                 _filtered =
@@ -3331,6 +3348,20 @@ namespace NatoliOrderInterface
                                     .ThenBy(kvp => kvp.DueDate)
                                     .ThenBy(kvp => kvp.ProjectNumber)
                                     .ToList();
+            }
+            else if (User.Department == "Engineering")
+            {
+                _filtered =
+                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
             }
             else
             {
