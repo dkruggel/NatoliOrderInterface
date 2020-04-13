@@ -6,6 +6,7 @@
     <Application.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="isFocusedOrIsNotEmptyConverter"/>
         <local:BackgroundConverter x:Key="backgroundConverter"/>
+        <local:TextConverter x:Key="textConverter"/>
         <local:CheckBoxConverter x:Key="checkBoxConverter"/>
         <local:ToolTipConverter x:Key="toolTipConverter"/>
         <local:ModuleHeightConvertor x:Key="moduleHeightConvertor"/>
@@ -6045,6 +6046,9 @@
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <ToggleButton x:Name="ToggleButton" PreviewMouseDown="ToggleButton_SingleClick">
+                                                <ToggleButton.FontStyle>
+                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                </ToggleButton.FontStyle>
                                                 <ToggleButton.ToolTip>
                                                     <Binding Converter="{StaticResource toolTipConverter}"/>
                                                 </ToggleButton.ToolTip>
