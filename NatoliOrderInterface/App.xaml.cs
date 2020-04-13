@@ -716,8 +716,11 @@ namespace NatoliOrderInterface
                     selectedProjects.Add((col0val, col1val, checkBox, type, nextStep));
                     selectedProjects = selectedProjects.Distinct().ToList();
 
+                    // Check to see if user can complete project
+                    projectCompleteButton.IsEnabled = CanUserCompleteProject(user);
+
                     // Cancel: Enabled, "Cancel Project"
-                    projectCancelButton.IsEnabled = true;
+                    projectCancelButton.IsEnabled = projectCompleteButton.Visibility == Visibility.Visible;
                     projectCancelButton.ToolTip = "Cancel Project";
                 }
                 // Order
@@ -928,6 +931,11 @@ namespace NatoliOrderInterface
             projectOffHoldButton.IsEnabled = false;
             projectOffHoldButton.ToolTip = "";
 
+            // Cancel: Disabled, No Tooltip
+            projectCancelButton.IsEnabled = false;
+            projectCancelButton.ToolTip = "";
+            projectCancelButton.Visibility = Visibility.Collapsed;
+
             // Next Step: Disabled, No Tooltip
             projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = false;
@@ -1041,6 +1049,43 @@ namespace NatoliOrderInterface
             projectCompleteButton.Visibility = user.Department == "Customer Service" ? Visibility.Visible : Visibility.Collapsed;
             projectCompleteButton.IsEnabled = false;
             projectCompleteButton.ToolTip = "";
+        }
+        private bool CanUserCompleteProject(User user)
+        {
+            using var _ = new ProjectsContext();
+            foreach (var p in selectedProjects)
+            {
+                if (int.Parse(p.Item1) > 110000)
+                {
+                    EngineeringArchivedProjects project = _.EngineeringArchivedProjects.Single(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2);
+                    if (project.CSR == user.GetDWPrincipalId() || project.ReturnToCSR == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
+                        user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        _.Dispose();
+                        return false;
+                    }
+                }
+                else
+                {
+                    ProjectSpecSheet project = _.ProjectSpecSheet.Single(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2);
+                    if (project.Csr == user.GetDWPrincipalId() || project.ReturnToCsr == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
+                        user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        _.Dispose();
+                        return false;
+                    }
+                }
+            }
+            _.Dispose();
+            return true;
         }
         private void RemoveEventHandlers(Control el)
         {
