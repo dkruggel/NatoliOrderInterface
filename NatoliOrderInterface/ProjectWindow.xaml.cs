@@ -5996,9 +5996,9 @@ namespace NatoliOrderInterface
         protected static bool GetFilename(out string filename, DragEventArgs e)
         {
             bool ret = false;
+            filename = String.Empty;
             try
             {
-                filename = String.Empty;
                 if (e != null)
                 {
                     if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
