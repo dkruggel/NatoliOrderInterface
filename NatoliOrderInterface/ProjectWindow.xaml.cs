@@ -4349,6 +4349,7 @@ namespace NatoliOrderInterface
                         engineeringProject.QuoteRevNumber = "";
                         projectLinkedToQuote = !projectLinkedToQuote;
                         QuoteFolderButton.IsEnabled = false;
+                        LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
                     }
                     // Does not have quote or order attached
                     else
@@ -4378,6 +4379,7 @@ namespace NatoliOrderInterface
                                             engineeringProject.QuoteNumber = quoteNumber;
                                             engineeringProject.QuoteRevNumber = quoteRevNumber;
                                             projectLinkedToQuote = !projectLinkedToQuote;
+                                            LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                                             QuoteFolderButton.IsEnabled = true;
                                             FillFromQuote(Convert.ToDouble(quoteNumber), Convert.ToInt16(quoteRevNumber), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
                                             break;
@@ -4752,199 +4754,64 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void EditedTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            string _editedText = editedText.ToString().Trim();
-            if (!string.IsNullOrWhiteSpace(_editedText))
+            try
             {
-                string _editedTextBoxName = editedTextBoxName.ToString();
-                string _upperCupType = upperCupType.Trim();
-                string _upperCupDepth = upperCupDepth.Trim();
-                string _lowerCupType = lowerCupType.Trim();
-                string _lowerCupDepth = lowerCupDepth.Trim();
-                string _shortRejectCupType = shortRejectCupType.Trim();
-                string _shortRejectCupDepth = shortRejectCupDepth.Trim();
-                string _longRejectCupType = longRejectCupType.Trim();
-                string _longRejectCupDepth = longRejectCupDepth.Trim();
-                string _upperLand = upperLand.Trim();
-                string _lowerLand = lowerLand.Trim();
-                string _shortRejectLand = shortRejectLand.Trim();
-                string _longRejectLand = longRejectLand.Trim();
-                using var _necContext = new NECContext();
-                using var _nat01Context = new NAT01Context();
-                using var _nat02Context = new NAT02Context();
-                switch (_editedTextBoxName)
+                string _editedText = editedText.ToString().Trim();
+                if (!string.IsNullOrWhiteSpace(_editedText))
                 {
-                    case "CustomerNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = ""));
-                        }
-                        break;
-                    case "ShipToNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = ""));
-                        }
-                        break;
-                    case "EndUserNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
-                        }
-                        break;
-                    case "DieNumber":
-                        if (_nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId.Trim() == _editedText))
-                        {
-                            DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText);
-                            // Use Note2 from Die List if present
-                            if (!string.IsNullOrWhiteSpace(die.Note2))
+                    string _editedTextBoxName = editedTextBoxName.ToString();
+                    string _upperCupType = upperCupType.Trim();
+                    string _upperCupDepth = upperCupDepth.Trim();
+                    string _lowerCupType = lowerCupType.Trim();
+                    string _lowerCupDepth = lowerCupDepth.Trim();
+                    string _shortRejectCupType = shortRejectCupType.Trim();
+                    string _shortRejectCupDepth = shortRejectCupDepth.Trim();
+                    string _longRejectCupType = longRejectCupType.Trim();
+                    string _longRejectCupDepth = longRejectCupDepth.Trim();
+                    string _upperLand = upperLand.Trim();
+                    string _lowerLand = lowerLand.Trim();
+                    string _shortRejectLand = shortRejectLand.Trim();
+                    string _longRejectLand = longRejectLand.Trim();
+                    using var _necContext = new NECContext();
+                    using var _nat01Context = new NAT01Context();
+                    using var _nat02Context = new NAT02Context();
+                    switch (_editedTextBoxName)
+                    {
+                        case "CustomerNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
                             }
-                            // Use the shape ID description
                             else
                             {
-                                short shapeID = (short)die.ShapeId;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = ""));
                             }
-                            float width = (float)die.WidthMinorAxis;
-                            float length = (float)die.LengthMajorAxis;
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
-                        }
-                        break;
-                    case "UpperHobNumber":
-                        // It is a hob number that exists
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            break;
+                        case "ShipToNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
                             {
-                                UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = die.Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                                }
-                                // Use the shape ID description
-                                else
-                                {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                                }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
                             }
-                        }
-                        else
-                        {
-                            // It is a new hob
-                            if (_editedText.ToUpper() == "NEW")
-                            {
-                                // Take the cup type from other items
-                                if (!string.IsNullOrEmpty(_lowerCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                // Take the cup depth from other items
-                                if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                // Take the land from other items
-                                if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                            }
-                            // Does not match anything, drive to nothing
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = ""));
                             }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "LowerHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            break;
+                        case "EndUserNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
                             {
-                                LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
+                            }
+                            else
                             {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
+                            }
+                            break;
+                        case "DieNumber":
+                            if (_nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId.Trim() == _editedText))
+                            {
+                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText);
+                                // Use Note2 from Die List if present
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
@@ -4962,328 +4829,470 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
+                            else
                             {
-                                if (!string.IsNullOrEmpty(_upperCupType))
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
+                            }
+                            break;
+                        case "UpperHobNumber":
+                            // It is a hob number that exists
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
+                            {
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "ShortRejectHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
-                            {
-                                ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
+                                // It is a new hob
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    // Take the cup type from other items
+                                    if (!string.IsNullOrEmpty(_lowerCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    // Take the cup depth from other items
+                                    if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    // Take the land from other items
+                                    if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
-                                // Use the shape ID description
+                                // Does not match anything, drive to nothing
                                 else
                                 {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
                                 }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "LowerHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
                             {
-                                if (!string.IsNullOrEmpty(_upperCupType))
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "LongRejectHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
-                            {
-                                LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
-                                // Use the shape ID description
                                 else
                                 {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
                                 }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "ShortRejectHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
                             {
-                                if (!string.IsNullOrEmpty(_upperCupType))
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "MachineNumber":
-                        if (!string.IsNullOrWhiteSpace(_editedText) && short.TryParse(_editedText, out short _machineNo))
-                        {
-                            if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
-                            {
-                                string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
-                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
-                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = description));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = od));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Collapsed));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ol));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Collapsed));
-                            }
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Visible));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Visible));
-                        }
-                        break;
-                    case "SketchID":
-                        if (!string.IsNullOrEmpty(_editedText) && int.TryParse(_editedText, out int _sketchID) && _nat02Context.MultiTipSketchInformation.Any(s => s.ID == _sketchID && s.Width != null))
-                        {
-
-                            MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == _sketchID);
-                            string ID = multiTipSketchInformation.ID.ToString();
-                            string dieNumber = multiTipSketchInformation.DieNumber.ToString();
-                            string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
-                            string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
-                            string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = tipQTY));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = false));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Hidden));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = type));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = false));
-                            if (multiTipSketchInformation.Length != null)
-                            {
-                                string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
-                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
-                                if (System.IO.File.Exists(path))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
+                                }
+                            }
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "LongRejectHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText))
+                            {
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                                {
+                                    LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
+                                {
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
-                                if (System.IO.File.Exists(path))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
                                 }
                             }
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Visible));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
-                        }
-                        break;
-                    default:
-                        break;
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "MachineNumber":
+                            if (!string.IsNullOrWhiteSpace(_editedText) && short.TryParse(_editedText, out short _machineNo))
+                            {
+                                if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                                {
+                                    string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
+                                    string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
+                                    string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = description));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = od));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ol));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Collapsed));
+                                }
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Visible));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Visible));
+                            }
+                            break;
+                        case "SketchID":
+                            if (!string.IsNullOrEmpty(_editedText) && int.TryParse(_editedText, out int _sketchID) && _nat02Context.MultiTipSketchInformation.Any(s => s.ID == _sketchID && s.Width != null))
+                            {
+
+                                MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == _sketchID);
+                                string ID = multiTipSketchInformation.ID.ToString();
+                                string dieNumber = multiTipSketchInformation.DieNumber.ToString();
+                                string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
+                                string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
+                                string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = tipQTY));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = false));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Hidden));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = type));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = false));
+                                if (multiTipSketchInformation.Length != null)
+                                {
+                                    string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
+                                    string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    }
+                                }
+                                else
+                                {
+                                    string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Visible));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    _necContext.Dispose();
+                    _nat01Context.Dispose();
+                    _nat02Context.Dispose();
+                    EditedTimer.Stop();
                 }
-                _necContext.Dispose();
-                _nat01Context.Dispose();
-                _nat02Context.Dispose();
-                EditedTimer.Stop();
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EnableTabletDrawingsButton()));
             }
-            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EnableTabletDrawingsButton()));
+            catch(Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => EditedTimer_Elapsed", ex.Message, user);
+            }
         }
         /// <summary>
         /// Resets the timer and changes the "editedText" and "editedTextBoxName" to be used by EditedTimer_Elapsed.
@@ -6076,8 +6085,24 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
+
         #endregion
 
-
+        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text,out short quoteRevNumber))
+            {
+                try
+                {
+                    Quote quote = new Quote(quoteNumber, quoteRevNumber);
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, mainWindow, user);
+                    quoteInfoWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("ProjectWindow => OpenQuoteButton_Click", ex.Message, user);
+                }
+            }
+        }
     }
 }
