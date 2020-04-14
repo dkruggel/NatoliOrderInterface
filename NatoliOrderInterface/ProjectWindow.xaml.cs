@@ -592,14 +592,14 @@ namespace NatoliOrderInterface
                     if (projectLinkedToQuote)
                     {
                         LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
-                        LinkQuoteButton.Content = "Unlink Quote";
+                        LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                         QuoteFolderButton.IsEnabled = true;
                         quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
                     }
                     else
                     {
                         LinkedToQuoteBorder.ClearValue(BackgroundProperty);
-                        LinkQuoteButton.Content = "Link To Quote";
+                        LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
                         QuoteFolderButton.IsEnabled = false;
                         quote = null;
                     }
@@ -1064,14 +1064,14 @@ namespace NatoliOrderInterface
                     if (projectLinkedToQuote)
                     {
                         LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
-                        LinkQuoteButton.Content = "Unlink Quote";
+                        LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                         QuoteFolderButton.IsEnabled = true;
                         quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
                     }
                     else
                     {
                         LinkedToQuoteBorder.ClearValue(BackgroundProperty);
-                        LinkQuoteButton.Content = "Link To Quote";
+                        LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
                         QuoteFolderButton.IsEnabled = false;
                         quote = null;
                     }
