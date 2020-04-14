@@ -4267,6 +4267,22 @@ namespace NatoliOrderInterface
                 this.Show();
             }
         }
+        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(QuoteNumber.Text, out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
+            {
+                try
+                {
+                    Quote quote = new Quote(quoteNumber, quoteRevNumber);
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, mainWindow, user);
+                    quoteInfoWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("ProjectWindow => OpenQuoteButton_Click", ex.Message, user);
+                }
+            }
+        }
         /// <summary>
         /// Changes the units on the project from mm to in or vice-versa
         /// </summary>
@@ -6088,21 +6104,6 @@ namespace NatoliOrderInterface
 
         #endregion
 
-        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
-        {
-            if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text,out short quoteRevNumber))
-            {
-                try
-                {
-                    Quote quote = new Quote(quoteNumber, quoteRevNumber);
-                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, mainWindow, user);
-                    quoteInfoWindow.Show();
-                }
-                catch (Exception ex)
-                {
-                    IMethods.WriteToErrorLog("ProjectWindow => OpenQuoteButton_Click", ex.Message, user);
-                }
-            }
-        }
+       
     }
 }
