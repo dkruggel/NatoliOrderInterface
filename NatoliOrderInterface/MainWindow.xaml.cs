@@ -1034,6 +1034,12 @@ namespace NatoliOrderInterface
             if (quoteTimer.Enabled == false) { quoteTimer.Start(); }
             if (NatoliOrderListTimer.Enabled == false) { NatoliOrderListTimer.Start(); }
         }
+        private void GridWindow_Deactivated(object sender, EventArgs e)
+        {
+            mainTimer.Stop();
+            quoteTimer.Stop();
+            NatoliOrderListTimer.Stop();
+        }
         private void GridWindow_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
@@ -1058,6 +1064,7 @@ namespace NatoliOrderInterface
                 }
             }
         }
+        
         private void GridWindow_LayoutUpdated(object sender, EventArgs e)
         {
             try
@@ -4583,5 +4590,7 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
+
+        
     }
 }
