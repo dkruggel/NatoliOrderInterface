@@ -11,16 +11,16 @@
     <DockPanel x:Name="MainDock">
         <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" Height="34">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <!--<ColumnDefinition Width="Auto"/>-->
+                <ColumnDefinition/>
+                <!--<ColumnDefinition Width="Auto"/>-->
             </Grid.ColumnDefinitions>
-            <Menu x:Name="MainMenu" Height="25" Grid.Column="0">
+            <!--<Menu x:Name="MainMenu" Height="25" Grid.Column="0">
                 <MenuItem x:Name="FileMenu" Header="File" Margin="0,3">
                     <MenuItem x:Name="CloseMenuItem" Header="Close" Click="CloseMenuItem_Click"/>
                 </MenuItem>
-            </Menu>
-            <TextBox x:Name="SearchBox" Grid.Column="1" Margin="2" TextChanged="SearchBox_TextChanged" VerticalContentAlignment="Center" Style="{StaticResource SearchBox}" PreviewKeyUp="SearchBox_PreviewKeyUp"/>
+            </Menu>-->
+            <TextBox x:Name="SearchBox" Grid.Column="0" Margin="2" TextChanged="SearchBox_TextChanged" HorizontalAlignment="Center" VerticalContentAlignment="Center" PreviewKeyUp="SearchBox_PreviewKeyUp" Width="500" Height="25"/>
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
             <DockPanel>
