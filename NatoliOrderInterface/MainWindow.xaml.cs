@@ -2851,20 +2851,53 @@ namespace NatoliOrderInterface
         private void BindBeingEntered()
         {
             string searchString = GetSearchString("BeingEntered");
-
-            //_ordersBeingEntered =
-            //    _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
-            //                                   o.QuoteNo.ToString().Contains(searchString) ||
-            //                                   o.CustomerName.ToLower().Contains(searchString))
-            //                       .OrderBy(kvp => kvp.OrderNo)
-            //                       .ToList();
-
-            OrdersBeingEntered =
-                _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            string column;
+            var _filtered = _ordersBeingEntered;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "order no":
+                        _filtered =
+                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+                        break;
+                    case "customer name":
+                        _filtered =
+                            _ordersBeingEntered.Where(o => !string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+                        break;
+                    case "quote no":
+                        _filtered =
+                            _ordersBeingEntered.Where(o => !string.IsNullOrEmpty(o.QuoteNo.ToString()) && o.QuoteNo.ToString().ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+                        break;
+                    default:
+                        _filtered =
+                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                o.QuoteNo.ToString().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                               o.QuoteNo.ToString().Contains(searchString) ||
+                                               (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+            }
+
+            OrdersBeingEntered = _filtered;
         }
         private void GetInTheOffice()
         {
@@ -2882,18 +2915,41 @@ namespace NatoliOrderInterface
         private void BindInTheOffice()
         {
             string searchString = GetSearchString("InTheOffice");
-
-            //_ordersInTheOffice =
-            //    _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
-            //                                  o.CustomerName.ToLower().ToString().Contains(searchString) ||
-            //                                  o.EmployeeName.ToLower().Contains(searchString) ||
-            //                                  o.Csr.ToLower().Contains(searchString))
-            //                      .OrderBy(o => o.NumDaysToShip)
-            //                      .ThenBy(o => o.DaysInOffice)
-            //                      .ThenBy(o => o.OrderNo)
-            //                      .ToList();
-
-            OrdersInTheOffice = _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+            string column;
+            var _filtered = _ordersInTheOffice;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "order no":
+                        _filtered =
+                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString))
+                                  .OrderBy(o => o.NumDaysToShip)
+                                  .ThenBy(o => o.DaysInOffice)
+                                  .ThenBy(o => o.OrderNo)
+                                  .ToList();
+                        break;
+                    case "customer name":
+                        _filtered =
+                            _ordersInTheOffice.Where(o => !string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString))
+                                  .OrderBy(o => o.NumDaysToShip)
+                                  .ThenBy(o => o.DaysInOffice)
+                                  .ThenBy(o => o.OrderNo)
+                                  .ToList();
+                        break;
+                    case "employee name":
+                        _filtered =
+                            _ordersInTheOffice.Where(o => !string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString))
+                                  .OrderBy(o => o.NumDaysToShip)
+                                  .ThenBy(o => o.DaysInOffice)
+                                  .ThenBy(o => o.OrderNo)
+                                  .ToList();
+                        break;
+                    default:
+                        _filtered =
+                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
                                               (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.Csr) && o.Csr.ToLower().Contains(searchString)))
@@ -2901,6 +2957,23 @@ namespace NatoliOrderInterface
                                   .ThenBy(o => o.DaysInOffice)
                                   .ThenBy(o => o.OrderNo)
                                   .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                              (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)) ||
+                                              (!string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString)) ||
+                                              (!string.IsNullOrEmpty(o.Csr) && o.Csr.ToLower().Contains(searchString)))
+                                  .OrderBy(o => o.NumDaysToShip)
+                                  .ThenBy(o => o.DaysInOffice)
+                                  .ThenBy(o => o.OrderNo)
+                                  .ToList();
+            }
+
+            OrdersInTheOffice = _filtered;
         }
         private void GetQuotesNotConverted()
         {
@@ -2974,16 +3047,47 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("EnteredUnscanned");
 
-            //_ordersEntered =
-            //    _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-            //                              p.CustomerName.ToLower().Contains(searchString))
-            //                  .OrderBy(kvp => kvp.OrderNo)
-            //                  .ToList();
-
-            OrdersEntered = _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+            string column;
+            var _filtered = _ordersEntered;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "order no":
+                        _filtered =
+                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+                        break;
+                    case "customer name":
+                        _filtered =
+                            _ordersEntered.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+                        break;
+                    default:
+                        _filtered =
+                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                           (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
                               .OrderBy(kvp => kvp.OrderNo)
                               .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                          (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
+                              .OrderBy(kvp => kvp.OrderNo)
+                              .ToList();
+            }
+
+            OrdersEntered = _filtered;
         }
         private void GetInEngineering()
         {
@@ -3002,22 +3106,67 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("InEngineering");
 
-            //_ordersInEng =
-            //    _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-            //                            p.CustomerName.ToLower().Contains(searchString) ||
-            //                            p.EmployeeName.ToLower().Contains(searchString))
-            //                .OrderByDescending(kvp => kvp.DaysInEng)
-            //                .ThenBy(kvp => kvp.NumDaysToShip)
-            //                .ThenBy(kvp => kvp.OrderNo)
-            //                .ToList();
+            string column;
+            var _filtered = _ordersInEng;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "order no":
 
-            OrdersInEng = _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                        _filtered =
+                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
+                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+                        break;
+                    case "customer name":
+
+                        _filtered =
+                            _ordersInEng.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+                        break;
+                    case "employee name":
+
+                        _filtered =
+                            _ordersInEng.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
+                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+                        break;
+                    default:
+
+                        _filtered =
+                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                         (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                         (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)))
                             .OrderByDescending(kvp => kvp.DaysInEng)
                             .ThenBy(kvp => kvp.NumDaysToShip)
                             .ThenBy(kvp => kvp.OrderNo)
                             .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                        (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                        (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)))
+                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
+                            .ThenBy(kvp => kvp.OrderNo)
+                            .ToList();
+            }
+
+            OrdersInEng = _filtered;
         }
         private void GetQuotesToConvert()
         {
@@ -3277,11 +3426,70 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllTabletProjects");
 
+            string column;
             var _filtered = _allTabletProjects;
             if (User.DomainName == "mmulaosmanovic")
             {
-                _filtered =
-                    _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                if (searchString.Contains(":"))
+                {
+                    column = searchString.Split(':')[0];
+                    searchString = searchString.Split(':')[1].Trim();
+                    switch (column)
+                    {
+                        case "project number":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "revision number":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "customer name":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "csr":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "drafter":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        default:
+
+                            _filtered =
+                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -3291,23 +3499,133 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
-            }
-            else if(User.Department == "Engineering")
-            {
-                _filtered =
-                    _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                            break;
+                    }
+                }
+                else
+                {
+                    _filtered =
+                               _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                }
+            }
+            else if (User.Department == "Engineering")
+            {
+                if (searchString.Contains(":"))
+                {
+                    column = searchString.Split(':')[0];
+                    searchString = searchString.Split(':')[1].Trim();
+                    switch (column)
+                    {
+                        case "project number":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
-                                      .ThenByDescending(kvp=> string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.Tools ?? false)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
+                            break;
+                        case "revision number":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "customer name":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "csr":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "drafter":
+
+                            _filtered =
+                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        default:
+
+                            _filtered =
+                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                    }
+                }
+                else
+                {
+                    _filtered =
+                               _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                }
             }
             else
             {
@@ -3322,7 +3640,6 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
             }
-
             AllTabletProjects = _filtered;
         }
         private void GetAllToolProjects()
@@ -3380,11 +3697,70 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("AllToolProjects");
 
+            string column;
             var _filtered = _allToolProjects;
             if (User.DomainName == "kbergerdine")
             {
-                _filtered =
-                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                if (searchString.Contains(":"))
+                {
+                    column = searchString.Split(':')[0];
+                    searchString = searchString.Split(':')[1].Trim();
+                    switch (column)
+                    {
+                        case "project number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "revision number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "customer name":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "csr":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "drafter":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        default:
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -3394,11 +3770,187 @@ namespace NatoliOrderInterface
                                     .ThenBy(kvp => kvp.DueDate)
                                     .ThenBy(kvp => kvp.ProjectNumber)
                                     .ToList();
+                            break;
+                    }
+                }
+                else
+                {
+                    _filtered =
+                              _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                    .OrderByDescending(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                }
             }
             else if (User.Department == "Engineering")
             {
-                _filtered =
-                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                if (searchString.Contains(":"))
+                {
+                    column = searchString.Split(':')[0];
+                    searchString = searchString.Split(':')[1].Trim();
+                    switch (column)
+                    {
+                        case "project number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                                                            .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "revision number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                                                            .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "customer name":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                                                            .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "csr":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                                                            .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "drafter":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                                                            .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        default:
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                                          .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                    }
+                }
+                else
+                {
+                    _filtered =
+                              _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                                          .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                }
+            }
+            else
+            {
+                if (searchString.Contains(":"))
+                {
+                    column = searchString.Split(':')[0];
+                    searchString = searchString.Split(':')[1].Trim();
+                    switch (column)
+                    {
+                        case "project number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "revision number":
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "customer name":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "csr":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        case "drafter":
+
+                            _filtered =
+                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            break;
+                        default:
+
+                            _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -3409,19 +3961,24 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
-            }
-            else
-            {
-                _filtered =
-                    _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                            break;
+                    }
+                }
+                else
+                {
+                    _filtered =
+                              _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
-                                    .OrderByDescending(kvp => kvp.MarkedPriority)
-                                    .ThenBy(kvp => kvp.DueDate)
-                                    .ThenBy(kvp => kvp.ProjectNumber)
-                                    .ToList();
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                }
             }
 
             AllToolProjects = _filtered;
