@@ -157,10 +157,15 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please enter a due date for the project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false; ;
             }
+            if( Priority.IsChecked == false && (DueDate.Text.StartsWith('0') || (DueDate.Text.StartsWith('1') && DateTime.Now.TimeOfDay>new TimeSpan(14,0,0))))
+            {
+                MessageBox.Show("Please mark Priority for this rush.", "Rush Needs Priority", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(Notes.Text))
             {
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false; ;
+                return false;
             }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
             {
@@ -506,53 +511,68 @@ namespace NatoliOrderInterface
 
         private List<Tuple<string, string, string>> GetProjectFiles(string projectNumber)
         {
-            string rootDir = projectsDirectory + projectNumber + "\\";
-            if (!Directory.Exists(rootDir))
+            try
             {
-                Directory.CreateDirectory(rootDir);
+                string rootDir = projectsDirectory + projectNumber + "\\";
+                if (!Directory.Exists(rootDir))
+                {
+                    Directory.CreateDirectory(rootDir);
+                }
+                string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
+                List<Tuple<string, string, string>> files = new List<Tuple<string, string, string>>();
+                foreach (string file in filePaths)
+                {
+                    string directory = Path.GetDirectoryName(file);
+                    string fileName = Path.GetFileNameWithoutExtension(file);
+                    string ext = Path.GetExtension(file);
+                    files.Add(new Tuple<string, string, string>(fileName, directory, ext));
+                }
+                return files;
             }
-            string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
-            List<Tuple<string, string, string>> files = new List<Tuple<string, string, string>>();
-            foreach (string file in filePaths)
+            catch (Exception ex)
             {
-                string directory = Path.GetDirectoryName(file);
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                string ext = Path.GetExtension(file);
-                files.Add(new Tuple<string, string, string>(fileName, directory, ext));
+                IMethods.WriteToErrorLog("ProjectWindow => GetProjectFiles", ex.Message, user);
             }
-            return files;
+            return new List<Tuple<string, string, string>>();
         }
         /// <summary>
         /// Fills in the controls for a blank project ready to be created.
         /// </summary>
         private void PopulateBlankWindow()
         {
-            if (!Directory.Exists(projectsDirectory + projectNumber + "\\"))
+            try
             {
-                Directory.CreateDirectory(projectsDirectory + projectNumber + "\\");
+                if (!Directory.Exists(projectsDirectory + projectNumber + "\\"))
+                {
+                    Directory.CreateDirectory(projectsDirectory + projectNumber + "\\");
+                }
+                ProjectNavigation.Visibility = Visibility.Hidden;
+                CreationBorder.Visibility = Visibility.Visible;
+                ArchivedOrInactive.Visibility = Visibility.Collapsed;
+                using var _projectsContext = new ProjectsContext();
+                using var _nat01Context = new NAT01Context();
+                EngineeringProjects engineeringProject = IMethods.GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
+                StartButton.IsEnabled = false;
+                FinishButton.IsEnabled = false;
+                SubmitButton.IsEnabled = false;
+                CheckButton.IsEnabled = false;
+                PutOnHoldButton.IsEnabled = false;
+                CancelButton.IsEnabled = false;
+                QuoteFolderButton.IsEnabled = false;
+                ReturnToCSR.ItemsSource = null;
+                ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
+                CSR.Text = user.GetDWPrincipalId();
+                UnitOfMeasure.SelectedItem = engineeringProject.UnitOfMeasure;
+
+
+                _projectsContext.Add(engineeringProject);
+                _projectsContext.SaveChanges();
+                _projectsContext.Dispose();
             }
-            ProjectNavigation.Visibility = Visibility.Hidden;
-            CreationBorder.Visibility = Visibility.Visible;
-            ArchivedOrInactive.Visibility = Visibility.Collapsed;
-            using var _projectsContext = new ProjectsContext();
-            using var _nat01Context = new NAT01Context();
-            EngineeringProjects engineeringProject = IMethods.GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
-            StartButton.IsEnabled = false;
-            FinishButton.IsEnabled = false;
-            SubmitButton.IsEnabled = false;
-            CheckButton.IsEnabled = false;
-            PutOnHoldButton.IsEnabled = false;
-            CancelButton.IsEnabled = false;
-            QuoteFolderButton.IsEnabled = false;
-            ReturnToCSR.ItemsSource = null;
-            ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
-            CSR.Text = user.GetDWPrincipalId();
-            UnitOfMeasure.SelectedItem = engineeringProject.UnitOfMeasure;
-
-
-            _projectsContext.Add(engineeringProject);
-            _projectsContext.SaveChanges();
-            _projectsContext.Dispose();
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => PopulateBlankWindow", ex.Message, user);
+            }
         }
         /// <summary>
         /// Fills in all controls/variables from the this.projectNumber and this.projectRevNumber.
@@ -561,937 +581,946 @@ namespace NatoliOrderInterface
         /// </summary>
         private void LoadEngineeringProject()
         {
-            using var _projectsContext = new ProjectsContext();
-            using var _nat01Context = new NAT01Context();
-            CreationBorder.Visibility = Visibility.Hidden;
-            ProjectNavigation.Visibility = Visibility.Visible;
-            // Is there actually a project
-            if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber) || _projectsContext.EngineeringArchivedProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber))
+            try
             {
-                if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber))
+                using var _projectsContext = new ProjectsContext();
+                using var _nat01Context = new NAT01Context();
+                CreationBorder.Visibility = Visibility.Hidden;
+                ProjectNavigation.Visibility = Visibility.Visible;
+                // Is there actually a project
+                if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber) || _projectsContext.EngineeringArchivedProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber))
                 {
-                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
-
-                    RefreshRoutingButtons();
-                    if (!engineeringProject.ActiveProject)
+                    if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber))
                     {
-                        ArchivedOrInactive.Text = "Inactive";
-                        ArchivedOrInactive.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        ArchivedOrInactive.Visibility = Visibility.Collapsed;
-                    }
+                        EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
-                    projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
-                    if (projectLinkedToQuote)
-                    {
-                        LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
-                        LinkQuoteButton.Content = "Unlink Quote";
-                        QuoteFolderButton.IsEnabled = true;
-                        quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
-                    }
-                    else
-                    {
-                        LinkedToQuoteBorder.ClearValue(BackgroundProperty);
-                        LinkQuoteButton.Content = "Link To Quote";
-                        QuoteFolderButton.IsEnabled = false;
-                        quote = null;
-                    }
-
-
-                    NewDrawing = engineeringProject.NewDrawing;
-                    UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
-                    UpdateTextOnDrawing = engineeringProject.UpdateTextOnDrawing;
-                    PerSampleTablet = engineeringProject.PerSampleTablet;
-                    RefTabletDrawing = engineeringProject.RefTabletDrawing;
-                    PerSampleTool = engineeringProject.PerSampleTool;
-                    RefToolDrawing = engineeringProject.RefToolDrawing;
-                    PerSuppliedPicture = engineeringProject.PerSuppliedPicture;
-                    RefNatoliDrawing = engineeringProject.RefNatoliDrawing;
-                    RefNonNatoliDrawing = engineeringProject.RefNonNatoliDrawing;
-                    BinLocation = engineeringProject.BinLocation;
-                    SpecificationsButton.IsEnabled = NewDrawing || UpdateExistingDrawing || UpdateTextOnDrawing || PerSampleTablet || RefTabletDrawing || PerSampleTool || RefToolDrawing || PerSuppliedPicture || RefNatoliDrawing || RefNonNatoliDrawing || !string.IsNullOrWhiteSpace(BinLocation);
-
-
-                    CSR.Text = engineeringProject.CSR;
-                    ReturnToCSR.ItemsSource = null;
-                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
-                    ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
-                    ReturnToCSR.IsEnabled = false;
-
-                    EnteredDate.Text = TimeZoneInfo.ConvertTimeFromUtc(engineeringProject.TimeSubmitted, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt");
-                    EnteredDate.IsEnabled = false;
-
-                    RevisedBy.Text = engineeringProject.RevisedBy;
-                    RevisedBy.IsEnabled = false;
-                    if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
-                    {
-                        DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
-                        date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
-                        RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
-                    }
-                    RevisionDate.IsEnabled = false;
-
-                    QuoteNumber.Text = engineeringProject.QuoteNumber;
-                    QuoteNumber.IsEnabled = false;
-                    QuoteRevNumber.Text = engineeringProject.QuoteRevNumber;
-                    QuoteRevNumber.IsEnabled = false;
-                    RefOrderNumber.Text = engineeringProject.RefOrderNumber;
-                    RefOrderNumber.IsEnabled = false;
-                    UnitOfMeasure.Text = engineeringProject.UnitOfMeasure;
-                    UnitOfMeasure.IsEnabled = false;
-                    ReferenceQuoteNumber.Text = engineeringProject.RefQuoteNumber;
-                    ReferenceQuoteNumber.IsEnabled = false;
-                    ReferenceQuoteRevNumber.Text = engineeringProject.RefQuoteRevNumber;
-                    ReferenceQuoteRevNumber.IsEnabled = false;
-                    ReferenceProjectNumber.Text = engineeringProject.RefProjectNumber;
-                    ReferenceProjectNumber.IsEnabled = false;
-                    ReferenceProjectRevNumber.Text = engineeringProject.RefProjectRevNumber;
-                    ReferenceProjectRevNumber.IsEnabled = false;
-                    CustomerNumber.Text = engineeringProject.CustomerNumber;
-                    CustomerNumber.IsEnabled = false;
-                    CustomerName.Text = engineeringProject.CustomerName;
-                    CustomerName.IsEnabled = false;
-                    ShipToNumber.Text = engineeringProject.ShipToNumber;
-                    ShipToNumber.IsEnabled = false;
-                    ShipToLocNumber.Text = engineeringProject.ShipToLocNumber;
-                    ShipToLocNumber.IsEnabled = false;
-                    ShipToName.Text = engineeringProject.ShipToName;
-                    ShipToName.IsEnabled = false;
-                    EndUserNumber.Text = engineeringProject.EndUserNumber;
-                    EndUserNumber.IsEnabled = false;
-                    EndUserLocNumber.Text = engineeringProject.EndUserLocNumber;
-                    EndUserLocNumber.IsEnabled = false;
-                    EndUserName.Text = engineeringProject.EndUserName;
-                    EndUserName.IsEnabled = false;
-                    Product.Text = engineeringProject.Product;
-                    Product.IsEnabled = false;
-                    Attention.Text = engineeringProject.Attention;
-                    Attention.IsEnabled = false;
-                    MachineNumber.Text = engineeringProject.MachineNumber;
-                    MachineNumber.IsEnabled = false;
-                    MachineDescription.IsEnabled = false;
-                    if (!string.IsNullOrWhiteSpace(engineeringProject.MachineNumber) && Int16.TryParse(engineeringProject.MachineNumber, out short _machineNo))
-                    {
-                        if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                        RefreshRoutingButtons();
+                        if (!engineeringProject.ActiveProject)
                         {
-                            string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
-                            string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
-                            string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
-                            MachineDescription.Text = description;
-                            DieOD.Text = od;
-                            DieODPlaceholder.Visibility = Visibility.Collapsed;
-                            DieOL.Text = ol;
-                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                            ArchivedOrInactive.Text = "Inactive";
+                            ArchivedOrInactive.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            ArchivedOrInactive.Visibility = Visibility.Collapsed;
+                        }
+
+                        projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
+                        if (projectLinkedToQuote)
+                        {
+                            LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
+                            LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                            QuoteFolderButton.IsEnabled = true;
+                            quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
+                        }
+                        else
+                        {
+                            LinkedToQuoteBorder.ClearValue(BackgroundProperty);
+                            LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
+                            QuoteFolderButton.IsEnabled = false;
+                            quote = null;
+                        }
+
+
+                        NewDrawing = engineeringProject.NewDrawing;
+                        UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
+                        UpdateTextOnDrawing = engineeringProject.UpdateTextOnDrawing;
+                        PerSampleTablet = engineeringProject.PerSampleTablet;
+                        RefTabletDrawing = engineeringProject.RefTabletDrawing;
+                        PerSampleTool = engineeringProject.PerSampleTool;
+                        RefToolDrawing = engineeringProject.RefToolDrawing;
+                        PerSuppliedPicture = engineeringProject.PerSuppliedPicture;
+                        RefNatoliDrawing = engineeringProject.RefNatoliDrawing;
+                        RefNonNatoliDrawing = engineeringProject.RefNonNatoliDrawing;
+                        BinLocation = engineeringProject.BinLocation;
+                        SpecificationsButton.IsEnabled = NewDrawing || UpdateExistingDrawing || UpdateTextOnDrawing || PerSampleTablet || RefTabletDrawing || PerSampleTool || RefToolDrawing || PerSuppliedPicture || RefNatoliDrawing || RefNonNatoliDrawing || !string.IsNullOrWhiteSpace(BinLocation);
+
+
+                        CSR.Text = engineeringProject.CSR;
+                        ReturnToCSR.ItemsSource = null;
+                        ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
+                        ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
+                        ReturnToCSR.IsEnabled = false;
+
+                        EnteredDate.Text = TimeZoneInfo.ConvertTimeFromUtc(engineeringProject.TimeSubmitted, TimeZoneInfo.Local).ToString("M/d/yy h:mm tt");
+                        EnteredDate.IsEnabled = false;
+
+                        RevisedBy.Text = engineeringProject.RevisedBy;
+                        RevisedBy.IsEnabled = false;
+                        if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
+                        {
+                            DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
+                            date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
+                            RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
+                        }
+                        RevisionDate.IsEnabled = false;
+
+                        QuoteNumber.Text = engineeringProject.QuoteNumber;
+                        QuoteNumber.IsEnabled = false;
+                        QuoteRevNumber.Text = engineeringProject.QuoteRevNumber;
+                        QuoteRevNumber.IsEnabled = false;
+                        RefOrderNumber.Text = engineeringProject.RefOrderNumber;
+                        RefOrderNumber.IsEnabled = false;
+                        UnitOfMeasure.Text = engineeringProject.UnitOfMeasure;
+                        UnitOfMeasure.IsEnabled = false;
+                        ReferenceQuoteNumber.Text = engineeringProject.RefQuoteNumber;
+                        ReferenceQuoteNumber.IsEnabled = false;
+                        ReferenceQuoteRevNumber.Text = engineeringProject.RefQuoteRevNumber;
+                        ReferenceQuoteRevNumber.IsEnabled = false;
+                        ReferenceProjectNumber.Text = engineeringProject.RefProjectNumber;
+                        ReferenceProjectNumber.IsEnabled = false;
+                        ReferenceProjectRevNumber.Text = engineeringProject.RefProjectRevNumber;
+                        ReferenceProjectRevNumber.IsEnabled = false;
+                        CustomerNumber.Text = engineeringProject.CustomerNumber;
+                        CustomerNumber.IsEnabled = false;
+                        CustomerName.Text = engineeringProject.CustomerName;
+                        CustomerName.IsEnabled = false;
+                        ShipToNumber.Text = engineeringProject.ShipToNumber;
+                        ShipToNumber.IsEnabled = false;
+                        ShipToLocNumber.Text = engineeringProject.ShipToLocNumber;
+                        ShipToLocNumber.IsEnabled = false;
+                        ShipToName.Text = engineeringProject.ShipToName;
+                        ShipToName.IsEnabled = false;
+                        EndUserNumber.Text = engineeringProject.EndUserNumber;
+                        EndUserNumber.IsEnabled = false;
+                        EndUserLocNumber.Text = engineeringProject.EndUserLocNumber;
+                        EndUserLocNumber.IsEnabled = false;
+                        EndUserName.Text = engineeringProject.EndUserName;
+                        EndUserName.IsEnabled = false;
+                        Product.Text = engineeringProject.Product;
+                        Product.IsEnabled = false;
+                        Attention.Text = engineeringProject.Attention;
+                        Attention.IsEnabled = false;
+                        MachineNumber.Text = engineeringProject.MachineNumber;
+                        MachineNumber.IsEnabled = false;
+                        MachineDescription.IsEnabled = false;
+                        if (!string.IsNullOrWhiteSpace(engineeringProject.MachineNumber) && Int16.TryParse(engineeringProject.MachineNumber, out short _machineNo))
+                        {
+                            if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                            {
+                                string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
+                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
+                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
+                                MachineDescription.Text = description;
+                                DieOD.Text = od;
+                                DieODPlaceholder.Visibility = Visibility.Collapsed;
+                                DieOL.Text = ol;
+                                DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                        DieOD.IsEnabled = false;
+                        DieOL.IsEnabled = false;
+                        MachineDescription.IsEnabled = false;
+                        DueDate.IsEditable = true;
+                        DueDate.Text = (engineeringProject.DueDate - DateTime.Today).TotalDays + " Day(s) | " + engineeringProject.DueDate.ToString("d");
+                        DueDate.IsEnabled = false;
+                        Priority.IsChecked = engineeringProject.Priority;
+                        Priority.IsEnabled = false;
+
+                        Notes.Text = engineeringProject.Notes;
+                        Notes.IsEnabled = false;
+                        DieNumber.Text = engineeringProject.DieNumber;
+                        DieNumber.IsEnabled = false;
+                        DieShape.Text = engineeringProject.DieShape;
+                        DieShape.IsEnabled = false;
+                        TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
+                        TabletWidth.IsEnabled = false;
+                        TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
+                        TabletLength.IsEnabled = false;
+                        DieTolerances.Text = engineeringProject.DieTolerances;
+                        DieTolerances.IsEnabled = false;
+                        UpperCupType.Text = engineeringProject.UpperCupType == null ? "" : engineeringProject.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.UpperCupType).Description.Trim();
+                        UpperCupType.IsEnabled = false;
+                        UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
+                        UpperHobNumber.IsEnabled = false;
+                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
+                        UpperCupDepth.IsEnabled = false;
+                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
+                        UpperLand.IsEnabled = false;
+                        UpperHobDescription.Text = engineeringProject.UpperHobDescription;
+                        if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
+                        {
+                            UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                        }
+                        UpperHobDescription.IsEnabled = false;
+                        UpperTolerances.Text = engineeringProject.UpperTolerances;
+                        UpperTolerances.IsEnabled = false;
+                        LowerCupType.Text = engineeringProject.LowerCupType == null ? "" : engineeringProject.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LowerCupType).Description.Trim();
+                        LowerCupType.IsEnabled = false;
+                        LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
+                        LowerHobNumber.IsEnabled = false;
+                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
+                        LowerCupDepth.IsEnabled = false;
+                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
+                        LowerLand.IsEnabled = false;
+                        LowerHobDescription.Text = engineeringProject.LowerHobDescription;
+                        if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
+                        {
+                            LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                        }
+                        LowerHobDescription.IsEnabled = false;
+                        LowerTolerances.Text = engineeringProject.LowerTolerances;
+                        LowerTolerances.IsEnabled = false;
+                        ShortRejectCupType.Text = engineeringProject.ShortRejectCupType == null ? "" : engineeringProject.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.ShortRejectCupType).Description.Trim();
+                        ShortRejectCupType.IsEnabled = false;
+                        ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
+                        ShortRejectHobNumber.IsEnabled = false;
+                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
+                        ShortRejectCupDepth.IsEnabled = false;
+                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
+                        ShortRejectLand.IsEnabled = false;
+                        ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
+                        if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
+                        {
+                            ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                        }
+                        ShortRejectHobDescription.IsEnabled = false;
+                        ShortRejectTolerances.Text = engineeringProject.ShortRejectTolerances;
+                        ShortRejectTolerances.IsEnabled = false;
+                        LongRejectCupType.Text = engineeringProject.LongRejectCupType == null ? "" : engineeringProject.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LongRejectCupType).Description.Trim();
+                        LongRejectCupType.IsEnabled = false;
+                        LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
+                        LongRejectHobNumber.IsEnabled = false;
+                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
+                        LongRejectCupDepth.IsEnabled = false;
+                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
+                        LongRejectLand.IsEnabled = false;
+                        LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
+                        if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
+                        {
+                            LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                        }
+                        LongRejectHobDescription.IsEnabled = false;
+                        LongRejectTolerances.Text = engineeringProject.LongRejectTolerances;
+                        LongRejectTolerances.IsEnabled = false;
+
+                        MultiTipSketch.IsChecked = engineeringProject.MultiTipSketch;
+                        MultiTipSketch.IsEnabled = false;
+                        SketchID.Text = engineeringProject.MultiTipSketchID;
+                        SketchID.IsEnabled = false;
+                        if (engineeringProject.MultiTipSolid == true)
+                        {
+                            MultiTipStyle.Text = "SOLID";
+                        }
+                        if (engineeringProject.MultiTipAssembled == true)
+                        {
+                            MultiTipStyle.Text = "ASSEMBLED";
+                        }
+                        MultiTipStyle.IsEnabled = false;
+
+                        EngineeringTabletProjects tabletProject = null;
+                        EngineeringToolProjects toolProject = null;
+                        // For tablets?
+                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                            TabletsRequired.IsChecked = true;
+                            TabletsRequired.IsEnabled = false;
+                            UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
+                            UpperTabletDrawing.IsEnabled = false;
+                            LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
+                            LowerTabletDrawing.IsEnabled = false;
+                            ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
+                            ShortRejectTabletDrawing.IsEnabled = false;
+                            LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
+                            LongRejectTabletDrawing.IsEnabled = false;
+                            Density.Text = tabletProject.Density.ToString();
+                            Density.IsEnabled = false;
+                            DensityUnits.SelectedItem = tabletProject.DensityUnits;
+                            DensityUnits.IsEnabled = false;
+                            Mass.Text = tabletProject.Mass.ToString();
+                            Mass.IsEnabled = false;
+                            MassUnits.SelectedItem = tabletProject.MassUnits;
+                            MassUnits.IsEnabled = false;
+                            Volume.Text = tabletProject.Volume.ToString();
+                            Volume.IsEnabled = false;
+                            VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
+                            VolumeUnits.IsEnabled = false;
+                            TargetThickness.Text = tabletProject.TargetThickness.ToString();
+                            TargetThickness.IsEnabled = false;
+                            TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
+                            TargetThicknessUnits.IsEnabled = false;
+                            FilmCoat.IsChecked = tabletProject.FilmCoated;
+                            FilmCoat.IsEnabled = false;
+                            PrePick.IsChecked = tabletProject.PrePick;
+                            PrePick.IsEnabled = false;
+                            PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
+                            PrePickAmount.IsEnabled = false;
+                            PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
+                            PrePickUnits.IsEnabled = false;
+                            Taper.IsChecked = tabletProject.Taper;
+                            Taper.IsEnabled = false;
+                            TaperAmount.Text = tabletProject.TaperAmount.ToString();
+                            TaperAmount.IsEnabled = false;
+                            TaperUnits.SelectedItem = tabletProject.TaperUnits;
+                            TaperUnits.IsEnabled = false;
+                        }
+                        else
+                        {
+                            TabletsRequired.IsChecked = false;
+                            TabletsRequired.IsEnabled = false;
+                        }
+                        // For Tools?
+                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                            CoreRod = toolProject.LowerCoreRod;
+                            CoreRodSteelID = toolProject.LowerCoreRodSteelID;
+                            CoreRodKey = toolProject.LowerCoreRodKey;
+                            CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
+                            CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
+                            CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
+                            CoreRodPunch = toolProject.LowerCoreRodPunch;
+                            CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
+                            CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
+
+                            ToolsRequired.IsChecked = true;
+                            ToolsRequired.IsEnabled = false;
+                            UpperPunch.IsChecked = toolProject.UpperPunch;
+                            UpperPunch.IsEnabled = false;
+                            UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
+                            UpperPunchSteelID.IsEnabled = false;
+                            UpperAssembly.IsChecked = toolProject.UpperAssembly;
+                            UpperAssembly.IsEnabled = false;
+                            UpperCap.IsChecked = toolProject.UpperCap;
+                            UpperCap.IsEnabled = false;
+                            UpperCapSteelID.Text = toolProject.UpperCapSteelID;
+                            UpperCapSteelID.IsEnabled = false;
+                            UpperHolder.IsChecked = toolProject.UpperHolder;
+                            UpperHolder.IsEnabled = false;
+                            UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
+                            UpperHolderSteelID.IsEnabled = false;
+                            UpperHead.IsChecked = toolProject.UpperHead;
+                            UpperHead.IsEnabled = false;
+                            UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
+                            UpperHeadSteelID.IsEnabled = false;
+                            UpperTip.IsChecked = toolProject.UpperTip;
+                            UpperTip.IsEnabled = false;
+                            UpperTipSteelID.Text = toolProject.UpperTipSteelID;
+                            UpperTipSteelID.IsEnabled = false;
+                            LowerPunch.IsChecked = toolProject.LowerPunch;
+                            LowerPunch.IsEnabled = false;
+                            LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
+                            LowerPunchSteelID.IsEnabled = false;
+                            LowerAssembly.IsChecked = toolProject.LowerAssembly;
+                            LowerAssembly.IsEnabled = false;
+                            LowerCap.IsChecked = toolProject.LowerCap;
+                            LowerCap.IsEnabled = false;
+                            LowerCapSteelID.Text = toolProject.LowerCapSteelID;
+                            LowerCapSteelID.IsEnabled = false;
+                            LowerHolder.IsChecked = toolProject.LowerHolder;
+                            LowerHolder.IsEnabled = false;
+                            LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
+                            LowerHolderSteelID.IsEnabled = false;
+                            LowerHead.IsChecked = toolProject.LowerHead;
+                            LowerHead.IsEnabled = false;
+                            LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
+                            LowerHeadSteelID.IsEnabled = false;
+                            LowerTip.IsChecked = toolProject.LowerTip;
+                            LowerTip.IsEnabled = false;
+                            LowerTipSteelID.Text = toolProject.LowerTipSteelID;
+                            LowerTipSteelID.IsEnabled = false;
+                            ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
+                            ShortRejectPunch.IsEnabled = false;
+                            ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
+                            ShortRejectPunchSteelID.IsEnabled = false;
+                            ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
+                            ShortRejectAssembly.IsEnabled = false;
+                            ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
+                            ShortRejectCap.IsEnabled = false;
+                            ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
+                            ShortRejectCapSteelID.IsEnabled = false;
+                            ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
+                            ShortRejectHolder.IsEnabled = false;
+                            ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
+                            ShortRejectHolderSteelID.IsEnabled = false;
+                            ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
+                            ShortRejectHead.IsEnabled = false;
+                            ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
+                            ShortRejectHeadSteelID.IsEnabled = false;
+                            ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
+                            ShortRejectTip.IsEnabled = false;
+                            ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
+                            ShortRejectTipSteelID.IsEnabled = false;
+                            LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
+                            LongRejectPunch.IsEnabled = false;
+                            LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
+                            LongRejectPunchSteelID.IsEnabled = false;
+                            LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
+                            LongRejectAssembly.IsEnabled = false;
+                            LongRejectCap.IsChecked = toolProject.LongRejectCap;
+                            LongRejectCap.IsEnabled = false;
+                            LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
+                            LongRejectCapSteelID.IsEnabled = false;
+                            LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
+                            LongRejectHolder.IsEnabled = false;
+                            LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
+                            LongRejectHolderSteelID.IsEnabled = false;
+                            LongRejectHead.IsChecked = toolProject.LongRejectHead;
+                            LongRejectHead.IsEnabled = false;
+                            LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
+                            LongRejectHeadSteelID.IsEnabled = false;
+                            LongRejectTip.IsChecked = toolProject.LongRejectTip;
+                            LongRejectTip.IsEnabled = false;
+                            LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
+                            LongRejectTipSteelID.IsEnabled = false;
+                            Alignment.IsChecked = toolProject.Alignment;
+                            Alignment.IsEnabled = false;
+                            AlignmentSteelID.Text = toolProject.AlignmentSteelID;
+                            AlignmentSteelID.IsEnabled = false;
+                            Key.IsChecked = toolProject.Key;
+                            Key.IsEnabled = false;
+                            KeySteelID.Text = toolProject.KeySteelID;
+                            KeySteelID.IsEnabled = false;
+                            Misc.IsChecked = toolProject.Misc;
+                            Misc.IsEnabled = false;
+                            MiscSteelID.Text = toolProject.MiscSteelID;
+                            MiscSteelID.IsEnabled = false;
+                            NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
+                            NumberOfTips.IsEnabled = false;
+                            Die.IsChecked = toolProject.Die;
+                            Die.IsEnabled = false;
+                            DieSteelID.Text = toolProject.DieSteelID;
+                            DieSteelID.IsEnabled = false;
+                            DieAssembly.IsChecked = toolProject.DieAssembly;
+                            DieAssembly.IsEnabled = false;
+                            DieComponent.IsChecked = toolProject.DieComponent;
+                            DieComponent.IsEnabled = false;
+                            DieComponentSteelID.Text = toolProject.DieComponentSteelID;
+                            DieComponentSteelID.IsEnabled = false;
+                            DieHolder.IsChecked = toolProject.DieHolder;
+                            DieHolder.IsEnabled = false;
+                            DieHolderSteelID.Text = toolProject.DieHolderSteelID;
+                            DieHolderSteelID.IsEnabled = false;
+                            DieInsert.IsChecked = toolProject.DieInsert;
+                            DieInsert.IsEnabled = false;
+                            DieInsertSteelID.Text = toolProject.DieInsertSteelID;
+                            DieInsertSteelID.IsEnabled = false;
+                            DiePlate.IsChecked = toolProject.DiePlate;
+                            DiePlate.IsEnabled = false;
+                            DiePlateSteelID.Text = toolProject.DiePlateSteelID;
+                            DiePlateSteelID.IsEnabled = false;
+                            DieSegment.IsChecked = toolProject.DieSegment;
+                            DieSegment.IsEnabled = false;
+                            DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
+                            DieSegmentSteelID.IsEnabled = false;
+                            KeyType.IsEditable = true;
+                            KeyType.Text = toolProject.KeyType;
+                            KeyType.IsEditable = false;
+                            KeyType.IsEnabled = false;
+                            KeyAngle.Text = toolProject.KeyAngle.ToString();
+                            KeyAngle.IsEnabled = false;
+                            KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
+                            KeyOrientation.IsEnabled = false;
+                            UpperKeyed.IsChecked = toolProject.UpperKeyed;
+                            UpperKeyed.IsEnabled = false;
+                            LowerKeyed.IsChecked = toolProject.LowerKeyed;
+                            LowerKeyed.IsEnabled = false;
+                            ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
+                            ShortRejectKeyed.IsEnabled = false;
+                            LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
+                            LongRejectKeyed.IsEnabled = false;
+                            UpperGrooveType.Text = toolProject.UpperGrooveType;
+                            UpperGrooveType.IsEnabled = false;
+                            LowerGrooveType.Text = toolProject.LowerGrooveType;
+                            LowerGrooveType.IsEnabled = false;
+                            UpperGroove.IsChecked = toolProject.UpperGroove;
+                            UpperGroove.IsEnabled = false;
+                            LowerGroove.IsChecked = toolProject.LowerGroove;
+                            LowerGroove.IsEnabled = false;
+                            ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
+                            ShortRejectGroove.IsEnabled = false;
+                            LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
+                            LongRejectGroove.IsEnabled = false;
+                            HeadType.Text = toolProject.HeadType;
+                            HeadType.IsEnabled = false;
+                            CarbideTips.IsChecked = toolProject.CarbideTips;
+                            CarbideTips.IsEnabled = false;
+                            MachineNotes.Text = toolProject.MachineNotes;
+                            MachineNotes.IsEnabled = false;
+                            if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            {
+                                ToolsTabItem.IsSelected = true;
+                            }
+                        }
+                        else
+                        {
+                            ToolsRequired.IsChecked = false;
+                            ToolsRequired.IsEnabled = false;
                         }
                     }
-                    DieOD.IsEnabled = false;
-                    DieOL.IsEnabled = false;
-                    MachineDescription.IsEnabled = false;
-                    DueDate.IsEditable = true;
-                    DueDate.Text = (engineeringProject.DueDate - DateTime.Today).TotalDays + " Day(s) | " + engineeringProject.DueDate.ToString("d");
-                    DueDate.IsEnabled = false;
-                    Priority.IsChecked = engineeringProject.Priority;
-                    Priority.IsEnabled = false;
+                    else
+                    {
+                        EngineeringArchivedProjects engineeringProject = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
-                    Notes.Text = engineeringProject.Notes;
-                    Notes.IsEnabled = false;
-                    DieNumber.Text = engineeringProject.DieNumber;
-                    DieNumber.IsEnabled = false;
-                    DieShape.Text = engineeringProject.DieShape;
-                    DieShape.IsEnabled = false;
-                    TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
-                    TabletWidth.IsEnabled = false;
-                    TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
-                    TabletLength.IsEnabled = false;
-                    DieTolerances.Text = engineeringProject.DieTolerances;
-                    DieTolerances.IsEnabled = false;
-                    UpperCupType.Text = engineeringProject.UpperCupType == null ? "" : engineeringProject.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.UpperCupType).Description.Trim();
-                    UpperCupType.IsEnabled = false;
-                    UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
-                    UpperHobNumber.IsEnabled = false;
-                    UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
-                    UpperCupDepth.IsEnabled = false;
-                    UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
-                    UpperLand.IsEnabled = false;
-                    UpperHobDescription.Text = engineeringProject.UpperHobDescription;
-                    if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
-                    {
-                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                    }
-                    UpperHobDescription.IsEnabled = false;
-                    UpperTolerances.Text = engineeringProject.UpperTolerances;
-                    UpperTolerances.IsEnabled = false;
-                    LowerCupType.Text = engineeringProject.LowerCupType == null ? "" : engineeringProject.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LowerCupType).Description.Trim();
-                    LowerCupType.IsEnabled = false;
-                    LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
-                    LowerHobNumber.IsEnabled = false;
-                    LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
-                    LowerCupDepth.IsEnabled = false;
-                    LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
-                    LowerLand.IsEnabled = false;
-                    LowerHobDescription.Text = engineeringProject.LowerHobDescription;
-                    if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
-                    {
-                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                    }
-                    LowerHobDescription.IsEnabled = false;
-                    LowerTolerances.Text = engineeringProject.LowerTolerances;
-                    LowerTolerances.IsEnabled = false;
-                    ShortRejectCupType.Text = engineeringProject.ShortRejectCupType == null ? "" : engineeringProject.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.ShortRejectCupType).Description.Trim();
-                    ShortRejectCupType.IsEnabled = false;
-                    ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
-                    ShortRejectHobNumber.IsEnabled = false;
-                    ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
-                    ShortRejectCupDepth.IsEnabled = false;
-                    ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
-                    ShortRejectLand.IsEnabled = false;
-                    ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
-                    if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
-                    {
-                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                    }
-                    ShortRejectHobDescription.IsEnabled = false;
-                    ShortRejectTolerances.Text = engineeringProject.ShortRejectTolerances;
-                    ShortRejectTolerances.IsEnabled = false;
-                    LongRejectCupType.Text = engineeringProject.LongRejectCupType == null ? "" : engineeringProject.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LongRejectCupType).Description.Trim();
-                    LongRejectCupType.IsEnabled = false;
-                    LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
-                    LongRejectHobNumber.IsEnabled = false;
-                    LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
-                    LongRejectCupDepth.IsEnabled = false;
-                    LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
-                    LongRejectLand.IsEnabled = false;
-                    LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
-                    if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
-                    {
-                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                    }
-                    LongRejectHobDescription.IsEnabled = false;
-                    LongRejectTolerances.Text = engineeringProject.LongRejectTolerances;
-                    LongRejectTolerances.IsEnabled = false;
+                        RefreshRoutingButtons();
 
-                    MultiTipSketch.IsChecked = engineeringProject.MultiTipSketch;
-                    MultiTipSketch.IsEnabled = false;
-                    SketchID.Text = engineeringProject.MultiTipSketchID;
-                    SketchID.IsEnabled = false;
-                    if (engineeringProject.MultiTipSolid == true)
-                    {
-                        MultiTipStyle.Text = "SOLID";
-                    }
-                    if (engineeringProject.MultiTipAssembled == true)
-                    {
-                        MultiTipStyle.Text = "ASSEMBLED";
-                    }
-                    MultiTipStyle.IsEnabled = false;
+                        CreationBorder.Visibility = Visibility.Hidden;
+                        ProjectNavigation.Visibility = Visibility.Visible;
 
-                    EngineeringTabletProjects tabletProject = null;
-                    EngineeringToolProjects toolProject = null;
-                    // For tablets?
-                    if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        TabletsRequired.IsChecked = true;
-                        TabletsRequired.IsEnabled = false;
-                        UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
-                        UpperTabletDrawing.IsEnabled = false;
-                        LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
-                        LowerTabletDrawing.IsEnabled = false;
-                        ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
-                        ShortRejectTabletDrawing.IsEnabled = false;
-                        LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
-                        LongRejectTabletDrawing.IsEnabled = false;
-                        Density.Text = tabletProject.Density.ToString();
-                        Density.IsEnabled = false;
-                        DensityUnits.SelectedItem = tabletProject.DensityUnits;
-                        DensityUnits.IsEnabled = false;
-                        Mass.Text = tabletProject.Mass.ToString();
-                        Mass.IsEnabled = false;
-                        MassUnits.SelectedItem = tabletProject.MassUnits;
-                        MassUnits.IsEnabled = false;
-                        Volume.Text = tabletProject.Volume.ToString();
-                        Volume.IsEnabled = false;
-                        VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
-                        VolumeUnits.IsEnabled = false;
-                        TargetThickness.Text = tabletProject.TargetThickness.ToString();
-                        TargetThickness.IsEnabled = false;
-                        TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
-                        TargetThicknessUnits.IsEnabled = false;
-                        FilmCoat.IsChecked = tabletProject.FilmCoated;
-                        FilmCoat.IsEnabled = false;
-                        PrePick.IsChecked = tabletProject.PrePick;
-                        PrePick.IsEnabled = false;
-                        PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
-                        PrePickAmount.IsEnabled = false;
-                        PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
-                        PrePickUnits.IsEnabled = false;
-                        Taper.IsChecked = tabletProject.Taper;
-                        Taper.IsEnabled = false;
-                        TaperAmount.Text = tabletProject.TaperAmount.ToString();
-                        TaperAmount.IsEnabled = false;
-                        TaperUnits.SelectedItem = tabletProject.TaperUnits;
-                        TaperUnits.IsEnabled = false;
-                    }
-                    else
-                    {
-                        TabletsRequired.IsChecked = false;
-                        TabletsRequired.IsEnabled = false;
-                    }
-                    // For Tools?
-                    if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        CoreRod = toolProject.LowerCoreRod;
-                        CoreRodSteelID = toolProject.LowerCoreRodSteelID;
-                        CoreRodKey = toolProject.LowerCoreRodKey;
-                        CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
-                        CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
-                        CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
-                        CoreRodPunch = toolProject.LowerCoreRodPunch;
-                        CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
-                        CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Text = "Archived"));
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Visibility = Visibility.Visible));
 
-                        ToolsRequired.IsChecked = true;
-                        ToolsRequired.IsEnabled = false;
-                        UpperPunch.IsChecked = toolProject.UpperPunch;
-                        UpperPunch.IsEnabled = false;
-                        UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
-                        UpperPunchSteelID.IsEnabled = false;
-                        UpperAssembly.IsChecked = toolProject.UpperAssembly;
-                        UpperAssembly.IsEnabled = false;
-                        UpperCap.IsChecked = toolProject.UpperCap;
-                        UpperCap.IsEnabled = false;
-                        UpperCapSteelID.Text = toolProject.UpperCapSteelID;
-                        UpperCapSteelID.IsEnabled = false;
-                        UpperHolder.IsChecked = toolProject.UpperHolder;
-                        UpperHolder.IsEnabled = false;
-                        UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
-                        UpperHolderSteelID.IsEnabled = false;
-                        UpperHead.IsChecked = toolProject.UpperHead;
-                        UpperHead.IsEnabled = false;
-                        UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
-                        UpperHeadSteelID.IsEnabled = false;
-                        UpperTip.IsChecked = toolProject.UpperTip;
-                        UpperTip.IsEnabled = false;
-                        UpperTipSteelID.Text = toolProject.UpperTipSteelID;
-                        UpperTipSteelID.IsEnabled = false;
-                        LowerPunch.IsChecked = toolProject.LowerPunch;
-                        LowerPunch.IsEnabled = false;
-                        LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
-                        LowerPunchSteelID.IsEnabled = false;
-                        LowerAssembly.IsChecked = toolProject.LowerAssembly;
-                        LowerAssembly.IsEnabled = false;
-                        LowerCap.IsChecked = toolProject.LowerCap;
-                        LowerCap.IsEnabled = false;
-                        LowerCapSteelID.Text = toolProject.LowerCapSteelID;
-                        LowerCapSteelID.IsEnabled = false;
-                        LowerHolder.IsChecked = toolProject.LowerHolder;
-                        LowerHolder.IsEnabled = false;
-                        LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
-                        LowerHolderSteelID.IsEnabled = false;
-                        LowerHead.IsChecked = toolProject.LowerHead;
-                        LowerHead.IsEnabled = false;
-                        LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
-                        LowerHeadSteelID.IsEnabled = false;
-                        LowerTip.IsChecked = toolProject.LowerTip;
-                        LowerTip.IsEnabled = false;
-                        LowerTipSteelID.Text = toolProject.LowerTipSteelID;
-                        LowerTipSteelID.IsEnabled = false;
-                        ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
-                        ShortRejectPunch.IsEnabled = false;
-                        ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
-                        ShortRejectPunchSteelID.IsEnabled = false;
-                        ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
-                        ShortRejectAssembly.IsEnabled = false;
-                        ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
-                        ShortRejectCap.IsEnabled = false;
-                        ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
-                        ShortRejectCapSteelID.IsEnabled = false;
-                        ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
-                        ShortRejectHolder.IsEnabled = false;
-                        ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
-                        ShortRejectHolderSteelID.IsEnabled = false;
-                        ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
-                        ShortRejectHead.IsEnabled = false;
-                        ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
-                        ShortRejectHeadSteelID.IsEnabled = false;
-                        ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
-                        ShortRejectTip.IsEnabled = false;
-                        ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
-                        ShortRejectTipSteelID.IsEnabled = false;
-                        LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
-                        LongRejectPunch.IsEnabled = false;
-                        LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
-                        LongRejectPunchSteelID.IsEnabled = false;
-                        LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
-                        LongRejectAssembly.IsEnabled = false;
-                        LongRejectCap.IsChecked = toolProject.LongRejectCap;
-                        LongRejectCap.IsEnabled = false;
-                        LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
-                        LongRejectCapSteelID.IsEnabled = false;
-                        LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
-                        LongRejectHolder.IsEnabled = false;
-                        LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
-                        LongRejectHolderSteelID.IsEnabled = false;
-                        LongRejectHead.IsChecked = toolProject.LongRejectHead;
-                        LongRejectHead.IsEnabled = false;
-                        LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
-                        LongRejectHeadSteelID.IsEnabled = false;
-                        LongRejectTip.IsChecked = toolProject.LongRejectTip;
-                        LongRejectTip.IsEnabled = false;
-                        LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
-                        LongRejectTipSteelID.IsEnabled = false;
-                        Alignment.IsChecked = toolProject.Alignment;
-                        Alignment.IsEnabled = false;
-                        AlignmentSteelID.Text = toolProject.AlignmentSteelID;
-                        AlignmentSteelID.IsEnabled = false;
-                        Key.IsChecked = toolProject.Key;
-                        Key.IsEnabled = false;
-                        KeySteelID.Text = toolProject.KeySteelID;
-                        KeySteelID.IsEnabled = false;
-                        Misc.IsChecked = toolProject.Misc;
-                        Misc.IsEnabled = false;
-                        MiscSteelID.Text = toolProject.MiscSteelID;
-                        MiscSteelID.IsEnabled = false;
-                        NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
-                        NumberOfTips.IsEnabled = false;
-                        Die.IsChecked = toolProject.Die;
-                        Die.IsEnabled = false;
-                        DieSteelID.Text = toolProject.DieSteelID;
-                        DieSteelID.IsEnabled = false;
-                        DieAssembly.IsChecked = toolProject.DieAssembly;
-                        DieAssembly.IsEnabled = false;
-                        DieComponent.IsChecked = toolProject.DieComponent;
-                        DieComponent.IsEnabled = false;
-                        DieComponentSteelID.Text = toolProject.DieComponentSteelID;
-                        DieComponentSteelID.IsEnabled = false;
-                        DieHolder.IsChecked = toolProject.DieHolder;
-                        DieHolder.IsEnabled = false;
-                        DieHolderSteelID.Text = toolProject.DieHolderSteelID;
-                        DieHolderSteelID.IsEnabled = false;
-                        DieInsert.IsChecked = toolProject.DieInsert;
-                        DieInsert.IsEnabled = false;
-                        DieInsertSteelID.Text = toolProject.DieInsertSteelID;
-                        DieInsertSteelID.IsEnabled = false;
-                        DiePlate.IsChecked = toolProject.DiePlate;
-                        DiePlate.IsEnabled = false;
-                        DiePlateSteelID.Text = toolProject.DiePlateSteelID;
-                        DiePlateSteelID.IsEnabled = false;
-                        DieSegment.IsChecked = toolProject.DieSegment;
-                        DieSegment.IsEnabled = false;
-                        DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
-                        DieSegmentSteelID.IsEnabled = false;
-                        KeyType.IsEditable = true;
-                        KeyType.Text = toolProject.KeyType;
-                        KeyType.IsEditable = false;
-                        KeyType.IsEnabled = false;
-                        KeyAngle.Text = toolProject.KeyAngle.ToString();
-                        KeyAngle.IsEnabled = false;
-                        KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
-                        KeyOrientation.IsEnabled = false;
-                        UpperKeyed.IsChecked = toolProject.UpperKeyed;
-                        UpperKeyed.IsEnabled = false;
-                        LowerKeyed.IsChecked = toolProject.LowerKeyed;
-                        LowerKeyed.IsEnabled = false;
-                        ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
-                        ShortRejectKeyed.IsEnabled = false;
-                        LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
-                        LongRejectKeyed.IsEnabled = false;
-                        UpperGrooveType.Text = toolProject.UpperGrooveType;
-                        UpperGrooveType.IsEnabled = false;
-                        LowerGrooveType.Text = toolProject.LowerGrooveType;
-                        LowerGrooveType.IsEnabled = false;
-                        UpperGroove.IsChecked = toolProject.UpperGroove;
-                        UpperGroove.IsEnabled = false;
-                        LowerGroove.IsChecked = toolProject.LowerGroove;
-                        LowerGroove.IsEnabled = false;
-                        ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
-                        ShortRejectGroove.IsEnabled = false;
-                        LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
-                        LongRejectGroove.IsEnabled = false;
-                        HeadType.Text = toolProject.HeadType;
-                        HeadType.IsEnabled = false;
-                        CarbideTips.IsChecked = toolProject.CarbideTips;
-                        CarbideTips.IsEnabled = false;
-                        MachineNotes.Text = toolProject.MachineNotes;
-                        MachineNotes.IsEnabled = false;
-                        if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
+                        if (projectLinkedToQuote)
                         {
-                            ToolsTabItem.IsSelected = true;
+                            LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
+                            LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                            QuoteFolderButton.IsEnabled = true;
+                            quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
                         }
-                    }
-                    else
-                    {
-                        ToolsRequired.IsChecked = false;
-                        ToolsRequired.IsEnabled = false;
+                        else
+                        {
+                            LinkedToQuoteBorder.ClearValue(BackgroundProperty);
+                            LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
+                            QuoteFolderButton.IsEnabled = false;
+                            quote = null;
+                        }
+
+
+                        NewDrawing = engineeringProject.NewDrawing;
+                        UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
+                        UpdateTextOnDrawing = engineeringProject.UpdateTextOnDrawing;
+                        PerSampleTablet = engineeringProject.PerSampleTablet;
+                        RefTabletDrawing = engineeringProject.RefTabletDrawing;
+                        PerSampleTool = engineeringProject.PerSampleTool;
+                        RefToolDrawing = engineeringProject.RefToolDrawing;
+                        PerSuppliedPicture = engineeringProject.PerSuppliedPicture;
+                        RefNatoliDrawing = engineeringProject.RefNatoliDrawing;
+                        RefNonNatoliDrawing = engineeringProject.RefNonNatoliDrawing;
+                        BinLocation = engineeringProject.BinLocation;
+                        SpecificationsButton.IsEnabled = NewDrawing || UpdateExistingDrawing || UpdateTextOnDrawing || PerSampleTablet || RefTabletDrawing || PerSampleTool || RefToolDrawing || PerSuppliedPicture || RefNatoliDrawing || RefNonNatoliDrawing || !string.IsNullOrWhiteSpace(BinLocation);
+
+
+                        CSR.Text = engineeringProject.CSR;
+                        ReturnToCSR.ItemsSource = null;
+                        ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
+                        ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
+                        ReturnToCSR.IsEnabled = false;
+
+                        RevisedBy.Text = engineeringProject.RevisedBy;
+                        RevisedBy.IsEnabled = false;
+                        if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
+                        {
+                            DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
+                            date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
+                            RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
+                        }
+                        RevisionDate.IsEnabled = false;
+
+                        QuoteNumber.Text = engineeringProject.QuoteNumber;
+                        QuoteNumber.IsEnabled = false;
+                        QuoteRevNumber.Text = engineeringProject.QuoteRevNumber;
+                        QuoteRevNumber.IsEnabled = false;
+                        RefOrderNumber.Text = engineeringProject.RefOrderNumber;
+                        RefOrderNumber.IsEnabled = false;
+                        UnitOfMeasure.Text = engineeringProject.UnitOfMeasure;
+                        UnitOfMeasure.IsEnabled = false;
+                        ReferenceQuoteNumber.Text = engineeringProject.RefQuoteNumber;
+                        ReferenceQuoteNumber.IsEnabled = false;
+                        ReferenceQuoteRevNumber.Text = engineeringProject.RefQuoteRevNumber;
+                        ReferenceQuoteRevNumber.IsEnabled = false;
+                        ReferenceProjectNumber.Text = engineeringProject.RefProjectNumber;
+                        ReferenceProjectNumber.IsEnabled = false;
+                        ReferenceProjectRevNumber.Text = engineeringProject.RefProjectRevNumber;
+                        ReferenceProjectRevNumber.IsEnabled = false;
+                        CustomerNumber.Text = engineeringProject.CustomerNumber;
+                        CustomerNumber.IsEnabled = false;
+                        CustomerName.Text = engineeringProject.CustomerName;
+                        CustomerName.IsEnabled = false;
+                        ShipToNumber.Text = engineeringProject.ShipToNumber;
+                        ShipToNumber.IsEnabled = false;
+                        ShipToLocNumber.Text = engineeringProject.ShipToLocNumber;
+                        ShipToLocNumber.IsEnabled = false;
+                        ShipToName.Text = engineeringProject.ShipToName;
+                        ShipToName.IsEnabled = false;
+                        EndUserNumber.Text = engineeringProject.EndUserNumber;
+                        EndUserNumber.IsEnabled = false;
+                        EndUserLocNumber.Text = engineeringProject.EndUserLocNumber;
+                        EndUserLocNumber.IsEnabled = false;
+                        EndUserName.Text = engineeringProject.EndUserName;
+                        EndUserName.IsEnabled = false;
+                        Product.Text = engineeringProject.Product;
+                        Product.IsEnabled = false;
+                        Attention.Text = engineeringProject.Attention;
+                        Attention.IsEnabled = false;
+                        MachineNumber.Text = engineeringProject.MachineNumber;
+                        MachineNumber.IsEnabled = false;
+                        MachineDescription.IsEnabled = false;
+                        if (!string.IsNullOrWhiteSpace(engineeringProject.MachineNumber) && Int16.TryParse(engineeringProject.MachineNumber, out short _machineNoArchived))
+                        {
+                            if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNoArchived))
+                            {
+                                string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Description.Trim();
+                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Od.ToString();
+                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Ol.ToString();
+                                MachineDescription.Text = description;
+                                DieOD.Text = od;
+                                DieODPlaceholder.Visibility = Visibility.Collapsed;
+                                DieOL.Text = ol;
+                                DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                        DieOD.IsEnabled = false;
+                        DieOL.IsEnabled = false;
+                        MachineDescription.IsEnabled = false;
+                        DueDate.IsEditable = true;
+                        DueDate.Text = (engineeringProject.DueDate - DateTime.Today).TotalDays + " Day(s) | " + engineeringProject.DueDate.ToString("d");
+                        DueDate.IsEnabled = false;
+                        Priority.IsChecked = engineeringProject.Priority;
+                        Priority.IsEnabled = false;
+
+                        Notes.Text = engineeringProject.Notes;
+                        Notes.IsEnabled = false;
+                        DieNumber.Text = engineeringProject.DieNumber;
+                        DieNumber.IsEnabled = false;
+                        DieShape.Text = engineeringProject.DieShape;
+                        DieShape.IsEnabled = false;
+                        TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
+                        TabletWidth.IsEnabled = false;
+                        TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
+                        TabletLength.IsEnabled = false;
+                        DieTolerances.Text = engineeringProject.DieTolerances;
+                        DieTolerances.IsEnabled = false;
+                        UpperCupType.Text = engineeringProject.UpperCupType == null ? "" : engineeringProject.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.UpperCupType).Description.Trim();
+                        UpperCupType.IsEnabled = false;
+                        UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
+                        UpperHobNumber.IsEnabled = false;
+                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
+                        UpperCupDepth.IsEnabled = false;
+                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
+                        UpperLand.IsEnabled = false;
+                        UpperHobDescription.Text = engineeringProject.UpperHobDescription;
+                        UpperHobDescription.IsEnabled = false;
+                        UpperTolerances.Text = engineeringProject.UpperTolerances;
+                        UpperTolerances.IsEnabled = false;
+                        LowerCupType.Text = engineeringProject.LowerCupType == null ? "" : engineeringProject.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LowerCupType).Description.Trim();
+                        LowerCupType.IsEnabled = false;
+                        LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
+                        LowerHobNumber.IsEnabled = false;
+                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
+                        LowerCupDepth.IsEnabled = false;
+                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
+                        LowerLand.IsEnabled = false;
+                        LowerHobDescription.Text = engineeringProject.LowerHobDescription;
+                        LowerHobDescription.IsEnabled = false;
+                        LowerTolerances.Text = engineeringProject.LowerTolerances;
+                        LowerTolerances.IsEnabled = false;
+                        ShortRejectCupType.Text = engineeringProject.ShortRejectCupType == null ? "" : engineeringProject.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.ShortRejectCupType).Description.Trim();
+                        ShortRejectCupType.IsEnabled = false;
+                        ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
+                        ShortRejectHobNumber.IsEnabled = false;
+                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
+                        ShortRejectCupDepth.IsEnabled = false;
+                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
+                        ShortRejectLand.IsEnabled = false;
+                        ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
+                        ShortRejectHobDescription.IsEnabled = false;
+                        ShortRejectTolerances.Text = engineeringProject.ShortRejectTolerances;
+                        ShortRejectTolerances.IsEnabled = false;
+                        LongRejectCupType.Text = engineeringProject.LongRejectCupType == null ? "" : engineeringProject.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LongRejectCupType).Description.Trim();
+                        LongRejectCupType.IsEnabled = false;
+                        LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
+                        LongRejectHobNumber.IsEnabled = false;
+                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
+                        LongRejectCupDepth.IsEnabled = false;
+                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
+                        LongRejectLand.IsEnabled = false;
+                        LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
+                        LongRejectHobDescription.IsEnabled = false;
+                        LongRejectTolerances.Text = engineeringProject.LongRejectTolerances;
+                        LongRejectTolerances.IsEnabled = false;
+
+                        MultiTipSketch.IsChecked = engineeringProject.MultiTipSketch;
+                        MultiTipSketch.IsEnabled = false;
+                        SketchID.Text = engineeringProject.MultiTipSketchID;
+                        SketchID.IsEnabled = false;
+                        if (engineeringProject.MultiTipSolid == true)
+                        {
+                            MultiTipStyle.Text = "SOLID";
+                        }
+                        if (engineeringProject.MultiTipAssembled == true)
+                        {
+                            MultiTipStyle.Text = "ASSEMBLED";
+                        }
+                        MultiTipStyle.IsEnabled = false;
+
+                        EngineeringTabletProjects tabletProject = null;
+                        EngineeringToolProjects toolProject = null;
+                        // For tablets?
+                        if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                            TabletsRequired.IsChecked = true;
+                            TabletsRequired.IsEnabled = false;
+                            UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
+                            UpperTabletDrawing.IsEnabled = false;
+                            LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
+                            LowerTabletDrawing.IsEnabled = false;
+                            ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
+                            ShortRejectTabletDrawing.IsEnabled = false;
+                            LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
+                            LongRejectTabletDrawing.IsEnabled = false;
+                            Density.Text = tabletProject.Density.ToString();
+                            Density.IsEnabled = false;
+                            DensityUnits.SelectedItem = tabletProject.DensityUnits;
+                            DensityUnits.IsEnabled = false;
+                            Mass.Text = tabletProject.Mass.ToString();
+                            Mass.IsEnabled = false;
+                            MassUnits.SelectedItem = tabletProject.MassUnits;
+                            MassUnits.IsEnabled = false;
+                            Volume.Text = tabletProject.Volume.ToString();
+                            Volume.IsEnabled = false;
+                            VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
+                            VolumeUnits.IsEnabled = false;
+                            TargetThickness.Text = tabletProject.TargetThickness.ToString();
+                            TargetThickness.IsEnabled = false;
+                            TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
+                            TargetThicknessUnits.IsEnabled = false;
+                            FilmCoat.IsChecked = tabletProject.FilmCoated;
+                            FilmCoat.IsEnabled = false;
+                            PrePick.IsChecked = tabletProject.PrePick;
+                            PrePick.IsEnabled = false;
+                            PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
+                            PrePickAmount.IsEnabled = false;
+                            PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
+                            PrePickUnits.IsEnabled = false;
+                            Taper.IsChecked = tabletProject.Taper;
+                            Taper.IsEnabled = false;
+                            TaperAmount.Text = tabletProject.TaperAmount.ToString();
+                            TaperAmount.IsEnabled = false;
+                            TaperUnits.SelectedItem = tabletProject.TaperUnits;
+                            TaperUnits.IsEnabled = false;
+                        }
+                        else
+                        {
+                            TabletsRequired.IsChecked = false;
+                            TabletsRequired.IsEnabled = false;
+                        }
+                        // For Tools?
+                        if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                            CoreRod = toolProject.LowerCoreRod;
+                            CoreRodSteelID = toolProject.LowerCoreRodSteelID;
+                            CoreRodKey = toolProject.LowerCoreRodKey;
+                            CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
+                            CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
+                            CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
+                            CoreRodPunch = toolProject.LowerCoreRodPunch;
+                            CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
+                            CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
+
+                            ToolsRequired.IsChecked = true;
+                            ToolsRequired.IsEnabled = false;
+                            UpperPunch.IsChecked = toolProject.UpperPunch;
+                            UpperPunch.IsEnabled = false;
+                            UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
+                            UpperPunchSteelID.IsEnabled = false;
+                            UpperAssembly.IsChecked = toolProject.UpperAssembly;
+                            UpperAssembly.IsEnabled = false;
+                            UpperCap.IsChecked = toolProject.UpperCap;
+                            UpperCap.IsEnabled = false;
+                            UpperCapSteelID.Text = toolProject.UpperCapSteelID;
+                            UpperCapSteelID.IsEnabled = false;
+                            UpperHolder.IsChecked = toolProject.UpperHolder;
+                            UpperHolder.IsEnabled = false;
+                            UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
+                            UpperHolderSteelID.IsEnabled = false;
+                            UpperHead.IsChecked = toolProject.UpperHead;
+                            UpperHead.IsEnabled = false;
+                            UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
+                            UpperHeadSteelID.IsEnabled = false;
+                            UpperTip.IsChecked = toolProject.UpperTip;
+                            UpperTip.IsEnabled = false;
+                            UpperTipSteelID.Text = toolProject.UpperTipSteelID;
+                            UpperTipSteelID.IsEnabled = false;
+                            LowerPunch.IsChecked = toolProject.LowerPunch;
+                            LowerPunch.IsEnabled = false;
+                            LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
+                            LowerPunchSteelID.IsEnabled = false;
+                            LowerAssembly.IsChecked = toolProject.LowerAssembly;
+                            LowerAssembly.IsEnabled = false;
+                            LowerCap.IsChecked = toolProject.LowerCap;
+                            LowerCap.IsEnabled = false;
+                            LowerCapSteelID.Text = toolProject.LowerCapSteelID;
+                            LowerCapSteelID.IsEnabled = false;
+                            LowerHolder.IsChecked = toolProject.LowerHolder;
+                            LowerHolder.IsEnabled = false;
+                            LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
+                            LowerHolderSteelID.IsEnabled = false;
+                            LowerHead.IsChecked = toolProject.LowerHead;
+                            LowerHead.IsEnabled = false;
+                            LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
+                            LowerHeadSteelID.IsEnabled = false;
+                            LowerTip.IsChecked = toolProject.LowerTip;
+                            LowerTip.IsEnabled = false;
+                            LowerTipSteelID.Text = toolProject.LowerTipSteelID;
+                            LowerTipSteelID.IsEnabled = false;
+                            ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
+                            ShortRejectPunch.IsEnabled = false;
+                            ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
+                            ShortRejectPunchSteelID.IsEnabled = false;
+                            ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
+                            ShortRejectAssembly.IsEnabled = false;
+                            ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
+                            ShortRejectCap.IsEnabled = false;
+                            ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
+                            ShortRejectCapSteelID.IsEnabled = false;
+                            ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
+                            ShortRejectHolder.IsEnabled = false;
+                            ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
+                            ShortRejectHolderSteelID.IsEnabled = false;
+                            ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
+                            ShortRejectHead.IsEnabled = false;
+                            ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
+                            ShortRejectHeadSteelID.IsEnabled = false;
+                            ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
+                            ShortRejectTip.IsEnabled = false;
+                            ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
+                            ShortRejectTipSteelID.IsEnabled = false;
+                            LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
+                            LongRejectPunch.IsEnabled = false;
+                            LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
+                            LongRejectPunchSteelID.IsEnabled = false;
+                            LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
+                            LongRejectAssembly.IsEnabled = false;
+                            LongRejectCap.IsChecked = toolProject.LongRejectCap;
+                            LongRejectCap.IsEnabled = false;
+                            LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
+                            LongRejectCapSteelID.IsEnabled = false;
+                            LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
+                            LongRejectHolder.IsEnabled = false;
+                            LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
+                            LongRejectHolderSteelID.IsEnabled = false;
+                            LongRejectHead.IsChecked = toolProject.LongRejectHead;
+                            LongRejectHead.IsEnabled = false;
+                            LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
+                            LongRejectHeadSteelID.IsEnabled = false;
+                            LongRejectTip.IsChecked = toolProject.LongRejectTip;
+                            LongRejectTip.IsEnabled = false;
+                            LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
+                            LongRejectTipSteelID.IsEnabled = false;
+                            Alignment.IsChecked = toolProject.Alignment;
+                            Alignment.IsEnabled = false;
+                            AlignmentSteelID.Text = toolProject.AlignmentSteelID;
+                            AlignmentSteelID.IsEnabled = false;
+                            Key.IsChecked = toolProject.Key;
+                            Key.IsEnabled = false;
+                            KeySteelID.Text = toolProject.KeySteelID;
+                            KeySteelID.IsEnabled = false;
+                            Misc.IsChecked = toolProject.Misc;
+                            Misc.IsEnabled = false;
+                            MiscSteelID.Text = toolProject.MiscSteelID;
+                            MiscSteelID.IsEnabled = false;
+                            NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
+                            NumberOfTips.IsEnabled = false;
+                            Die.IsChecked = toolProject.Die;
+                            Die.IsEnabled = false;
+                            DieSteelID.Text = toolProject.DieSteelID;
+                            DieSteelID.IsEnabled = false;
+                            DieAssembly.IsChecked = toolProject.DieAssembly;
+                            DieAssembly.IsEnabled = false;
+                            DieComponent.IsChecked = toolProject.DieComponent;
+                            DieComponent.IsEnabled = false;
+                            DieComponentSteelID.Text = toolProject.DieComponentSteelID;
+                            DieComponentSteelID.IsEnabled = false;
+                            DieHolder.IsChecked = toolProject.DieHolder;
+                            DieHolder.IsEnabled = false;
+                            DieHolderSteelID.Text = toolProject.DieHolderSteelID;
+                            DieHolderSteelID.IsEnabled = false;
+                            DieInsert.IsChecked = toolProject.DieInsert;
+                            DieInsert.IsEnabled = false;
+                            DieInsertSteelID.Text = toolProject.DieInsertSteelID;
+                            DieInsertSteelID.IsEnabled = false;
+                            DiePlate.IsChecked = toolProject.DiePlate;
+                            DiePlate.IsEnabled = false;
+                            DiePlateSteelID.Text = toolProject.DiePlateSteelID;
+                            DiePlateSteelID.IsEnabled = false;
+                            DieSegment.IsChecked = toolProject.DieSegment;
+                            DieSegment.IsEnabled = false;
+                            DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
+                            DieSegmentSteelID.IsEnabled = false;
+                            KeyType.IsEditable = true;
+                            KeyType.Text = toolProject.KeyType;
+                            KeyType.IsEditable = false;
+                            KeyType.IsEnabled = false;
+                            KeyAngle.Text = toolProject.KeyAngle.ToString();
+                            KeyAngle.IsEnabled = false;
+                            KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
+                            KeyOrientation.IsEnabled = false;
+                            UpperKeyed.IsChecked = toolProject.UpperKeyed;
+                            UpperKeyed.IsEnabled = false;
+                            LowerKeyed.IsChecked = toolProject.LowerKeyed;
+                            LowerKeyed.IsEnabled = false;
+                            ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
+                            ShortRejectKeyed.IsEnabled = false;
+                            LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
+                            LongRejectKeyed.IsEnabled = false;
+                            UpperGrooveType.Text = toolProject.UpperGrooveType;
+                            UpperGrooveType.IsEnabled = false;
+                            LowerGrooveType.Text = toolProject.LowerGrooveType;
+                            LowerGrooveType.IsEnabled = false;
+                            UpperGroove.IsChecked = toolProject.UpperGroove;
+                            UpperGroove.IsEnabled = false;
+                            LowerGroove.IsChecked = toolProject.LowerGroove;
+                            LowerGroove.IsEnabled = false;
+                            ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
+                            ShortRejectGroove.IsEnabled = false;
+                            LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
+                            LongRejectGroove.IsEnabled = false;
+                            HeadType.Text = toolProject.HeadType;
+                            HeadType.IsEnabled = false;
+                            CarbideTips.IsChecked = toolProject.CarbideTips;
+                            CarbideTips.IsEnabled = false;
+                            MachineNotes.Text = toolProject.MachineNotes;
+                            MachineNotes.IsEnabled = false;
+                        }
+                        else
+                        {
+                            ToolsRequired.IsChecked = false;
+                            ToolsRequired.IsEnabled = false;
+                        }
                     }
                 }
                 else
                 {
-                    EngineeringArchivedProjects engineeringProject = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
-
-                    RefreshRoutingButtons();
-
-                    CreationBorder.Visibility = Visibility.Hidden;
-                    ProjectNavigation.Visibility = Visibility.Visible;
-
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Text = "Archived"));
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ArchivedOrInactive.Visibility = Visibility.Visible));
-
-                    projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
-                    if (projectLinkedToQuote)
+                    _projectsContext.Dispose();
+                    _nat01Context.Dispose();
+                    if (MessageBox.Show("This project does not exist in the database.\n This window will now close", "Cannot Find Project", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK) == MessageBoxResult.OK)
                     {
-                        LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
-                        LinkQuoteButton.Content = "Unlink Quote";
-                        QuoteFolderButton.IsEnabled = true;
-                        quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
-                    }
-                    else
-                    {
-                        LinkedToQuoteBorder.ClearValue(BackgroundProperty);
-                        LinkQuoteButton.Content = "Link To Quote";
-                        QuoteFolderButton.IsEnabled = false;
-                        quote = null;
-                    }
-
-
-                    NewDrawing = engineeringProject.NewDrawing;
-                    UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
-                    UpdateTextOnDrawing = engineeringProject.UpdateTextOnDrawing;
-                    PerSampleTablet = engineeringProject.PerSampleTablet;
-                    RefTabletDrawing = engineeringProject.RefTabletDrawing;
-                    PerSampleTool = engineeringProject.PerSampleTool;
-                    RefToolDrawing = engineeringProject.RefToolDrawing;
-                    PerSuppliedPicture = engineeringProject.PerSuppliedPicture;
-                    RefNatoliDrawing = engineeringProject.RefNatoliDrawing;
-                    RefNonNatoliDrawing = engineeringProject.RefNonNatoliDrawing;
-                    BinLocation = engineeringProject.BinLocation;
-                    SpecificationsButton.IsEnabled = NewDrawing || UpdateExistingDrawing || UpdateTextOnDrawing || PerSampleTablet || RefTabletDrawing || PerSampleTool || RefToolDrawing || PerSuppliedPicture || RefNatoliDrawing || RefNonNatoliDrawing || !string.IsNullOrWhiteSpace(BinLocation);
-
-
-                    CSR.Text = engineeringProject.CSR;
-                    ReturnToCSR.ItemsSource = null;
-                    ReturnToCSR.ItemsSource = ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
-                    ReturnToCSR.SelectedItem = engineeringProject.ReturnToCSR;
-                    ReturnToCSR.IsEnabled = false;
-
-                    RevisedBy.Text = engineeringProject.RevisedBy;
-                    RevisedBy.IsEnabled = false;
-                    if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()))
-                    {
-                        DateTime date = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == (Convert.ToInt16(projectRevNumber) - 1).ToString()).TimeArchived ?? DateTime.MinValue;
-                        date = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
-                        RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
-                    }
-                    RevisionDate.IsEnabled = false;
-
-                    QuoteNumber.Text = engineeringProject.QuoteNumber;
-                    QuoteNumber.IsEnabled = false;
-                    QuoteRevNumber.Text = engineeringProject.QuoteRevNumber;
-                    QuoteRevNumber.IsEnabled = false;
-                    RefOrderNumber.Text = engineeringProject.RefOrderNumber;
-                    RefOrderNumber.IsEnabled = false;
-                    UnitOfMeasure.Text = engineeringProject.UnitOfMeasure;
-                    UnitOfMeasure.IsEnabled = false;
-                    ReferenceQuoteNumber.Text = engineeringProject.RefQuoteNumber;
-                    ReferenceQuoteNumber.IsEnabled = false;
-                    ReferenceQuoteRevNumber.Text = engineeringProject.RefQuoteRevNumber;
-                    ReferenceQuoteRevNumber.IsEnabled = false;
-                    ReferenceProjectNumber.Text = engineeringProject.RefProjectNumber;
-                    ReferenceProjectNumber.IsEnabled = false;
-                    ReferenceProjectRevNumber.Text = engineeringProject.RefProjectRevNumber;
-                    ReferenceProjectRevNumber.IsEnabled = false;
-                    CustomerNumber.Text = engineeringProject.CustomerNumber;
-                    CustomerNumber.IsEnabled = false;
-                    CustomerName.Text = engineeringProject.CustomerName;
-                    CustomerName.IsEnabled = false;
-                    ShipToNumber.Text = engineeringProject.ShipToNumber;
-                    ShipToNumber.IsEnabled = false;
-                    ShipToLocNumber.Text = engineeringProject.ShipToLocNumber;
-                    ShipToLocNumber.IsEnabled = false;
-                    ShipToName.Text = engineeringProject.ShipToName;
-                    ShipToName.IsEnabled = false;
-                    EndUserNumber.Text = engineeringProject.EndUserNumber;
-                    EndUserNumber.IsEnabled = false;
-                    EndUserLocNumber.Text = engineeringProject.EndUserLocNumber;
-                    EndUserLocNumber.IsEnabled = false;
-                    EndUserName.Text = engineeringProject.EndUserName;
-                    EndUserName.IsEnabled = false;
-                    Product.Text = engineeringProject.Product;
-                    Product.IsEnabled = false;
-                    Attention.Text = engineeringProject.Attention;
-                    Attention.IsEnabled = false;
-                    MachineNumber.Text = engineeringProject.MachineNumber;
-                    MachineNumber.IsEnabled = false;
-                    MachineDescription.IsEnabled = false;
-                    if (!string.IsNullOrWhiteSpace(engineeringProject.MachineNumber) && Int16.TryParse(engineeringProject.MachineNumber, out short _machineNoArchived))
-                    {
-                        if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNoArchived))
+                        Dispose();
+                        string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
+                        try
                         {
-                            string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Description.Trim();
-                            string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Od.ToString();
-                            string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNoArchived).Ol.ToString();
-                            MachineDescription.Text = description;
-                            DieOD.Text = od;
-                            DieODPlaceholder.Visibility = Visibility.Collapsed;
-                            DieOL.Text = ol;
-                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
-                        }
-                    }
-                    DieOD.IsEnabled = false;
-                    DieOL.IsEnabled = false;
-                    MachineDescription.IsEnabled = false;
-                    DueDate.IsEditable = true;
-                    DueDate.Text = (engineeringProject.DueDate - DateTime.Today).TotalDays + " Day(s) | " + engineeringProject.DueDate.ToString("d");
-                    DueDate.IsEnabled = false;
-                    Priority.IsChecked = engineeringProject.Priority;
-                    Priority.IsEnabled = false;
-
-                    Notes.Text = engineeringProject.Notes;
-                    Notes.IsEnabled = false;
-                    DieNumber.Text = engineeringProject.DieNumber;
-                    DieNumber.IsEnabled = false;
-                    DieShape.Text = engineeringProject.DieShape;
-                    DieShape.IsEnabled = false;
-                    TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
-                    TabletWidth.IsEnabled = false;
-                    TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
-                    TabletLength.IsEnabled = false;
-                    DieTolerances.Text = engineeringProject.DieTolerances;
-                    DieTolerances.IsEnabled = false;
-                    UpperCupType.Text = engineeringProject.UpperCupType == null ? "" : engineeringProject.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.UpperCupType).Description.Trim();
-                    UpperCupType.IsEnabled = false;
-                    UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
-                    UpperHobNumber.IsEnabled = false;
-                    UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
-                    UpperCupDepth.IsEnabled = false;
-                    UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
-                    UpperLand.IsEnabled = false;
-                    UpperHobDescription.Text = engineeringProject.UpperHobDescription;
-                    UpperHobDescription.IsEnabled = false;
-                    UpperTolerances.Text = engineeringProject.UpperTolerances;
-                    UpperTolerances.IsEnabled = false;
-                    LowerCupType.Text = engineeringProject.LowerCupType == null ? "" : engineeringProject.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LowerCupType).Description.Trim();
-                    LowerCupType.IsEnabled = false;
-                    LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
-                    LowerHobNumber.IsEnabled = false;
-                    LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
-                    LowerCupDepth.IsEnabled = false;
-                    LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
-                    LowerLand.IsEnabled = false;
-                    LowerHobDescription.Text = engineeringProject.LowerHobDescription;
-                    LowerHobDescription.IsEnabled = false;
-                    LowerTolerances.Text = engineeringProject.LowerTolerances;
-                    LowerTolerances.IsEnabled = false;
-                    ShortRejectCupType.Text = engineeringProject.ShortRejectCupType == null ? "" : engineeringProject.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.ShortRejectCupType).Description.Trim();
-                    ShortRejectCupType.IsEnabled = false;
-                    ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
-                    ShortRejectHobNumber.IsEnabled = false;
-                    ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
-                    ShortRejectCupDepth.IsEnabled = false;
-                    ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
-                    ShortRejectLand.IsEnabled = false;
-                    ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
-                    ShortRejectHobDescription.IsEnabled = false;
-                    ShortRejectTolerances.Text = engineeringProject.ShortRejectTolerances;
-                    ShortRejectTolerances.IsEnabled = false;
-                    LongRejectCupType.Text = engineeringProject.LongRejectCupType == null ? "" : engineeringProject.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProject.LongRejectCupType).Description.Trim();
-                    LongRejectCupType.IsEnabled = false;
-                    LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
-                    LongRejectHobNumber.IsEnabled = false;
-                    LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
-                    LongRejectCupDepth.IsEnabled = false;
-                    LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
-                    LongRejectLand.IsEnabled = false;
-                    LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
-                    LongRejectHobDescription.IsEnabled = false;
-                    LongRejectTolerances.Text = engineeringProject.LongRejectTolerances;
-                    LongRejectTolerances.IsEnabled = false;
-
-                    MultiTipSketch.IsChecked = engineeringProject.MultiTipSketch;
-                    MultiTipSketch.IsEnabled = false;
-                    SketchID.Text = engineeringProject.MultiTipSketchID;
-                    SketchID.IsEnabled = false;
-                    if (engineeringProject.MultiTipSolid == true)
-                    {
-                        MultiTipStyle.Text = "SOLID";
-                    }
-                    if (engineeringProject.MultiTipAssembled == true)
-                    {
-                        MultiTipStyle.Text = "ASSEMBLED";
-                    }
-                    MultiTipStyle.IsEnabled = false;
-
-                    EngineeringTabletProjects tabletProject = null;
-                    EngineeringToolProjects toolProject = null;
-                    // For tablets?
-                    if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        TabletsRequired.IsChecked = true;
-                        TabletsRequired.IsEnabled = false;
-                        UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
-                        UpperTabletDrawing.IsEnabled = false;
-                        LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
-                        LowerTabletDrawing.IsEnabled = false;
-                        ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
-                        ShortRejectTabletDrawing.IsEnabled = false;
-                        LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
-                        LongRejectTabletDrawing.IsEnabled = false;
-                        Density.Text = tabletProject.Density.ToString();
-                        Density.IsEnabled = false;
-                        DensityUnits.SelectedItem = tabletProject.DensityUnits;
-                        DensityUnits.IsEnabled = false;
-                        Mass.Text = tabletProject.Mass.ToString();
-                        Mass.IsEnabled = false;
-                        MassUnits.SelectedItem = tabletProject.MassUnits;
-                        MassUnits.IsEnabled = false;
-                        Volume.Text = tabletProject.Volume.ToString();
-                        Volume.IsEnabled = false;
-                        VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
-                        VolumeUnits.IsEnabled = false;
-                        TargetThickness.Text = tabletProject.TargetThickness.ToString();
-                        TargetThickness.IsEnabled = false;
-                        TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
-                        TargetThicknessUnits.IsEnabled = false;
-                        FilmCoat.IsChecked = tabletProject.FilmCoated;
-                        FilmCoat.IsEnabled = false;
-                        PrePick.IsChecked = tabletProject.PrePick;
-                        PrePick.IsEnabled = false;
-                        PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
-                        PrePickAmount.IsEnabled = false;
-                        PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
-                        PrePickUnits.IsEnabled = false;
-                        Taper.IsChecked = tabletProject.Taper;
-                        Taper.IsEnabled = false;
-                        TaperAmount.Text = tabletProject.TaperAmount.ToString();
-                        TaperAmount.IsEnabled = false;
-                        TaperUnits.SelectedItem = tabletProject.TaperUnits;
-                        TaperUnits.IsEnabled = false;
-                    }
-                    else
-                    {
-                        TabletsRequired.IsChecked = false;
-                        TabletsRequired.IsEnabled = false;
-                    }
-                    // For Tools?
-                    if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        CoreRod = toolProject.LowerCoreRod;
-                        CoreRodSteelID = toolProject.LowerCoreRodSteelID;
-                        CoreRodKey = toolProject.LowerCoreRodKey;
-                        CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
-                        CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
-                        CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
-                        CoreRodPunch = toolProject.LowerCoreRodPunch;
-                        CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
-                        CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
-
-                        ToolsRequired.IsChecked = true;
-                        ToolsRequired.IsEnabled = false;
-                        UpperPunch.IsChecked = toolProject.UpperPunch;
-                        UpperPunch.IsEnabled = false;
-                        UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
-                        UpperPunchSteelID.IsEnabled = false;
-                        UpperAssembly.IsChecked = toolProject.UpperAssembly;
-                        UpperAssembly.IsEnabled = false;
-                        UpperCap.IsChecked = toolProject.UpperCap;
-                        UpperCap.IsEnabled = false;
-                        UpperCapSteelID.Text = toolProject.UpperCapSteelID;
-                        UpperCapSteelID.IsEnabled = false;
-                        UpperHolder.IsChecked = toolProject.UpperHolder;
-                        UpperHolder.IsEnabled = false;
-                        UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
-                        UpperHolderSteelID.IsEnabled = false;
-                        UpperHead.IsChecked = toolProject.UpperHead;
-                        UpperHead.IsEnabled = false;
-                        UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
-                        UpperHeadSteelID.IsEnabled = false;
-                        UpperTip.IsChecked = toolProject.UpperTip;
-                        UpperTip.IsEnabled = false;
-                        UpperTipSteelID.Text = toolProject.UpperTipSteelID;
-                        UpperTipSteelID.IsEnabled = false;
-                        LowerPunch.IsChecked = toolProject.LowerPunch;
-                        LowerPunch.IsEnabled = false;
-                        LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
-                        LowerPunchSteelID.IsEnabled = false;
-                        LowerAssembly.IsChecked = toolProject.LowerAssembly;
-                        LowerAssembly.IsEnabled = false;
-                        LowerCap.IsChecked = toolProject.LowerCap;
-                        LowerCap.IsEnabled = false;
-                        LowerCapSteelID.Text = toolProject.LowerCapSteelID;
-                        LowerCapSteelID.IsEnabled = false;
-                        LowerHolder.IsChecked = toolProject.LowerHolder;
-                        LowerHolder.IsEnabled = false;
-                        LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
-                        LowerHolderSteelID.IsEnabled = false;
-                        LowerHead.IsChecked = toolProject.LowerHead;
-                        LowerHead.IsEnabled = false;
-                        LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
-                        LowerHeadSteelID.IsEnabled = false;
-                        LowerTip.IsChecked = toolProject.LowerTip;
-                        LowerTip.IsEnabled = false;
-                        LowerTipSteelID.Text = toolProject.LowerTipSteelID;
-                        LowerTipSteelID.IsEnabled = false;
-                        ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
-                        ShortRejectPunch.IsEnabled = false;
-                        ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
-                        ShortRejectPunchSteelID.IsEnabled = false;
-                        ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
-                        ShortRejectAssembly.IsEnabled = false;
-                        ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
-                        ShortRejectCap.IsEnabled = false;
-                        ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
-                        ShortRejectCapSteelID.IsEnabled = false;
-                        ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
-                        ShortRejectHolder.IsEnabled = false;
-                        ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
-                        ShortRejectHolderSteelID.IsEnabled = false;
-                        ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
-                        ShortRejectHead.IsEnabled = false;
-                        ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
-                        ShortRejectHeadSteelID.IsEnabled = false;
-                        ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
-                        ShortRejectTip.IsEnabled = false;
-                        ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
-                        ShortRejectTipSteelID.IsEnabled = false;
-                        LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
-                        LongRejectPunch.IsEnabled = false;
-                        LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
-                        LongRejectPunchSteelID.IsEnabled = false;
-                        LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
-                        LongRejectAssembly.IsEnabled = false;
-                        LongRejectCap.IsChecked = toolProject.LongRejectCap;
-                        LongRejectCap.IsEnabled = false;
-                        LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
-                        LongRejectCapSteelID.IsEnabled = false;
-                        LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
-                        LongRejectHolder.IsEnabled = false;
-                        LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
-                        LongRejectHolderSteelID.IsEnabled = false;
-                        LongRejectHead.IsChecked = toolProject.LongRejectHead;
-                        LongRejectHead.IsEnabled = false;
-                        LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
-                        LongRejectHeadSteelID.IsEnabled = false;
-                        LongRejectTip.IsChecked = toolProject.LongRejectTip;
-                        LongRejectTip.IsEnabled = false;
-                        LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
-                        LongRejectTipSteelID.IsEnabled = false;
-                        Alignment.IsChecked = toolProject.Alignment;
-                        Alignment.IsEnabled = false;
-                        AlignmentSteelID.Text = toolProject.AlignmentSteelID;
-                        AlignmentSteelID.IsEnabled = false;
-                        Key.IsChecked = toolProject.Key;
-                        Key.IsEnabled = false;
-                        KeySteelID.Text = toolProject.KeySteelID;
-                        KeySteelID.IsEnabled = false;
-                        Misc.IsChecked = toolProject.Misc;
-                        Misc.IsEnabled = false;
-                        MiscSteelID.Text = toolProject.MiscSteelID;
-                        MiscSteelID.IsEnabled = false;
-                        NumberOfTips.Text = engineeringProject.NumberOfTips < 2 ? "" : engineeringProject.NumberOfTips.ToString();
-                        NumberOfTips.IsEnabled = false;
-                        Die.IsChecked = toolProject.Die;
-                        Die.IsEnabled = false;
-                        DieSteelID.Text = toolProject.DieSteelID;
-                        DieSteelID.IsEnabled = false;
-                        DieAssembly.IsChecked = toolProject.DieAssembly;
-                        DieAssembly.IsEnabled = false;
-                        DieComponent.IsChecked = toolProject.DieComponent;
-                        DieComponent.IsEnabled = false;
-                        DieComponentSteelID.Text = toolProject.DieComponentSteelID;
-                        DieComponentSteelID.IsEnabled = false;
-                        DieHolder.IsChecked = toolProject.DieHolder;
-                        DieHolder.IsEnabled = false;
-                        DieHolderSteelID.Text = toolProject.DieHolderSteelID;
-                        DieHolderSteelID.IsEnabled = false;
-                        DieInsert.IsChecked = toolProject.DieInsert;
-                        DieInsert.IsEnabled = false;
-                        DieInsertSteelID.Text = toolProject.DieInsertSteelID;
-                        DieInsertSteelID.IsEnabled = false;
-                        DiePlate.IsChecked = toolProject.DiePlate;
-                        DiePlate.IsEnabled = false;
-                        DiePlateSteelID.Text = toolProject.DiePlateSteelID;
-                        DiePlateSteelID.IsEnabled = false;
-                        DieSegment.IsChecked = toolProject.DieSegment;
-                        DieSegment.IsEnabled = false;
-                        DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
-                        DieSegmentSteelID.IsEnabled = false;
-                        KeyType.IsEditable = true;
-                        KeyType.Text = toolProject.KeyType;
-                        KeyType.IsEditable = false;
-                        KeyType.IsEnabled = false;
-                        KeyAngle.Text = toolProject.KeyAngle.ToString();
-                        KeyAngle.IsEnabled = false;
-                        KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
-                        KeyOrientation.IsEnabled = false;
-                        UpperKeyed.IsChecked = toolProject.UpperKeyed;
-                        UpperKeyed.IsEnabled = false;
-                        LowerKeyed.IsChecked = toolProject.LowerKeyed;
-                        LowerKeyed.IsEnabled = false;
-                        ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
-                        ShortRejectKeyed.IsEnabled = false;
-                        LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
-                        LongRejectKeyed.IsEnabled = false;
-                        UpperGrooveType.Text = toolProject.UpperGrooveType;
-                        UpperGrooveType.IsEnabled = false;
-                        LowerGrooveType.Text = toolProject.LowerGrooveType;
-                        LowerGrooveType.IsEnabled = false;
-                        UpperGroove.IsChecked = toolProject.UpperGroove;
-                        UpperGroove.IsEnabled = false;
-                        LowerGroove.IsChecked = toolProject.LowerGroove;
-                        LowerGroove.IsEnabled = false;
-                        ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
-                        ShortRejectGroove.IsEnabled = false;
-                        LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
-                        LongRejectGroove.IsEnabled = false;
-                        HeadType.Text = toolProject.HeadType;
-                        HeadType.IsEnabled = false;
-                        CarbideTips.IsChecked = toolProject.CarbideTips;
-                        CarbideTips.IsEnabled = false;
-                        MachineNotes.Text = toolProject.MachineNotes;
-                        MachineNotes.IsEnabled = false;
-                    }
-                    else
-                    {
-                        ToolsRequired.IsChecked = false;
-                        ToolsRequired.IsEnabled = false;
-                    }
-                }
-            }
-            else
-            {
-                _projectsContext.Dispose();
-                _nat01Context.Dispose();
-                if (MessageBox.Show("This project does not exist in the database.\n This window will now close", "Cannot Find Project", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK) == MessageBoxResult.OK)
-                {
-                    Dispose();
-                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
-                    try
-                    {
-                        if (projectRevNumber != "0")
-                        {
-                            if (System.IO.Directory.Exists(path + "_" + projectRevNumber + @"\"))
+                            if (projectRevNumber != "0")
                             {
-                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + projectRevNumber + @"\");
+                                if (System.IO.Directory.Exists(path + "_" + projectRevNumber + @"\"))
+                                {
+                                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + "_" + projectRevNumber + @"\");
+                                }
+                                else
+                                {
+                                    if (!System.IO.Directory.Exists(path + @"\"))
+                                        System.IO.Directory.CreateDirectory(path + @"\");
+                                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                                }
                             }
                             else
                             {
@@ -1500,27 +1529,25 @@ namespace NatoliOrderInterface
                                 System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            if (!System.IO.Directory.Exists(path + @"\"))
-                                System.IO.Directory.CreateDirectory(path + @"\");
-                            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path + @"\");
+                            // MessageBox.Show(ex.Message);
+                            // WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message);
                         }
+                        Close();
                     }
-                    catch (Exception ex)
-                    {
-                        // MessageBox.Show(ex.Message);
-                        // WriteToErrorLog("ProjectSearchButton_Click - Before new window instance", ex.Message);
-                    }
-                    Close();
                 }
+                if (MultiTipSketch.IsChecked != true)
+                {
+                    MultiTipSketchTabItem.IsEnabled = false;
+                }
+                _projectsContext.Dispose();
+                _nat01Context.Dispose();
             }
-            if (MultiTipSketch.IsChecked != true)
+            catch (Exception ex)
             {
-                MultiTipSketchTabItem.IsEnabled = false;
+                IMethods.WriteToErrorLog("ProjectWindow => LoadEngineeringProject", ex.Message, user);
             }
-            _projectsContext.Dispose();
-            _nat01Context.Dispose();
         }
         /// <summary>
         /// Fills in information from NAT01.(QuoteHeader, QuoteDetails, and QuoteDetailOptions) and NEC.Rm00101.
@@ -1592,7 +1619,7 @@ namespace NatoliOrderInterface
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
                 }
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Product.Text = string.IsNullOrEmpty(quoteHeader.ProductName) ? "" : quoteHeader.ProductName.Trim()));
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Attention.Text = string.IsNullOrEmpty(quoteHeader.ContactPerson) ? "" : quoteHeader.ProductName.Trim()));
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Attention.Text = string.IsNullOrEmpty(quoteHeader.ContactPerson) ? "" : quoteHeader.ContactPerson.Trim()));
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Notes.Text = (quoteHeader.EngineeringNote1 ?? "").Trim() + "\n" + (quoteHeader.EngineeringNote2 ?? "").Trim() + "\n" + (quoteHeader.MiscNote ?? "").Trim()));
                 if (quoteHeader.OrderNo != null && quoteHeader.OrderNo > 0)
                 {
@@ -3543,118 +3570,126 @@ namespace NatoliOrderInterface
         {
             if (FormCheck())
             {
-                using var _projectsContext = new ProjectsContext();
-
-                EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
-                //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
-                decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
-                EngineeringProjects engineeringProject = new EngineeringProjects
+                try
                 {
-                    ProjectNumber = projectNumber,
-                    RevNumber = projectRevNumber,
-                    ActiveProject = projectWillBeActive,
-                    QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
-                    QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
-                    RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
-                    RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
-                    RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
-                    RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
-                    RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
-                    CSR = CSR.Text,
-                    ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
-                    CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
-                    CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
-                    ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
-                    ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
-                    ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
-                    EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
-                    EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
-                    EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
-                    UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
-                    Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
-                    Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
-                    MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
-                    DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
-                    DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
-                    Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
-                    Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
-                    UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?)upperCupType : null,
-                    UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
-                    UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
-                    UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
-                    UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
-                    LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
-                    LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
-                    LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
-                    LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
-                    LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
-                    ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
-                    ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
-                    ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
-                    ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
-                    ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
-                    LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
-                    LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
-                    LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
-                    LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
-                    LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
-                    UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
-                    LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
-                    ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
-                    LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
-                    DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
-                    Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
-                    TimeSubmitted = DateTime.UtcNow,
-                    DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
-                    Priority = Priority.IsChecked ?? false,
-                    TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
-                    TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
-                    TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
-                    TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
-                    TabletDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletDrawnDateTime) : null,
-                    TabletDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletDrawnBy) : "",
-                    TabletSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletSubmitted) : false,
-                    TabletSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletSubmittedDateTime) : null,
-                    TabletSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletSubmittedBy) : "",
-                    TabletChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletChecked) : false,
-                    TabletCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletCheckedDateTime) : null,
-                    TabletCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletCheckedBy) : "",
-                    ToolStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolStarted) : false,
-                    ToolStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolStartedDateTime) : null,
-                    ToolStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolStartedBy) : "",
-                    ToolDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolDrawn) : false,
-                    ToolDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolDrawnDateTime) : null,
-                    ToolDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolDrawnBy) : "",
-                    ToolSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolSubmitted) : false,
-                    ToolSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolSubmittedDateTime) : null,
-                    ToolSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolSubmittedBy) : "",
-                    ToolChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolChecked) : false,
-                    ToolCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolCheckedDateTime) : null,
-                    ToolCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolCheckedBy) : "",
-                    NewDrawing = NewDrawing,
-                    UpdateExistingDrawing = UpdateExistingDrawing,
-                    UpdateTextOnDrawing = UpdateTextOnDrawing,
-                    PerSampleTablet = PerSampleTablet,
-                    RefTabletDrawing = RefTabletDrawing,
-                    PerSampleTool = PerSampleTool,
-                    RefToolDrawing = RefToolDrawing,
-                    PerSuppliedPicture = PerSuppliedPicture,
-                    RefNatoliDrawing = RefNatoliDrawing,
-                    RefNonNatoliDrawing = RefNonNatoliDrawing,
-                    MultiTipSketch = MultiTipSketch.IsChecked ?? false,
-                    MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
-                    NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
-                    BinLocation = BinLocation,
-                    MultiTipSolid = MultiTipStyle.Text == "SOLID",
-                    MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
-                    OnHold = false,
-                    OnHoldComment = "",
-                    OnHoldDateTime = null,
-                    RevisedBy = projectWillBeActive ? user.GetDWDisplayName() : null,
-                    Changes = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.Changes) : null
-                };
-                _projectsContext.Dispose();
-                return engineeringProject;
+                    using var _projectsContext = new ProjectsContext();
+
+                    EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                    //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                    decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
+                    EngineeringProjects engineeringProject = new EngineeringProjects
+                    {
+                        ProjectNumber = projectNumber,
+                        RevNumber = projectRevNumber,
+                        ActiveProject = projectWillBeActive,
+                        QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
+                        QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
+                        RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
+                        RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
+                        RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
+                        RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
+                        RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
+                        CSR = CSR.Text,
+                        ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
+                        CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
+                        CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
+                        ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
+                        ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
+                        ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
+                        EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
+                        EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
+                        EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
+                        UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
+                        Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
+                        Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
+                        MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
+                        DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
+                        DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
+                        Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
+                        Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
+                        UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?)upperCupType : null,
+                        UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
+                        UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
+                        UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
+                        UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
+                        LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
+                        LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
+                        LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
+                        LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
+                        LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
+                        ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
+                        ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
+                        ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
+                        ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
+                        ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
+                        LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
+                        LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
+                        LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
+                        LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
+                        LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
+                        UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
+                        LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
+                        ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
+                        LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
+                        DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
+                        Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
+                        TimeSubmitted = DateTime.UtcNow,
+                        DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
+                        Priority = Priority.IsChecked ?? false,
+                        TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
+                        TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
+                        TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
+                        TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
+                        TabletDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletDrawnDateTime) : null,
+                        TabletDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletDrawnBy) : "",
+                        TabletSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletSubmitted) : false,
+                        TabletSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletSubmittedDateTime) : null,
+                        TabletSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletSubmittedBy) : "",
+                        TabletChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletChecked) : false,
+                        TabletCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletCheckedDateTime) : null,
+                        TabletCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletCheckedBy) : "",
+                        ToolStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolStarted) : false,
+                        ToolStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolStartedDateTime) : null,
+                        ToolStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolStartedBy) : "",
+                        ToolDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolDrawn) : false,
+                        ToolDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolDrawnDateTime) : null,
+                        ToolDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolDrawnBy) : "",
+                        ToolSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolSubmitted) : false,
+                        ToolSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolSubmittedDateTime) : null,
+                        ToolSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolSubmittedBy) : "",
+                        ToolChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolChecked) : false,
+                        ToolCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolCheckedDateTime) : null,
+                        ToolCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolCheckedBy) : "",
+                        NewDrawing = NewDrawing,
+                        UpdateExistingDrawing = UpdateExistingDrawing,
+                        UpdateTextOnDrawing = UpdateTextOnDrawing,
+                        PerSampleTablet = PerSampleTablet,
+                        RefTabletDrawing = RefTabletDrawing,
+                        PerSampleTool = PerSampleTool,
+                        RefToolDrawing = RefToolDrawing,
+                        PerSuppliedPicture = PerSuppliedPicture,
+                        RefNatoliDrawing = RefNatoliDrawing,
+                        RefNonNatoliDrawing = RefNonNatoliDrawing,
+                        MultiTipSketch = MultiTipSketch.IsChecked ?? false,
+                        MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
+                        NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
+                        BinLocation = BinLocation,
+                        MultiTipSolid = MultiTipStyle.Text == "SOLID",
+                        MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
+                        OnHold = false,
+                        OnHoldComment = "",
+                        OnHoldDateTime = null,
+                        RevisedBy = projectWillBeActive ? user.GetDWDisplayName() : null,
+                        Changes = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.Changes) : null
+                    };
+                    _projectsContext.Dispose();
+                    return engineeringProject;
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("ProjectWindow => GetEngineeringProjectFromCurrentForm", ex.Message, user);
+                    return null;
+                }
             }
             else
             {
@@ -3667,33 +3702,41 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         private EngineeringTabletProjects GetTabletProjectFromCurrentForm()
         {
-            using var _projectsContext = new ProjectsContext();
-            EngineeringTabletProjects tabletProject = new EngineeringTabletProjects()
+            try
             {
-                ProjectNumber = projectNumber,
-                RevNumber = projectRevNumber,
-                Density = decimal.TryParse(Density.Text, out decimal density) ? (decimal?)density : null,
-                DensityUnits = !string.IsNullOrEmpty(DensityUnits.Text) ? DensityUnits.Text.Trim() : "",
-                FilmCoated = FilmCoat.IsChecked ?? false,
-                LongRejectRequired = LongRejectTabletDrawing.IsChecked ?? false,
-                LowerRequired = LowerTabletDrawing.IsChecked ?? false,
-                Mass = decimal.TryParse(Mass.Text, out decimal mass) ? (decimal?)mass : null,
-                MassUnits = !string.IsNullOrEmpty(MassUnits.Text) ? MassUnits.Text.Trim() : "",
-                PrePick = PrePick.IsChecked ?? false,
-                PrePickAmount = decimal.TryParse(PrePickAmount.Text, out decimal prePickAmount) ? (decimal?)prePickAmount : null,
-                PrePickUnits = !string.IsNullOrEmpty(PrePickUnits.Text) ? PrePickUnits.Text.Trim() : "",
-                ShortRejectRequired = ShortRejectTabletDrawing.IsChecked ?? false,
-                Taper = Taper.IsChecked ?? false,
-                TaperAmount = decimal.TryParse(TaperAmount.Text, out decimal taperAmount) ? (decimal?)taperAmount : null,
-                TaperUnits = !string.IsNullOrEmpty(TaperUnits.Text) ? TaperUnits.Text.Trim() : "",
-                TargetThickness = decimal.TryParse(TargetThickness.Text, out decimal targetThickness) ? (decimal?)targetThickness : null,
-                TargetThicknessUnits = !string.IsNullOrEmpty(TargetThicknessUnits.Text) ? TargetThicknessUnits.Text.Trim() : "",
-                UpperRequired = UpperTabletDrawing.IsChecked ?? false,
-                Volume = decimal.TryParse(Volume.Text, out decimal volume) ? (decimal?)volume : null,
-                VolumeUnits = !string.IsNullOrEmpty(VolumeUnits.Text) ? VolumeUnits.Text.Trim() : ""
-            };
-            _projectsContext.Dispose();
-            return tabletProject;
+                using var _projectsContext = new ProjectsContext();
+                EngineeringTabletProjects tabletProject = new EngineeringTabletProjects()
+                {
+                    ProjectNumber = projectNumber,
+                    RevNumber = projectRevNumber,
+                    Density = decimal.TryParse(Density.Text, out decimal density) ? (decimal?)density : null,
+                    DensityUnits = !string.IsNullOrEmpty(DensityUnits.Text) ? DensityUnits.Text.Trim() : "",
+                    FilmCoated = FilmCoat.IsChecked ?? false,
+                    LongRejectRequired = LongRejectTabletDrawing.IsChecked ?? false,
+                    LowerRequired = LowerTabletDrawing.IsChecked ?? false,
+                    Mass = decimal.TryParse(Mass.Text, out decimal mass) ? (decimal?)mass : null,
+                    MassUnits = !string.IsNullOrEmpty(MassUnits.Text) ? MassUnits.Text.Trim() : "",
+                    PrePick = PrePick.IsChecked ?? false,
+                    PrePickAmount = decimal.TryParse(PrePickAmount.Text, out decimal prePickAmount) ? (decimal?)prePickAmount : null,
+                    PrePickUnits = !string.IsNullOrEmpty(PrePickUnits.Text) ? PrePickUnits.Text.Trim() : "",
+                    ShortRejectRequired = ShortRejectTabletDrawing.IsChecked ?? false,
+                    Taper = Taper.IsChecked ?? false,
+                    TaperAmount = decimal.TryParse(TaperAmount.Text, out decimal taperAmount) ? (decimal?)taperAmount : null,
+                    TaperUnits = !string.IsNullOrEmpty(TaperUnits.Text) ? TaperUnits.Text.Trim() : "",
+                    TargetThickness = decimal.TryParse(TargetThickness.Text, out decimal targetThickness) ? (decimal?)targetThickness : null,
+                    TargetThicknessUnits = !string.IsNullOrEmpty(TargetThicknessUnits.Text) ? TargetThicknessUnits.Text.Trim() : "",
+                    UpperRequired = UpperTabletDrawing.IsChecked ?? false,
+                    Volume = decimal.TryParse(Volume.Text, out decimal volume) ? (decimal?)volume : null,
+                    VolumeUnits = !string.IsNullOrEmpty(VolumeUnits.Text) ? VolumeUnits.Text.Trim() : ""
+                };
+                _projectsContext.Dispose();
+                return tabletProject;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => GetTabletProjectFromCurrentForm", ex.Message, user);
+                return null;
+            }
         }
         /// <summary>
         /// Creates a new EngineeringToolProjects from the information in the form.
@@ -3701,203 +3744,218 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         private EngineeringToolProjects GetToolProjectFromCurrentForm()
         {
-            using var _projectsContext = new ProjectsContext();
-            EngineeringToolProjects engineeringToolProject = new EngineeringToolProjects()
+            try
             {
-                ProjectNumber = projectNumber,
-                RevNumber = projectRevNumber,
-                Alignment = Alignment.IsChecked ?? false,
-                AlignmentSteelID = !string.IsNullOrEmpty(AlignmentSteelID.Text) ? AlignmentSteelID.Text.Trim() : "",
-                CarbideTips = CarbideTips.IsChecked ?? false,
-                Die = Die.IsChecked ?? false,
-                DieSteelID = !string.IsNullOrEmpty(DieSteelID.Text) ? DieSteelID.Text.Trim() : "",
-                DieAssembly = DieAssembly.IsChecked ?? false,
-                DieComponent = DieComponent.IsChecked ?? false,
-                DieComponentSteelID = !string.IsNullOrEmpty(DieComponentSteelID.Text) ? DieComponentSteelID.Text.Trim() : "",
-                DieHolder = DieHolder.IsChecked ?? false,
-                DieHolderSteelID = !string.IsNullOrEmpty(DieHolderSteelID.Text) ? DieHolderSteelID.Text.Trim() : "",
-                DieSegment = DieSegment.IsChecked ?? false,
-                DieSegmentSteelID = !string.IsNullOrEmpty(DieSegmentSteelID.Text) ? DieSegmentSteelID.Text.Trim() : "",
-                DieInsert = DieInsert.IsChecked ?? false,
-                DieInsertSteelID = !string.IsNullOrEmpty(DieInsertSteelID.Text) ? DieInsertSteelID.Text.Trim() : "",
-                DiePlate = DiePlate.IsChecked ?? false,
-                DiePlateSteelID = !string.IsNullOrEmpty(DiePlateSteelID.Text) ? DiePlateSteelID.Text.Trim() : "",
-                HeadType = !string.IsNullOrEmpty(HeadType.Text) ? HeadType.Text.Trim() : "",
-                Key = Key.IsChecked ?? false,
-                KeySteelID = !string.IsNullOrEmpty(KeySteelID.Text) ? KeySteelID.Text.Trim() : "",
-                KeyAngle = decimal.TryParse(KeyAngle.Text, out decimal keyAngle) ? (decimal?)keyAngle : null,
-                KeyType = !string.IsNullOrEmpty(KeyType.Text) ? KeyType.Text.Trim() : "",
-                KeyIsClockWise = string.IsNullOrEmpty(KeyOrientation.Text) ? (bool?)null : KeyOrientation.Text == "CW",
-                LongRejectHead = LongRejectHead.IsChecked ?? false,
-                LongRejectHeadSteelID = !string.IsNullOrEmpty(LongRejectHeadSteelID.Text) ? LongRejectHeadSteelID.Text.Trim() : "",
-                LongRejectAssembly = LongRejectAssembly.IsChecked ?? false,
-                LongRejectCap = LongRejectCap.IsChecked ?? false,
-                LongRejectCapSteelID = !string.IsNullOrEmpty(LongRejectCapSteelID.Text) ? LongRejectCapSteelID.Text.Trim() : "",
-                LongRejectHolder = LongRejectHolder.IsChecked ?? false,
-                LongRejectHolderSteelID = !string.IsNullOrEmpty(LongRejectHolderSteelID.Text) ? LongRejectHolderSteelID.Text.Trim() : "",
-                LongRejectPunch = LongRejectPunch.IsChecked ?? false,
-                LongRejectPunchSteelID = !string.IsNullOrEmpty(LongRejectPunchSteelID.Text) ? LongRejectPunchSteelID.Text.Trim() : "",
-                LongRejectTip = LongRejectTip.IsChecked ?? false,
-                LongRejectTipSteelID = !string.IsNullOrEmpty(LongRejectTipSteelID.Text) ? LongRejectTipSteelID.Text.Trim() : "",
-                LongRejectGroove = ShortRejectGroove.IsChecked ?? false,
-                LongRejectKeyed = ShortRejectKeyed.IsChecked ?? false,
-                ShortRejectHead = ShortRejectHead.IsChecked ?? false,
-                ShortRejectHeadSteelID = !string.IsNullOrEmpty(ShortRejectHeadSteelID.Text) ? ShortRejectHeadSteelID.Text.Trim() : "",
-                ShortRejectAssembly = ShortRejectAssembly.IsChecked ?? false,
-                ShortRejectCap = ShortRejectCap.IsChecked ?? false,
-                ShortRejectCapSteelID = !string.IsNullOrEmpty(ShortRejectCapSteelID.Text) ? ShortRejectCapSteelID.Text.Trim() : "",
-                ShortRejectHolder = ShortRejectHolder.IsChecked ?? false,
-                ShortRejectHolderSteelID = !string.IsNullOrEmpty(ShortRejectHolderSteelID.Text) ? ShortRejectHolderSteelID.Text.Trim() : "",
-                ShortRejectPunch = ShortRejectPunch.IsChecked ?? false,
-                ShortRejectPunchSteelID = !string.IsNullOrEmpty(ShortRejectPunchSteelID.Text) ? ShortRejectPunchSteelID.Text.Trim() : "",
-                ShortRejectTip = ShortRejectTip.IsChecked ?? false,
-                ShortRejectTipSteelID = !string.IsNullOrEmpty(ShortRejectTipSteelID.Text) ? ShortRejectTipSteelID.Text.Trim() : "",
-                ShortRejectGroove = ShortRejectGroove.IsChecked ?? false,
-                ShortRejectKeyed = ShortRejectKeyed.IsChecked ?? false,
-                LowerHead = LowerHead.IsChecked ?? false,
-                LowerHeadSteelID = !string.IsNullOrEmpty(LowerHeadSteelID.Text) ? LowerHeadSteelID.Text.Trim() : "",
-                LowerAssembly = LowerAssembly.IsChecked ?? false,
-                LowerCap = LowerCap.IsChecked ?? false,
-                LowerCapSteelID = !string.IsNullOrEmpty(LowerCapSteelID.Text) ? LowerCapSteelID.Text.Trim() : "",
-                LowerHolder = LowerHolder.IsChecked ?? false,
-                LowerHolderSteelID = !string.IsNullOrEmpty(LowerHolderSteelID.Text) ? LowerHolderSteelID.Text.Trim() : "",
-                LowerPunch = LowerPunch.IsChecked ?? false,
-                LowerPunchSteelID = !string.IsNullOrEmpty(LowerPunchSteelID.Text) ? LowerPunchSteelID.Text.Trim() : "",
-                LowerTip = LowerTip.IsChecked ?? false,
-                LowerTipSteelID = !string.IsNullOrEmpty(LowerTipSteelID.Text) ? LowerTipSteelID.Text.Trim() : "",
-                LowerGroove = LowerGroove.IsChecked ?? false,
-                LowerKeyed = LowerKeyed.IsChecked ?? false,
-                UpperHead = UpperHead.IsChecked ?? false,
-                UpperHeadSteelID = !string.IsNullOrEmpty(UpperHeadSteelID.Text) ? UpperHeadSteelID.Text.Trim() : "",
-                UpperAssembly = UpperAssembly.IsChecked ?? false,
-                UpperCap = UpperCap.IsChecked ?? false,
-                UpperCapSteelID = !string.IsNullOrEmpty(UpperCapSteelID.Text) ? UpperCapSteelID.Text.Trim() : "",
-                UpperHolder = UpperHolder.IsChecked ?? false,
-                UpperHolderSteelID = !string.IsNullOrEmpty(UpperHolderSteelID.Text) ? UpperHolderSteelID.Text.Trim() : "",
-                UpperPunch = UpperPunch.IsChecked ?? false,
-                UpperPunchSteelID = !string.IsNullOrEmpty(UpperPunchSteelID.Text) ? UpperPunchSteelID.Text.Trim() : "",
-                UpperTip = UpperTip.IsChecked ?? false,
-                UpperTipSteelID = !string.IsNullOrEmpty(UpperTipSteelID.Text) ? UpperTipSteelID.Text.Trim() : "",
-                UpperGroove = UpperGroove.IsChecked ?? false,
-                UpperKeyed = UpperKeyed.IsChecked ?? false,
-                Misc = Misc.IsChecked ?? false,
-                MiscSteelID = !string.IsNullOrEmpty(MiscSteelID.Text) ? MiscSteelID.Text.Trim() : "",
-                LowerCoreRod = CoreRod,
-                LowerCoreRodSteelID = CoreRodSteelID,
-                LowerCoreRodKey = CoreRodKey,
-                LowerCoreRodKeySteelID = CoreRodKeySteelID,
-                LowerCoreRodKeyCollar = CoreRodKeyCollar,
-                LowerCoreRodKeyCollarSteelID = CoreRodKeyCollarSteelID,
-                LowerCoreRodPunch = CoreRodPunch,
-                LowerCoreRodPunchSteelID = CoreRodPunchSteelID,
-                MachineNotes = !string.IsNullOrEmpty(MachineNotes.Text) ? MachineNotes.Text.Trim() : "",
-                UpperGrooveType = !string.IsNullOrEmpty(UpperGrooveType.Text) ? UpperGrooveType.Text.Trim() : "",
-                LowerGrooveType = !string.IsNullOrEmpty(LowerGrooveType.Text) ? LowerGrooveType.Text.Trim() : ""
-            };
-            _projectsContext.Dispose();
-            return engineeringToolProject;
+                using var _projectsContext = new ProjectsContext();
+                EngineeringToolProjects engineeringToolProject = new EngineeringToolProjects()
+                {
+                    ProjectNumber = projectNumber,
+                    RevNumber = projectRevNumber,
+                    Alignment = Alignment.IsChecked ?? false,
+                    AlignmentSteelID = !string.IsNullOrEmpty(AlignmentSteelID.Text) ? AlignmentSteelID.Text.Trim() : "",
+                    CarbideTips = CarbideTips.IsChecked ?? false,
+                    Die = Die.IsChecked ?? false,
+                    DieSteelID = !string.IsNullOrEmpty(DieSteelID.Text) ? DieSteelID.Text.Trim() : "",
+                    DieAssembly = DieAssembly.IsChecked ?? false,
+                    DieComponent = DieComponent.IsChecked ?? false,
+                    DieComponentSteelID = !string.IsNullOrEmpty(DieComponentSteelID.Text) ? DieComponentSteelID.Text.Trim() : "",
+                    DieHolder = DieHolder.IsChecked ?? false,
+                    DieHolderSteelID = !string.IsNullOrEmpty(DieHolderSteelID.Text) ? DieHolderSteelID.Text.Trim() : "",
+                    DieSegment = DieSegment.IsChecked ?? false,
+                    DieSegmentSteelID = !string.IsNullOrEmpty(DieSegmentSteelID.Text) ? DieSegmentSteelID.Text.Trim() : "",
+                    DieInsert = DieInsert.IsChecked ?? false,
+                    DieInsertSteelID = !string.IsNullOrEmpty(DieInsertSteelID.Text) ? DieInsertSteelID.Text.Trim() : "",
+                    DiePlate = DiePlate.IsChecked ?? false,
+                    DiePlateSteelID = !string.IsNullOrEmpty(DiePlateSteelID.Text) ? DiePlateSteelID.Text.Trim() : "",
+                    HeadType = !string.IsNullOrEmpty(HeadType.Text) ? HeadType.Text.Trim() : "",
+                    Key = Key.IsChecked ?? false,
+                    KeySteelID = !string.IsNullOrEmpty(KeySteelID.Text) ? KeySteelID.Text.Trim() : "",
+                    KeyAngle = decimal.TryParse(KeyAngle.Text, out decimal keyAngle) ? (decimal?)keyAngle : null,
+                    KeyType = !string.IsNullOrEmpty(KeyType.Text) ? KeyType.Text.Trim() : "",
+                    KeyIsClockWise = string.IsNullOrEmpty(KeyOrientation.Text) ? (bool?)null : KeyOrientation.Text == "CW",
+                    LongRejectHead = LongRejectHead.IsChecked ?? false,
+                    LongRejectHeadSteelID = !string.IsNullOrEmpty(LongRejectHeadSteelID.Text) ? LongRejectHeadSteelID.Text.Trim() : "",
+                    LongRejectAssembly = LongRejectAssembly.IsChecked ?? false,
+                    LongRejectCap = LongRejectCap.IsChecked ?? false,
+                    LongRejectCapSteelID = !string.IsNullOrEmpty(LongRejectCapSteelID.Text) ? LongRejectCapSteelID.Text.Trim() : "",
+                    LongRejectHolder = LongRejectHolder.IsChecked ?? false,
+                    LongRejectHolderSteelID = !string.IsNullOrEmpty(LongRejectHolderSteelID.Text) ? LongRejectHolderSteelID.Text.Trim() : "",
+                    LongRejectPunch = LongRejectPunch.IsChecked ?? false,
+                    LongRejectPunchSteelID = !string.IsNullOrEmpty(LongRejectPunchSteelID.Text) ? LongRejectPunchSteelID.Text.Trim() : "",
+                    LongRejectTip = LongRejectTip.IsChecked ?? false,
+                    LongRejectTipSteelID = !string.IsNullOrEmpty(LongRejectTipSteelID.Text) ? LongRejectTipSteelID.Text.Trim() : "",
+                    LongRejectGroove = ShortRejectGroove.IsChecked ?? false,
+                    LongRejectKeyed = ShortRejectKeyed.IsChecked ?? false,
+                    ShortRejectHead = ShortRejectHead.IsChecked ?? false,
+                    ShortRejectHeadSteelID = !string.IsNullOrEmpty(ShortRejectHeadSteelID.Text) ? ShortRejectHeadSteelID.Text.Trim() : "",
+                    ShortRejectAssembly = ShortRejectAssembly.IsChecked ?? false,
+                    ShortRejectCap = ShortRejectCap.IsChecked ?? false,
+                    ShortRejectCapSteelID = !string.IsNullOrEmpty(ShortRejectCapSteelID.Text) ? ShortRejectCapSteelID.Text.Trim() : "",
+                    ShortRejectHolder = ShortRejectHolder.IsChecked ?? false,
+                    ShortRejectHolderSteelID = !string.IsNullOrEmpty(ShortRejectHolderSteelID.Text) ? ShortRejectHolderSteelID.Text.Trim() : "",
+                    ShortRejectPunch = ShortRejectPunch.IsChecked ?? false,
+                    ShortRejectPunchSteelID = !string.IsNullOrEmpty(ShortRejectPunchSteelID.Text) ? ShortRejectPunchSteelID.Text.Trim() : "",
+                    ShortRejectTip = ShortRejectTip.IsChecked ?? false,
+                    ShortRejectTipSteelID = !string.IsNullOrEmpty(ShortRejectTipSteelID.Text) ? ShortRejectTipSteelID.Text.Trim() : "",
+                    ShortRejectGroove = ShortRejectGroove.IsChecked ?? false,
+                    ShortRejectKeyed = ShortRejectKeyed.IsChecked ?? false,
+                    LowerHead = LowerHead.IsChecked ?? false,
+                    LowerHeadSteelID = !string.IsNullOrEmpty(LowerHeadSteelID.Text) ? LowerHeadSteelID.Text.Trim() : "",
+                    LowerAssembly = LowerAssembly.IsChecked ?? false,
+                    LowerCap = LowerCap.IsChecked ?? false,
+                    LowerCapSteelID = !string.IsNullOrEmpty(LowerCapSteelID.Text) ? LowerCapSteelID.Text.Trim() : "",
+                    LowerHolder = LowerHolder.IsChecked ?? false,
+                    LowerHolderSteelID = !string.IsNullOrEmpty(LowerHolderSteelID.Text) ? LowerHolderSteelID.Text.Trim() : "",
+                    LowerPunch = LowerPunch.IsChecked ?? false,
+                    LowerPunchSteelID = !string.IsNullOrEmpty(LowerPunchSteelID.Text) ? LowerPunchSteelID.Text.Trim() : "",
+                    LowerTip = LowerTip.IsChecked ?? false,
+                    LowerTipSteelID = !string.IsNullOrEmpty(LowerTipSteelID.Text) ? LowerTipSteelID.Text.Trim() : "",
+                    LowerGroove = LowerGroove.IsChecked ?? false,
+                    LowerKeyed = LowerKeyed.IsChecked ?? false,
+                    UpperHead = UpperHead.IsChecked ?? false,
+                    UpperHeadSteelID = !string.IsNullOrEmpty(UpperHeadSteelID.Text) ? UpperHeadSteelID.Text.Trim() : "",
+                    UpperAssembly = UpperAssembly.IsChecked ?? false,
+                    UpperCap = UpperCap.IsChecked ?? false,
+                    UpperCapSteelID = !string.IsNullOrEmpty(UpperCapSteelID.Text) ? UpperCapSteelID.Text.Trim() : "",
+                    UpperHolder = UpperHolder.IsChecked ?? false,
+                    UpperHolderSteelID = !string.IsNullOrEmpty(UpperHolderSteelID.Text) ? UpperHolderSteelID.Text.Trim() : "",
+                    UpperPunch = UpperPunch.IsChecked ?? false,
+                    UpperPunchSteelID = !string.IsNullOrEmpty(UpperPunchSteelID.Text) ? UpperPunchSteelID.Text.Trim() : "",
+                    UpperTip = UpperTip.IsChecked ?? false,
+                    UpperTipSteelID = !string.IsNullOrEmpty(UpperTipSteelID.Text) ? UpperTipSteelID.Text.Trim() : "",
+                    UpperGroove = UpperGroove.IsChecked ?? false,
+                    UpperKeyed = UpperKeyed.IsChecked ?? false,
+                    Misc = Misc.IsChecked ?? false,
+                    MiscSteelID = !string.IsNullOrEmpty(MiscSteelID.Text) ? MiscSteelID.Text.Trim() : "",
+                    LowerCoreRod = CoreRod,
+                    LowerCoreRodSteelID = CoreRodSteelID,
+                    LowerCoreRodKey = CoreRodKey,
+                    LowerCoreRodKeySteelID = CoreRodKeySteelID,
+                    LowerCoreRodKeyCollar = CoreRodKeyCollar,
+                    LowerCoreRodKeyCollarSteelID = CoreRodKeyCollarSteelID,
+                    LowerCoreRodPunch = CoreRodPunch,
+                    LowerCoreRodPunchSteelID = CoreRodPunchSteelID,
+                    MachineNotes = !string.IsNullOrEmpty(MachineNotes.Text) ? MachineNotes.Text.Trim() : "",
+                    UpperGrooveType = !string.IsNullOrEmpty(UpperGrooveType.Text) ? UpperGrooveType.Text.Trim() : "",
+                    LowerGrooveType = !string.IsNullOrEmpty(LowerGrooveType.Text) ? LowerGrooveType.Text.Trim() : ""
+                };
+                _projectsContext.Dispose();
+                return engineeringToolProject;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => GetToolProjectFromCurrentForm", ex.Message, user);
+                return null;
+            }
         }
         /// <summary>
         /// Enables or disables tablet drawings button based on hob numbers and drawings available.
         /// </summary>
         private void EnableTabletDrawingsButton()
         {
-            if (!string.IsNullOrEmpty(UpperHobNumber.Text) || !string.IsNullOrEmpty(LowerHobDescription.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text))
+            try
             {
-                if (!string.IsNullOrEmpty(UpperHobNumber.Text))
+                if (!string.IsNullOrEmpty(UpperHobNumber.Text) || !string.IsNullOrEmpty(LowerHobDescription.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text) || !string.IsNullOrEmpty(ShortRejectHobNumber.Text))
                 {
-                    if (int.TryParse(UpperHobNumber.Text, out int hobNumber))
+                    if (!string.IsNullOrEmpty(UpperHobNumber.Text))
                     {
-                        string folderPrefix = IMethods.GetEDrawingsFolderPrefix(hobNumber);
-                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS\" + folderPrefix + @"-E-DRAWINGS\", hobNumber.ToString() + " * ");
-                        if (files.Length > 0)
+                        if (int.TryParse(UpperHobNumber.Text, out int hobNumber))
                         {
-                            TabletDrawingsButton.IsEnabled = true;
+                            string folderPrefix = IMethods.GetEDrawingsFolderPrefix(hobNumber);
+                            string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS\" + folderPrefix + @"-E-DRAWINGS\", hobNumber.ToString() + " * ");
+                            if (files.Length > 0)
+                            {
+                                TabletDrawingsButton.IsEnabled = true;
+                            }
                         }
                     }
-                }
-                else if (!string.IsNullOrEmpty(LowerHobNumber.Text))
-                {
-                    if (int.TryParse(LowerHobNumber.Text, out int hobNumber))
+                    else if (!string.IsNullOrEmpty(LowerHobNumber.Text))
                     {
-                        string folderPrefix = "00";
-                        if (hobNumber < 1000)
+                        if (int.TryParse(LowerHobNumber.Text, out int hobNumber))
                         {
-                            folderPrefix = "00";
-                        }
-                        else if (hobNumber < 10000)
-                        {
-                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
-                        }
-                        else if (hobNumber < 100000)
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 2);
-                        }
-                        else
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 3);
-                        }
-                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
-                        if (files.Length > 0)
-                        {
-                            TabletDrawingsButton.IsEnabled = true;
+                            string folderPrefix = "00";
+                            if (hobNumber < 1000)
+                            {
+                                folderPrefix = "00";
+                            }
+                            else if (hobNumber < 10000)
+                            {
+                                folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                            }
+                            else if (hobNumber < 100000)
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 2);
+                            }
+                            else
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 3);
+                            }
+                            string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                            if (files.Length > 0)
+                            {
+                                TabletDrawingsButton.IsEnabled = true;
+                            }
                         }
                     }
-                }
-                else if (!string.IsNullOrEmpty(ShortRejectHobNumber.Text))
-                {
-                    if (int.TryParse(ShortRejectHobNumber.Text, out int hobNumber))
+                    else if (!string.IsNullOrEmpty(ShortRejectHobNumber.Text))
                     {
-                        string folderPrefix = "00";
-                        if (hobNumber < 1000)
+                        if (int.TryParse(ShortRejectHobNumber.Text, out int hobNumber))
                         {
-                            folderPrefix = "00";
-                        }
-                        else if (hobNumber < 10000)
-                        {
-                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
-                        }
-                        else if (hobNumber < 100000)
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 2);
-                        }
-                        else
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 3);
-                        }
-                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
-                        if (files.Length > 0)
-                        {
-                            TabletDrawingsButton.IsEnabled = true;
+                            string folderPrefix = "00";
+                            if (hobNumber < 1000)
+                            {
+                                folderPrefix = "00";
+                            }
+                            else if (hobNumber < 10000)
+                            {
+                                folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                            }
+                            else if (hobNumber < 100000)
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 2);
+                            }
+                            else
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 3);
+                            }
+                            string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                            if (files.Length > 0)
+                            {
+                                TabletDrawingsButton.IsEnabled = true;
+                            }
                         }
                     }
-                }
-                else if (!string.IsNullOrEmpty(LongRejectHobNumber.Text))
-                {
-                    if (int.TryParse(LongRejectHobNumber.Text, out int hobNumber))
+                    else if (!string.IsNullOrEmpty(LongRejectHobNumber.Text))
                     {
-                        string folderPrefix = "00";
-                        if (hobNumber < 1000)
+                        if (int.TryParse(LongRejectHobNumber.Text, out int hobNumber))
                         {
-                            folderPrefix = "00";
+                            string folderPrefix = "00";
+                            if (hobNumber < 1000)
+                            {
+                                folderPrefix = "00";
+                            }
+                            else if (hobNumber < 10000)
+                            {
+                                folderPrefix = "0" + hobNumber.ToString().First().ToString();
+                            }
+                            else if (hobNumber < 100000)
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 2);
+                            }
+                            else
+                            {
+                                folderPrefix = hobNumber.ToString().Substring(0, 3);
+                            }
+                            string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
+                            if (files.Length > 0)
+                            {
+                                TabletDrawingsButton.IsEnabled = true;
+                            }
                         }
-                        else if (hobNumber < 10000)
-                        {
-                            folderPrefix = "0" + hobNumber.ToString().First().ToString();
-                        }
-                        else if (hobNumber < 100000)
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 2);
-                        }
-                        else
-                        {
-                            folderPrefix = hobNumber.ToString().Substring(0, 3);
-                        }
-                        string[] files = Directory.GetFiles(@"\\nsql03\Data1\DRAW\E-DRAWINGS", hobNumber.ToString() + "*");
-                        if (files.Length > 0)
-                        {
-                            TabletDrawingsButton.IsEnabled = true;
-                        }
+                    }
+                    else
+                    {
+                        TabletDrawingsButton.IsEnabled = false;
                     }
                 }
                 else
@@ -3905,9 +3963,9 @@ namespace NatoliOrderInterface
                     TabletDrawingsButton.IsEnabled = false;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TabletDrawingsButton.IsEnabled = false;
+                IMethods.WriteToErrorLog("ProjectWindow => EnableTabletDrawingsButton", ex.Message, user);
             }
         }
 
@@ -4060,178 +4118,185 @@ namespace NatoliOrderInterface
         /// <param name="isEnabled"></param>
         private void AllControlsEnabledOrDisabled(bool isEnabled)
         {
-            SaveButton.IsEnabled = isEnabled;
-            ReturnToCSR.IsEnabled = isEnabled;
-            QuoteNumber.IsEnabled = isEnabled;
-            QuoteRevNumber.IsEnabled = isEnabled;
-            RefOrderNumber.IsEnabled = isEnabled;
-            UnitOfMeasure.IsEnabled = isEnabled;
-            ReferenceQuoteNumber.IsEnabled = isEnabled;
-            ReferenceQuoteRevNumber.IsEnabled = isEnabled;
-            ReferenceProjectNumber.IsEnabled = isEnabled;
-            ReferenceProjectRevNumber.IsEnabled = isEnabled;
-            CustomerNumber.IsEnabled = isEnabled;
-            CustomerName.IsEnabled = isEnabled;
-            ShipToNumber.IsEnabled = isEnabled;
-            ShipToLocNumber.IsEnabled = isEnabled;
-            ShipToName.IsEnabled = isEnabled;
-            EndUserNumber.IsEnabled = isEnabled;
-            EndUserLocNumber.IsEnabled = isEnabled;
-            EndUserName.IsEnabled = isEnabled;
-            Product.IsEnabled = isEnabled;
-            Attention.IsEnabled = isEnabled;
-            MachineNumber.IsEnabled = isEnabled;
-            MachineDescription.IsEnabled = isEnabled;
-            DieOD.IsEnabled = isEnabled;
-            DieOL.IsEnabled = isEnabled;
-            MachineDescription.IsEnabled = isEnabled;
-            DueDate.IsEditable = false;
-            DueDate.IsEnabled = isEnabled;
-            Priority.IsEnabled = isEnabled;
-            Notes.IsEnabled = isEnabled;
-            DieNumber.IsEnabled = isEnabled;
-            DieShape.IsEnabled = isEnabled;
-            TabletWidth.IsEnabled = isEnabled;
-            TabletLength.IsEnabled = isEnabled;
-            DieTolerances.IsEnabled = isEnabled;
-            UpperHobNumber.IsEnabled = isEnabled;
-            UpperCupType.IsEnabled = isEnabled;
-            UpperCupDepth.IsEnabled = isEnabled;
-            UpperLand.IsEnabled = isEnabled;
-            UpperHobDescription.IsEnabled = isEnabled;
-            UpperTolerances.IsEnabled = isEnabled;
-            LowerHobNumber.IsEnabled = isEnabled;
-            LowerCupType.IsEnabled = IsEnabled;
-            LowerCupDepth.IsEnabled = isEnabled;
-            LowerLand.IsEnabled = isEnabled;
-            LowerHobDescription.IsEnabled = isEnabled;
-            LowerTolerances.IsEnabled = isEnabled;
-            ShortRejectCupType.IsEnabled = IsEnabled;
-            ShortRejectHobNumber.IsEnabled = isEnabled;
-            ShortRejectCupDepth.IsEnabled = isEnabled;
-            ShortRejectLand.IsEnabled = isEnabled;
-            ShortRejectHobDescription.IsEnabled = isEnabled;
-            ShortRejectTolerances.IsEnabled = isEnabled;
-            LongRejectCupType.IsEnabled = IsEnabled;
-            LongRejectHobNumber.IsEnabled = isEnabled;
-            LongRejectCupDepth.IsEnabled = isEnabled;
-            LongRejectLand.IsEnabled = isEnabled;
-            LongRejectHobDescription.IsEnabled = isEnabled;
-            LongRejectTolerances.IsEnabled = isEnabled;
-            MultiTipSketch.IsEnabled = isEnabled;
-            SketchID.IsEnabled = isEnabled;
-            MultiTipStyle.IsEnabled = isEnabled;
-            TabletsRequired.IsEnabled = isEnabled;
-            UpperTabletDrawing.IsEnabled = isEnabled;
-            LowerTabletDrawing.IsEnabled = isEnabled;
-            ShortRejectTabletDrawing.IsEnabled = isEnabled;
-            LongRejectTabletDrawing.IsEnabled = isEnabled;
-            Density.IsEnabled = isEnabled;
-            DensityUnits.IsEnabled = isEnabled;
-            Mass.IsEnabled = isEnabled;
-            MassUnits.IsEnabled = isEnabled;
-            Volume.IsEnabled = isEnabled;
-            VolumeUnits.IsEnabled = isEnabled;
-            TargetThickness.IsEnabled = isEnabled;
-            TargetThicknessUnits.IsEnabled = isEnabled;
-            FilmCoat.IsEnabled = isEnabled;
-            PrePick.IsEnabled = isEnabled;
-            PrePickAmount.IsEnabled = isEnabled;
-            PrePickUnits.IsEnabled = isEnabled;
-            Taper.IsEnabled = isEnabled;
-            TaperAmount.IsEnabled = isEnabled;
-            TaperUnits.IsEnabled = isEnabled;
-            ToolsRequired.IsEnabled = isEnabled;
-            UpperPunch.IsEnabled = isEnabled;
-            UpperPunchSteelID.IsEnabled = isEnabled;
-            UpperAssembly.IsEnabled = isEnabled;
-            UpperCap.IsEnabled = isEnabled;
-            UpperCapSteelID.IsEnabled = isEnabled;
-            UpperHolder.IsEnabled = isEnabled;
-            UpperHolderSteelID.IsEnabled = isEnabled;
-            UpperHead.IsEnabled = isEnabled;
-            UpperHeadSteelID.IsEnabled = isEnabled;
-            UpperTip.IsEnabled = isEnabled;
-            UpperTipSteelID.IsEnabled = isEnabled;
-            LowerPunch.IsEnabled = isEnabled;
-            LowerPunchSteelID.IsEnabled = isEnabled;
-            LowerAssembly.IsEnabled = isEnabled;
-            LowerCap.IsEnabled = isEnabled;
-            LowerCapSteelID.IsEnabled = isEnabled;
-            LowerHolder.IsEnabled = isEnabled;
-            LowerHolderSteelID.IsEnabled = isEnabled;
-            LowerHead.IsEnabled = isEnabled;
-            LowerHeadSteelID.IsEnabled = isEnabled;
-            LowerTip.IsEnabled = isEnabled;
-            LowerTipSteelID.IsEnabled = isEnabled;
-            ShortRejectPunch.IsEnabled = isEnabled;
-            ShortRejectPunchSteelID.IsEnabled = isEnabled;
-            ShortRejectAssembly.IsEnabled = isEnabled;
-            ShortRejectCap.IsEnabled = isEnabled;
-            ShortRejectCapSteelID.IsEnabled = isEnabled;
-            ShortRejectHolder.IsEnabled = isEnabled;
-            ShortRejectHolderSteelID.IsEnabled = isEnabled;
-            ShortRejectHead.IsEnabled = isEnabled;
-            ShortRejectHeadSteelID.IsEnabled = isEnabled;
-            ShortRejectTip.IsEnabled = isEnabled;
-            ShortRejectTipSteelID.IsEnabled = isEnabled;
-            LongRejectPunch.IsEnabled = isEnabled;
-            LongRejectPunchSteelID.IsEnabled = isEnabled;
-            LongRejectAssembly.IsEnabled = isEnabled;
-            LongRejectCap.IsEnabled = isEnabled;
-            LongRejectCapSteelID.IsEnabled = isEnabled;
-            LongRejectHolder.IsEnabled = isEnabled;
-            LongRejectHolderSteelID.IsEnabled = isEnabled;
-            LongRejectHead.IsEnabled = isEnabled;
-            LongRejectHeadSteelID.IsEnabled = isEnabled;
-            LongRejectTip.IsEnabled = isEnabled;
-            LongRejectTipSteelID.IsEnabled = isEnabled;
-            Alignment.IsEnabled = isEnabled;
-            AlignmentSteelID.IsEnabled = isEnabled;
-            Key.IsEnabled = isEnabled;
-            KeySteelID.IsEnabled = isEnabled;
-            Misc.IsEnabled = isEnabled;
-            MiscSteelID.IsEnabled = isEnabled;
-            NumberOfTips.IsEnabled = isEnabled;
-            Die.IsEnabled = isEnabled;
-            DieSteelID.IsEnabled = isEnabled;
-            DieAssembly.IsEnabled = isEnabled;
-            DieComponent.IsEnabled = isEnabled;
-            DieComponentSteelID.IsEnabled = isEnabled;
-            DieHolder.IsEnabled = isEnabled;
-            DieHolderSteelID.IsEnabled = isEnabled;
-            DieInsert.IsEnabled = isEnabled;
-            DieInsertSteelID.IsEnabled = isEnabled;
-            DiePlate.IsEnabled = isEnabled;
-            DiePlateSteelID.IsEnabled = isEnabled;
-            DieSegment.IsEnabled = isEnabled;
-            DieSegmentSteelID.IsEnabled = isEnabled;
-            KeyType.IsEditable = false;
-            KeyType.IsEnabled = false;
-            KeyType.IsEnabled = isEnabled;
-            KeyAngle.IsEnabled = isEnabled;
-            KeyOrientation.IsEnabled = isEnabled;
-            UpperKeyed.IsEnabled = isEnabled;
-            LowerKeyed.IsEnabled = isEnabled;
-            ShortRejectKeyed.IsEnabled = isEnabled;
-            LongRejectKeyed.IsEnabled = isEnabled;
-            UpperGrooveType.IsEnabled = isEnabled;
-            LowerGrooveType.IsEnabled = isEnabled;
-            UpperGroove.IsEnabled = isEnabled;
-            LowerGroove.IsEnabled = isEnabled;
-            ShortRejectGroove.IsEnabled = isEnabled;
-            LongRejectGroove.IsEnabled = isEnabled;
-            HeadType.IsEnabled = isEnabled;
-            CarbideTips.IsEnabled = isEnabled;
-            MachineNotes.IsEnabled = isEnabled;
-            UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            DieShapePlaceHolder.Visibility = DieShape.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            NumberOfTipsPlaceHolder.Visibility = NumberOfTips.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            DieODPlaceholder.Visibility = DieOD.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
-            DieOLPlaceholder.Visibility = DieOL.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            try
+            {
+                SaveButton.IsEnabled = isEnabled;
+                ReturnToCSR.IsEnabled = isEnabled;
+                QuoteNumber.IsEnabled = isEnabled;
+                QuoteRevNumber.IsEnabled = isEnabled;
+                RefOrderNumber.IsEnabled = isEnabled;
+                UnitOfMeasure.IsEnabled = isEnabled;
+                ReferenceQuoteNumber.IsEnabled = isEnabled;
+                ReferenceQuoteRevNumber.IsEnabled = isEnabled;
+                ReferenceProjectNumber.IsEnabled = isEnabled;
+                ReferenceProjectRevNumber.IsEnabled = isEnabled;
+                CustomerNumber.IsEnabled = isEnabled;
+                CustomerName.IsEnabled = isEnabled;
+                ShipToNumber.IsEnabled = isEnabled;
+                ShipToLocNumber.IsEnabled = isEnabled;
+                ShipToName.IsEnabled = isEnabled;
+                EndUserNumber.IsEnabled = isEnabled;
+                EndUserLocNumber.IsEnabled = isEnabled;
+                EndUserName.IsEnabled = isEnabled;
+                Product.IsEnabled = isEnabled;
+                Attention.IsEnabled = isEnabled;
+                MachineNumber.IsEnabled = isEnabled;
+                MachineDescription.IsEnabled = isEnabled;
+                DieOD.IsEnabled = isEnabled;
+                DieOL.IsEnabled = isEnabled;
+                MachineDescription.IsEnabled = isEnabled;
+                DueDate.IsEditable = false;
+                DueDate.IsEnabled = isEnabled;
+                Priority.IsEnabled = isEnabled;
+                Notes.IsEnabled = isEnabled;
+                DieNumber.IsEnabled = isEnabled;
+                DieShape.IsEnabled = isEnabled;
+                TabletWidth.IsEnabled = isEnabled;
+                TabletLength.IsEnabled = isEnabled;
+                DieTolerances.IsEnabled = isEnabled;
+                UpperHobNumber.IsEnabled = isEnabled;
+                UpperCupType.IsEnabled = isEnabled;
+                UpperCupDepth.IsEnabled = isEnabled;
+                UpperLand.IsEnabled = isEnabled;
+                UpperHobDescription.IsEnabled = isEnabled;
+                UpperTolerances.IsEnabled = isEnabled;
+                LowerHobNumber.IsEnabled = isEnabled;
+                LowerCupType.IsEnabled = IsEnabled;
+                LowerCupDepth.IsEnabled = isEnabled;
+                LowerLand.IsEnabled = isEnabled;
+                LowerHobDescription.IsEnabled = isEnabled;
+                LowerTolerances.IsEnabled = isEnabled;
+                ShortRejectCupType.IsEnabled = IsEnabled;
+                ShortRejectHobNumber.IsEnabled = isEnabled;
+                ShortRejectCupDepth.IsEnabled = isEnabled;
+                ShortRejectLand.IsEnabled = isEnabled;
+                ShortRejectHobDescription.IsEnabled = isEnabled;
+                ShortRejectTolerances.IsEnabled = isEnabled;
+                LongRejectCupType.IsEnabled = IsEnabled;
+                LongRejectHobNumber.IsEnabled = isEnabled;
+                LongRejectCupDepth.IsEnabled = isEnabled;
+                LongRejectLand.IsEnabled = isEnabled;
+                LongRejectHobDescription.IsEnabled = isEnabled;
+                LongRejectTolerances.IsEnabled = isEnabled;
+                MultiTipSketch.IsEnabled = isEnabled;
+                SketchID.IsEnabled = isEnabled;
+                MultiTipStyle.IsEnabled = isEnabled;
+                TabletsRequired.IsEnabled = isEnabled;
+                UpperTabletDrawing.IsEnabled = isEnabled;
+                LowerTabletDrawing.IsEnabled = isEnabled;
+                ShortRejectTabletDrawing.IsEnabled = isEnabled;
+                LongRejectTabletDrawing.IsEnabled = isEnabled;
+                Density.IsEnabled = isEnabled;
+                DensityUnits.IsEnabled = isEnabled;
+                Mass.IsEnabled = isEnabled;
+                MassUnits.IsEnabled = isEnabled;
+                Volume.IsEnabled = isEnabled;
+                VolumeUnits.IsEnabled = isEnabled;
+                TargetThickness.IsEnabled = isEnabled;
+                TargetThicknessUnits.IsEnabled = isEnabled;
+                FilmCoat.IsEnabled = isEnabled;
+                PrePick.IsEnabled = isEnabled;
+                PrePickAmount.IsEnabled = isEnabled;
+                PrePickUnits.IsEnabled = isEnabled;
+                Taper.IsEnabled = isEnabled;
+                TaperAmount.IsEnabled = isEnabled;
+                TaperUnits.IsEnabled = isEnabled;
+                ToolsRequired.IsEnabled = isEnabled;
+                UpperPunch.IsEnabled = isEnabled;
+                UpperPunchSteelID.IsEnabled = isEnabled;
+                UpperAssembly.IsEnabled = isEnabled;
+                UpperCap.IsEnabled = isEnabled;
+                UpperCapSteelID.IsEnabled = isEnabled;
+                UpperHolder.IsEnabled = isEnabled;
+                UpperHolderSteelID.IsEnabled = isEnabled;
+                UpperHead.IsEnabled = isEnabled;
+                UpperHeadSteelID.IsEnabled = isEnabled;
+                UpperTip.IsEnabled = isEnabled;
+                UpperTipSteelID.IsEnabled = isEnabled;
+                LowerPunch.IsEnabled = isEnabled;
+                LowerPunchSteelID.IsEnabled = isEnabled;
+                LowerAssembly.IsEnabled = isEnabled;
+                LowerCap.IsEnabled = isEnabled;
+                LowerCapSteelID.IsEnabled = isEnabled;
+                LowerHolder.IsEnabled = isEnabled;
+                LowerHolderSteelID.IsEnabled = isEnabled;
+                LowerHead.IsEnabled = isEnabled;
+                LowerHeadSteelID.IsEnabled = isEnabled;
+                LowerTip.IsEnabled = isEnabled;
+                LowerTipSteelID.IsEnabled = isEnabled;
+                ShortRejectPunch.IsEnabled = isEnabled;
+                ShortRejectPunchSteelID.IsEnabled = isEnabled;
+                ShortRejectAssembly.IsEnabled = isEnabled;
+                ShortRejectCap.IsEnabled = isEnabled;
+                ShortRejectCapSteelID.IsEnabled = isEnabled;
+                ShortRejectHolder.IsEnabled = isEnabled;
+                ShortRejectHolderSteelID.IsEnabled = isEnabled;
+                ShortRejectHead.IsEnabled = isEnabled;
+                ShortRejectHeadSteelID.IsEnabled = isEnabled;
+                ShortRejectTip.IsEnabled = isEnabled;
+                ShortRejectTipSteelID.IsEnabled = isEnabled;
+                LongRejectPunch.IsEnabled = isEnabled;
+                LongRejectPunchSteelID.IsEnabled = isEnabled;
+                LongRejectAssembly.IsEnabled = isEnabled;
+                LongRejectCap.IsEnabled = isEnabled;
+                LongRejectCapSteelID.IsEnabled = isEnabled;
+                LongRejectHolder.IsEnabled = isEnabled;
+                LongRejectHolderSteelID.IsEnabled = isEnabled;
+                LongRejectHead.IsEnabled = isEnabled;
+                LongRejectHeadSteelID.IsEnabled = isEnabled;
+                LongRejectTip.IsEnabled = isEnabled;
+                LongRejectTipSteelID.IsEnabled = isEnabled;
+                Alignment.IsEnabled = isEnabled;
+                AlignmentSteelID.IsEnabled = isEnabled;
+                Key.IsEnabled = isEnabled;
+                KeySteelID.IsEnabled = isEnabled;
+                Misc.IsEnabled = isEnabled;
+                MiscSteelID.IsEnabled = isEnabled;
+                NumberOfTips.IsEnabled = isEnabled;
+                Die.IsEnabled = isEnabled;
+                DieSteelID.IsEnabled = isEnabled;
+                DieAssembly.IsEnabled = isEnabled;
+                DieComponent.IsEnabled = isEnabled;
+                DieComponentSteelID.IsEnabled = isEnabled;
+                DieHolder.IsEnabled = isEnabled;
+                DieHolderSteelID.IsEnabled = isEnabled;
+                DieInsert.IsEnabled = isEnabled;
+                DieInsertSteelID.IsEnabled = isEnabled;
+                DiePlate.IsEnabled = isEnabled;
+                DiePlateSteelID.IsEnabled = isEnabled;
+                DieSegment.IsEnabled = isEnabled;
+                DieSegmentSteelID.IsEnabled = isEnabled;
+                KeyType.IsEditable = false;
+                KeyType.IsEnabled = false;
+                KeyType.IsEnabled = isEnabled;
+                KeyAngle.IsEnabled = isEnabled;
+                KeyOrientation.IsEnabled = isEnabled;
+                UpperKeyed.IsEnabled = isEnabled;
+                LowerKeyed.IsEnabled = isEnabled;
+                ShortRejectKeyed.IsEnabled = isEnabled;
+                LongRejectKeyed.IsEnabled = isEnabled;
+                UpperGrooveType.IsEnabled = isEnabled;
+                LowerGrooveType.IsEnabled = isEnabled;
+                UpperGroove.IsEnabled = isEnabled;
+                LowerGroove.IsEnabled = isEnabled;
+                ShortRejectGroove.IsEnabled = isEnabled;
+                LongRejectGroove.IsEnabled = isEnabled;
+                HeadType.IsEnabled = isEnabled;
+                CarbideTips.IsEnabled = isEnabled;
+                MachineNotes.IsEnabled = isEnabled;
+                UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                DieShapePlaceHolder.Visibility = DieShape.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                NumberOfTipsPlaceHolder.Visibility = NumberOfTips.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                DieODPlaceholder.Visibility = DieOD.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+                DieOLPlaceholder.Visibility = DieOL.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => AllControlsEnabledOrDisabled", ex.Message, user);
+            }
         }
 
         #region Events
@@ -4262,6 +4327,22 @@ namespace NatoliOrderInterface
                 this.Show();
             }
         }
+        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (int.TryParse(QuoteNumber.Text, out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
+            {
+                try
+                {
+                    Quote quote = new Quote(quoteNumber, quoteRevNumber);
+                    QuoteInfoWindow quoteInfoWindow = new QuoteInfoWindow(quote, mainWindow, user);
+                    quoteInfoWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("ProjectWindow => OpenQuoteButton_Click", ex.Message, user);
+                }
+            }
+        }
         /// <summary>
         /// Changes the units on the project from mm to in or vice-versa
         /// </summary>
@@ -4269,10 +4350,12 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void Units_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            bool isInch = (string)Resources["UnitsText"] == "mm";
-            double scalar = isInch ? 1 / 25.4 : 25.4;
-            Resources["UnitsText"] = isInch ? "in" : "mm";
-            List<TextBox> textBoxes = new List<TextBox>() {
+            try
+            {
+                bool isInch = (string)Resources["UnitsText"] == "mm";
+                double scalar = isInch ? 1 / 25.4 : 25.4;
+                Resources["UnitsText"] = isInch ? "in" : "mm";
+                List<TextBox> textBoxes = new List<TextBox>() {
             TabletWidth,
             TabletLength,
             UpperCupDepth,
@@ -4284,12 +4367,17 @@ namespace NatoliOrderInterface
             LongRejectCupDepth,
             LongRejectLand
             };
-            foreach (TextBox textBox in textBoxes)
-            {
-                if (!string.IsNullOrEmpty(textBox.Text) && double.TryParse(textBox.Text, out double number))
+                foreach (TextBox textBox in textBoxes)
                 {
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => textBox.Text = Math.Round(number * scalar, 6).ToString()));
+                    if (!string.IsNullOrEmpty(textBox.Text) && double.TryParse(textBox.Text, out double number))
+                    {
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => textBox.Text = Math.Round(number * scalar, 6).ToString()));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => Units_MouseUp", ex.Message, user);
             }
         }
 
@@ -4344,6 +4432,7 @@ namespace NatoliOrderInterface
                         engineeringProject.QuoteRevNumber = "";
                         projectLinkedToQuote = !projectLinkedToQuote;
                         QuoteFolderButton.IsEnabled = false;
+                        LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
                     }
                     // Does not have quote or order attached
                     else
@@ -4373,6 +4462,7 @@ namespace NatoliOrderInterface
                                             engineeringProject.QuoteNumber = quoteNumber;
                                             engineeringProject.QuoteRevNumber = quoteRevNumber;
                                             projectLinkedToQuote = !projectLinkedToQuote;
+                                            LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                                             QuoteFolderButton.IsEnabled = true;
                                             FillFromQuote(Convert.ToDouble(quoteNumber), Convert.ToInt16(quoteRevNumber), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
                                             break;
@@ -4426,21 +4516,28 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void SpecificationsButton_Click(object sender, RoutedEventArgs e)
         {
-            ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Visibility == Visibility.Visible, NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
-                PerSampleTool, RefToolDrawing, PerSuppliedPicture, RefNatoliDrawing, RefNonNatoliDrawing, BinLocation);
-            if (projectSpecificationsWindow.ShowDialog() == true)
+            try
             {
-                NewDrawing = projectSpecificationsWindow.newDrawing;
-                UpdateExistingDrawing = projectSpecificationsWindow.updateExistingDrawing;
-                UpdateTextOnDrawing = projectSpecificationsWindow.updateTextOnDrawing;
-                PerSampleTablet = projectSpecificationsWindow.perSampleTablet;
-                RefTabletDrawing = projectSpecificationsWindow.refTabletDrawing;
-                PerSampleTool = projectSpecificationsWindow.perSampleTool;
-                RefToolDrawing = projectSpecificationsWindow.refToolDrawing;
-                PerSuppliedPicture = projectSpecificationsWindow.perSuppliedPicture;
-                RefNatoliDrawing = projectSpecificationsWindow.refNatoliDrawing;
-                RefNonNatoliDrawing = projectSpecificationsWindow.refNonNatoliDrawing;
-                BinLocation = projectSpecificationsWindow.binLocation;
+                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Visibility == Visibility.Visible, NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
+                    PerSampleTool, RefToolDrawing, PerSuppliedPicture, RefNatoliDrawing, RefNonNatoliDrawing, BinLocation);
+                if (projectSpecificationsWindow.ShowDialog() == true)
+                {
+                    NewDrawing = projectSpecificationsWindow.newDrawing;
+                    UpdateExistingDrawing = projectSpecificationsWindow.updateExistingDrawing;
+                    UpdateTextOnDrawing = projectSpecificationsWindow.updateTextOnDrawing;
+                    PerSampleTablet = projectSpecificationsWindow.perSampleTablet;
+                    RefTabletDrawing = projectSpecificationsWindow.refTabletDrawing;
+                    PerSampleTool = projectSpecificationsWindow.perSampleTool;
+                    RefToolDrawing = projectSpecificationsWindow.refToolDrawing;
+                    PerSuppliedPicture = projectSpecificationsWindow.perSuppliedPicture;
+                    RefNatoliDrawing = projectSpecificationsWindow.refNatoliDrawing;
+                    RefNonNatoliDrawing = projectSpecificationsWindow.refNonNatoliDrawing;
+                    BinLocation = projectSpecificationsWindow.binLocation;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => SpecificationsButton_Click", ex.Message, user);
             }
         }
         /// <summary>
@@ -4450,23 +4547,29 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CoreRodButton_Click(object sender, RoutedEventArgs e)
         {
-            CoreRodWindow coreRodWindow = new CoreRodWindow(this, CreateButton.Visibility == Visibility.Visible,
-                CoreRod, CoreRodSteelID,
-                CoreRodKey, CoreRodKeySteelID,
-                CoreRodKeyCollar, CoreRodKeyCollarSteelID,
-                CoreRodPunch, CoreRodPunchSteelID);
-            if (coreRodWindow.ShowDialog() == true)
+            try
             {
-                CoreRod = coreRodWindow.CoreRod;
-                CoreRodSteelID = coreRodWindow.CoreRodSteelID;
-                CoreRodKey = coreRodWindow.CoreRodKey;
-                CoreRodKeySteelID = coreRodWindow.CoreRodKeySteelID;
-                CoreRodKeyCollar = coreRodWindow.CoreRodKeyCollar;
-                CoreRodKeyCollarSteelID = coreRodWindow.CoreRodKeyCollarSteelID;
-                CoreRodPunch = coreRodWindow.CoreRodPunch;
-                CoreRodPunchSteelID = coreRodWindow.CoreRodPunchSteelID;
+                CoreRodWindow coreRodWindow = new CoreRodWindow(this, CreateButton.Visibility == Visibility.Visible,
+                    CoreRod, CoreRodSteelID,
+                    CoreRodKey, CoreRodKeySteelID,
+                    CoreRodKeyCollar, CoreRodKeyCollarSteelID,
+                    CoreRodPunch, CoreRodPunchSteelID);
+                if (coreRodWindow.ShowDialog() == true)
+                {
+                    CoreRod = coreRodWindow.CoreRod;
+                    CoreRodSteelID = coreRodWindow.CoreRodSteelID;
+                    CoreRodKey = coreRodWindow.CoreRodKey;
+                    CoreRodKeySteelID = coreRodWindow.CoreRodKeySteelID;
+                    CoreRodKeyCollar = coreRodWindow.CoreRodKeyCollar;
+                    CoreRodKeyCollarSteelID = coreRodWindow.CoreRodKeyCollarSteelID;
+                    CoreRodPunch = coreRodWindow.CoreRodPunch;
+                    CoreRodPunchSteelID = coreRodWindow.CoreRodPunchSteelID;
+                }
             }
-
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => CoreRodButton_Click", ex.Message, user);
+            }
         }
         /// <summary>
         /// Switches the routing from tablets to tools or vice-versa.
@@ -4495,48 +4598,55 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (sender is ComboBox)
+            try
             {
-                ComboBox comboBox = sender as ComboBox;
-                if (comboBox.Name.ToString() == "DieShape")
+                if (sender is ComboBox)
                 {
-                    DieShapePlaceHolder.Visibility = Visibility.Collapsed;
-                }
-                else if (comboBox.Name.ToString() == "NumberOfTips")
-                {
-                    NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
-                }
-
-            }
-            else if (sender is TextBox textBox)
-            {
-                string name = textBox.Name.ToString();
-                switch (name)
-                {
-                    case "UpperHobDescription":
-                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "LowerHobDescription":
-                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "ShortRejectHobDescription":
-                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "LongRejectHobDescription":
-                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "DieOD":
-                        DieODPlaceholder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "DieOL":
-                        DieOLPlaceholder.Visibility = Visibility.Collapsed;
-                        break;
-                    case "NumberOfTips":
+                    ComboBox comboBox = sender as ComboBox;
+                    if (comboBox.Name.ToString() == "DieShape")
+                    {
+                        DieShapePlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else if (comboBox.Name.ToString() == "NumberOfTips")
+                    {
                         NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
-                        break;
-                    default:
-                        break;
+                    }
+
                 }
+                else if (sender is TextBox textBox)
+                {
+                    string name = textBox.Name.ToString();
+                    switch (name)
+                    {
+                        case "UpperHobDescription":
+                            UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "LowerHobDescription":
+                            LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "ShortRejectHobDescription":
+                            ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "LongRejectHobDescription":
+                            LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "DieOD":
+                            DieODPlaceholder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "DieOL":
+                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                            break;
+                        case "NumberOfTips":
+                            NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => TextBox_GotFocus", ex.Message, user);
             }
         }
         /// <summary>
@@ -4546,98 +4656,24 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (sender is ComboBox)
+            try
             {
-                ComboBox comboBox = sender as ComboBox;
-                if (comboBox.Name.ToString() == "DieShape")
+                if (sender is ComboBox)
                 {
-                    if (!string.IsNullOrWhiteSpace(DieShape.Text.ToString()))
+                    ComboBox comboBox = sender as ComboBox;
+                    if (comboBox.Name.ToString() == "DieShape")
                     {
-                        DieShapePlaceHolder.Visibility = Visibility.Collapsed;
+                        if (!string.IsNullOrWhiteSpace(DieShape.Text.ToString()))
+                        {
+                            DieShapePlaceHolder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            DieShapePlaceHolder.Visibility = Visibility.Visible;
+                        }
                     }
-                    else
+                    else if (comboBox.Name.ToString() == "NumberOfTips")
                     {
-                        DieShapePlaceHolder.Visibility = Visibility.Visible;
-                    }
-                }
-                else if (comboBox.Name.ToString() == "NumberOfTips")
-                {
-                    if (!string.IsNullOrWhiteSpace(NumberOfTips.Text.ToString()))
-                    {
-                        NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        NumberOfTipsPlaceHolder.Visibility = Visibility.Visible;
-                    }
-                }
-            }
-            else if (sender is TextBox textBox)
-            {
-                string name = textBox.Name.ToString();
-                switch (name)
-                {
-                    case "UpperHobDescription":
-                        if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()))
-                        {
-                            UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "LowerHobDescription":
-                        if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()))
-                        {
-                            LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "ShortRejectHobDescription":
-                        if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()))
-                        {
-                            ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "LongRejectHobDescription":
-                        if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()))
-                        {
-                            LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "DieOD":
-                        if (!string.IsNullOrWhiteSpace(DieOD.Text.ToString()))
-                        {
-                            DieODPlaceholder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            DieODPlaceholder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "DieOL":
-                        if (!string.IsNullOrWhiteSpace(DieOL.Text.ToString()))
-                        {
-                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            DieOLPlaceholder.Visibility = Visibility.Visible;
-                        }
-                        break;
-                    case "NumberOfTips":
                         if (!string.IsNullOrWhiteSpace(NumberOfTips.Text.ToString()))
                         {
                             NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
@@ -4646,10 +4682,91 @@ namespace NatoliOrderInterface
                         {
                             NumberOfTipsPlaceHolder.Visibility = Visibility.Visible;
                         }
-                        break;
-                    default:
-                        break;
+                    }
                 }
+                else if (sender is TextBox textBox)
+                {
+                    string name = textBox.Name.ToString();
+                    switch (name)
+                    {
+                        case "UpperHobDescription":
+                            if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()))
+                            {
+                                UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "LowerHobDescription":
+                            if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()))
+                            {
+                                LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "ShortRejectHobDescription":
+                            if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()))
+                            {
+                                ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "LongRejectHobDescription":
+                            if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()))
+                            {
+                                LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "DieOD":
+                            if (!string.IsNullOrWhiteSpace(DieOD.Text.ToString()))
+                            {
+                                DieODPlaceholder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                DieODPlaceholder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "DieOL":
+                            if (!string.IsNullOrWhiteSpace(DieOL.Text.ToString()))
+                            {
+                                DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                DieOLPlaceholder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        case "NumberOfTips":
+                            if (!string.IsNullOrWhiteSpace(NumberOfTips.Text.ToString()))
+                            {
+                                NumberOfTipsPlaceHolder.Visibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                NumberOfTipsPlaceHolder.Visibility = Visibility.Visible;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => TextBox_LostFocus", ex.Message, user);
             }
         }
         /// <summary>
@@ -4659,22 +4776,29 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void PunchTolerance_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            if (string.IsNullOrWhiteSpace(UpperTolerances.Text) && UpperTolerances.SelectedItem == null)
+            try
             {
-                UpperTolerances.SelectedItem = comboBox.SelectedItem;
+                ComboBox comboBox = sender as ComboBox;
+                if (string.IsNullOrWhiteSpace(UpperTolerances.Text) && UpperTolerances.SelectedItem == null)
+                {
+                    UpperTolerances.SelectedItem = comboBox.SelectedItem;
+                }
+                if (string.IsNullOrWhiteSpace(LowerTolerances.Text) && LowerTolerances.SelectedItem == null)
+                {
+                    LowerTolerances.SelectedItem = comboBox.SelectedItem;
+                }
+                if (string.IsNullOrWhiteSpace(ShortRejectTolerances.Text) && ShortRejectTolerances.SelectedItem == null)
+                {
+                    ShortRejectTolerances.SelectedItem = comboBox.SelectedItem;
+                }
+                if (string.IsNullOrWhiteSpace(LongRejectTolerances.Text) && LongRejectTolerances.SelectedItem == null)
+                {
+                    LongRejectTolerances.SelectedItem = comboBox.SelectedItem;
+                }
             }
-            if (string.IsNullOrWhiteSpace(LowerTolerances.Text) && LowerTolerances.SelectedItem == null)
+            catch (Exception ex)
             {
-                LowerTolerances.SelectedItem = comboBox.SelectedItem;
-            }
-            if (string.IsNullOrWhiteSpace(ShortRejectTolerances.Text) && ShortRejectTolerances.SelectedItem == null)
-            {
-                ShortRejectTolerances.SelectedItem = comboBox.SelectedItem;
-            }
-            if (string.IsNullOrWhiteSpace(LongRejectTolerances.Text) && LongRejectTolerances.SelectedItem == null)
-            {
-                LongRejectTolerances.SelectedItem = comboBox.SelectedItem;
+                IMethods.WriteToErrorLog("ProjectWindow => PunchTolerance_SelectionChanged", ex.Message, user);
             }
         }
         /// <summary>
@@ -4684,9 +4808,16 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void TabletsRequired_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+            try
             {
-                MultiTipSketchTabItem.IsEnabled = true;
+                if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+                {
+                    MultiTipSketchTabItem.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => TabletsRequired_Click", ex.Message, user);
             }
         }
         /// <summary>
@@ -4696,9 +4827,16 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void ToolsRequired_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+            try
             {
-                MultiTipSketchTabItem.IsEnabled = true;
+                if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+                {
+                    MultiTipSketchTabItem.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => ToolsRequired_Click", ex.Message, user);
             }
         }
         /// <summary>
@@ -4708,33 +4846,47 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void MultiTipSketch_Click(object sender, RoutedEventArgs e)
         {
-            if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+            try
             {
-                MultiTipSketchTabItem.IsEnabled = true;
+                if (MultiTipSketch.IsChecked == true && (ToolsRequired.IsChecked == true || TabletsRequired.IsChecked == true))
+                {
+                    MultiTipSketchTabItem.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => MultiTipSketch_Click", ex.Message, user);
             }
         }
         private void TabletDrawingsButton_Click(object sender, RoutedEventArgs e)
         {
-            List<string> hobNumbers = new List<string>();
-            if (int.TryParse(UpperHobNumber.Text, out int upperHobNumber) && upperHobNumber > 0)
+            try
             {
-                hobNumbers.Add(upperHobNumber.ToString());
+                List<string> hobNumbers = new List<string>();
+                if (int.TryParse(UpperHobNumber.Text, out int upperHobNumber) && upperHobNumber > 0)
+                {
+                    hobNumbers.Add(upperHobNumber.ToString());
+                }
+                if (int.TryParse(LowerHobNumber.Text, out int lowerHobNumber) && lowerHobNumber > 0)
+                {
+                    hobNumbers.Add(lowerHobNumber.ToString());
+                }
+                if (int.TryParse(ShortRejectHobNumber.Text, out int shortRejectHobNumber) && shortRejectHobNumber > 0)
+                {
+                    hobNumbers.Add(shortRejectHobNumber.ToString());
+                }
+                if (int.TryParse(LongRejectHobNumber.Text, out int longRejectHobNumber) && longRejectHobNumber > 0)
+                {
+                    hobNumbers.Add(longRejectHobNumber.ToString());
+                }
+                if (hobNumbers.Count > 0)
+                {
+                    TabletDrawings tabletDrawings = new TabletDrawings(hobNumbers, this as Window, projectNumber, projectRevNumber);
+                }
             }
-            if (int.TryParse(LowerHobNumber.Text, out int lowerHobNumber) && lowerHobNumber > 0)
+            catch (Exception ex)
             {
-                hobNumbers.Add(lowerHobNumber.ToString());
-            }
-            if (int.TryParse(ShortRejectHobNumber.Text, out int shortRejectHobNumber) && shortRejectHobNumber > 0)
-            {
-                hobNumbers.Add(shortRejectHobNumber.ToString());
-            }
-            if (int.TryParse(LongRejectHobNumber.Text, out int longRejectHobNumber) && longRejectHobNumber > 0)
-            {
-                hobNumbers.Add(longRejectHobNumber.ToString());
-            }
-            if (hobNumbers.Count > 0)
-            {
-                TabletDrawings tabletDrawings = new TabletDrawings(hobNumbers, this as Window, projectNumber, projectRevNumber);
+                IMethods.WriteToErrorLog("ProjectWindow => TabletDrawingsButton_Click", ex.Message, user);
             }
 
         }
@@ -4747,108 +4899,67 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void EditedTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            string _editedText = editedText.ToString().Trim();
-            if (!string.IsNullOrWhiteSpace(_editedText))
+            try
             {
-                string _editedTextBoxName = editedTextBoxName.ToString();
-                string _upperCupType = upperCupType.Trim();
-                string _upperCupDepth = upperCupDepth.Trim();
-                string _lowerCupType = lowerCupType.Trim();
-                string _lowerCupDepth = lowerCupDepth.Trim();
-                string _shortRejectCupType = shortRejectCupType.Trim();
-                string _shortRejectCupDepth = shortRejectCupDepth.Trim();
-                string _longRejectCupType = longRejectCupType.Trim();
-                string _longRejectCupDepth = longRejectCupDepth.Trim();
-                string _upperLand = upperLand.Trim();
-                string _lowerLand = lowerLand.Trim();
-                string _shortRejectLand = shortRejectLand.Trim();
-                string _longRejectLand = longRejectLand.Trim();
-                using var _necContext = new NECContext();
-                using var _nat01Context = new NAT01Context();
-                using var _nat02Context = new NAT02Context();
-                switch (_editedTextBoxName)
+                string _editedText = editedText.ToString().Trim();
+                if (!string.IsNullOrWhiteSpace(_editedText))
                 {
-                    case "CustomerNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = ""));
-                        }
-                        break;
-                    case "ShipToNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = ""));
-                        }
-                        break;
-                    case "EndUserNumber":
-                        if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
-                        }
-                        break;
-                    case "DieNumber":
-                        if (_nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId.Trim() == _editedText))
-                        {
-                            DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText);
-                            // Use Note2 from Die List if present
-                            if (!string.IsNullOrWhiteSpace(die.Note2))
+                    string _editedTextBoxName = editedTextBoxName.ToString();
+                    string _upperCupType = upperCupType.Trim();
+                    string _upperCupDepth = upperCupDepth.Trim();
+                    string _lowerCupType = lowerCupType.Trim();
+                    string _lowerCupDepth = lowerCupDepth.Trim();
+                    string _shortRejectCupType = shortRejectCupType.Trim();
+                    string _shortRejectCupDepth = shortRejectCupDepth.Trim();
+                    string _longRejectCupType = longRejectCupType.Trim();
+                    string _longRejectCupDepth = longRejectCupDepth.Trim();
+                    string _upperLand = upperLand.Trim();
+                    string _lowerLand = lowerLand.Trim();
+                    string _shortRejectLand = shortRejectLand.Trim();
+                    string _longRejectLand = longRejectLand.Trim();
+                    using var _necContext = new NECContext();
+                    using var _nat01Context = new NAT01Context();
+                    using var _nat02Context = new NAT02Context();
+                    switch (_editedTextBoxName)
+                    {
+                        case "CustomerNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
                             }
-                            // Use the shape ID description
                             else
                             {
-                                short shapeID = (short)die.ShapeId;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => CustomerName.Text = ""));
                             }
-                            float width = (float)die.WidthMinorAxis;
-                            float length = (float)die.LengthMajorAxis;
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
-                        }
-                        break;
-                    case "UpperHobNumber":
-                        // It is a hob number that exists
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            break;
+                        case "ShipToNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
                             {
-                                UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
+                            }
+                            else
                             {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShipToName.Text = ""));
+                            }
+                            break;
+                        case "EndUserNumber":
+                            if (_necContext.Rm00101.Any(c => c.Custnmbr.Trim() == _editedText.Trim()))
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = _necContext.Rm00101.First(c => c.Custnmbr.Trim() == _editedText).Custname.Trim()));
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
+                            }
+                            break;
+                        case "DieNumber":
+                            if (_nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId.Trim() == _editedText))
+                            {
+                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText);
+                                // Use Note2 from Die List if present
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
                                 // Use the shape ID description
@@ -4863,422 +4974,470 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            // It is a new hob
-                            if (_editedText.ToUpper() == "NEW")
-                            {
-                                // Take the cup type from other items
-                                if (!string.IsNullOrEmpty(_lowerCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                // Take the cup depth from other items
-                                if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                // Take the land from other items
-                                if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                            }
-                            // Does not match anything, drive to nothing
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
                             }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "LowerHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                            break;
+                        case "UpperHobNumber":
+                            // It is a hob number that exists
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
                             {
-                                LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                                }
-                                // Use the shape ID description
-                                else
+                                    UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                                }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
-                            }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
-                            {
-                                if (!string.IsNullOrEmpty(_upperCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "ShortRejectHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
-                            {
-                                ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
+                                // It is a new hob
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    // Take the cup type from other items
+                                    if (!string.IsNullOrEmpty(_lowerCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    // Take the cup depth from other items
+                                    if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    // Take the land from other items
+                                    if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
-                                // Use the shape ID description
+                                // Does not match anything, drive to nothing
                                 else
                                 {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
                                 }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "LowerHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
                             {
-                                if (!string.IsNullOrEmpty(_upperCupType))
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "LongRejectHobNumber":
-                        if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText))
-                        {
-                            HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
-                            string note1 = hob.Note1.Trim();
-                            string note2 = hob.Note2.Trim();
-                            string note3 = hob.Note3.Trim();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
-                            {
-                                LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
-                                LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
-                                DieNumber.Text = hob.DieId.Trim();
-                            }));
-                            if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
-                            {
-                                DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
-                                if (!string.IsNullOrWhiteSpace(die.Note2))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText).Note2.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
-                                // Use the shape ID description
                                 else
                                 {
-                                    short shapeID = (short)die.ShapeId;
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
                                 }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
-                        }
-                        else
-                        {
-                            if (_editedText.ToUpper() == "NEW")
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "ShortRejectHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
                             {
-                                if (!string.IsNullOrEmpty(_upperCupType))
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupType))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d2))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-
-                                if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
-                                }
-                                else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d5))
-                                {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
-                            }
-                        }
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
-                        break;
-                    case "MachineNumber":
-                        if (!string.IsNullOrWhiteSpace(_editedText) && short.TryParse(_editedText, out short _machineNo))
-                        {
-                            if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
-                            {
-                                string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
-                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
-                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = description));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = od));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Collapsed));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ol));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Collapsed));
-                            }
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Visible));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Visible));
-                        }
-                        break;
-                    case "SketchID":
-                        if (!string.IsNullOrEmpty(_editedText) && int.TryParse(_editedText, out int _sketchID) && _nat02Context.MultiTipSketchInformation.Any(s => s.ID == _sketchID && s.Width != null))
-                        {
-
-                            MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == _sketchID);
-                            string ID = multiTipSketchInformation.ID.ToString();
-                            string dieNumber = multiTipSketchInformation.DieNumber.ToString();
-                            string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
-                            string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
-                            string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = tipQTY));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = false));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Hidden));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = type));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = false));
-                            if (multiTipSketchInformation.Length != null)
-                            {
-                                string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
-                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
-                                if (System.IO.File.Exists(path))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _longRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectCupDepth) && double.TryParse(_longRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_longRejectLand) && double.TryParse(_longRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
+                                }
+                            }
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "LongRejectHobNumber":
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText))
+                            {
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                string note1 = hob.Note1.Trim();
+                                string note2 = hob.Note2.Trim();
+                                string note3 = hob.Note3.Trim();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                                {
+                                    LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
+                                    LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
+                                    DieNumber.Text = hob.DieId.Trim();
+                                }));
+                                if (_nat01Context.DieList.Any(d => d.DieId.Trim() == hob.DieId.Trim()))
+                                {
+                                    DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == hob.DieId.Trim());
+                                    if (!string.IsNullOrWhiteSpace(die.Note2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => die.Note2.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    // Use the shape ID description
+                                    else
+                                    {
+                                        short shapeID = (short)die.ShapeId;
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                                    }
+                                    float width = (float)die.WidthMinorAxis;
+                                    float length = (float)die.LengthMajorAxis;
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
                             }
                             else
                             {
-                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
-                                if (System.IO.File.Exists(path))
+                                if (_editedText.ToUpper() == "NEW")
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    if (!string.IsNullOrEmpty(_upperCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _upperCupType));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _lowerCupDepth));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupType))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = _shortRejectCupType));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperCupDepth) && double.TryParse(_upperCupDepth.Trim(), out double d))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerCupDepth) && double.TryParse(_lowerCupDepth.Trim(), out double d1))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d1.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectCupDepth) && double.TryParse(_shortRejectCupDepth.Trim(), out double d2))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = d2.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+
+                                    if (!string.IsNullOrEmpty(_upperLand) && double.TryParse(_upperLand.Trim(), out double d3))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d3.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_lowerLand) && double.TryParse(_lowerLand.Trim(), out double d4))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d4.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
+                                    else if (!string.IsNullOrEmpty(_shortRejectLand) && double.TryParse(_shortRejectLand.Trim(), out double d5))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = d5.ToString("F4", CultureInfo.InvariantCulture)));
+                                    }
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
                                 }
                             }
-                        }
-                        else
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Visible));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = ""));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
-                        }
-                        break;
-                    default:
-                        break;
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
+                            break;
+                        case "MachineNumber":
+                            if (!string.IsNullOrWhiteSpace(_editedText) && short.TryParse(_editedText, out short _machineNo))
+                            {
+                                if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                                {
+                                    string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
+                                    string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
+                                    string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = description));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = od));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Collapsed));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ol));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Collapsed));
+                                }
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Visible));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOL.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOLPlaceholder.Visibility = Visibility.Visible));
+                            }
+                            break;
+                        case "SketchID":
+                            if (!string.IsNullOrEmpty(_editedText) && int.TryParse(_editedText, out int _sketchID) && _nat02Context.MultiTipSketchInformation.Any(s => s.ID == _sketchID && s.Width != null))
+                            {
+
+                                MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == _sketchID);
+                                string ID = multiTipSketchInformation.ID.ToString();
+                                string dieNumber = multiTipSketchInformation.DieNumber.ToString();
+                                string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
+                                string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
+                                string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = tipQTY));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = false));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Hidden));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = type));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = false));
+                                if (multiTipSketchInformation.Length != null)
+                                {
+                                    string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
+                                    string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    }
+                                }
+                                else
+                                {
+                                    string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTips.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => NumberOfTipsPlaceHolder.Visibility = Visibility.Visible));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.Text = ""));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipStyle.IsEnabled = true));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Collapsed));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    _necContext.Dispose();
+                    _nat01Context.Dispose();
+                    _nat02Context.Dispose();
+                    EditedTimer.Stop();
                 }
-                _necContext.Dispose();
-                _nat01Context.Dispose();
-                _nat02Context.Dispose();
-                EditedTimer.Stop();
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EnableTabletDrawingsButton()));
             }
-            EnableTabletDrawingsButton();
+            catch(Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => EditedTimer_Elapsed", ex.Message, user);
+            }
         }
         /// <summary>
         /// Resets the timer and changes the "editedText" and "editedTextBoxName" to be used by EditedTimer_Elapsed.
@@ -5287,18 +5446,25 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CustomerNumber_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (timersEnabled)
+            try
             {
-                if (!projectLinkedToQuote)
+                if (timersEnabled)
                 {
-                    if (sender is TextBox textBox)
+                    if (!projectLinkedToQuote)
                     {
-                        EditedTimer.Stop();
-                        editedText = textBox.Text.ToString();
-                        editedTextBoxName = textBox.Name.ToString();
-                        EditedTimer.Start();
+                        if (sender is TextBox textBox)
+                        {
+                            EditedTimer.Stop();
+                            editedText = textBox.Text.ToString();
+                            editedTextBoxName = textBox.Name.ToString();
+                            EditedTimer.Start();
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => CustomerNumber_TextChanged", ex.Message, user);
             }
         }
         /// <summary>
@@ -5484,251 +5650,277 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            if (FormCheck())
+            try
             {
-                Button button = sender as Button;
-                if (button.Content.ToString() == "Create")
+                if (FormCheck())
                 {
-                    try
+                    Button button = sender as Button;
+                    if (button.Content.ToString() == "Create")
+                    {
+                        try
+                        {
+                            using var _projectsContext = new ProjectsContext();
+                            EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
+                            _projectsContext.Update(engineeringProject);
+                            if (TabletsRequired.IsChecked ?? false)
+                            {
+                                EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
+                                if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                                {
+                                    _projectsContext.Update(TabletProject);
+                                }
+                                else
+                                {
+                                    _projectsContext.Add(TabletProject);
+                                }
+                            }
+                            if (ToolsRequired.IsChecked ?? false)
+                            {
+                                EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
+                                if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                                {
+                                    _projectsContext.Update(ToolProject);
+                                }
+                                else
+                                {
+                                    _projectsContext.Add(ToolProject);
+                                }
+                            }
+                            _projectsContext.SaveChanges();
+                            _projectsContext.Dispose();
+                            Directory.CreateDirectory(projectsDirectory + "\\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click() - Create", ex.Message, user);
+                        }
+                        Dispose();
+                        Close();
+                    }
+                    else if (button.Content.ToString() == "Revise")
                     {
                         using var _projectsContext = new ProjectsContext();
+                        EngineeringProjects oldEngineeringProject = null;
+                        EngineeringArchivedProjects archivedProject = null;
+                        if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        }
+                        else if (_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            archivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        }
                         EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
-                        _projectsContext.Update(engineeringProject);
+                        engineeringProject.RevNumber = short.TryParse((oldEngineeringProject == null ? archivedProject.RevNumber : oldEngineeringProject.RevNumber), out short revNumber) ? (revNumber + 1).ToString() : "100";
+                        engineeringProject.TimeSubmitted = (oldEngineeringProject == null ? archivedProject.TimeSubmitted : oldEngineeringProject.TimeSubmitted);
+                        List<string> changed = new List<string>();
+                        string body = "To Whom It May Concern,<br><br>";
+
+
+                        if (oldEngineeringProject != null)
+                        {
+                            body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
+                            "Here are the changes made:<br><b>";
+                            changed = IMethods.GetChangedProperties(oldEngineeringProject, engineeringProject);
+                            if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
+                            {
+                                changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
+                            }
+                            foreach (string change in changed)
+                            {
+                                if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
+                                {
+                                    engineeringProject.Changes += change + "|";
+                                    body += change + "<br>";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> has been revised out of archive to <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> by <u>" + user.GetUserName() + "</u>." + "<br>";
+                        }
+
                         if (TabletsRequired.IsChecked ?? false)
                         {
                             EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
-                            if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            TabletProject.RevNumber = engineeringProject.RevNumber;
+                            if (oldEngineeringProject != null && _projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
                             {
-                                _projectsContext.Update(TabletProject);
+                                EngineeringTabletProjects oldTabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
+                                var changedTablet = IMethods.GetChangedProperties(oldTabletProject, TabletProject);
+                                foreach (string change in changedTablet)
+                                {
+                                    if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
+                                    {
+                                        engineeringProject.Changes += change + "|";
+                                        body += change + "<br>";
+                                    }
+                                }
                             }
-                            else
-                            {
-                                _projectsContext.Add(TabletProject);
-                            }
+                            _projectsContext.Add(TabletProject);
                         }
                         if (ToolsRequired.IsChecked ?? false)
                         {
                             EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
-                            if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            ToolProject.RevNumber = engineeringProject.RevNumber;
+                            if (oldEngineeringProject != null && _projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
                             {
-                                _projectsContext.Update(ToolProject);
+                                EngineeringToolProjects oldToolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
+                                var changedTool = IMethods.GetChangedProperties(oldToolProject, ToolProject);
+                                foreach (string change in changedTool)
+                                {
+                                    if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
+                                    {
+                                        engineeringProject.Changes += change + "|";
+                                        body += change + "<br>";
+                                    }
+                                }
                             }
-                            else
-                            {
-                                _projectsContext.Add(ToolProject);
-                            }
+                            _projectsContext.Add(ToolProject);
+                        }
+
+                        engineeringProject.RevisedBy = user.GetDWPrincipalId();
+                        List<string> to = new List<string>();
+                        to.Add(engineeringProject.CSR);
+                        to.Add(engineeringProject.ReturnToCSR);
+                        to.Add(engineeringProject.TabletStartedBy);
+                        to.Add(engineeringProject.TabletDrawnBy);
+                        to.Add(engineeringProject.ToolDrawnBy);
+                        to.Add(engineeringProject.ToolDrawnBy);
+                        to.Add(user.GetDWPrincipalId());
+                        to.Distinct();
+                        to.RemoveAll(s => string.IsNullOrEmpty(s));
+                        string subject = "Project: " + projectNumber + "-" + projectRevNumber + " Has Been Revised";
+
+
+
+                        if (!string.IsNullOrEmpty(engineeringProject.Changes))
+                        {
+                            engineeringProject.Changes = engineeringProject.Changes.TrimEnd('|');
+                        }
+                        body += "</b><br><br>Thanks,<br>" +
+                            "Engineering Order Interface<br><br><br>" +
+                            "(This E-mail is not monitored by any person(s).)";
+                        _projectsContext.Add(engineeringProject);
+                        if (oldEngineeringProject != null)
+                        {
+                            _projectsContext.Update(oldEngineeringProject);
+                            _projectsContext.Remove(oldEngineeringProject);
                         }
                         _projectsContext.SaveChanges();
+
+                        if (archivedProject == null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                        {
+                            EngineeringArchivedProjects newEngineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                            newEngineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
+                            newEngineeringArchivedProject.ArchivedFromRevision = true;
+                            _projectsContext.Update(newEngineeringArchivedProject);
+                            _projectsContext.SaveChanges();
+                        }
+
+                        IMethods.SendEmail(to, null, new List<string> { "Tyler" }, subject, body, null, System.Net.Mail.MailPriority.High);
                         _projectsContext.Dispose();
-                        Directory.CreateDirectory(projectsDirectory + "\\" + projectNumber + "\\" + "FILES_FOR_CUSTOMER");
+                        if (MessageBox.Show("Project Revised!\nWould you like to close now?", "Revise Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                        {
+                            Dispose();
+                            Close();
+                        }
+                        else
+                        {
+                            CreationBorder.Visibility = Visibility.Hidden;
+                            ProjectNavigation.Visibility = Visibility.Visible;
+                            CreateButton.Content = "Create";
+                            RevisionDate.Text = DateTime.Now.ToString("M/d/yy h:mm tt");
+                            RevisedBy.Text = user.GetDWPrincipalId();
+                            projectRevNumber = (Convert.ToInt16(projectRevNumber) + 1).ToString();
+                            Title = "Project# " + projectNumber + "-" + projectRevNumber;
+                            AllControlsEnabledOrDisabled(false);
+                        }
 
                     }
-                    catch (Exception ex)
-                    {
-                        IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click() - Create", ex.Message, user);
-                    }
-                    Dispose();
-                    Close();
                 }
-                else if (button.Content.ToString() == "Revise")
-                {
-                    using var _projectsContext = new ProjectsContext();
-                    EngineeringProjects oldEngineeringProject = null;
-                    EngineeringArchivedProjects archivedProject = null;
-                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        oldEngineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    }
-                    else if (_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        archivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                    }
-                    EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
-                    engineeringProject.RevNumber = short.TryParse((oldEngineeringProject == null ? archivedProject.RevNumber : oldEngineeringProject.RevNumber), out short revNumber) ? (revNumber + 1).ToString() : "100";
-                    engineeringProject.TimeSubmitted = (oldEngineeringProject == null ? archivedProject.TimeSubmitted : oldEngineeringProject.TimeSubmitted);
-                    List<string> changed = new List<string>();
-                    string body = "To Whom It May Concern,<br><br>";
-
-
-                    if (oldEngineeringProject != null)
-                    {
-                        body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> Has Been Revised To <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> By <u>" + user.GetUserName() + "</u>." + "<br>" +
-                        "Here are the changes made:<br><b>";
-                        changed = IMethods.GetChangedProperties(oldEngineeringProject, engineeringProject);
-                        if (!DateTime.Equals(oldEngineeringProject.DueDate, engineeringProject.DueDate))
-                        {
-                            changed.Add("DueDate" + ": " + oldEngineeringProject.DueDate.ToString("M/d/yy") + " => " + engineeringProject.DueDate.ToString("M/d/yy"));
-                        }
-                        foreach (string change in changed)
-                        {
-                            if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
-                            {
-                                engineeringProject.Changes += change + "|";
-                                body += change + "<br>";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        body += "Project: <u>" + projectNumber + "-" + projectRevNumber + "</u> has been revised out of archive to <u>" + projectNumber + "-" + (Convert.ToInt16(projectRevNumber) + 1) + "</u> by <u>" + user.GetUserName() + "</u>." + "<br>";
-                    }
-
-                    if (TabletsRequired.IsChecked ?? false)
-                    {
-                        EngineeringTabletProjects TabletProject = GetTabletProjectFromCurrentForm();
-                        TabletProject.RevNumber = engineeringProject.RevNumber;
-                        if (oldEngineeringProject != null && _projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
-                        {
-                            EngineeringTabletProjects oldTabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
-                            var changedTablet = IMethods.GetChangedProperties(oldTabletProject, TabletProject);
-                            foreach (string change in changedTablet)
-                            {
-                                if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
-                                {
-                                    engineeringProject.Changes += change + "|";
-                                    body += change + "<br>";
-                                }
-                            }
-                        }
-                        _projectsContext.Add(TabletProject);
-                    }
-                    if (ToolsRequired.IsChecked ?? false)
-                    {
-                        EngineeringToolProjects ToolProject = GetToolProjectFromCurrentForm();
-                        ToolProject.RevNumber = engineeringProject.RevNumber;
-                        if (oldEngineeringProject != null && _projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString()))
-                        {
-                            EngineeringToolProjects oldToolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == engineeringProject.ProjectNumber && p.RevNumber == (Convert.ToInt32(engineeringProject.RevNumber) - 1).ToString());
-                            var changedTool = IMethods.GetChangedProperties(oldToolProject, ToolProject);
-                            foreach (string change in changedTool)
-                            {
-                                if (!change.StartsWith("RevNumber") && !change.StartsWith("Changes"))
-                                {
-                                    engineeringProject.Changes += change + "|";
-                                    body += change + "<br>";
-                                }
-                            }
-                        }
-                        _projectsContext.Add(ToolProject);
-                    }
-
-                    engineeringProject.RevisedBy = user.GetDWPrincipalId();
-                    List<string> to = new List<string>();
-                    to.Add(engineeringProject.CSR);
-                    to.Add(engineeringProject.ReturnToCSR);
-                    to.Add(engineeringProject.TabletStartedBy);
-                    to.Add(engineeringProject.TabletDrawnBy);
-                    to.Add(engineeringProject.ToolDrawnBy);
-                    to.Add(engineeringProject.ToolDrawnBy);
-                    to.Add(user.GetDWPrincipalId());
-                    to.Distinct();
-                    to.RemoveAll(s => string.IsNullOrEmpty(s));
-                    string subject = "Project: " + projectNumber + "-" + projectRevNumber + " Has Been Revised";
-
-
-
-                    if (!string.IsNullOrEmpty(engineeringProject.Changes))
-                    {
-                        engineeringProject.Changes = engineeringProject.Changes.TrimEnd('|');
-                    }
-                    body += "</b><br><br>Thanks,<br>" +
-                        "Engineering Order Interface<br><br><br>" +
-                        "(This E-mail is not monitored by any person(s).)";
-                    _projectsContext.Add(engineeringProject);
-                    if (oldEngineeringProject != null)
-                    {
-                        _projectsContext.Update(oldEngineeringProject);
-                        _projectsContext.Remove(oldEngineeringProject);
-                    }
-                    _projectsContext.SaveChanges();
-
-                    if (archivedProject == null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                    {
-                        EngineeringArchivedProjects newEngineeringArchivedProject = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
-                        newEngineeringArchivedProject.ArchivedBy = user.GetDWPrincipalId();
-                        newEngineeringArchivedProject.ArchivedFromRevision = true;
-                        _projectsContext.Update(newEngineeringArchivedProject);
-                        _projectsContext.SaveChanges();
-                    }
-
-                    IMethods.SendEmail(to, null, new List<string> { "Tyler" }, subject, body, null, System.Net.Mail.MailPriority.High);
-                    _projectsContext.Dispose();
-                    if (MessageBox.Show("Project Revised!\nWould you like to close now?", "Revise Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-                    {
-                        Dispose();
-                        Close();
-                    }
-                    else
-                    {
-                        CreationBorder.Visibility = Visibility.Hidden;
-                        ProjectNavigation.Visibility = Visibility.Visible;
-                        CreateButton.Content = "Create";
-                        RevisionDate.Text = DateTime.Now.ToString("M/d/yy h:mm tt");
-                        RevisedBy.Text = user.GetDWPrincipalId();
-                        projectRevNumber = (Convert.ToInt16(projectRevNumber) + 1).ToString();
-                        Title = "Project# " + projectNumber + "-" + projectRevNumber;
-                        AllControlsEnabledOrDisabled(false);
-                    }
-
-                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click", ex.Message, user);
             }
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            using var _projectsContext = new ProjectsContext();
-            EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(false);
-            if (engineeringProject == null)
+            try
             {
-                return;
-            }
-            if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-            {
-                _projectsContext.Update(engineeringProject);
-            }
-            else
-            {
-                _projectsContext.Add(engineeringProject);
-            }
-            if (TabletsRequired.IsChecked ?? false)
-            {
-                EngineeringTabletProjects engineeringTabletProject = GetTabletProjectFromCurrentForm();
-                if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                using var _projectsContext = new ProjectsContext();
+                EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(false);
+                if (engineeringProject == null)
                 {
-                    _projectsContext.EngineeringTabletProjects.Update(engineeringTabletProject);
+                    return;
+                }
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                {
+                    _projectsContext.Update(engineeringProject);
                 }
                 else
                 {
-                    _projectsContext.EngineeringTabletProjects.Add(engineeringTabletProject);
+                    _projectsContext.Add(engineeringProject);
+                }
+                if (TabletsRequired.IsChecked ?? false)
+                {
+                    EngineeringTabletProjects engineeringTabletProject = GetTabletProjectFromCurrentForm();
+                    if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    {
+                        _projectsContext.EngineeringTabletProjects.Update(engineeringTabletProject);
+                    }
+                    else
+                    {
+                        _projectsContext.EngineeringTabletProjects.Add(engineeringTabletProject);
+                    }
+                }
+                if (ToolsRequired.IsChecked ?? false)
+                {
+                    EngineeringToolProjects engineeringToolProject = GetToolProjectFromCurrentForm();
+                    if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                    {
+                        _projectsContext.EngineeringToolProjects.Update(engineeringToolProject);
+                    }
+                    else
+                    {
+                        _projectsContext.EngineeringToolProjects.Add(engineeringToolProject);
+                    }
+                }
+                _projectsContext.SaveChanges();
+                _projectsContext.Dispose();
+                if (MessageBox.Show("Project Saved!\nWould you like to close now?", "Save Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
+                {
+                    Dispose();
+                    Close();
                 }
             }
-            if (ToolsRequired.IsChecked ?? false)
+            catch (Exception ex)
             {
-                EngineeringToolProjects engineeringToolProject = GetToolProjectFromCurrentForm();
-                if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
-                {
-                    _projectsContext.EngineeringToolProjects.Update(engineeringToolProject);
-                }
-                else
-                {
-                    _projectsContext.EngineeringToolProjects.Add(engineeringToolProject);
-                }
-            }
-            _projectsContext.SaveChanges();
-            _projectsContext.Dispose();
-            if (MessageBox.Show("Project Saved!\nWould you like to close now?", "Save Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
-            {
-                Dispose();
-                Close();
+                IMethods.WriteToErrorLog("ProjectWindow => SaveButton_Click", ex.Message, user);
             }
         }
+        /// <summary>
+        /// Enables all controls to prepare for revision.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReviseButton_Click(object sender, RoutedEventArgs e)
         {
-            // See CreateButton_Click for Revision Actions
-            ProjectNavigation.Visibility = Visibility.Hidden;
-            CreationBorder.Visibility = Visibility.Visible;
-            CreateButton.Content = "Revise";
-            AllControlsEnabledOrDisabled(true);
-            SaveButton.IsEnabled = false;
+            try
+            {
+                // See CreateButton_Click for Revision Actions
+                ProjectNavigation.Visibility = Visibility.Hidden;
+                CreationBorder.Visibility = Visibility.Visible;
+                CreateButton.Content = "Revise";
+                AllControlsEnabledOrDisabled(true);
+                SaveButton.IsEnabled = false;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => ReviseButton_Click", ex.Message, user);
+            }
         }
         private void CancelCreateButton_Click(object sender, RoutedEventArgs e)
         {
@@ -5765,30 +5957,37 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
             try
             {
-                if (quote.OrderNo != 0)
+                if(quote == null)
                 {
-                    string pathToOrder = @"\\nsql03\data1\WorkOrders\" + quote.OrderNo.ToString().Remove(6);
-                    if (System.IO.Directory.Exists(pathToOrder))
+                    if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToOrder + @"""");
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Arrow;
-                        MessageBox.Show("This work order folder does not exist.");
-                    }
-                }
-                else
-                {
-                    string pathToQuote = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber;
-                    if (System.IO.Directory.Exists(pathToQuote))
-                    {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToQuote + @"""");
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Arrow;
-                        MessageBox.Show("This quote folder does not exist.");
+                        quote = new Quote(quoteNumber, quoteRevNumber);
+                        if (quote.OrderNo != 0)
+                        {
+                            string pathToOrder = @"\\nsql03\data1\WorkOrders\" + quote.OrderNo.ToString().Remove(6);
+                            if (System.IO.Directory.Exists(pathToOrder))
+                            {
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToOrder + @"""");
+                            }
+                            else
+                            {
+                                Cursor = Cursors.Arrow;
+                                MessageBox.Show("This work order folder does not exist.");
+                            }
+                        }
+                        else
+                        {
+                            string pathToQuote = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber;
+                            if (System.IO.Directory.Exists(pathToQuote))
+                            {
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToQuote + @"""");
+                            }
+                            else
+                            {
+                                Cursor = Cursors.Arrow;
+                                MessageBox.Show("This quote folder does not exist.");
+                            }
+                        }
                     }
                 }
             }
@@ -5805,93 +6004,100 @@ namespace NatoliOrderInterface
         {
             bool ret = false;
             filename = String.Empty;
-            if (e != null)
+            try
             {
-                if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
+                if (e != null)
                 {
-                    Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
-                    if (data != null)
+                    if ((e.AllowedEffects & DragDropEffects.Copy) == DragDropEffects.Copy)
                     {
-                        if ((data.Length == 1) && (data.GetValue(0) is String))
+                        Array data = ((IDataObject)e.Data).GetData("FileName") as Array;
+                        if (data != null)
                         {
-                            filename = ((string[])data)[0];
-                            string ext = System.IO.Path.GetExtension(filename).ToLower();
-                            if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
+                            if ((data.Length == 1) && (data.GetValue(0) is String))
                             {
-                                ret = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (e.Data.GetDataPresent("FileGroupDescriptor"))
-                        {
-                            Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
-                            byte[] fileGroupDescriptor = new byte[512];
-                            theStream.Read(fileGroupDescriptor, 0, 512);
-                            // used to build the filename from the FileGroupDescriptor block
-                            StringBuilder fileName = new StringBuilder("");
-                            // this trick gets the filename of the passed attached file
-                            for (int i = 76; fileGroupDescriptor[i] != 0; i++)
-                            { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
-                            theStream.Close();
-                            theStream.Dispose();
-                            string path = System.IO.Path.GetTempPath();
-                            // put the zip file into the temp directory
-                            filename = path + fileName.ToString();
-
-                            if (filename.EndsWith(".msg"))
-                            {
-                                try
+                                filename = ((string[])data)[0];
+                                string ext = System.IO.Path.GetExtension(filename).ToLower();
+                                if ((ext == ".jpg") || (ext == ".png") || (ext == ".bmp") || (ext == ".pdf") || (ext == ".msg"))
                                 {
-                                    Microsoft.Office.Interop.Outlook.Application OL = new Microsoft.Office.Interop.Outlook.Application();
-                                    for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
-                                    {
-                                        Object temp = OL.ActiveExplorer().Selection[i];
-                                        if (temp is Microsoft.Office.Interop.Outlook.MailItem)
-                                        {
-                                            Microsoft.Office.Interop.Outlook.MailItem mailitem = (temp as Microsoft.Office.Interop.Outlook.MailItem);
-                                            Microsoft.Office.Interop.Outlook.ItemProperties props = mailitem.ItemProperties;
-                                            filename = ".msg";
-                                        }
-                                    }
                                     ret = true;
                                 }
-                                catch
-                                {
-
-                                }
                             }
-                            else
+                        }
+                        else
+                        {
+                            if (e.Data.GetDataPresent("FileGroupDescriptor"))
                             {
-                                // get the actual raw file into memory
-                                MemoryStream ms = (MemoryStream)e.Data.GetData(
-                                    "FileContents", true);
-                                // allocate enough bytes to hold the raw data
-                                byte[] fileBytes = new byte[ms.Length];
-                                // set starting position at first byte and read in the raw data
-                                ms.Position = 0;
-                                ms.Read(fileBytes, 0, (int)ms.Length);
-                                // create a file and save the raw zip file to it
-                                FileStream fs = new FileStream(filename, FileMode.Create);
-                                fs.Write(fileBytes, 0, (int)fileBytes.Length);
+                                Stream theStream = (Stream)e.Data.GetData("FileGroupDescriptor");
+                                byte[] fileGroupDescriptor = new byte[512];
+                                theStream.Read(fileGroupDescriptor, 0, 512);
+                                // used to build the filename from the FileGroupDescriptor block
+                                StringBuilder fileName = new StringBuilder("");
+                                // this trick gets the filename of the passed attached file
+                                for (int i = 76; fileGroupDescriptor[i] != 0; i++)
+                                { fileName.Append(Convert.ToChar(fileGroupDescriptor[i])); }
+                                theStream.Close();
+                                theStream.Dispose();
+                                string path = System.IO.Path.GetTempPath();
+                                // put the zip file into the temp directory
+                                filename = path + fileName.ToString();
 
-                                fs.Close();  // close the file
-
-                                FileInfo tempFile = new FileInfo(filename);
-
-                                // always good to make sure we actually created the file
-                                if (tempFile.Exists == true)
+                                if (filename.EndsWith(".msg"))
                                 {
-                                    // for now, just delete what we created
+                                    try
+                                    {
+                                        Microsoft.Office.Interop.Outlook.Application OL = new Microsoft.Office.Interop.Outlook.Application();
+                                        for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                                        {
+                                            Object temp = OL.ActiveExplorer().Selection[i];
+                                            if (temp is Microsoft.Office.Interop.Outlook.MailItem)
+                                            {
+                                                Microsoft.Office.Interop.Outlook.MailItem mailitem = (temp as Microsoft.Office.Interop.Outlook.MailItem);
+                                                Microsoft.Office.Interop.Outlook.ItemProperties props = mailitem.ItemProperties;
+                                                filename = ".msg";
+                                            }
+                                        }
+                                        ret = true;
+                                    }
+                                    catch
+                                    {
 
+                                    }
                                 }
                                 else
-                                { Trace.WriteLine("File was not created!"); }
+                                {
+                                    // get the actual raw file into memory
+                                    MemoryStream ms = (MemoryStream)e.Data.GetData(
+                                        "FileContents", true);
+                                    // allocate enough bytes to hold the raw data
+                                    byte[] fileBytes = new byte[ms.Length];
+                                    // set starting position at first byte and read in the raw data
+                                    ms.Position = 0;
+                                    ms.Read(fileBytes, 0, (int)ms.Length);
+                                    // create a file and save the raw zip file to it
+                                    FileStream fs = new FileStream(filename, FileMode.Create);
+                                    fs.Write(fileBytes, 0, (int)fileBytes.Length);
+
+                                    fs.Close();  // close the file
+
+                                    FileInfo tempFile = new FileInfo(filename);
+
+                                    // always good to make sure we actually created the file
+                                    if (tempFile.Exists == true)
+                                    {
+                                        // for now, just delete what we created
+
+                                    }
+                                    else
+                                    { Trace.WriteLine("File was not created!"); }
+                                }
                             }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => GetFilename", ex.Message, App.user);
             }
             return ret;
         }
@@ -6071,8 +6277,9 @@ namespace NatoliOrderInterface
             // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
+
         #endregion
 
-
+       
     }
 }

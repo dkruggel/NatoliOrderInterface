@@ -183,27 +183,27 @@ namespace NatoliOrderInterface
             string type = displayGrid.Children.OfType<ListBox>().First().Name[0..^7];
             (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
 
-            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
-            {
-                UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
-                Label label = uIElementCollection[0] as Label;
-                label.ApplyTemplate();
-                Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
-                Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
-                DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
-                TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
-                Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
-                Grid templatedBorderGrid = templatedBorder.Child as Grid;
-                TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
+            //foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            //{
+            //    UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
+            //    Label label = uIElementCollection[0] as Label;
+            //    label.ApplyTemplate();
+            //    Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
+            //    Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
+            //    DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
+            //    TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+            //    Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
+            //    Grid templatedBorderGrid = templatedBorder.Child as Grid;
+            //    TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
 
-                TextBox textBox = (sender as TextBox);
+            //    TextBox textBox = (sender as TextBox);
 
-                if ((textBox == templatedActualTextBox && textBox.Text == ""))
-                {
-                    // Resets the height so it can scale with number of items
-                    label.Height = Double.NaN;
-                }
-            }
+            //    if ((textBox == templatedActualTextBox && textBox.Text == ""))
+            //    {
+            //        // Resets the height so it can scale with number of items
+            //        label.Height = Double.NaN;
+            //    }
+            //}
         }
         private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
@@ -867,31 +867,82 @@ namespace NatoliOrderInterface
 
                 // Get Buttons
                 var buttons = dockPanel.Children.OfType<StackPanel>().First().Children.OfType<Button>();
+                
 
                 string col0val = (x[1] as TextBlock).Text;
                 string col1val = (x[2] as TextBlock).Text;
                 if (quote)
                 {
+                    
                     selectedQuotes.RemoveAll(sq=> sq.Item1 == col0val && sq.Item2 == col1val && sq.Item4 == type);
                     selectedQuotes = selectedQuotes.Distinct().ToList();
+
+                    var uniqueTypes = selectedQuotes.Select(q => q.Item4).Distinct();
+
+                    if (uniqueTypes.Count() == 1)
+                    {
+                        if (type == "QuotesNotConverted")
+                        {
+                            Button submitQuoteButton = buttons.Single(b => b.Name == "SubmitQuoteButton");
+                            Button followUpButton = buttons.Single(b => b.Name == "FollowUpButton");
+                            submitQuoteButton.Visibility = Visibility.Visible;
+                            followUpButton.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            Button recallQuoteButton = buttons.Single(b => b.Name == "RecallQuoteButton");
+                            recallQuoteButton.Visibility = Visibility.Visible;
+                        }
+                    }
+                    else
+                    {
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
+                        
                 }
                 else if (project)
                 {
                     string nextStep = selectedProjects.First(p => p.Item1 == col0val && p.Item2 == col1val).Item5;
                     selectedProjects.RemoveAll(sp => sp.Item1 == col0val && sp.Item2 == col1val && sp.Item4 == type && sp.Item5 == nextStep);
                     selectedProjects = selectedProjects.Distinct().ToList();
+                    if (selectedProjects.Any() && selectedProjects.All(sp => sp.Item4 == selectedProjects.First().Item4 && sp.Item5 == nextStep))
+                    {
+                    }
+                    else
+                    {
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
+                    }
                 }
                 else if (order)
                 {
                     selectedOrders.RemoveAll(so => so.Item1 == col0val && so.Item3 == type);
                     selectedOrders = selectedOrders.Distinct().ToList();
-                }
-
-                foreach (Button button in buttons)
-                {
-                    if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                    if (selectedOrders.Any() && selectedOrders.All(so => so.Item3 == type))
+                    { }
+                    else
                     {
-                        button.Visibility = Visibility.Collapsed;
+                        // Clear Buttons
+                        foreach (Button button in buttons)
+                        {
+                            if (button.Name != "ExpandButton" && button.Name != "CollapseButton")
+                            {
+                                button.Visibility = Visibility.Collapsed;
+                            }
+                        }
                     }
                 }
             }
@@ -1053,50 +1104,64 @@ namespace NatoliOrderInterface
         }
         private bool CanUserCompleteProject(User user)
         {
-            using var _ = new ProjectsContext();
-            foreach (var p in selectedProjects)
+            try
             {
-                if (int.Parse(p.Item1) > 110000)
+                using var _ = new ProjectsContext();
+                foreach (var p in selectedProjects)
                 {
-                    EngineeringArchivedProjects project = _.EngineeringArchivedProjects.Single(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2);
-                    if (project.CSR == user.GetDWPrincipalId() || project.ReturnToCSR == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
-                        user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
+                    if (int.Parse(p.Item1) > 110000)
                     {
-                        continue;
+                        EngineeringArchivedProjects project = _.EngineeringArchivedProjects.Single(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2);
+                        if (project.CSR == user.GetDWPrincipalId() || project.ReturnToCSR == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
+                            user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            _.Dispose();
+                            return false;
+                        }
                     }
                     else
                     {
-                        _.Dispose();
-                        return false;
+                        ProjectSpecSheet project = _.ProjectSpecSheet.Single(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2);
+                        if (project.Csr == user.GetDWPrincipalId() || project.ReturnToCsr == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
+                            user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            _.Dispose();
+                            return false;
+                        }
                     }
                 }
-                else
-                {
-                    ProjectSpecSheet project = _.ProjectSpecSheet.Single(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2);
-                    if (project.Csr == user.GetDWPrincipalId() || project.ReturnToCsr == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
-                        user.EmployeeCode == "E4754" || user.EmployeeCode == "E4516" || user.EmployeeCode == "E4852")
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        _.Dispose();
-                        return false;
-                    }
-                }
+                _.Dispose();
             }
-            _.Dispose();
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("App.caml.cs => RemoveEventHandlers", ex.Message, user);
+            }
             return true;
         }
         private void RemoveEventHandlers(Control el)
         {
-            FieldInfo fi = typeof(Control).GetField("EventClick",
-                BindingFlags.Static | BindingFlags.NonPublic);
-            object obj = fi.GetValue(el);
-            PropertyInfo pi = el.GetType().GetProperty("Events",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
-            list.RemoveHandler(obj, list[obj]);
+            try
+            {
+                FieldInfo fi = typeof(Control).GetField("EventClick",
+                    BindingFlags.Static | BindingFlags.NonPublic);
+                object obj = fi.GetValue(el);
+                PropertyInfo pi = el.GetType().GetProperty("Events",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                EventHandlerList list = (EventHandlerList)pi.GetValue(el, null);
+                list.RemoveHandler(obj, list[obj]);
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("App.caml.cs => RemoveEventHandlers", ex.Message, user);
+            }
         }
         /// <summary>
         /// ToggleButton's CheckBox Clicked Event Handler
@@ -1105,17 +1170,24 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         private void ToggleButtonCheckBox_Clicked(object sender, RoutedEventArgs e)
         {
-            // First click
-            if (click_count == 1)
+            try
             {
-                // Check Box was clicked
-                fromCheckBox = true;
+                // First click
+                if (click_count == 1)
+                {
+                    // Check Box was clicked
+                    fromCheckBox = true;
+                }
+                // Second click
+                else if (click_count == 2)
+                {
+                    // Check Box was clicked
+                    fromCheckBox2 = true;
+                }
             }
-            // Second click
-            else if (click_count == 2)
+            catch (Exception ex)
             {
-                // Check Box was clicked
-                fromCheckBox2 = true;
+                IMethods.WriteToErrorLog("App.caml.cs => ToggleButtonCheckBox_Clicked", ex.Message, user);
             }
         }
         /// <summary>
@@ -1130,46 +1202,52 @@ namespace NatoliOrderInterface
             double_click_timer.Stop();
             // Increase click count
             click_count++;
+            try
+            {
 
+                if (click_count == 1)
+                {
+                    // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
+                    fromCheckBox = false;
+                    // Set the checkBox from first click to compare on timer elapse
+                    checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
+                }
+                else if (click_count == 2)
+                {
+                    // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
+                    fromCheckBox2 = false;
+                    // Set the checkBox from second click to compare on timer elapse
+                    checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
+                }
 
-            if (click_count == 1)
-            {
-                // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
-                fromCheckBox = false;
-                // Set the checkBox from first click to compare on timer elapse
-                checkBox = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-            }
-            else if (click_count == 2)
-            {
-                // Assume check box wasn't clicked until it goes into the ToggleButtonCheckBox_Clicked() event.
-                fromCheckBox2 = false;
-                // Set the checkBox from second click to compare on timer elapse
-                checkBox2 = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<CheckBox>().First();
-            }
+                GetAncestorWithoutName(checkBox, typeof(ListBox));
+                var type = (grid as ListBox).Name[0..^7];
+                grid = null;
 
-            GetAncestorWithoutName(checkBox, typeof(ListBox));
-            var type = (grid as ListBox).Name[0..^7];
-            grid = null;
-
-            if (type.Contains("Quote"))
-            {
-                // Document number to open if doubleclicked
-                docNumber = "Q" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteNumber").Text;
-                docNumber += "-" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRev").Text;
+                if (type.Contains("Quote"))
+                {
+                    // Document number to open if doubleclicked
+                    docNumber = "Q" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteNumber").Text;
+                    docNumber += "-" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "QuoteRev").Text;
+                }
+                else if (type.Contains("Project"))
+                {
+                    // Document number to open if doubleclicked
+                    docNumber = "P" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ProjectNumber").Text;
+                }
+                else
+                {
+                    // Document number to open if doubleclicked
+                    docNumber = "O" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumber").Text;
+                }
             }
-            else if (type.Contains("Project"))
+            catch (Exception ex)
             {
-                // Document number to open if doubleclicked
-                docNumber = "P" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ProjectNumber").Text;
-            }
-            else
-            {
-                // Document number to open if doubleclicked
-                docNumber = "O" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumber").Text;
+                IMethods.WriteToErrorLog("App.caml.cs => ToggleButton_SingleClick", ex.Message, user);
             }
             // Start new double-click timer
             double_click_timer.Start();
-        end:;
+            end:;
         }
         /// <summary>
         /// Timer Elapsed from ToggleButton MouseDown Event
@@ -1178,62 +1256,71 @@ namespace NatoliOrderInterface
         /// <param name="e"></param>
         public void Double_Click_Timer_Elapsed(object sender, EventArgs e)
         {
+            
             // Stop timer
             double_click_timer.Stop();
-
-            // Double-clicked
-            if (click_count == 2)
+            try
             {
-                // Clicked different items
-                if ((checkBox.Parent as Grid).Children.OfType<TextBlock>().First().Text != (checkBox2.Parent as Grid).Children.OfType<TextBlock>().First().Text)
+
+
+                // Double-clicked
+                if (click_count == 2)
                 {
-                    if (fromCheckBox == false)
+                    // Clicked different items
+                    if ((checkBox.Parent as Grid).Children.OfType<TextBlock>().First().Text != (checkBox2.Parent as Grid).Children.OfType<TextBlock>().First().Text)
                     {
-                        checkBox.IsChecked = !checkBox.IsChecked;
+                        if (fromCheckBox == false)
+                        {
+                            checkBox.IsChecked = !checkBox.IsChecked;
+                        }
+                        if (fromCheckBox2 == false)
+                        {
+                            checkBox2.IsChecked = !checkBox2.IsChecked;
+                        }
                     }
-                    if (fromCheckBox2 == false)
+                    // DoubleClicked same item (open document)
+                    else
                     {
-                        checkBox2.IsChecked = !checkBox2.IsChecked;
+                        // Set cursor to waiting
+                        (Application.Current.MainWindow as MainWindow).Cursor = Cursors.AppStarting;
+
+                        // Open Quote, Order, or Project folder
+                        if (docNumber[0] == 'P')
+                        {
+                            OpenProject(docNumber[1..]);
+                        }
+                        else if (docNumber[0] == 'Q')
+                        {
+                            OpenQuote(docNumber[1..]);
+                        }
+                        else if (docNumber[0] == 'O')
+                        {
+                            OpenWorkOrder(docNumber[1..]);
+                        }
+
+                    // Set cursor to pointer
+                    (Application.Current.MainWindow as MainWindow).Cursor = Cursors.Arrow;
                     }
+
                 }
-                // DoubleClicked same item (open document)
+                // Single clicked
                 else
                 {
-                    // Set cursor to waiting
-                    (Application.Current.MainWindow as MainWindow).Cursor = Cursors.AppStarting;
-
-                    // Open Quote, Order, or Project folder
-                    if (docNumber[0] == 'P')
+                    // Is it from a checkbox (meaning it already toggled the checkmark)
+                    if (fromCheckBox == false)
                     {
-                        OpenProject(docNumber[1..]);
+                        // Toggle the checkmark
+                        checkBox.IsChecked = !checkBox.IsChecked;
                     }
-                    else if (docNumber[0] == 'Q')
-                    {
-                        OpenQuote(docNumber[1..]);
-                    }
-                    else if (docNumber[0] == 'O')
-                    {
-                        OpenWorkOrder(docNumber[1..]);
-                    }
-
-                // Set cursor to pointer
-                (Application.Current.MainWindow as MainWindow).Cursor = Cursors.Arrow;
                 }
-                
+
+                // Reset the click count
+                click_count = 0;
             }
-            // Single clicked
-            else
+            catch (Exception ex)
             {
-                // Is it from a checkbox (meaning it already toggled the checkmark)
-                if(fromCheckBox == false)
-                {
-                    // Toggle the checkmark
-                    checkBox.IsChecked = !checkBox.IsChecked;
-                }
+                IMethods.WriteToErrorLog("App.caml.cs => Double_Click_Timer_Elapsed", ex.Message, user);
             }
-
-            // Reset the click count
-            click_count = 0;
         }
         #region Open Documents
         private void OpenProject(string projectNumber)

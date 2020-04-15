@@ -17,7 +17,7 @@
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="266"/>
+                        <ColumnDefinition Width="230"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -27,12 +27,13 @@
                     </Grid.RowDefinitions>
                     <Border Grid.ColumnSpan="3" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
                     <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="2,0,2,2">
-                        <DockPanel VerticalAlignment="Stretch" LastChildFill="True" HorizontalAlignment="Stretch" Margin="2,6">
+                        <DockPanel VerticalAlignment="Stretch" LastChildFill="False" HorizontalAlignment="Center" Margin="2,6">
                             <TextBlock x:Name="Quote_WO_Label"  Text="Quote#:" Width="43" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Dash" Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteRevNumber"  Text="" Width="20" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource Button}" MinHeight="24" x:Name="LinkQuoteButton" VerticalAlignment="Center" Content="Link To Quote" Margin="6,0,3,0" Click="LinkQuoteButton_Click" />
+                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource linkDrawingImage}" x:Name="LinkQuoteButton" BorderBrush="Transparent" MaxHeight="24" VerticalAlignment="Center" Margin="6,0,3,0" Click="LinkQuoteButton_Click" ToolTip="Link Quote"/>
+                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource window_alt_plus_DrawingImage}" BorderBrush="Transparent" MaxHeight="24" Click="OpenQuoteButton_Click" Name="OpenQuoteButton" Visibility="Visible" VerticalAlignment="Center" ToolTip="Open Quote"/>
                         </DockPanel>
                     </Border>                    
                     <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">

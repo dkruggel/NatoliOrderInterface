@@ -4113,7 +4113,7 @@ namespace NatoliOrderInterface.Models.NAT01
 
                 modelBuilder.Entity<ShapeFields>(entity =>
                 {
-                    entity.HasKey(e => new { e.ShapeID });
+                    entity.HasKey(e => new { e.ShapeDescription });
                 });
 
                 modelBuilder.Entity<DieList>(entity =>
