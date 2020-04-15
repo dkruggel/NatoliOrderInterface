@@ -931,7 +931,12 @@ namespace NatoliOrderInterface
         }
         private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            Dispatcher.BeginInvoke((Action)(()=>
+            {
+                active = this.IsActive;
+            }));
+            if (active)
             {
                 await Task.Run(() => GetData(new List<string> { "Main" }));
                 Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -939,7 +944,12 @@ namespace NatoliOrderInterface
         }
         private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                active = this.IsActive;
+            }));
+            if (active)
             {
                 if (User.VisiblePanels.Contains("QuotesNotConverted"))
                 {
@@ -964,7 +974,12 @@ namespace NatoliOrderInterface
         }
         private async void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                active = this.IsActive;
+            }));
+            if (active)
             {
                 if (User.VisiblePanels.Contains("NatoliOrderList"))
                 {
