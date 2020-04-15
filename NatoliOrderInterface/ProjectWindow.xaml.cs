@@ -96,7 +96,6 @@ namespace NatoliOrderInterface
             }
         }
         private readonly string projectsDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\";
-        public static string Units = "in";
         Quote quote = null;
         private bool validData = false;
         private bool timersEnabled = false;
@@ -3576,7 +3575,7 @@ namespace NatoliOrderInterface
 
                     EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
                     //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
-                    decimal conversion = Units == "in" ? 1 : 1 / (decimal)25.4;
+                    decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
                     EngineeringProjects engineeringProject = new EngineeringProjects
                     {
                         ProjectNumber = projectNumber,
