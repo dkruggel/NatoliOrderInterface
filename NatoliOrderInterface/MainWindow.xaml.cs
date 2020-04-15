@@ -932,7 +932,7 @@ namespace NatoliOrderInterface
         private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             bool active = false;
-            Dispatcher.BeginInvoke((Action)(()=>
+            await Dispatcher.BeginInvoke((Action)(()=>
             {
                 active = this.IsActive;
             }));
@@ -945,7 +945,7 @@ namespace NatoliOrderInterface
         private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             bool active = false;
-            Dispatcher.BeginInvoke((Action)(() =>
+            await Dispatcher.BeginInvoke((Action)(() =>
             {
                 active = this.IsActive;
             }));
@@ -975,7 +975,7 @@ namespace NatoliOrderInterface
         private async void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             bool active = false;
-            Dispatcher.BeginInvoke((Action)(() =>
+            await Dispatcher.BeginInvoke((Action)(() =>
             {
                 active = this.IsActive;
             }));
