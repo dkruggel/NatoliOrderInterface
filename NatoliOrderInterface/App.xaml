@@ -4142,16 +4142,16 @@
                             </DockPanel>
                             <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" Height="30" Background="{StaticResource Light}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="ID" Width="40"/>
+                                    <ColumnDefinition SharedSizeGroup="ID" Width="20"/>
                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" Width="0"/>
                                     <!--80-->
-                                    <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>
+                                    <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto" MaxWidth="200"/>
                                     <ColumnDefinition SharedSizeGroup="ShipToNumber" Width="0"/>
                                     <!--76-->
-                                    <ColumnDefinition SharedSizeGroup="ShipToName" Width="Auto"/>
+                                    <ColumnDefinition SharedSizeGroup="ShipToName" Width="Auto" MaxWidth="200"/>
                                     <ColumnDefinition SharedSizeGroup="EndUserNumber" Width="0"/>
                                     <!--80-->
-                                    <ColumnDefinition SharedSizeGroup="EndUserName" Width="Auto"/>
+                                    <ColumnDefinition SharedSizeGroup="EndUserName" Width="Auto" MaxWidth="200"/>
                                     <ColumnDefinition SharedSizeGroup="Category" Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition SharedSizeGroup="QuoteNumbers" Width="Auto" MinWidth="60"/>
@@ -4203,11 +4203,11 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition SharedSizeGroup="ID"/>
                                                     <ColumnDefinition SharedSizeGroup="CustomerNumber" />
-                                                    <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto"/>
+                                                    <ColumnDefinition SharedSizeGroup="CustomerName" Width="Auto" MaxWidth="200"/>
                                                     <ColumnDefinition SharedSizeGroup="ShipToNumber"/>
-                                                    <ColumnDefinition SharedSizeGroup="ShipToName" Width="Auto"/>
+                                                    <ColumnDefinition SharedSizeGroup="ShipToName" Width="Auto" MaxWidth="200"/>
                                                     <ColumnDefinition SharedSizeGroup="EndUserNumber"/>
-                                                    <ColumnDefinition SharedSizeGroup="EndUserName" Width="Auto"/>
+                                                    <ColumnDefinition SharedSizeGroup="EndUserName" Width="Auto" MaxWidth="200"/>
                                                     <ColumnDefinition SharedSizeGroup="Category"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition SharedSizeGroup="QuoteNumbers" Width="Auto"/>
@@ -4218,11 +4218,11 @@
                                                 </Grid.ColumnDefinitions>
                                                 <TextBlock Tag="ID" Text="{Binding ID}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
                                                 <TextBlock Tag="CustomerNumber" Text="{Binding CustomerNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
-                                                <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"  Margin="10,0" TextWrapping="NoWrap"/>
+                                                <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"  Margin="10,0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Tag="ShipToNumber" Text="{Binding ShipToNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3"/>
-                                                <TextBlock Tag="ShipToName" Text="{Binding ShipToName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
+                                                <TextBlock Tag="ShipToName" Text="{Binding ShipToName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Tag="EndUserNumber" Text="{Binding EndUserNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="5"/>
-                                                <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="6" Margin="10,0"/>
+                                                <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="6" Margin="10,0" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Tag="Category" Text="{Binding Category}" Style="{StaticResource ModuleTextBlock}" Grid.Column="7"/>
                                                 <TextBlock Tag="Note" Text="{Binding Note}" Grid.Column="8" Style="{StaticResource ModuleTextBlock}" Margin="10,0" TextWrapping="NoWrap" MaxHeight="{Binding RelativeSource={RelativeSource AncestorLevel=1,AncestorType=Grid},Path=ActualHeight}"/>
                                                 <TextBlock Tag="QuoteNumbers" Text="{Binding QuoteNumbers}" Style="{StaticResource ModuleTextBlock}" Grid.Column="9" Margin="10,0"/>
@@ -4260,7 +4260,7 @@
                                                 </Grid>
                                             </Grid>
                                             <Grid.Triggers>
-                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                <!--<EventTrigger RoutedEvent="MouseEnter">
                                                     <BeginStoryboard Name="Highlight" Storyboard="{StaticResource listBoxHighlight}"/>
                                                 </EventTrigger>
                                                 <EventTrigger RoutedEvent="PreviewMouseDown">
@@ -4268,7 +4268,7 @@
                                                 </EventTrigger>
                                                 <EventTrigger RoutedEvent="MouseLeave">
                                                     <StopStoryboard BeginStoryboardName="Highlight"/>
-                                                </EventTrigger>
+                                                </EventTrigger>-->
                                             </Grid.Triggers>
                                         </Grid>
                                     </DataTemplate>
@@ -6703,6 +6703,192 @@
                             </Grid>
                             <Grid.Triggers>
                             </Grid.Triggers>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--#endregion-->
+        
+        <!--#region Project Search-->
+        <Style x:Key="ProjectSearchModule" TargetType="Label" x:Name="ProjectSearchModule">
+            <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Grid>
+                            <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid x:Name="DisplayGrid">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
+                                    </StackPanel>
+                                    <TextBlock Text=""/>
+                                </DockPanel>
+                                <Border BorderBrush="{StaticResource Medium}" BorderThickness="0,0,0,3">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100" SharedSizeGroup="ProjectNumber"/>
+                                        <ColumnDefinition Width="55" SharedSizeGroup="ProjectRevNumber"/>
+                                        <ColumnDefinition Width="150" SharedSizeGroup="CSR"/>
+                                        <ColumnDefinition Width="300" SharedSizeGroup="CustomerName"/>
+                                        <ColumnDefinition Width="300" SharedSizeGroup="EndUserName"/>
+                                        <ColumnDefinition Width="90" SharedSizeGroup="DueDate"/>
+                                        <ColumnDefinition Width="80" SharedSizeGroup="QuoteNumber"/>
+                                        <ColumnDefinition Width="95" SharedSizeGroup="QuoteRevNumber"/>
+                                        <ColumnDefinition Width="200" SharedSizeGroup="Product"/>
+                                        <ColumnDefinition Width="200" SharedSizeGroup="Attention"/>
+                                        <ColumnDefinition Width="60" SharedSizeGroup="Machine"/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup="UpperHob"/>
+                                        <ColumnDefinition Width="250" SharedSizeGroup="UpperHobDesc"/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup="LowerHob"/>
+                                        <ColumnDefinition Width="250" SharedSizeGroup="LowerHobDesc"/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup=""/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup=""/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup=""/>
+                                        <ColumnDefinition Width="75" SharedSizeGroup=""/>
+                                        <ColumnDefinition Width="500" SharedSizeGroup=""/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Project #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="7,0,0,0"/>
+                                    <TextBlock Text="Rev #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="-7,0,0,0"/>
+                                    <TextBlock Text="CSR" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="-7,0,0,0"/>
+                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <TextBlock Text="End User Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Due Date" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Quote #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="6" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Quote Rev" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="7" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Product" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="8" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Attention" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="9" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Machine" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="10" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Upper Hob" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="11" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Upper Hob Description" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="12" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Lower Hob" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="13" Margin="0,0,0,0"/>
+                                    <TextBlock Text="Lower Hob Description" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="14" Margin="0,0,0,0"/>
+                                </Grid>
+                                <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <ListBox x:Name="DriveWorksQueueListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <ContentPresenter/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <ToggleButton x:Name="ToggleButton" PreviewMouseDown="ToggleButton_SingleClick">
+                                                <ToggleButton.Style>
+                                                    <Style TargetType="{x:Type ToggleButton}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                                    <Grid Margin="0,0">
+                                                                        <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                        <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="60"/>
+                                                                                <ColumnDefinition Width="45"/>
+                                                                                <ColumnDefinition Width="100"/>
+                                                                                <ColumnDefinition Width="300"/>
+                                                                                <ColumnDefinition Width="300"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="150"/>
+                                                                                <ColumnDefinition Width="150"/>
+                                                                                <ColumnDefinition Width="60"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="250"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="250"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="75"/>
+                                                                                <ColumnDefinition Width="500"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                            <TextBlock x:Name="ModelName" Tag="ModelName" Text="{Binding TargetName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
+                                                                            <TextBlock x:Name="ReleasedBy" Tag="ReleasedBy" Text="{Binding DisplayName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock Tag="Tag" Text="{Binding Tags, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
+                                                                            <TextBlock Tag="ReleaseTime" Text="{Binding DateReleased, NotifyOnSourceUpdated=True, StringFormat='{}{0:hh:mm:ss}'}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
+                                                                        </Grid>
+                                                                        <Grid.Triggers>
+                                                                            <EventTrigger RoutedEvent="MouseEnter">
+                                                                                <BeginStoryboard Name="Highlight" Storyboard="{StaticResource listBoxHighlight}"/>
+                                                                            </EventTrigger>
+                                                                            <EventTrigger RoutedEvent="PreviewMouseDown">
+                                                                                <BeginStoryboard Name="HighlightDown" Storyboard="{StaticResource listBoxHighlight}"/>
+                                                                            </EventTrigger>
+                                                                            <EventTrigger RoutedEvent="MouseLeave">
+                                                                                <StopStoryboard BeginStoryboardName="Highlight"/>
+                                                                            </EventTrigger>
+                                                                        </Grid.Triggers>
+                                                                    </Grid>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <!--<Trigger Property="IsChecked" Value="True">
+                                                                            <Setter Property="IsChecked" TargetName="CheckBox" Value="True"/>
+                                                                        </Trigger>-->
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ToggleButton.Style>
+                                            </ToggleButton>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Border Grid.Row="3">
+                                    <Border Panel.ZIndex="3" BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="0">
+                                        <Border.Effect>
+                                            <DropShadowEffect BlurRadius="8" ShadowDepth="3" Direction="135" Color="LightGray" Opacity=".75"/>
+                                        </Border.Effect>
+                                    </Border>
+                                </Border>
+                                <DockPanel LastChildFill="False" DockPanel.Dock="Top" Height="30" Grid.Row="3">
+                                    <TextBox Name="SearchTextBox" Style="{StaticResource SearchBox}" DockPanel.Dock="Left" Width="Auto" TextChanged="SearchTextBox_TextChanged"/>
+                                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <!--<Button x:Name="SearchButton" Style="{StaticResource SearchButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ArchiveButton" Style="{StaticResource ArchiveButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Margin="2,0" HorizontalAlignment="Right"/>
+                                        <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Margin="2,0" HorizontalAlignment="Right" Visibility="Visible"/>-->
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding ElementName=DriveWorksQueueListBox, Path=Items.Count, StringFormat='Count: {0}'}" DockPanel.Dock="Right" Style="{StaticResource ModuleTextBlock}" HorizontalAlignment="Center" Margin="0,0,10,0"/>
+                                </DockPanel>
+                            </Grid>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

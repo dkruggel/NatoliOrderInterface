@@ -329,11 +329,49 @@ namespace NatoliOrderInterface
             };
 
             expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            //expander.MouseDoubleClick += OrderDataGrid_MouseDoubleClick;
+            expander.MouseDoubleClick += ProjectExpander_MouseDoubleClick;
             //expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
             //expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
             //expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
             return expander;
+        }
+
+        private void ProjectExpander_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using var _projectsContext = new ProjectsContext();
+
+                string projectNumber = (((sender as Expander).Header as Grid).Children[0] as Label).Content as string;
+
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber))
+                {
+                    string revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
+                    projectWindow.Show();
+                }
+                else if (_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
+                {
+                    string revNumber = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
+                    projectWindow.Show();
+                }
+                else
+                {
+                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
+                    if (!System.IO.Directory.Exists(path))
+                        System.IO.Directory.CreateDirectory(path);
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+                }
+                //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
+                //projectWindow.Show();
+                //projectWindow.Dispose();
+                _projectsContext.Dispose();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -412,23 +450,23 @@ namespace NatoliOrderInterface
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             timer.Stop();
-            
-            TextBox textBox = (sender as TextBox).Template.FindName("SearchTextBox", sender as TextBox) as TextBox;
-            TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
-            Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
+
+            TextBox textBox = sender as TextBox; // (sender as TextBox).Template.FindName("SearchBox", sender as TextBox) as TextBox;
+            //TextBlock textBlock = (sender as TextBox).Template.FindName("SearchTextBlock", sender as TextBox) as TextBlock;
+            //Image image = (sender as TextBox).Template.FindName("MagImage", (sender as TextBox)) as Image;
             searchString = textBox.Text.ToLower();
 
-            if (textBox.Text.Length > 0)
-            {
-                image.Source = ((Image)App.Current.Resources["closeDrawingImage"]).Source;
-                image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
-                textBlock.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                image.Source = ((Image)App.Current.Resources["searchDrawingImage"]).Source;
-                textBlock.Visibility = Visibility.Visible;
-            }
+            //if (textBox.Text.Length > 0)
+            //{
+            //    image.Source = ((Image)App.Current.Resources["closeDrawingImage"]).Source;
+            //    image.MouseLeftButtonUp += Image_MouseLeftButtonUp;
+            //    textBlock.Visibility = Visibility.Collapsed;
+            //}
+            //else
+            //{
+            //    image.Source = ((Image)App.Current.Resources["searchDrawingImage"]).Source;
+            //    textBlock.Visibility = Visibility.Visible;
+            //}
 
             timer.Start();
         }

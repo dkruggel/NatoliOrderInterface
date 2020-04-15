@@ -163,7 +163,8 @@ namespace NatoliOrderInterface
             Border border = grid.Parent as Border;
             if (border.ActualWidth < 140)
             {
-                DoubleAnimation doubleAnimation = new DoubleAnimation(150, TimeSpan.FromSeconds(.5));
+                double width = Window.GetWindow(magImage) is ProjectSearchWindow ? 400 : 150;
+                DoubleAnimation doubleAnimation = new DoubleAnimation(width, TimeSpan.FromSeconds(.5));
                 border.BeginAnimation(Border.WidthProperty, doubleAnimation);
                 TextBox textBox = grid.Children.OfType<TextBox>().First() as TextBox;
                 textBox.Focus();
