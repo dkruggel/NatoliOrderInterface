@@ -20,11 +20,14 @@ using MailKit;
 using MimeKit;
 using NatoliOrderInterface.MimeTypes;
 using System.Text.RegularExpressions;
+using System.Windows.Interop;
 
 namespace NatoliOrderInterface
 {
     public interface IMethods
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
         public static readonly Dictionary<string, string> lineItemTypeToDescription = new Dictionary<string, string> {
             { "A","ALIGNMENT TOOL" },
             { "CT","COPPER TABLETS" },
@@ -3629,7 +3632,29 @@ namespace NatoliOrderInterface
                 return fileNameWithoutExtension;
             }
         }
-        
+        /// <summary>
+        /// Checks to see if any windows in the application are active
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsApplicationActive()
+        {
+            foreach (var wnd in Application.Current.Windows.OfType<Window>())
+                if (IsActive(wnd)) return true;
+            return false;
+        }
+        /// <summary>
+        /// Checks to see if a window is active
+        /// </summary>
+        /// <param name="wnd"></param>
+        /// <returns></returns>
+        public static bool IsActive(Window wnd)
+        {
+            // workaround for minimization bug
+            // Managed .IsActive may return wrong value
+            if (wnd == null) return false;
+            return GetForegroundWindow() == new WindowInteropHelper(wnd).Handle;
+        }
+
 
         /// <summary>
         /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
@@ -3684,6 +3709,6 @@ namespace NatoliOrderInterface
 
 
 
-        
+
     }
 }
