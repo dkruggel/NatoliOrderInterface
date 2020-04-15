@@ -3083,20 +3083,66 @@ namespace NatoliOrderInterface
         {
             string searchString = GetSearchString("ReadyToPrint");
 
-            //_ordersReadyToPrint =
-            //    _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
-            //                                   p.CustomerName.ToLower().Contains(searchString) ||
-            //                                   p.EmployeeName.ToLower().Contains(searchString) ||
-            //                                   p.CheckedBy.ToLower().Contains(searchString))
-            //                       .OrderBy(kvp => kvp.OrderNo)
-            //                       .ToList();
+            string column;
+            var _filtered = _ordersReadyToPrint;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "order no":
 
-            OrdersReadyToPrint = _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                        _filtered =
+                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "customer name":
+
+                        _filtered =
+                            _ordersReadyToPrint.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "employee name":
+
+                        _filtered =
+                            _ordersReadyToPrint.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    case "checker":
+
+                        _filtered =
+                            _ordersReadyToPrint.Where(p => (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
+                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .ToList();
+                        break;
+                    default:
+
+                        _filtered =
+                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
                                    .OrderBy(kvp => kvp.OrderNo)
                                    .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                                               (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                               (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
+                                               (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
+                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .ToList();
+            }
+
+            OrdersReadyToPrint = _filtered;
         }
         public void GetPrintedInEngineering()
         {
@@ -3488,46 +3534,112 @@ namespace NatoliOrderInterface
                 return _text.ToLower();
             }
         }
+        private void ResetHeightWhenSearchIsOver(ListBox listBox)
+        {
+            Label label = (OrdersReadyToPrintListBox.Parent as Grid).TemplatedParent as Label;
+            label.ApplyTemplate();
+            Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
+            Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
+            DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
+            TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+            Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
+            Grid templatedBorderGrid = templatedBorder.Child as Grid;
+            TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
+            if (templatedActualTextBox.Text == "")
+            {
+                // Resets the height so it can scale with number of items
+                label.Height = Double.NaN;
+            }
+        }
         private void ModuleSearchTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             moduleSearchTimer.Stop();
             switch (searchedFromModuleName)
             {
                 case "BeingEntered":
-                    Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindBeingEntered();
+                        ResetHeightWhenSearchIsOver(OrdersBeingEnteredListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "InTheOffice":
-                    Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindInTheOffice();
+                        ResetHeightWhenSearchIsOver(OrdersInTheOfficeListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "QuotesNotConverted":
-                    Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindQuotesNotConverted();
+                        ResetHeightWhenSearchIsOver(QuotesNotConvertedListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "EnteredUnscanned":
-                    Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindEnteredUnscanned();
+                        ResetHeightWhenSearchIsOver(OrdersEnteredListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "InEngineering":
-                    Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindInEngineering();
+                        ResetHeightWhenSearchIsOver(OrdersInEngListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "QuotesToConvert":
-                    Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindQuotesToConvert();
+                        ResetHeightWhenSearchIsOver(QuotesToConvertListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "ReadyToPrint":
-                    Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                        {
+                            BindReadyToPrint();
+                            ResetHeightWhenSearchIsOver(OrdersReadyToPrintListBox);
+                        }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "PrintedInEngineering":
-                    Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindPrintedInEngineering();
+                        ResetHeightWhenSearchIsOver(OrdersPrintedListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "AllTabletProjects":
-                    Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindAllTabletProjects();
+                        ResetHeightWhenSearchIsOver(AllTabletProjectsListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "AllToolProjects":
-                    Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindAllToolProjects();
+                        ResetHeightWhenSearchIsOver(AllToolProjectsListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "DriveWorksQueue":
-                    Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindDriveWorksQueue();
+                        ResetHeightWhenSearchIsOver(DriveWorksQueueListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "NatoliOrderList":
                     Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        BindNatoliOrderList();
+                        ResetHeightWhenSearchIsOver(NatoliOrderListListBox);
+                    }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 default:
                     break;

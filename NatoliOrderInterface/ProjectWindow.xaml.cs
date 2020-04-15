@@ -1619,7 +1619,7 @@ namespace NatoliOrderInterface
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => EndUserName.Text = ""));
                 }
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Product.Text = string.IsNullOrEmpty(quoteHeader.ProductName) ? "" : quoteHeader.ProductName.Trim()));
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Attention.Text = string.IsNullOrEmpty(quoteHeader.ContactPerson) ? "" : quoteHeader.ProductName.Trim()));
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Attention.Text = string.IsNullOrEmpty(quoteHeader.ContactPerson) ? "" : quoteHeader.ContactPerson.Trim()));
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Notes.Text = (quoteHeader.EngineeringNote1 ?? "").Trim() + "\n" + (quoteHeader.EngineeringNote2 ?? "").Trim() + "\n" + (quoteHeader.MiscNote ?? "").Trim()));
                 if (quoteHeader.OrderNo != null && quoteHeader.OrderNo > 0)
                 {
@@ -5957,30 +5957,37 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
             try
             {
-                if (quote.OrderNo != 0)
+                if(quote == null)
                 {
-                    string pathToOrder = @"\\nsql03\data1\WorkOrders\" + quote.OrderNo.ToString().Remove(6);
-                    if (System.IO.Directory.Exists(pathToOrder))
+                    if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
                     {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToOrder + @"""");
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Arrow;
-                        MessageBox.Show("This work order folder does not exist.");
-                    }
-                }
-                else
-                {
-                    string pathToQuote = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber;
-                    if (System.IO.Directory.Exists(pathToQuote))
-                    {
-                        System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToQuote + @"""");
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Arrow;
-                        MessageBox.Show("This quote folder does not exist.");
+                        quote = new Quote(quoteNumber, quoteRevNumber);
+                        if (quote.OrderNo != 0)
+                        {
+                            string pathToOrder = @"\\nsql03\data1\WorkOrders\" + quote.OrderNo.ToString().Remove(6);
+                            if (System.IO.Directory.Exists(pathToOrder))
+                            {
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToOrder + @"""");
+                            }
+                            else
+                            {
+                                Cursor = Cursors.Arrow;
+                                MessageBox.Show("This work order folder does not exist.");
+                            }
+                        }
+                        else
+                        {
+                            string pathToQuote = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber;
+                            if (System.IO.Directory.Exists(pathToQuote))
+                            {
+                                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", @"""" + pathToQuote + @"""");
+                            }
+                            else
+                            {
+                                Cursor = Cursors.Arrow;
+                                MessageBox.Show("This quote folder does not exist.");
+                            }
+                        }
                     }
                 }
             }

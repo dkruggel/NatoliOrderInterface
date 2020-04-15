@@ -182,27 +182,27 @@ namespace NatoliOrderInterface
             string type = displayGrid.Children.OfType<ListBox>().First().Name[0..^7];
             (Window.GetWindow(sender as DependencyObject) as MainWindow).TextChanged(type);
 
-            foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
-            {
-                UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
-                Label label = uIElementCollection[0] as Label;
-                label.ApplyTemplate();
-                Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
-                Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
-                DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
-                TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
-                Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
-                Grid templatedBorderGrid = templatedBorder.Child as Grid;
-                TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
+            //foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+            //{
+            //    UIElementCollection uIElementCollection = grid.Children as UIElementCollection;
+            //    Label label = uIElementCollection[0] as Label;
+            //    label.ApplyTemplate();
+            //    Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
+            //    Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
+            //    DockPanel templatedDockPanel = templatedGrid1.Children.OfType<DockPanel>().Last() as DockPanel;
+            //    TextBox templatedTextBox = templatedDockPanel.Children.OfType<TextBox>().First() as TextBox;
+            //    Border templatedBorder = VisualTreeHelper.GetChild(templatedTextBox as DependencyObject, 0) as Border;
+            //    Grid templatedBorderGrid = templatedBorder.Child as Grid;
+            //    TextBox templatedActualTextBox = (templatedBorderGrid.Children.OfType<TextBox>().First() as TextBox);
 
-                TextBox textBox = (sender as TextBox);
+            //    TextBox textBox = (sender as TextBox);
 
-                if ((textBox == templatedActualTextBox && textBox.Text == ""))
-                {
-                    // Resets the height so it can scale with number of items
-                    label.Height = Double.NaN;
-                }
-            }
+            //    if ((textBox == templatedActualTextBox && textBox.Text == ""))
+            //    {
+            //        // Resets the height so it can scale with number of items
+            //        label.Height = Double.NaN;
+            //    }
+            //}
         }
         private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
