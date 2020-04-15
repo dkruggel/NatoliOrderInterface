@@ -5713,6 +5713,10 @@ namespace NatoliOrderInterface
                         EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
                         engineeringProject.RevNumber = short.TryParse((oldEngineeringProject == null ? archivedProject.RevNumber : oldEngineeringProject.RevNumber), out short revNumber) ? (revNumber + 1).ToString() : "100";
                         engineeringProject.TimeSubmitted = (oldEngineeringProject == null ? archivedProject.TimeSubmitted : oldEngineeringProject.TimeSubmitted);
+                        if (archivedProject != null)
+                        {
+                            engineeringProject.CSR = user.GetDWPrincipalId();
+                        }
                         List<string> changed = new List<string>();
                         string body = "To Whom It May Concern,<br><br>";
 
