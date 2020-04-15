@@ -3430,14 +3430,12 @@ namespace NatoliOrderInterface
                 {
                     if (User.DomainName == "mmulaosmanovic")
                     {
-                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allTabletProjects = eoiAllTabletProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                     else
                     {
-                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allTabletProjects = eoiAllTabletProjects.Where(p =>!_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                 }
@@ -3701,14 +3699,12 @@ namespace NatoliOrderInterface
 
                     if (User.DomainName == "kbergerdine")
                     {
-                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allToolProjects = eoiAllToolProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                     else
                     {
-                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allToolProjects = eoiAllToolProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                 }
