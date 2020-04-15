@@ -1460,6 +1460,7 @@ namespace NatoliOrderInterface
 
                                     @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                                     "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                    comments +
                                     "Thanks,<br>" +
                                     "Engineering Team<br><br><br>" +
 
