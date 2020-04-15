@@ -931,17 +931,22 @@ namespace NatoliOrderInterface
         }
         private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            await Task.Run(() => GetData(new List<string> { "Main" }));
-            Dispatcher.BeginInvoke((Action)UpdateUI,System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            if (this.IsActive)
+            {
+                await Task.Run(() => GetData(new List<string> { "Main" }));
+                Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }
         }
         private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-
-            if (User.VisiblePanels.Contains("QuotesNotConverted"))
+            if (this.IsActive)
             {
-                await Task.Run(() => GetData(new List<string> { "QuotesNotConverted" }));
-                Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                Dispatcher.BeginInvoke((Action)SetNotificationPicture, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                if (User.VisiblePanels.Contains("QuotesNotConverted"))
+                {
+                    await Task.Run(() => GetData(new List<string> { "QuotesNotConverted" }));
+                    Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                    Dispatcher.BeginInvoke((Action)SetNotificationPicture, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
             }
         }
         private async void FoldersTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -959,10 +964,13 @@ namespace NatoliOrderInterface
         }
         private async void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (User.VisiblePanels.Contains("NatoliOrderList"))
+            if (this.IsActive)
             {
-                await Task.Run(() => GetData(new List<string> { "NatoliOrderList" }));
-                Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                if (User.VisiblePanels.Contains("NatoliOrderList"))
+                {
+                    await Task.Run(() => GetData(new List<string> { "NatoliOrderList" }));
+                    Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                }
             }
             
         }
@@ -1036,9 +1044,9 @@ namespace NatoliOrderInterface
         }
         private void GridWindow_Deactivated(object sender, EventArgs e)
         {
-            mainTimer.Stop();
-            quoteTimer.Stop();
-            NatoliOrderListTimer.Stop();
+            //mainTimer.Stop();
+            //quoteTimer.Stop();
+            //NatoliOrderListTimer.Stop();
         }
         private void GridWindow_StateChanged(object sender, EventArgs e)
         {
