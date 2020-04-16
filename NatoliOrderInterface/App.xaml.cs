@@ -709,7 +709,7 @@ namespace NatoliOrderInterface
                     projectCompleteButton.IsEnabled = CanUserCompleteProject(user);
 
                     // Cancel: Enabled, "Cancel Project"
-                    projectCancelButton.IsEnabled = projectCompleteButton.Visibility == Visibility.Visible;
+                    projectCancelButton.IsEnabled = projectCompleteButton.Visibility != Visibility.Visible;
                     projectCancelButton.ToolTip = "Cancel Project";
                 }
                 // Order
