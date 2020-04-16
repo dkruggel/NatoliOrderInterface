@@ -537,7 +537,7 @@ namespace NatoliOrderInterface
                     if (User.EmployeeCode == "E4754") // Tyler
                     {
                         //ProjectWindow projectWindow = new ProjectWindow("110012", "4", this, User, false);
-                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "103267", "0", new User("twilliams"));
+                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "David" }, "103267", "0", new User("twilliams"));
                         //(List<string> errantFolders, List<Tuple<string, string>> renamedFolders) = FolderCheck.CustomerFolderCheck();
                     }
                     else if (User.EmployeeCode == "E4408")

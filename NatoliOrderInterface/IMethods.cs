@@ -1346,19 +1346,38 @@ namespace NatoliOrderInterface
                 string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                 if (CSRs != null)
                 {
+                    #region Addresses
+                    // Creating email message to store the addresses
                     EmailMessage emailMessage = new EmailMessage();
                     foreach (string CSR in CSRs)
                     {
                         emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
                     }
-                    emailMessage.ToAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
                     emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
                     // BCC
-                    //emailMessage.BCCAddresses = new List<EmailAddress> { new EmailAddress("Tyler Williams", "eng5@natoli.com"), new EmailAddress("David Kruggel", "eng6@natoli.com") };
+                    emailMessage.BCCAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
+                    emailMessage.BCCAddresses.Add(new EmailAddress("David Kruggel", "eng6@natoli.com"));
+
+                    //CC
+                    if (user != null)
+                    {
+                        try
+                        {
+                            emailMessage.CCAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(user.GetDWPrincipalId()), IMethods.GetEmailAddressFromDWPrincipalID(user.GetDWPrincipalId())));
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("IMethods => SendProjectCompletedEmailToCSR => Attaching User Email to CC", ex.Message, user);
+                        }
+                    }
+                    #endregion
 
                     var message = new MimeMessage();
+                    // Attaching all addresses to mimemessage
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Bcc.AddRange(emailMessage.BCCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
 
                     string cust = "";
                     using var _ = new ProjectsContext();
@@ -1451,7 +1470,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                if (ex.Message.StartsWith("5.3.4"))
+                                if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
                                 {
                                     var maxSize = emailClient.MaxSize;
                                     message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
