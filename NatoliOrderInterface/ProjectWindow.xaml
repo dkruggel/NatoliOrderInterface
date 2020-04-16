@@ -32,8 +32,8 @@
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Dash" Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteRevNumber"  Text="" Width="20" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource linkDrawingImage}" x:Name="LinkQuoteButton" BorderBrush="Transparent" MaxHeight="24" VerticalAlignment="Center" Margin="6,0,3,0" Click="LinkQuoteButton_Click" ToolTip="Link Quote"/>
-                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource window_alt_plus_DrawingImage}" BorderBrush="Transparent" MaxHeight="24" Click="OpenQuoteButton_Click" Name="OpenQuoteButton" Visibility="Visible" VerticalAlignment="Center" ToolTip="Open Quote"/>
+                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource linkDrawingImage}" x:Name="LinkQuoteButton" BorderBrush="Transparent" Background="Transparent" MaxHeight="24" VerticalAlignment="Center" Margin="6,0,3,0" Click="LinkQuoteButton_Click" ToolTip="Link Quote"/>
+                            <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource window_alt_plus_DrawingImage}" BorderBrush="Transparent" Background="Transparent" MaxHeight="24" Click="OpenQuoteButton_Click" Name="OpenQuoteButton" Visibility="Visible" VerticalAlignment="Center" ToolTip="Open Quote"/>
                         </DockPanel>
                     </Border>                    
                     <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
