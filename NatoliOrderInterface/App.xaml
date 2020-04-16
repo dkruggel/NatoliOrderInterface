@@ -9,7 +9,6 @@
         <local:TextConverter x:Key="textConverter"/>
         <local:CheckBoxConverter x:Key="checkBoxConverter"/>
         <local:ToolTipConverter x:Key="toolTipConverter"/>
-        <local:ModuleHeightConvertor x:Key="moduleHeightConvertor"/>
         <local:MainWindow x:Key="MainWindow"/>
         
         

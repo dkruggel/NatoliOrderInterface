@@ -27,6 +27,7 @@ namespace NatoliOrderInterface
             using var _nat02Context = new NAT02Context();
             using var nat01context = new NAT01Context();
             using var _natBCContext = new NATBCContext();
+            using var _driveworksContext = new DriveWorksContext();
 
             try
             {
@@ -49,12 +50,14 @@ namespace NatoliOrderInterface
 
                     if (order.EnteredUnscanned == 1)
                     {
+                        bool running_ran = _driveworksContext.DrivenComponents.Count(dc => dc.TargetName.Contains(order.OrderNumber.ToString()) && (dc.Generating || dc.Generated)) > 0;
+
                         if (order.DoNotProcess == 1)
                         {
                             if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
                             return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
-                        if ((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo")
+                        if (((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo") && !running_ran)
                         {
                             if (rush) { return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Red); }
                             return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Transparent);
@@ -160,7 +163,6 @@ namespace NatoliOrderInterface
                         }
                         if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
                     }
-
 
                     if (order.Printed == 1)
                     {
@@ -410,6 +412,7 @@ namespace NatoliOrderInterface
                 // System.Windows.MessageBox.Show(ex.Message);
             }
 
+            _driveworksContext.Dispose();
             _natBCContext.Dispose();
             nat01context.Dispose();
             _nat02Context.Dispose();

@@ -233,18 +233,6 @@ namespace NatoliOrderInterface
         {
 
         }
-        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenQuote(selectedQuotes.Last().Item1 + "-" + selectedQuotes.Last().Item2);
-        }
-        private void OpenProjectButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenProject(selectedProjects.Last().Item1);
-        }
-        private void OpenOrderButton_Click(object sender, RoutedEventArgs e)
-        {
-            OpenWorkOrder(selectedOrders.Last().Item1);
-        }
         private void ExpandModule_Click(object sender, RoutedEventArgs e)
         {
             Button expandButton = sender as Button;
@@ -951,6 +939,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("CheckBox_Unchecked App.xaml.cs", ex.Message, user);
             }
         }
+        #region Project Buttons
         private void ProjectOnHoldButtons(Button projectOnHoldButton, Button projectOffHoldButton, Button projectNextStepButton,
                                           Button projectCompleteButton, Button projectCancelButton)
         {
@@ -1102,6 +1091,7 @@ namespace NatoliOrderInterface
             projectCompleteButton.IsEnabled = false;
             projectCompleteButton.ToolTip = "";
         }
+        #endregion
         private bool CanUserCompleteProject(User user)
         {
             try
@@ -1466,6 +1456,18 @@ namespace NatoliOrderInterface
         AlreadyOpen2:
             _context.Dispose();
             _nat01context.Dispose();
+        }
+        private void OpenQuoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenQuote(selectedQuotes.Last().Item1 + "-" + selectedQuotes.Last().Item2);
+        }
+        private void OpenProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenProject(selectedProjects.Last().Item1);
+        }
+        private void OpenOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenWorkOrder(selectedOrders.Last().Item1);
         }
         #endregion
         #region Document Movements
