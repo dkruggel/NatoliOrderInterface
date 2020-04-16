@@ -50,14 +50,20 @@ namespace NatoliOrderInterface
 
                     if (order.EnteredUnscanned == 1)
                     {
-                        bool running_ran = _driveworksContext.DrivenComponents.Count(dc => dc.TargetName.Contains(order.OrderNumber.ToString()) && (dc.Generating || dc.Generated)) > 0;
+                        bool running = _driveworksContext.QueueView.Count(q => q.TargetName.Contains(order.OrderNumber.ToString())) > 0;
+                        bool ran = _driveworksContext.DrivenComponents.Count(dc => dc.TargetName.Contains(order.OrderNumber.ToString()) && (dc.Generating || dc.Generated)) > 0;
 
                         if (order.DoNotProcess == 1)
                         {
                             if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
                             return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
-                        if (((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo") && !running_ran)
+                        if (running)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (((order.ProcessState == "Failed" && order.ProcessState != "Complete") || order.TransitionName == "NeedInfo") && !ran)
                         {
                             if (rush) { return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Red); }
                             return SetLinearGradientBrush(Colors.DarkGray, Colors.Transparent, Colors.Transparent, Colors.Transparent);
