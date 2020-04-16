@@ -15,6 +15,7 @@ namespace NatoliOrderInterface.Models.DriveWorks
         {
         }
 
+        public virtual DbSet<DrivenComponents> DrivenComponents { get; set; }
         public virtual DbSet<QueueView> QueueView { get; set; }
         public virtual DbSet<Specifications> Specifications { get; set; }
         public virtual DbSet<SecurityUsers> SecurityUsers { get; set; }
@@ -33,6 +34,11 @@ namespace NatoliOrderInterface.Models.DriveWorks
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DrivenComponents>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+            });
+
             modelBuilder.Entity<QueueView>(entity =>
             {
                 entity.HasKey(e => e.TargetName);
