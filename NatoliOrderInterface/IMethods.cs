@@ -2976,38 +2976,6 @@ namespace NatoliOrderInterface
                                             errors.Add("'" + quoteLineItem.LineItemType + "' has a multi-tip solid hob linked to it.");
                                         }
                                     }
-                                    // Has Special tip relief
-                                    if (quoteLineItem.OptionNumbers.Contains("215"))
-                                    {
-
-                                        QuoteOptionValueASingleNum quoteOptionValueASingleNum = null;
-                                        try
-                                        {
-                                            quoteOptionValueASingleNum = quoteLineItem.optionValuesA.First(qov => qov.OptionCode == "215");
-                                        }
-                                        catch
-                                        {
-                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (215) without a value.");
-                                        }
-                                        // Relief is Diameter type callout
-                                        if (quoteOptionValueASingleNum.Text.Contains("Diameter", StringComparison.InvariantCultureIgnoreCase))
-                                        {
-                                            // Diameter is extremely small
-                                            if ((quoteOptionValueASingleNum.Number1 ?? 0) < .07)
-                                            {
-                                                errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter that seems too small. Perhaps you meant Per Side?");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // Per Side is extremely large
-                                            if ((quoteOptionValueASingleNum.Number1 ?? 100) > .07)
-                                            {
-                                                errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Per Side that seems too large. Perhaps you meant Diameter?");
-                                            }
-                                        }
-
-                                    }
 
                                     // Has HobNo in HobList
                                     if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
@@ -3058,13 +3026,56 @@ namespace NatoliOrderInterface
                                                     }
                                                 }
 
+                                                // Has Special tip relief
+                                                if (quoteLineItem.OptionNumbers.Contains("215"))
+                                                {
+
+                                                    QuoteOptionValueASingleNum quoteOptionValueASingleNum = null;
+                                                    try
+                                                    {
+                                                        quoteOptionValueASingleNum = quoteLineItem.optionValuesA.First(qov => qov.OptionCode == "215");
+                                                    }
+                                                    catch
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has option (215) without a value.");
+                                                    }
+                                                    // Relief is Diameter type callout
+                                                    if (quoteOptionValueASingleNum.Text.Contains("Diameter", StringComparison.InvariantCultureIgnoreCase))
+                                                    {
+                                                        // Diameter is extremely small
+                                                        if ((quoteOptionValueASingleNum.Number1 ?? 0) < .07)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter that seems too small. Perhaps you meant Per Side?");
+                                                        }
+                                                        // Diameter is larger than the tablet
+                                                        if ((quoteOptionValueASingleNum.Number1 ?? 0) >= die.WidthMinorAxis)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter that is larger than the tablet size.");
+                                                        }
+                                                        if(die.LengthMajorAxis != null && die.LengthMajorAxis>0)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter but the tablet is shaped.");
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // Per Side is extremely large
+                                                        if ((quoteOptionValueASingleNum.Number1 ?? 100) > .07)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Per Side that seems too large. Perhaps you meant Diameter?");
+                                                        }
+                                                        
+                                                    }
+
+                                                }
+
                                                 // Cup Depth Incorrect
                                                 if (hob.CupDepth > ((die.WidthMinorAxis - (hob.Land * 2)) / 2))
                                                 {
                                                     errors.Add("'" + quoteLineItem.LineItemType + "' - " + hob.HobNo + " has incorrect cup depth in the database (Magic).");
                                                 }
 
-                                                // Has Hob
+                                                // Has Hob Line Item
                                                 if (quoteLineItems.Any(qli => qli.LineItemType == "H"))
                                                 {
                                                     // Too large to hob
