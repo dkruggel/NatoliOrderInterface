@@ -537,7 +537,7 @@ namespace NatoliOrderInterface
                     if (User.EmployeeCode == "E4754") // Tyler
                     {
                         //ProjectWindow projectWindow = new ProjectWindow("110012", "4", this, User, false);
-                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "103267", "0", new User("twilliams"));
+                        //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "David" }, "103267", "0", new User("twilliams"));
                         //(List<string> errantFolders, List<Tuple<string, string>> renamedFolders) = FolderCheck.CustomerFolderCheck();
                     }
                     else if (User.EmployeeCode == "E4408")
@@ -929,9 +929,17 @@ namespace NatoliOrderInterface
             Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             Dispatcher.BeginInvoke((Action)SetNotificationPicture, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
+        
         private async void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            bool applicationActive = true;
+            await Dispatcher.BeginInvoke((Action)(()=>
+            {
+                active = IMethods.IsActive(this as Window);
+                applicationActive = IMethods.IsApplicationActive();
+            }));
+            if (!applicationActive || active)
             {
                 await Task.Run(() => GetData(new List<string> { "Main" }));
                 Dispatcher.BeginInvoke((Action)UpdateUI, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
@@ -939,7 +947,14 @@ namespace NatoliOrderInterface
         }
         private async void QuoteTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            bool applicationActive = true;
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                active = IMethods.IsActive(this as Window);
+                applicationActive = IMethods.IsApplicationActive();
+            }));
+            if (!applicationActive || active)
             {
                 if (User.VisiblePanels.Contains("QuotesNotConverted"))
                 {
@@ -964,7 +979,14 @@ namespace NatoliOrderInterface
         }
         private async void NatoliOrderListTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (this.IsActive)
+            bool active = false;
+            bool applicationActive = true;
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                active = IMethods.IsActive(this as Window);
+                applicationActive = IMethods.IsApplicationActive();
+            }));
+            if (!applicationActive || active)
             {
                 if (User.VisiblePanels.Contains("NatoliOrderList"))
                 {
@@ -3408,14 +3430,12 @@ namespace NatoliOrderInterface
                 {
                     if (User.DomainName == "mmulaosmanovic")
                     {
-                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allTabletProjects = eoiAllTabletProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                     else
                     {
-                        _allTabletProjects = eoiAllTabletProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allTabletProjects = eoiAllTabletProjects.Where(p =>!_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                 }
@@ -3679,14 +3699,12 @@ namespace NatoliOrderInterface
 
                     if (User.DomainName == "kbergerdine")
                     {
-                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allToolProjects = eoiAllToolProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.Complete).ThenByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                     else
                     {
-                        _allToolProjects = eoiAllToolProjects.Where(p => p.HoldStatus != "On Hold" &&
-                                               !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
+                        _allToolProjects = eoiAllToolProjects.Where(p => !_nat02context.EoiProjectsFinished.Any(p2 => p2.ProjectNumber == p.ProjectNumber && p2.RevisionNumber == p.RevisionNumber))
                                                .OrderByDescending(p => p.MarkedPriority).ThenBy(p => p.DueDate).ThenBy(p => p.ProjectNumber).ToList();
                     }
                 }

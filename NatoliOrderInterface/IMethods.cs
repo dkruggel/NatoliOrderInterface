@@ -20,11 +20,14 @@ using MailKit;
 using MimeKit;
 using NatoliOrderInterface.MimeTypes;
 using System.Text.RegularExpressions;
+using System.Windows.Interop;
 
 namespace NatoliOrderInterface
 {
     public interface IMethods
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
         public static readonly Dictionary<string, string> lineItemTypeToDescription = new Dictionary<string, string> {
             { "A","ALIGNMENT TOOL" },
             { "CT","COPPER TABLETS" },
@@ -1343,19 +1346,38 @@ namespace NatoliOrderInterface
                 string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                 if (CSRs != null)
                 {
+                    #region Addresses
+                    // Creating email message to store the addresses
                     EmailMessage emailMessage = new EmailMessage();
                     foreach (string CSR in CSRs)
                     {
                         emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
                     }
-                    emailMessage.ToAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
                     emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
                     // BCC
-                    //emailMessage.BCCAddresses = new List<EmailAddress> { new EmailAddress("Tyler Williams", "eng5@natoli.com"), new EmailAddress("David Kruggel", "eng6@natoli.com") };
+                    emailMessage.BCCAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
+                    emailMessage.BCCAddresses.Add(new EmailAddress("David Kruggel", "eng6@natoli.com"));
+
+                    //CC
+                    if (user != null)
+                    {
+                        try
+                        {
+                            emailMessage.CCAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(user.GetDWPrincipalId()), IMethods.GetEmailAddressFromDWPrincipalID(user.GetDWPrincipalId())));
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("IMethods => SendProjectCompletedEmailToCSR => Attaching User Email to CC", ex.Message, user);
+                        }
+                    }
+                    #endregion
 
                     var message = new MimeMessage();
+                    // Attaching all addresses to mimemessage
                     message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
                     message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Bcc.AddRange(emailMessage.BCCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
 
                     string cust = "";
                     using var _ = new ProjectsContext();
@@ -1448,7 +1470,7 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                if (ex.Message.StartsWith("5.3.4"))
+                                if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
                                 {
                                     var maxSize = emailClient.MaxSize;
                                     message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -1457,6 +1479,7 @@ namespace NatoliOrderInterface
 
                                     @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
                                     "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                    comments +
                                     "Thanks,<br>" +
                                     "Engineering Team<br><br><br>" +
 
@@ -3629,7 +3652,29 @@ namespace NatoliOrderInterface
                 return fileNameWithoutExtension;
             }
         }
-        
+        /// <summary>
+        /// Checks to see if any windows in the application are active
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsApplicationActive()
+        {
+            foreach (var wnd in Application.Current.Windows.OfType<Window>())
+                if (IsActive(wnd)) return true;
+            return false;
+        }
+        /// <summary>
+        /// Checks to see if a window is active
+        /// </summary>
+        /// <param name="wnd"></param>
+        /// <returns></returns>
+        public static bool IsActive(Window wnd)
+        {
+            // workaround for minimization bug
+            // Managed .IsActive may return wrong value
+            if (wnd == null) return false;
+            return GetForegroundWindow() == new WindowInteropHelper(wnd).Handle;
+        }
+
 
         /// <summary>
         /// Uses a compiled python script and excel sheets with order data to get 5 option recommendations for a quote and line item.
@@ -3684,6 +3729,6 @@ namespace NatoliOrderInterface
 
 
 
-        
+
     }
 }
