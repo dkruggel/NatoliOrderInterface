@@ -4993,8 +4993,8 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
                                     UpperCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                    UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                    UpperLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperCupDepth.Text = hob.CupDepth == null ? "0.0000" : (Convert.ToSingle(hob.CupDepth) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
+                                    UpperLand.Text = hob.Land == null ? "0.0000" : (Convert.ToSingle(hob.Land) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
                                     UpperHobDescription.Text = note1 + " " + note2 + " " + note3;
                                     DieNumber.Text = hob.DieId.Trim();
                                 }));
@@ -5087,8 +5087,8 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
                                     LowerCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                    LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                    LowerLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerCupDepth.Text = hob.CupDepth == null ? "0.0000" : (Convert.ToSingle(hob.CupDepth) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
+                                    LowerLand.Text = hob.Land == null ? "0.0000" : (Convert.ToSingle(hob.Land) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
                                     LowerHobDescription.Text = note1 + " " + note2 + " " + note3;
                                     DieNumber.Text = hob.DieId.Trim();
                                 }));
@@ -5176,8 +5176,8 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
                                     ShortRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                    ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                    ShortRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : (Convert.ToSingle(hob.CupDepth) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
+                                    ShortRejectLand.Text = hob.Land == null ? "0.0000" : (Convert.ToSingle(hob.Land) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
                                     ShortRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
                                     DieNumber.Text = hob.DieId.Trim();
                                 }));
@@ -5265,8 +5265,8 @@ namespace NatoliOrderInterface
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
                                 {
                                     LongRejectCupType.Text = hob.CupCode == null ? "" : hob.CupCode.ToString().Trim() + " - " + _nat01Context.CupConfig.First(c => c.CupID == hob.CupCode).Description.Trim();
-                                    LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : Convert.ToSingle(hob.CupDepth).ToString("F4", CultureInfo.InvariantCulture);
-                                    LongRejectLand.Text = hob.Land == null ? "0.0000" : Convert.ToSingle(hob.Land).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectCupDepth.Text = hob.CupDepth == null ? "0.0000" : (Convert.ToSingle(hob.CupDepth) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
+                                    LongRejectLand.Text = hob.Land == null ? "0.0000" : (Convert.ToSingle(hob.Land) * (float)conversion).ToString("F4", CultureInfo.InvariantCulture);
                                     LongRejectHobDescription.Text = note1 + " " + note2 + " " + note3;
                                     DieNumber.Text = hob.DieId.Trim();
                                 }));
