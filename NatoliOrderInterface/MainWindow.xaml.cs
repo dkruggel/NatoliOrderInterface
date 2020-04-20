@@ -764,8 +764,9 @@ namespace NatoliOrderInterface
                 // User = new User("mbouzitoun");
                 // User = new User("billt");
                 // User = new User("rfaltus");
-                //User = new User("pturner");
-                User = new User(Environment.UserName);
+                // User = new User("pturner");
+                User = new User("mmulaosmanovic");
+                //User = new User(Environment.UserName);
                 App.user = User;
             }
             catch (Exception ex)
@@ -3470,6 +3471,7 @@ namespace NatoliOrderInterface
                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3480,6 +3482,7 @@ namespace NatoliOrderInterface
                                 _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3490,6 +3493,7 @@ namespace NatoliOrderInterface
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3500,6 +3504,7 @@ namespace NatoliOrderInterface
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3510,6 +3515,7 @@ namespace NatoliOrderInterface
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3524,6 +3530,7 @@ namespace NatoliOrderInterface
                                                   (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
@@ -3540,6 +3547,7 @@ namespace NatoliOrderInterface
                                                   (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
