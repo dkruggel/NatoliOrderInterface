@@ -586,6 +586,7 @@ namespace NatoliOrderInterface
                 using var _nat01Context = new NAT01Context();
                 CreationBorder.Visibility = Visibility.Hidden;
                 ProjectNavigation.Visibility = Visibility.Visible;
+                decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
                 // Is there actually a project
                 if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber) || _projectsContext.EngineeringArchivedProjects.Any(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber))
                 {
@@ -698,8 +699,8 @@ namespace NatoliOrderInterface
                             if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
                             {
                                 string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
-                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
-                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
+                                string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od == null ? "" :((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od * conversion).ToString();
+                                string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol == null ? "" : ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol * conversion).ToString();
                                 MachineDescription.Text = description;
                                 DieOD.Text = od;
                                 DieODPlaceholder.Visibility = Visibility.Collapsed;
@@ -722,9 +723,9 @@ namespace NatoliOrderInterface
                         DieNumber.IsEnabled = false;
                         DieShape.Text = engineeringProject.DieShape;
                         DieShape.IsEnabled = false;
-                        TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
+                        TabletWidth.Text = engineeringProject.Width == null ? "" : (engineeringProject.Width * conversion).ToString().TrimEnd('0');
                         TabletWidth.IsEnabled = false;
-                        TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
+                        TabletLength.Text = engineeringProject.Length == null ? "" : (engineeringProject.Length * conversion).ToString().TrimEnd('0');
                         TabletLength.IsEnabled = false;
                         DieTolerances.Text = engineeringProject.DieTolerances;
                         DieTolerances.IsEnabled = false;
@@ -732,9 +733,9 @@ namespace NatoliOrderInterface
                         UpperCupType.IsEnabled = false;
                         UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
                         UpperHobNumber.IsEnabled = false;
-                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
+                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : (engineeringProject.UpperCupDepth * conversion).ToString().TrimEnd('0');
                         UpperCupDepth.IsEnabled = false;
-                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
+                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : (engineeringProject.UpperLand * conversion).ToString().TrimEnd('0');
                         UpperLand.IsEnabled = false;
                         UpperHobDescription.Text = engineeringProject.UpperHobDescription;
                         if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
@@ -752,9 +753,9 @@ namespace NatoliOrderInterface
                         LowerCupType.IsEnabled = false;
                         LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
                         LowerHobNumber.IsEnabled = false;
-                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
+                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : (engineeringProject.LowerCupDepth * conversion).ToString().TrimEnd('0');
                         LowerCupDepth.IsEnabled = false;
-                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
+                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : (engineeringProject.LowerLand * conversion).ToString().TrimEnd('0');
                         LowerLand.IsEnabled = false;
                         LowerHobDescription.Text = engineeringProject.LowerHobDescription;
                         if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
@@ -772,9 +773,9 @@ namespace NatoliOrderInterface
                         ShortRejectCupType.IsEnabled = false;
                         ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
                         ShortRejectHobNumber.IsEnabled = false;
-                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
+                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : (engineeringProject.ShortRejectCupDepth * conversion).ToString().TrimEnd('0');
                         ShortRejectCupDepth.IsEnabled = false;
-                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
+                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : (engineeringProject.ShortRejectLand * conversion).ToString().TrimEnd('0');
                         ShortRejectLand.IsEnabled = false;
                         ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
                         if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
@@ -792,9 +793,9 @@ namespace NatoliOrderInterface
                         LongRejectCupType.IsEnabled = false;
                         LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
                         LongRejectHobNumber.IsEnabled = false;
-                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
+                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : (engineeringProject.LongRejectCupDepth * conversion).ToString().TrimEnd('0');
                         LongRejectCupDepth.IsEnabled = false;
-                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
+                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : (engineeringProject.LongRejectLand * conversion).ToString().TrimEnd('0');
                         LongRejectLand.IsEnabled = false;
                         LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
                         if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
@@ -1191,9 +1192,9 @@ namespace NatoliOrderInterface
                         DieNumber.IsEnabled = false;
                         DieShape.Text = engineeringProject.DieShape;
                         DieShape.IsEnabled = false;
-                        TabletWidth.Text = engineeringProject.Width == null ? "" : engineeringProject.Width.ToString().TrimEnd('0');
+                        TabletWidth.Text = engineeringProject.Width == null ? "" : (engineeringProject.Width * conversion).ToString().TrimEnd('0');
                         TabletWidth.IsEnabled = false;
-                        TabletLength.Text = engineeringProject.Length == null ? "" : engineeringProject.Length.ToString().TrimEnd('0');
+                        TabletLength.Text = engineeringProject.Length == null ? "" : (engineeringProject.Length * conversion).ToString().TrimEnd('0');
                         TabletLength.IsEnabled = false;
                         DieTolerances.Text = engineeringProject.DieTolerances;
                         DieTolerances.IsEnabled = false;
@@ -1201,9 +1202,9 @@ namespace NatoliOrderInterface
                         UpperCupType.IsEnabled = false;
                         UpperHobNumber.Text = engineeringProject.UpperHobNumber.Trim();
                         UpperHobNumber.IsEnabled = false;
-                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : engineeringProject.UpperCupDepth.ToString().TrimEnd('0');
+                        UpperCupDepth.Text = engineeringProject.UpperCupDepth == null ? "" : (engineeringProject.UpperCupDepth * conversion).ToString().TrimEnd('0');
                         UpperCupDepth.IsEnabled = false;
-                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : engineeringProject.UpperLand.ToString().TrimEnd('0');
+                        UpperLand.Text = engineeringProject.UpperLand == null ? "" : (engineeringProject.UpperLand * conversion).ToString().TrimEnd('0');
                         UpperLand.IsEnabled = false;
                         UpperHobDescription.Text = engineeringProject.UpperHobDescription;
                         UpperHobDescription.IsEnabled = false;
@@ -1213,9 +1214,9 @@ namespace NatoliOrderInterface
                         LowerCupType.IsEnabled = false;
                         LowerHobNumber.Text = engineeringProject.LowerHobNumber.Trim();
                         LowerHobNumber.IsEnabled = false;
-                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : engineeringProject.LowerCupDepth.ToString().TrimEnd('0');
+                        LowerCupDepth.Text = engineeringProject.LowerCupDepth == null ? "" : (engineeringProject.LowerCupDepth * conversion).ToString().TrimEnd('0');
                         LowerCupDepth.IsEnabled = false;
-                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : engineeringProject.LowerLand.ToString().TrimEnd('0');
+                        LowerLand.Text = engineeringProject.LowerLand == null ? "" : (engineeringProject.LowerLand * conversion).ToString().TrimEnd('0');
                         LowerLand.IsEnabled = false;
                         LowerHobDescription.Text = engineeringProject.LowerHobDescription;
                         LowerHobDescription.IsEnabled = false;
@@ -1225,9 +1226,9 @@ namespace NatoliOrderInterface
                         ShortRejectCupType.IsEnabled = false;
                         ShortRejectHobNumber.Text = engineeringProject.ShortRejectHobNumber.Trim();
                         ShortRejectHobNumber.IsEnabled = false;
-                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : engineeringProject.ShortRejectCupDepth.ToString().TrimEnd('0');
+                        ShortRejectCupDepth.Text = engineeringProject.ShortRejectCupDepth == null ? "" : (engineeringProject.ShortRejectCupDepth * conversion).ToString().TrimEnd('0');
                         ShortRejectCupDepth.IsEnabled = false;
-                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : engineeringProject.ShortRejectLand.ToString().TrimEnd('0');
+                        ShortRejectLand.Text = engineeringProject.ShortRejectLand == null ? "" : (engineeringProject.ShortRejectLand * conversion).ToString().TrimEnd('0');
                         ShortRejectLand.IsEnabled = false;
                         ShortRejectHobDescription.Text = engineeringProject.ShortRejectHobDescription;
                         ShortRejectHobDescription.IsEnabled = false;
@@ -1237,9 +1238,9 @@ namespace NatoliOrderInterface
                         LongRejectCupType.IsEnabled = false;
                         LongRejectHobNumber.Text = engineeringProject.LongRejectHobNumber.Trim();
                         LongRejectHobNumber.IsEnabled = false;
-                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : engineeringProject.LongRejectCupDepth.ToString().TrimEnd('0');
+                        LongRejectCupDepth.Text = engineeringProject.LongRejectCupDepth == null ? "" : (engineeringProject.LongRejectCupDepth * conversion).ToString().TrimEnd('0');
                         LongRejectCupDepth.IsEnabled = false;
-                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : engineeringProject.LongRejectLand.ToString().TrimEnd('0');
+                        LongRejectLand.Text = engineeringProject.LongRejectLand == null ? "" : (engineeringProject.LongRejectLand * conversion).ToString().TrimEnd('0');
                         LongRejectLand.IsEnabled = false;
                         LongRejectHobDescription.Text = engineeringProject.LongRejectHobDescription;
                         LongRejectHobDescription.IsEnabled = false;
@@ -4903,6 +4904,7 @@ namespace NatoliOrderInterface
                 string _editedText = editedText.ToString().Trim();
                 if (!string.IsNullOrWhiteSpace(_editedText))
                 {
+                    decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
                     string _editedTextBoxName = editedTextBoxName.ToString();
                     string _upperCupType = upperCupType.Trim();
                     string _upperCupDepth = upperCupDepth.Trim();
@@ -4968,8 +4970,8 @@ namespace NatoliOrderInterface
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                 }
-                                float width = (float)die.WidthMinorAxis;
-                                float length = (float)die.LengthMajorAxis;
+                                float width = (float)die.WidthMinorAxis * (float)conversion;
+                                float length = (float)die.LengthMajorAxis * (float)conversion;
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                             }
@@ -5011,8 +5013,8 @@ namespace NatoliOrderInterface
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                     }
-                                    float width = (float)die.WidthMinorAxis;
-                                    float length = (float)die.LengthMajorAxis;
+                                    float width = (float)die.WidthMinorAxis * (float)conversion;
+                                    float length = (float)die.LengthMajorAxis * (float)conversion;
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
@@ -5105,8 +5107,8 @@ namespace NatoliOrderInterface
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                     }
-                                    float width = (float)die.WidthMinorAxis;
-                                    float length = (float)die.LengthMajorAxis;
+                                    float width = (float)die.WidthMinorAxis * (float)conversion;
+                                    float length = (float)die.LengthMajorAxis * (float)conversion;
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
@@ -5194,8 +5196,8 @@ namespace NatoliOrderInterface
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                     }
-                                    float width = (float)die.WidthMinorAxis;
-                                    float length = (float)die.LengthMajorAxis;
+                                    float width = (float)die.WidthMinorAxis * (float)conversion;
+                                    float length = (float)die.LengthMajorAxis * (float)conversion;
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
@@ -5283,8 +5285,8 @@ namespace NatoliOrderInterface
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
                                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
                                     }
-                                    float width = (float)die.WidthMinorAxis;
-                                    float length = (float)die.LengthMajorAxis;
+                                    float width = (float)die.WidthMinorAxis * (float)conversion;
+                                    float length = (float)die.LengthMajorAxis * (float)conversion;
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
                                 }
@@ -5347,8 +5349,8 @@ namespace NatoliOrderInterface
                                 if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
                                 {
                                     string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
-                                    string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od.ToString();
-                                    string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol.ToString();
+                                    string od = ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od * conversion).ToString();
+                                    string ol = ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol * conversion).ToString();
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MachineDescription.Text = description));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieOD.Text = od));
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieODPlaceholder.Visibility = Visibility.Collapsed));
