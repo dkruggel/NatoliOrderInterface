@@ -12,6 +12,7 @@ namespace NatoliOrderInterface.Models
         public string RushYorN { get; set; }
         public DateTime QuoteDate { get; set; }
         public string RepId { get; set; }
+        public int NeedsFollowUp { get; set; }
 
         public bool Equals(EoiQuotesNotConvertedView other)
         {
@@ -24,10 +25,11 @@ namespace NatoliOrderInterface.Models
                    this.Csr == other.Csr &&
                    this.RushYorN == other.RushYorN &&
                    this.QuoteDate == other.QuoteDate &&
-                   this.RepId == other.RepId;
+                   this.RepId == other.RepId &&
+                   this.NeedsFollowUp == other.NeedsFollowUp;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiQuotesNotConvertedView);
-        public override int GetHashCode() => (QuoteNo, QuoteRevNo, CustomerName, Csr, RushYorN, QuoteDate, RepId).GetHashCode();
+        public override int GetHashCode() => (QuoteNo, QuoteRevNo, CustomerName, Csr, RushYorN, QuoteDate, RepId, NeedsFollowUp).GetHashCode();
     }
 }

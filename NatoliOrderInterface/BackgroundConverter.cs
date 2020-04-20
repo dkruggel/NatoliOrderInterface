@@ -17,26 +17,163 @@ namespace NatoliOrderInterface
         Dictionary<string, string> oeDetailTypes = new Dictionary<string, string>() { { "U", "Upper" }, { "L", "Lower" }, { "D", "Die" }, { "DS", "Die" }, { "R", "Reject" }, { "A", "Alignment" } };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double orderNumber = 0.0;
-
-            if (!(value is EoiQuotesMarkedForConversionView) && !(value is EoiQuotesNotConvertedView) && !(value is QueueView))
-            {
-                orderNumber = double.Parse(value.ToString());
-            }
-
-            using var _nat02Context = new NAT02Context();
-            using var nat01context = new NAT01Context();
-            using var _natBCContext = new NATBCContext();
-            using var _driveworksContext = new DriveWorksContext();
+            DateTime start = DateTime.Now;
+            var backgroundColor = SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
 
             try
             {
-                if (parameter.ToString() == "Orders")
+                if (value is EoiAllTabletProjectsView)
                 {
-                    EoiAllOrdersView order = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == orderNumber);
+                    try
+                    {
+                        EoiAllTabletProjectsView project = value as EoiAllTabletProjectsView;
+                        bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+                        bool finished = project.Complete == 5;
+                        bool onHold = project.HoldStatus == "On Hold";
+                        bool submitted = project.Complete == 3;
+                        bool drawn = project.Complete == 2;
+                        bool started = project.Complete == 1;
+                        bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
+
+                        if (onHold)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (finished)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
+                        }
+                        if (submitted)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
+                        }
+                        if (sentBack)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (drawn)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (started)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (priority) { return SetLinearGradientBrushTablets(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                    }
+                }
+                else if (value is EoiAllToolProjectsView)
+                {
+                    try
+                    {
+                        EoiAllToolProjectsView project = value as EoiAllToolProjectsView;
+                        bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+                        bool finished = project.Complete == 6;
+                        bool tablets = project.Complete == 1;
+                        bool multitip = project.MultiTipSketch;
+                        bool onHold = project.HoldStatus == "On Hold";
+                        bool drawn = project.Complete == 3;
+                        bool started = project.Complete == 2;
+
+                        if (onHold)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (finished)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
+                        }
+                        if (drawn)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
+                        }
+                        if (started)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (tablets)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (multitip)
+                        {
+                            if (priority) { return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (priority) { return SetLinearGradientBrushTools(Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                    }
+                }
+                else if (value is EoiQuotesMarkedForConversionView)
+                {
+                    EoiQuotesMarkedForConversionView quote = value as EoiQuotesMarkedForConversionView;
+
+                    if (quote.Rush == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                }
+                else if (value is EoiQuotesNotConvertedView)
+                {
+                    EoiQuotesNotConvertedView quote = value as EoiQuotesNotConvertedView;
+
+                    if (quote.NeedsFollowUp == 1)
+                    {
+                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                        return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                    }
+                    else if (quote.NeedsFollowUp == 2)
+                    {
+                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                        return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                    }
+
+                    if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                }
+                else if (parameter.ToString() == "NatoliOrderList")
+                {
+                    int daysToShip = ((value as NatoliOrderListFinal).ShipDate - DateTime.Now.Date).Days;
+
+                    if (daysToShip < 0)
+                    {
+                        return SetLinearGradientBrush(Colors.Red, Colors.Red, Colors.Red, Colors.Transparent);
+                    }
+                    else if (daysToShip == 0)
+                    {
+                        return SetLinearGradientBrush(Colors.Orange, Colors.Orange, Colors.Orange, Colors.Transparent);
+                    }
+                    else if (daysToShip > 0 && daysToShip < 4)
+                    {
+                        return SetLinearGradientBrush(Colors.Yellow, Colors.Yellow, Colors.Yellow, Colors.Transparent);
+                    }
+                    else
+                    {
+                        return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                    }
+                }
+                else
+                {
+                    EoiAllOrdersView order = value as EoiAllOrdersView;
                     bool rush = order.RushYorN == "Y" || order.PaidRushFee == "Y";
 
-                    if (order.BeingEntered == 1) { return new SolidColorBrush(Colors.Transparent); }
+                    if (order.BeingEntered == 1) { return backgroundColor; }
 
                     if (order.InTheOffice == 1)
                     {
@@ -50,8 +187,10 @@ namespace NatoliOrderInterface
 
                     if (order.EnteredUnscanned == 1)
                     {
+                        using var _driveworksContext = new DriveWorksContext();
                         bool running = _driveworksContext.QueueView.Count(q => q.TargetName.Contains(order.OrderNumber.ToString())) > 0;
                         bool ran = _driveworksContext.DrivenComponents.Count(dc => dc.TargetName.Contains(order.OrderNumber.ToString()) && (dc.Generating || dc.Generated)) > 0;
+                        _driveworksContext.Dispose();
 
                         if (order.DoNotProcess == 1)
                         {
@@ -115,8 +254,10 @@ namespace NatoliOrderInterface
                             bool toolPrints = System.Convert.ToBoolean(order.Tool);
                             List<OrderDetails> orderDetails;
                             OrderHeader orderHeader;
+                            using var nat01context = new NAT01Context();
                             orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
                             orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
+                            nat01context.Dispose();
 
                             if (tm2 || tabletPrints)
                             {
@@ -172,10 +313,10 @@ namespace NatoliOrderInterface
 
                     if (order.Printed == 1)
                     {
-                            if (order.DoNotProcess == 1)
-                            {
-                                if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        if (order.DoNotProcess == 1)
+                        {
+                            if (rush) { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (order.VariablesExist == 0)
                         {
@@ -183,234 +324,69 @@ namespace NatoliOrderInterface
                             return SetLinearGradientBrush(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         else if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
+                        {
+                            bool tm2 = System.Convert.ToBoolean(order.Tm2);
+                            bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
+                            bool toolPrints = System.Convert.ToBoolean(order.Tool);
+                            List<OrderDetails> orderDetails;
+                            OrderHeader orderHeader;
+                            using var nat01context = new NAT01Context();
+                            orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
+                            orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
+                            nat01context.Dispose();
+
+                            if (tm2 || tabletPrints)
                             {
-                                bool tm2 = System.Convert.ToBoolean(order.Tm2);
-                                bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
-                                bool toolPrints = System.Convert.ToBoolean(order.Tool);
-                                List<OrderDetails> orderDetails;
-                                OrderHeader orderHeader;
-                                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
-                                orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
-
-                                if (tm2 || tabletPrints)
+                                foreach (OrderDetails od in orderDetails)
                                 {
-                                    foreach (OrderDetails od in orderDetails)
+                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
                                     {
-                                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+                                        if (!System.IO.File.Exists(path))
                                         {
-                                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                                            if (!System.IO.File.Exists(path))
-                                            {
-                                                goto Missing;
-                                            }
+                                            goto Missing;
                                         }
                                     }
                                 }
-
-                                if (tm2 || toolPrints)
-                                {
-                                    foreach (OrderDetails od in orderDetails)
-                                    {
-                                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
-                                        {
-                                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
-                                            detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                            string international = orderHeader.UnitOfMeasure;
-                                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
-                                            if (!System.IO.File.Exists(path))
-                                            {
-                                                goto Missing;
-                                            }
-                                            if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
-                                            {
-                                                goto Missing;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                goto NotMissing;
-
-                            Missing:;
-                                if (rush) { return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                                return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                                goto Finished;
-
-                            NotMissing:;
-                                if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-
-                            Finished:;
                             }
-                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }                        
-                    }
-                    
-                }
-                else if (parameter.ToString() == "Tablets")
-                {
-                    try
-                    {
-                        EoiAllTabletProjectsView project = _nat02Context.EoiAllTabletProjectsView.Single(p => p.ProjectNumber == orderNumber);
-                        bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                        bool finished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
-                        bool onHold = project.HoldStatus == "On Hold";
-                        bool submitted = project.TabletSubmittedBy is null ? false : project.TabletSubmittedBy.Length > 0;
-                        bool drawn = project.TabletDrawnBy.Length > 0;
-                        bool started = project.ProjectStartedTablet.Length > 0;
-                        bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
 
-                        if (onHold)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (finished)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
-                        }
-                        if (submitted)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
-                        }
-                        if (sentBack)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (drawn)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (started)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (priority) { return SetLinearGradientBrushTablets(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                    }
-                    catch (Exception ex)
-                    {
-                        
-                    }
-                }
-                else if (parameter.ToString() == "Tools")
-                {
-                    try
-                    {
-                        EoiAllToolProjectsView project = _nat02Context.EoiAllToolProjectsView.Single(p => p.ProjectNumber == orderNumber);
-                        bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                        bool finished = _nat02Context.EoiProjectsFinished.Where(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).Any();
-                        using var projectsContext = new ProjectsContext();
-                        bool tabletChecked = false;
-                        if (projectsContext.ProjectSpecSheet.Any(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber))
-                        {
-                            tabletChecked = !string.IsNullOrEmpty(projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber == project.ProjectNumber && p.RevisionNumber == project.RevisionNumber).TabletCheckedBy);
-                        }
-                        else if(projectsContext.EngineeringProjects.Any(p=> p.ProjectNumber == project.ProjectNumber.ToString() && p.RevNumber == project.RevisionNumber.ToString()))
-                        {
-                            tabletChecked = projectsContext.EngineeringProjects.First(p => p.ProjectNumber == project.ProjectNumber.ToString() && p.RevNumber == project.RevisionNumber.ToString()).TabletChecked;
-                        }
-                        bool tablets = (project.Tablet == 1 && tabletChecked == false) ? true : false;
-                        bool multitip = project.MultiTipSketch;
-                        projectsContext.Dispose();
-                        bool onHold = project.HoldStatus == "On Hold";
-                        bool drawn = project.ToolDrawnBy.Length > 0;
-                        bool started = project.ProjectStartedTool.Length > 0;
+                            if (tm2 || toolPrints)
+                            {
+                                foreach (OrderDetails od in orderDetails)
+                                {
+                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                                    {
+                                        string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                                        detailType = detailType == "MISC" ? "REJECT" : detailType;
+                                        string international = orderHeader.UnitOfMeasure;
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
+                                        if (!System.IO.File.Exists(path))
+                                        {
+                                            goto Missing;
+                                        }
+                                        if (international == "M" && !System.IO.File.Exists(path.Replace(detailType, detailType + "_M")))
+                                        {
+                                            goto Missing;
+                                        }
+                                    }
+                                }
+                            }
 
-                        if (onHold)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (finished)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
-                        }
-                        if (drawn)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
-                        }
-                        if (started)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (tablets)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (multitip)
-                        {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Transparent);
-                        }
-                        if (priority) { return SetLinearGradientBrushTools(Colors.Transparent, Colors.Transparent, Colors.Red); }
-                    }
-                    catch (Exception ex)
-                    {
-                        
-                    }
-                }
-                else if (value is EoiQuotesMarkedForConversionView)
-                {
-                    EoiQuotesMarkedForConversionView quote = value as EoiQuotesMarkedForConversionView;
+                            goto NotMissing;
 
-                    if (quote.Rush == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                }
-                else if (value is EoiQuotesNotConvertedView)
-                {
-                    EoiQuotesNotConvertedView quote = value as EoiQuotesNotConvertedView;
+                        Missing:;
+                            if (rush) { return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrush(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                            goto Finished;
 
-                    int days = GetNumberOfDays(quote.Csr);
+                        NotMissing:;
+                            if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
 
-                    bool needs_followup_4 = DateTime.Today.Subtract(_nat02Context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > 28 &&
-                                            GetNumberOfDays(quote.Csr) == 14;
-                    bool needs_followup = !_nat02Context.EoiQuotesOneWeekCompleted.Where(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).Any() &&
-                                          DateTime.Today.Subtract(_nat02Context.EoiQuotesNotConvertedView.First(q => q.QuoteNo == quote.QuoteNo && q.QuoteRevNo == quote.QuoteRevNo).QuoteDate).Days > days &&
-                                          !needs_followup_4;
-
-                    if (needs_followup)
-                    {
-                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                        return SetLinearGradientBrush(Colors.Pink, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                    }
-                    else if (needs_followup_4)
-                    {
-                        if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                        return SetLinearGradientBrush(Colors.OrangeRed, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        Finished:;
+                        }
+                        if (rush) { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
                     }
 
-                    if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
-                    return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                }
-                else if (parameter.ToString() == "NatoliOrderList")
-                {
-                    OrderHeader order = nat01context.OrderHeader.Single(o => o.OrderNo == orderNumber * 100);
-                    DateTime date = ((DateTime)order.RequestedShipDateRev).Date.ToShortDateString() == "1/1/1901" ? ((DateTime)order.RequestedShipDate).Date : ((DateTime)order.RequestedShipDateRev).Date;
-                    int daysToShip = (date.Date - DateTime.Now.Date).Days;
-
-                    if (daysToShip < 0)
-                    {
-                        return SetLinearGradientBrush(Colors.Red, Colors.Red, Colors.Red, Colors.Transparent);
-                    }
-                    else if (daysToShip == 0)
-                    {
-                        return SetLinearGradientBrush(Colors.Orange, Colors.Orange, Colors.Orange, Colors.Transparent);
-                    }
-                    else if (daysToShip > 0 && daysToShip < 4)
-                    {
-                        return SetLinearGradientBrush(Colors.Yellow, Colors.Yellow, Colors.Yellow, Colors.Transparent);
-                    }
-                    else
-                    {
-                        return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
-                    }
                 }
             }
             catch (Exception ex)
@@ -418,12 +394,7 @@ namespace NatoliOrderInterface
                 // System.Windows.MessageBox.Show(ex.Message);
             }
 
-            _driveworksContext.Dispose();
-            _natBCContext.Dispose();
-            nat01context.Dispose();
-            _nat02Context.Dispose();
-
-            return new SolidColorBrush(Colors.Transparent);
+            return backgroundColor;
         }
         private static int GetNumberOfDays(string csr)
         {

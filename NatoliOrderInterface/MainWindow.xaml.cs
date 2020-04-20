@@ -170,9 +170,9 @@ namespace NatoliOrderInterface
         #region New Style ListBox
         #region Orders Being Entered
         private ListBox OrdersBeingEnteredListBox { get; set; }
-        private List<EoiOrdersBeingEnteredView> ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
-        private List<EoiOrdersBeingEnteredView> _ordersBeingEntered = new List<EoiOrdersBeingEnteredView>();
-        public List<EoiOrdersBeingEnteredView> OrdersBeingEntered
+        private List<EoiAllOrdersView> ordersBeingEntered = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersBeingEntered = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersBeingEntered
         {
             get
             {
@@ -191,9 +191,9 @@ namespace NatoliOrderInterface
         #endregion
         #region Orders In The Office
         private ListBox OrdersInTheOfficeListBox = new ListBox();
-        private List<EoiOrdersInOfficeView> ordersInTheOffice = new List<EoiOrdersInOfficeView>();
-        private List<EoiOrdersInOfficeView> _ordersInTheOffice = new List<EoiOrdersInOfficeView>();
-        public List<EoiOrdersInOfficeView> OrdersInTheOffice
+        private List<EoiAllOrdersView> ordersInTheOffice = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersInTheOffice = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersInTheOffice
         {
             get
             {
@@ -212,9 +212,9 @@ namespace NatoliOrderInterface
         #endregion
         #region Orders Entered Unscanned
         private ListBox OrdersEnteredListBox = new ListBox();
-        private List<EoiOrdersEnteredAndUnscannedView> ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
-        private List<EoiOrdersEnteredAndUnscannedView> _ordersEntered = new List<EoiOrdersEnteredAndUnscannedView>();
-        public List<EoiOrdersEnteredAndUnscannedView> OrdersEntered
+        private List<EoiAllOrdersView> ordersEntered = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersEntered = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersEntered
         {
             get
             {
@@ -233,9 +233,9 @@ namespace NatoliOrderInterface
         #endregion
         #region Orders In Engineering
         private ListBox OrdersInEngListBox = new ListBox();
-        private List<EoiOrdersInEngineeringUnprintedView> ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
-        private List<EoiOrdersInEngineeringUnprintedView> _ordersInEng = new List<EoiOrdersInEngineeringUnprintedView>();
-        public List<EoiOrdersInEngineeringUnprintedView> OrdersInEng
+        private List<EoiAllOrdersView> ordersInEng = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersInEng = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersInEng
         {
             get
             {
@@ -254,9 +254,9 @@ namespace NatoliOrderInterface
         #endregion
         #region Orders Ready To Print
         private ListBox OrdersReadyToPrintListBox = new ListBox();
-        private List<EoiOrdersReadyToPrintView> ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
-        private List<EoiOrdersReadyToPrintView> _ordersReadyToPrint = new List<EoiOrdersReadyToPrintView>();
-        public List<EoiOrdersReadyToPrintView> OrdersReadyToPrint
+        private List<EoiAllOrdersView> ordersReadyToPrint = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersReadyToPrint = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersReadyToPrint
         {
             get
             {
@@ -279,13 +279,9 @@ namespace NatoliOrderInterface
                     }
 
                     // Get future background color
-                    foreach (EoiOrdersReadyToPrintView order in value)
+                    foreach (EoiAllOrdersView order in value)
                     {
-                        int index = value.IndexOf(order);
-                        using var _nat02Context = new NAT02Context();
-                        EoiAllOrdersView o = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == order.OrderNo);
-                        _nat02Context.Dispose();
-                        outBack.Add(CheckIfPrintsAreMissing(o));
+                        outBack.Add(CheckIfPrintsAreMissing(order));
                     }
                 }
                 catch (Exception ex)
@@ -304,9 +300,9 @@ namespace NatoliOrderInterface
         #endregion
         #region Orders Printed In Engineering
         private ListBox OrdersPrintedListBox = new ListBox();
-        private List<EoiOrdersPrintedInEngineeringView> ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
-        private List<EoiOrdersPrintedInEngineeringView> _ordersPrinted = new List<EoiOrdersPrintedInEngineeringView>();
-        public List<EoiOrdersPrintedInEngineeringView> OrdersPrinted
+        private List<EoiAllOrdersView> ordersPrinted = new List<EoiAllOrdersView>();
+        private List<EoiAllOrdersView> _ordersPrinted = new List<EoiAllOrdersView>();
+        public List<EoiAllOrdersView> OrdersPrinted
         {
             get
             {
@@ -329,13 +325,9 @@ namespace NatoliOrderInterface
                     }
 
                     // Get future background color
-                    foreach (EoiOrdersPrintedInEngineeringView order in value)
+                    foreach (EoiAllOrdersView order in value)
                     {
-                        int index = value.IndexOf(order);
-                        using var _nat02Context = new NAT02Context();
-                        EoiAllOrdersView o = _nat02Context.EoiAllOrdersView.Single(o => o.OrderNumber == order.OrderNo);
-                        _nat02Context.Dispose();
-                        outBack.Add(CheckIfPrintsAreMissing(o));
+                        outBack.Add(CheckIfPrintsAreMissing(order));
                     }
                 }
                 catch (Exception ex)
@@ -2877,7 +2869,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersBeingEntered = _.EoiOrdersBeingEnteredView.OrderBy(o => o.OrderNo).ToList();
+                _ordersBeingEntered = _.EoiAllOrdersView.Where(o => o.BeingEntered == 1).OrderBy(o => o.OrderNumber).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -2898,28 +2890,28 @@ namespace NatoliOrderInterface
                 {
                     case "order no":
                         _filtered =
-                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                            _ordersBeingEntered.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
                         break;
                     case "customer name":
                         _filtered =
                             _ordersBeingEntered.Where(o => !string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
                         break;
                     case "quote no":
                         _filtered =
-                            _ordersBeingEntered.Where(o => !string.IsNullOrEmpty(o.QuoteNo.ToString()) && o.QuoteNo.ToString().ToLower().Contains(searchString))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                            _ordersBeingEntered.Where(o => !string.IsNullOrEmpty(o.QuoteNumber.ToString()) && o.QuoteNumber.ToString().ToLower().Contains(searchString))
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
                         break;
                     default:
                         _filtered =
-                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                               o.QuoteNo.ToString().Contains(searchString) ||
+                            _ordersBeingEntered.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString) ||
+                                               o.OrderNumber.ToString().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
                         break;
                 }
@@ -2927,10 +2919,10 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersBeingEntered.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
-                                               o.QuoteNo.ToString().Contains(searchString) ||
+                            _ordersBeingEntered.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString) ||
+                                               o.QuoteNumber.ToString().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
             }
 
@@ -2941,7 +2933,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersInTheOffice = _.EoiOrdersInOfficeView.OrderBy(o => o.OrderNo).ToList();
+                _ordersInTheOffice = _.EoiAllOrdersView.Where(o => o.InTheOffice == 1).OrderBy(o => o.OrderNumber).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -2962,37 +2954,37 @@ namespace NatoliOrderInterface
                 {
                     case "order no":
                         _filtered =
-                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString))
+                            _ordersInTheOffice.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString))
                                   .OrderBy(o => o.NumDaysToShip)
-                                  .ThenBy(o => o.DaysInOffice)
-                                  .ThenBy(o => o.OrderNo)
+                                  .ThenBy(o => o.DaysInDept)
+                                  .ThenBy(o => o.OrderNumber)
                                   .ToList();
                         break;
                     case "customer name":
                         _filtered =
                             _ordersInTheOffice.Where(o => !string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString))
                                   .OrderBy(o => o.NumDaysToShip)
-                                  .ThenBy(o => o.DaysInOffice)
-                                  .ThenBy(o => o.OrderNo)
+                                  .ThenBy(o => o.DaysInDept)
+                                  .ThenBy(o => o.OrderNumber)
                                   .ToList();
                         break;
                     case "employee name":
                         _filtered =
                             _ordersInTheOffice.Where(o => !string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString))
                                   .OrderBy(o => o.NumDaysToShip)
-                                  .ThenBy(o => o.DaysInOffice)
-                                  .ThenBy(o => o.OrderNo)
+                                  .ThenBy(o => o.DaysInDept)
+                                  .ThenBy(o => o.OrderNumber)
                                   .ToList();
                         break;
                     default:
                         _filtered =
-                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersInTheOffice.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                               (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.Csr) && o.Csr.ToLower().Contains(searchString)))
                                   .OrderBy(o => o.NumDaysToShip)
-                                  .ThenBy(o => o.DaysInOffice)
-                                  .ThenBy(o => o.OrderNo)
+                                  .ThenBy(o => o.DaysInDept)
+                                  .ThenBy(o => o.OrderNumber)
                                   .ToList();
                         break;
                 }
@@ -3000,13 +2992,13 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersInTheOffice.Where(o => o.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersInTheOffice.Where(o => o.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                               (!string.IsNullOrEmpty(o.CustomerName) && o.CustomerName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.EmployeeName) && o.EmployeeName.ToLower().Contains(searchString)) ||
                                               (!string.IsNullOrEmpty(o.Csr) && o.Csr.ToLower().Contains(searchString)))
                                   .OrderBy(o => o.NumDaysToShip)
-                                  .ThenBy(o => o.DaysInOffice)
-                                  .ThenBy(o => o.OrderNo)
+                                  .ThenBy(o => o.DaysInDept)
+                                  .ThenBy(o => o.OrderNumber)
                                   .ToList();
             }
 
@@ -3072,7 +3064,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersEntered = _.EoiOrdersEnteredAndUnscannedView.OrderBy(o => o.OrderNo).ToList();
+                _ordersEntered = _.EoiAllOrdersView.Where(o => o.EnteredUnscanned == 1).OrderBy(o => o.OrderNumber).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -3094,23 +3086,23 @@ namespace NatoliOrderInterface
                 {
                     case "order no":
                         _filtered =
-                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
+                            _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString))
                             .OrderBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                     case "customer name":
                         _filtered =
                             _ordersEntered.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                             .OrderBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                     default:
                         _filtered =
-                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                           (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
-                              .OrderBy(kvp => kvp.OrderNo)
+                              .OrderBy(kvp => kvp.OrderNumber)
                               .ToList();
                         break;
                 }
@@ -3118,9 +3110,9 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersEntered.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                           (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
-                              .OrderBy(kvp => kvp.OrderNo)
+                              .OrderBy(kvp => kvp.OrderNumber)
                               .ToList();
             }
 
@@ -3131,7 +3123,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersInEng = _.EoiOrdersInEngineeringUnprintedView.OrderByDescending(o => o.DaysInEng).ThenBy(o => o.NumDaysToShip).ToList();
+                _ordersInEng = _.EoiAllOrdersView.Where(o => o.InEngineering == 1).OrderByDescending(o => o.DaysInDept).ThenBy(o => o.NumDaysToShip).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -3154,39 +3146,39 @@ namespace NatoliOrderInterface
                     case "order no":
 
                         _filtered =
-                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
-                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            _ordersInEng.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString))
+                            .OrderByDescending(kvp => kvp.DaysInDept)
                             .ThenBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                     case "customer name":
 
                         _filtered =
                             _ordersInEng.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
-                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .OrderByDescending(kvp => kvp.DaysInDept)
                             .ThenBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                     case "employee name":
 
                         _filtered =
                             _ordersInEng.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
-                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .OrderByDescending(kvp => kvp.DaysInDept)
                             .ThenBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                     default:
 
                         _filtered =
-                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersInEng.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                         (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                         (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)))
-                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .OrderByDescending(kvp => kvp.DaysInDept)
                             .ThenBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
                         break;
                 }
@@ -3194,12 +3186,12 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersInEng.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersInEng.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                         (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                         (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)))
-                            .OrderByDescending(kvp => kvp.DaysInEng)
+                            .OrderByDescending(kvp => kvp.DaysInDept)
                             .ThenBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNo)
+                            .ThenBy(kvp => kvp.OrderNumber)
                             .ToList();
             }
 
@@ -3257,7 +3249,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersReadyToPrint = _.EoiOrdersReadyToPrintView.OrderBy(o => o.OrderNo).ToList();
+                _ordersReadyToPrint = _.EoiAllOrdersView.Where(o => o.ReadyToPrint == 1).OrderBy(o => o.OrderNumber).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -3280,39 +3272,39 @@ namespace NatoliOrderInterface
                     case "order no":
 
                         _filtered =
-                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                            _ordersReadyToPrint.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "customer name":
 
                         _filtered =
                             _ordersReadyToPrint.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "employee name":
 
                         _filtered =
                             _ordersReadyToPrint.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "checker":
 
                         _filtered =
                             _ordersReadyToPrint.Where(p => (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     default:
 
                         _filtered =
-                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersReadyToPrint.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
                         break;
                 }
@@ -3320,11 +3312,11 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersReadyToPrint.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersReadyToPrint.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
                                                (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
-                                   .OrderBy(kvp => kvp.OrderNo)
+                                   .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
             }
 
@@ -3335,7 +3327,7 @@ namespace NatoliOrderInterface
             try
             {
                 using var _ = new NAT02Context();
-                _ordersPrinted = _.EoiOrdersPrintedInEngineeringView.OrderBy(o => o.OrderNo).ToList();
+                _ordersPrinted = _.EoiAllOrdersView.Where(o => o.Printed == 1).OrderBy(o => o.OrderNumber).ToList();
                 _.Dispose();
             }
             catch (Exception ex)
@@ -3358,39 +3350,39 @@ namespace NatoliOrderInterface
                     case "order no":
 
                         _filtered =
-                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                            _ordersPrinted.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString))
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "customer name":
 
                         _filtered =
                             _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "employee name":
 
                         _filtered =
                             _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     case "checker":
 
                         _filtered =
                             _ordersPrinted.Where(p => !string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                     default:
 
                         _filtered =
-                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersPrinted.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                                       (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                       (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
                                                       (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
                         break;
                 }
@@ -3398,11 +3390,11 @@ namespace NatoliOrderInterface
             else
             {
                 _filtered =
-                            _ordersPrinted.Where(p => p.OrderNo.ToString().ToLower().Contains(searchString) ||
+                            _ordersPrinted.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                                       (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                       (!string.IsNullOrEmpty(p.EmployeeName) && p.EmployeeName.ToLower().Contains(searchString)) ||
                                                       (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
-                                          .OrderBy(kvp => kvp.OrderNo)
+                                          .OrderBy(kvp => kvp.OrderNumber)
                                           .ToList();
             }
 
@@ -4083,7 +4075,7 @@ namespace NatoliOrderInterface
                 string acctNo = _.QuoteHeader.Single(q => q.QuoteNo == orderHeader.QuoteNumber && q.QuoteRevNo == orderHeader.QuoteRevNo).UserAcctNo;
                 using var __ = new NECContext();
                 string repId = __.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Slprsnid;
-
+                
                 NatoliOrderListFinal nolf = new NatoliOrderListFinal()
                 {
                     OrderNo = nol.OrderNo / 100,
@@ -4636,7 +4628,5 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
         #endregion
-
-        
     }
 }
