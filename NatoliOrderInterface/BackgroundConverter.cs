@@ -474,25 +474,25 @@ namespace NatoliOrderInterface
             return linearGradientBrush;
         }
 
-        private LinearGradientBrush SetLinearGradientBrushTools(Color first, Color second, Color third)
-        {
-            LinearGradientBrush linearGradientBrush;
-            GradientStop gradientStop_0 = new GradientStop(first, 0.33333);
-            GradientStop gradientStop_1 = new GradientStop(second, 0.66666);
-            GradientStop gradientStop_1_1 = new GradientStop(Colors.Transparent, 0.8);
-            GradientStop gradientStop_1_2 = new GradientStop(third, 1.0);
-            GradientStop gradientStop_3 = new GradientStop(third, 1.1);
+        //private LinearGradientBrush SetLinearGradientBrushTools(Color first, Color second, Color third)
+        //{
+        //    LinearGradientBrush linearGradientBrush;
+        //    GradientStop gradientStop_0 = new GradientStop(first, 0.33333);
+        //    GradientStop gradientStop_1 = new GradientStop(second, 0.66666);
+        //    GradientStop gradientStop_1_1 = new GradientStop(Colors.Transparent, 0.8);
+        //    GradientStop gradientStop_1_2 = new GradientStop(third, 1.0);
+        //    GradientStop gradientStop_3 = new GradientStop(third, 1.1);
 
-            GradientStopCollection gradientStops = new GradientStopCollection();
-            gradientStops.Add(gradientStop_0);
-            gradientStops.Add(gradientStop_1);
-            gradientStops.Add(gradientStop_1_1);
-            gradientStops.Add(gradientStop_1_2);
-            gradientStops.Add(gradientStop_3);
-            linearGradientBrush = new LinearGradientBrush(gradientStops, new System.Windows.Point(0.0, 0.0), new System.Windows.Point(1.0, 0.0));
-            linearGradientBrush.Opacity = 0.7;
-            return linearGradientBrush;
-        }
+        //    GradientStopCollection gradientStops = new GradientStopCollection();
+        //    gradientStops.Add(gradientStop_0);
+        //    gradientStops.Add(gradientStop_1);
+        //    gradientStops.Add(gradientStop_1_1);
+        //    gradientStops.Add(gradientStop_1_2);
+        //    gradientStops.Add(gradientStop_3);
+        //    linearGradientBrush = new LinearGradientBrush(gradientStops, new System.Windows.Point(0.0, 0.0), new System.Windows.Point(1.0, 0.0));
+        //    linearGradientBrush.Opacity = 0.7;
+        //    return linearGradientBrush;
+        //}
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
