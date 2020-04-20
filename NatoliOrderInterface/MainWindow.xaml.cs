@@ -764,6 +764,7 @@ namespace NatoliOrderInterface
                 // User = new User("mbouzitoun");
                 // User = new User("billt");
                 // User = new User("rfaltus");
+                //User = new User("pturner");
                 User = new User(Environment.UserName);
                 App.user = User;
             }
@@ -4138,7 +4139,7 @@ namespace NatoliOrderInterface
         }
         private void ResetHeightWhenSearchIsOver(ListBox listBox)
         {
-            Label label = (OrdersReadyToPrintListBox.Parent as Grid).TemplatedParent as Label;
+            Label label = (listBox.Parent as Grid).TemplatedParent as Label;
             label.ApplyTemplate();
             Grid templatedGrid = VisualTreeHelper.GetChild(label as DependencyObject, 0) as Grid;
             Grid templatedGrid1 = templatedGrid.Children.OfType<Grid>().First() as Grid;
