@@ -82,40 +82,46 @@ namespace NatoliOrderInterface
                         bool tablets = project.Complete == 1;
                         bool multitip = project.MultiTipSketch;
                         bool onHold = project.HoldStatus == "On Hold";
+                        bool submitted = project.Complete == 4;
                         bool drawn = project.Complete == 3;
                         bool started = project.Complete == 2;
 
                         if (onHold)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.MediumPurple, Colors.Transparent, Colors.Transparent);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (finished)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
+                        }
+                        if (submitted)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
                         }
                         if (drawn)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
                         }
                         if (started)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (tablets)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.Yellow, Colors.Transparent, Colors.Transparent);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.Yellow, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.Yellow, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (multitip)
                         {
-                            if (priority) { return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Red); }
-                            return SetLinearGradientBrushTools(Colors.Gray, Colors.Transparent, Colors.Transparent);
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.Gray, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.Gray, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
-                        if (priority) { return SetLinearGradientBrushTools(Colors.Transparent, Colors.Transparent, Colors.Red); }
+                        if (priority) { return SetLinearGradientBrushTablets(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
                     }
                     catch (Exception ex)
                     {
