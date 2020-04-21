@@ -760,14 +760,18 @@ namespace NatoliOrderInterface
         {
             try
             {
-                // User = new User("jwillis");
-                // User = new User("mbouzitoun");
-                // User = new User("billt");
-                // User = new User("rfaltus");
-                // User = new User("pturner");
-                User = new User("mmulaosmanovic");
-                //User = new User(Environment.UserName);
-                App.user = User;
+                
+                User = new User(Environment.UserName);
+                if (isDebugMode)
+                { 
+                  // User = new User("jwillis");
+                  // User = new User("mbouzitoun");
+                  // User = new User("billt");
+                  // User = new User("rfaltus");
+                  // User = new User("pturner");
+                  // User = new User("mmulaosmanovic");
+                }
+                    App.user = User;
             }
             catch (Exception ex)
             {
@@ -3555,6 +3559,7 @@ namespace NatoliOrderInterface
             }
             else if (User.Department == "Engineering")
             {
+                string name = User.GetDWPrincipalId();
                 if (searchString.Contains(":"))
                 {
                     column = searchString.Split(':')[0];
@@ -3566,6 +3571,10 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3580,6 +3589,10 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3594,6 +3607,10 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3608,6 +3625,10 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3622,6 +3643,10 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3640,6 +3665,10 @@ namespace NatoliOrderInterface
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3660,6 +3689,10 @@ namespace NatoliOrderInterface
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
@@ -3831,6 +3864,7 @@ namespace NatoliOrderInterface
             }
             else if (User.Department == "Engineering")
             {
+                string name = User.GetDWPrincipalId();
                 if (searchString.Contains(":"))
                 {
                     column = searchString.Split(':')[0];
@@ -3842,7 +3876,11 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3854,7 +3892,11 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3866,7 +3908,11 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3878,7 +3924,11 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3890,7 +3940,11 @@ namespace NatoliOrderInterface
                             _filtered =
                                 _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3906,7 +3960,11 @@ namespace NatoliOrderInterface
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -3924,7 +3982,11 @@ namespace NatoliOrderInterface
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
-                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.MultiTipSketch)
                                       .ThenBy(kvp => kvp.DueDate)
