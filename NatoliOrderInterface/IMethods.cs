@@ -1308,6 +1308,91 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
+        /// Returns a list of possible panels to choose from based on user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public static List<string> GetPossiblePanels(User user)
+        {
+            List<string> possiblePanels = new List<string>();
+            if (user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754" || user.EmployeeCode == "E4509" || user.EmployeeCode == "E3072")
+            {
+                possiblePanels.Add("QuotesNotConverted");
+                possiblePanels.Add("QuotesToConvert");
+                possiblePanels.Add("BeingEntered");
+                possiblePanels.Add("InTheOffice");
+                possiblePanels.Add("EnteredUnscanned");
+                possiblePanels.Add("InEngineering");
+                possiblePanels.Add("ReadyToPrint");
+                possiblePanels.Add("PrintedInEngineering");
+                possiblePanels.Add("AllTabletProjects");
+                //possiblePanels.Add("TabletProjectsNotStarted");
+                //possiblePanels.Add("TabletProjectsStarted");
+                //possiblePanels.Add("TabletProjectsDrawn");
+                //possiblePanels.Add("TabletProjectsSubmitted");
+                //possiblePanels.Add("TabletProjectsOnHold");
+                possiblePanels.Add("AllToolProjects");
+                //possiblePanels.Add("ToolProjectsNotStarted");
+                //possiblePanels.Add("ToolProjectsStarted");
+                //possiblePanels.Add("ToolProjectsDrawn");
+                //possiblePanels.Add("ToolProjectsOnHold");
+                possiblePanels.Add("DriveWorksQueue");
+                possiblePanels.Add("NatoliOrderList");
+                possiblePanels.Add("");
+            }
+            else if (user.Department == "Engineering")
+            {
+                possiblePanels.Add("QuotesNotConverted");
+                possiblePanels.Add("BeingEntered");
+                possiblePanels.Add("InTheOffice");
+                possiblePanels.Add("EnteredUnscanned");
+                possiblePanels.Add("InEngineering");
+                possiblePanels.Add("ReadyToPrint");
+                possiblePanels.Add("PrintedInEngineering");
+                possiblePanels.Add("AllTabletProjects");
+                //possiblePanels.Add("TabletProjectsNotStarted");
+                //possiblePanels.Add("TabletProjectsStarted");
+                //possiblePanels.Add("TabletProjectsDrawn");
+                //possiblePanels.Add("TabletProjectsSubmitted");
+                //possiblePanels.Add("TabletProjectsOnHold");
+                possiblePanels.Add("AllToolProjects");
+                //possiblePanels.Add("ToolProjectsNotStarted");
+                //possiblePanels.Add("ToolProjectsStarted");
+                //possiblePanels.Add("ToolProjectsDrawn");
+                //possiblePanels.Add("ToolProjectsOnHold");
+                possiblePanels.Add("DriveWorksQueue");
+                possiblePanels.Add("");
+            }
+            else if (user.Department == "Customer Service")
+            {
+                possiblePanels.Add("QuotesNotConverted");
+                possiblePanels.Add("QuotesToConvert");
+                possiblePanels.Add("BeingEntered");
+                possiblePanels.Add("InTheOffice");
+                possiblePanels.Add("EnteredUnscanned");
+                possiblePanels.Add("InEngineering");
+                possiblePanels.Add("ReadyToPrint");
+                possiblePanels.Add("PrintedInEngineering");
+                possiblePanels.Add("AllTabletProjects");
+                possiblePanels.Add("AllToolProjects");
+                possiblePanels.Add("NatoliOrderList");
+                possiblePanels.Add("");
+            }
+            else if (user.Department == "Order Entry")
+            {
+                possiblePanels.Add("QuotesToConvert");
+                possiblePanels.Add("BeingEntered");
+                possiblePanels.Add("InTheOffice");
+                possiblePanels.Add("EnteredUnscanned");
+                possiblePanels.Add("InEngineering");
+                possiblePanels.Add("ReadyToPrint");
+                possiblePanels.Add("PrintedInEngineering");
+                possiblePanels.Add("");
+            }
+
+            return possiblePanels;
+        }
+        /// <summary>
         /// Checks to see if file is in use
         /// </summary>
         /// <param name="filename"></param>
@@ -1561,91 +1646,7 @@ namespace NatoliOrderInterface
                 return null;
             }
         }
-        /// <summary>
-        /// Returns a list of possible panels to choose from based on user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public static List<string> GetPossiblePanels(User user)
-        {
-            List<string> possiblePanels = new List<string>();
-            if (user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754" || user.EmployeeCode == "E4509" || user.EmployeeCode == "E3072")
-            {
-                possiblePanels.Add("QuotesNotConverted");
-                possiblePanels.Add("QuotesToConvert");
-                possiblePanels.Add("BeingEntered");
-                possiblePanels.Add("InTheOffice");
-                possiblePanels.Add("EnteredUnscanned");
-                possiblePanels.Add("InEngineering");
-                possiblePanels.Add("ReadyToPrint");
-                possiblePanels.Add("PrintedInEngineering");
-                possiblePanels.Add("AllTabletProjects");
-                //possiblePanels.Add("TabletProjectsNotStarted");
-                //possiblePanels.Add("TabletProjectsStarted");
-                //possiblePanels.Add("TabletProjectsDrawn");
-                //possiblePanels.Add("TabletProjectsSubmitted");
-                //possiblePanels.Add("TabletProjectsOnHold");
-                possiblePanels.Add("AllToolProjects");
-                //possiblePanels.Add("ToolProjectsNotStarted");
-                //possiblePanels.Add("ToolProjectsStarted");
-                //possiblePanels.Add("ToolProjectsDrawn");
-                //possiblePanels.Add("ToolProjectsOnHold");
-                possiblePanels.Add("DriveWorksQueue");
-                possiblePanels.Add("NatoliOrderList");
-                possiblePanels.Add("");
-            }
-            else if (user.Department == "Engineering")
-            {
-                possiblePanels.Add("QuotesNotConverted");
-                possiblePanels.Add("BeingEntered");
-                possiblePanels.Add("InTheOffice");
-                possiblePanels.Add("EnteredUnscanned");
-                possiblePanels.Add("InEngineering");
-                possiblePanels.Add("ReadyToPrint");
-                possiblePanels.Add("PrintedInEngineering");
-                possiblePanels.Add("AllTabletProjects");
-                //possiblePanels.Add("TabletProjectsNotStarted");
-                //possiblePanels.Add("TabletProjectsStarted");
-                //possiblePanels.Add("TabletProjectsDrawn");
-                //possiblePanels.Add("TabletProjectsSubmitted");
-                //possiblePanels.Add("TabletProjectsOnHold");
-                possiblePanels.Add("AllToolProjects");
-                //possiblePanels.Add("ToolProjectsNotStarted");
-                //possiblePanels.Add("ToolProjectsStarted");
-                //possiblePanels.Add("ToolProjectsDrawn");
-                //possiblePanels.Add("ToolProjectsOnHold");
-                possiblePanels.Add("DriveWorksQueue");
-                possiblePanels.Add("");
-            }
-            else if (user.Department == "Customer Service")
-            {
-                possiblePanels.Add("QuotesNotConverted");
-                possiblePanels.Add("QuotesToConvert");
-                possiblePanels.Add("BeingEntered");
-                possiblePanels.Add("InTheOffice");
-                possiblePanels.Add("EnteredUnscanned");
-                possiblePanels.Add("InEngineering");
-                possiblePanels.Add("ReadyToPrint");
-                possiblePanels.Add("PrintedInEngineering");
-                possiblePanels.Add("AllTabletProjects");
-                possiblePanels.Add("AllToolProjects");
-                possiblePanels.Add("NatoliOrderList");
-                possiblePanels.Add("");
-            }
-            else if (user.Department == "Order Entry")
-            {
-                possiblePanels.Add("QuotesToConvert");
-                possiblePanels.Add("BeingEntered");
-                possiblePanels.Add("InTheOffice");
-                possiblePanels.Add("EnteredUnscanned");
-                possiblePanels.Add("InEngineering");
-                possiblePanels.Add("ReadyToPrint");
-                possiblePanels.Add("PrintedInEngineering");
-                possiblePanels.Add("");
-            }
 
-            return possiblePanels;
-        }
         /// <summary>
         /// Asynchronously sends project completed E-mail to CSRs. Waits some seconds and deletes the zip attachments
         /// </summary>
@@ -1675,6 +1676,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSRAsync; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
             }
         }
+        
         /// <summary>
         /// [Deprecated] Sends project completed E-mail to CSRs
         /// </summary>
