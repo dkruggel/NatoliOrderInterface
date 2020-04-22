@@ -1,26 +1,26 @@
 ﻿using DK.WshRuntime;
+using MailKit;
+using MimeKit;
+using NatoliOrderInterface.MimeTypes;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.DriveWorks;
 using NatoliOrderInterface.Models.NAT01;
 using NatoliOrderInterface.Models.Projects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.IO;
-using System.Xml;
-using System.Windows.Markup;
-using MailKit;
-using MimeKit;
-using NatoliOrderInterface.MimeTypes;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace NatoliOrderInterface
 {

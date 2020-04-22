@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using F23.StringSimilarity;
+using Microsoft.EntityFrameworkCore;
+using NatoliOrderInterface;
+using NatoliOrderInterface.FolderIntegrity;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.DriveWorks;
 using NatoliOrderInterface.Models.NAT01;
@@ -8,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -17,16 +21,12 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Diagnostics;
-using Colors = System.Windows.Media.Colors;
-using Windows.Management.Deployment;
-using Windows.ApplicationModel;
-using WpfAnimatedGif;
-using NatoliOrderInterface.FolderIntegrity;
-using F23.StringSimilarity;
-using NatoliOrderInterface;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using Windows.ApplicationModel;
+using Windows.Management.Deployment;
+using WpfAnimatedGif;
+using Colors = System.Windows.Media.Colors;
 
 namespace NatoliOrderInterface
 {
