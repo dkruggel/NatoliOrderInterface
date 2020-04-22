@@ -2045,7 +2045,6 @@ namespace NatoliOrderInterface
                             // Machine #'s and Descriptions
                             if (quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0)
                             {
-
                                 if (machineNumber == null)
                                 {
                                     machineNumber = quoteLineItem.MachineNo;
@@ -2082,6 +2081,12 @@ namespace NatoliOrderInterface
                                     errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine description.");
                                 }
                             }
+                            else if (quoteLineItem.LineItemType != "Z" && quoteLineItem.LineItemType != "TM" && quoteLineItem.LineItemType != "T" && quoteLineItem.LineItemType != "MC" &&
+                                    quoteLineItem.LineItemType != "M" && quoteLineItem.LineItemType != "H" && quoteLineItem.LineItemType != "E" && quoteLineItem.LineItemType != "CT")
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine number.");
+                            }
+
 
                             // Not Tip or Punch or Hob or D or DS OR M OR MS
                             if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "UA" || quoteLineItem.LineItemType == "UC" || quoteLineItem.LineItemType == "UH" ||
@@ -2094,9 +2099,28 @@ namespace NatoliOrderInterface
                                     errors.Add("'" + quoteLineItem.LineItemType + "' has a hob number '" + quoteLineItem.HobNoShapeID + "' on its line.");
                                 }
                             }
+                            // Is punch / tip / die / alignment
+                            else if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UT" ||
+                                quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LT" ||
+                                quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RT" ||
+                                quoteLineItem.LineItemType == "A" ||
+                                quoteLineItem.LineItemType == "D" || quoteLineItem.LineItemType == "DS")
+                            {
+                                if (string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) || string.IsNullOrEmpty(quoteLineItem.HobNoShapeID))
+                                {
+                                    if (quoteLineItem.LineItemType == "A" || quoteLineItem.LineItemType == "D" || quoteLineItem.LineItemType == "DS")
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs a die number.");
+                                    }
+                                    else
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs a hob number.");
+                                    }
+                                }
+                            }
 
-                            // Upper, Lower, Reject
-                            if (quoteLineItem.LineItemType == "U" ||
+                                // Upper, Lower, Reject
+                                if (quoteLineItem.LineItemType == "U" ||
                                 quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
                                 quoteLineItem.LineItemType == "R")
                             {
@@ -3456,7 +3480,6 @@ namespace NatoliOrderInterface
                                 }
 
                             }
-
                         }
                     }
 
