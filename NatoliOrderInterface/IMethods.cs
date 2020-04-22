@@ -1343,7 +1343,7 @@ namespace NatoliOrderInterface
             {
                 string projectNumber = _projectNumber ?? "";
                 string revNo = _revNo ?? "";
-                string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
+                //string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
                 if (CSRs != null)
                 {
                     #region Addresses
@@ -1414,8 +1414,7 @@ namespace NatoliOrderInterface
                     {
                         Text = debugTest + "Dear " + CSRs.First() + ",<br><br>" +
 
-                        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                        "The drawings for the customer are attached.<br><br>" +
+                        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br><br>" +
                         comments +
                         "Thanks,<br>" +
                         "Engineering Team<br><br><br>" +
@@ -1424,31 +1423,31 @@ namespace NatoliOrderInterface
                         "This is an automated email and not monitored by any person(s)."
                     };
 
-                    var multipart = new Multipart("Mixed");
-                    multipart.Add(body);
+                    //var multipart = new Multipart("Mixed");
+                    //multipart.Add(body);
 
-                    string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
+                    //string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
 
-                    if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
-                    {
-                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
-                        string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
-                        MimePart attachment = new MimePart(mimetype[0], mimetype[1])
-                        {
-                            Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
-                            ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-                            ContentTransferEncoding = ContentEncoding.Base64,
-                            FileName = Path.GetFileName(zipFile)
-                        };
-                        multipart.Add(attachment);
-                        message.Body = multipart;
-                    }
-                    else
-                    {
-                        zipFile = null;
-                        message.Body = body;
-                    }
-
+                    //if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
+                    //{
+                    //    IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
+                    //    string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
+                    //    MimePart attachment = new MimePart(mimetype[0], mimetype[1])
+                    //    {
+                    //        Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
+                    //        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                    //        ContentTransferEncoding = ContentEncoding.Base64,
+                    //        FileName = Path.GetFileName(zipFile)
+                    //    };
+                    //    multipart.Add(attachment);
+                    //    message.Body = multipart;
+                    //}
+                    //else
+                    //{
+                    //    zipFile = null;
+                    //    message.Body = body;
+                    //}
+                    message.Body = body;
 
                     using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
                     {
@@ -1470,46 +1469,47 @@ namespace NatoliOrderInterface
                             }
                             catch (Exception ex)
                             {
-                                if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
-                                {
-                                    var maxSize = emailClient.MaxSize;
-                                    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-                                    {
-                                        Text = "Dear " + CSRs.First() + ",<br><br>" +
+                                //if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
+                                //{
+                                //    var maxSize = emailClient.MaxSize;
+                                //    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                                //    {
+                                //        Text = "Dear " + CSRs.First() + ",<br><br>" +
 
-                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
-                                    comments +
-                                    "Thanks,<br>" +
-                                    "Engineering Team<br><br><br>" +
+                                //    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                                //    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                //    comments +
+                                //    "Thanks,<br>" +
+                                //    "Engineering Team<br><br><br>" +
 
 
-                                    "This is an automated email and not monitored by any person(s)."
-                                    };
-                                    emailClient.Send(message);
-                                }
-                                else
-                                {
-                                    IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
-                                }
+                                //    "This is an automated email and not monitored by any person(s)."
+                                //    };
+                                //    emailClient.Send(message);
+                                //}
+                                //else
+                                //{
+                                //    IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                //}
+                                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
                                 return null;
                             }
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
-                            {
-                                var maxSize = emailClient.MaxSize;
-                                message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-                                {
-                                    Text = "Dear " + CSRs.First() + ",<br><br>" +
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
+                            //{
+                            //    var maxSize = emailClient.MaxSize;
+                            //    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                            //    {
+                            //        Text = "Dear " + CSRs.First() + ",<br><br>" +
 
-                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
-                                    "Thanks,<br>" +
-                                    "Engineering Team<br><br><br>" +
+                            //        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                            //        "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                            //        "Thanks,<br>" +
+                            //        "Engineering Team<br><br><br>" +
 
 
-                                    "This is an automated email and not monitored by any person(s)."
-                                };
-                            }
+                            //        "This is an automated email and not monitored by any person(s)."
+                            //    };
+                            //}
 
                             //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
                             //{
@@ -1551,7 +1551,8 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
-                return zipFile;
+                //return zipFile;
+                return null;
             }
             catch (Exception ex)
             {
