@@ -45,7 +45,7 @@ namespace NatoliOrderInterface
                 // mail.Bcc.Add("eng6@natoli.com");
                 mail.Bcc.Add("intlcs6@natoli.com");
                 mail.Bcc.Add("customerservice5@natoli.com");
-                mail.CC.Add(GetEmailAddress(Environment.UserName.Substring(0, 1) + "%" + Environment.UserName.Substring(1, 1) + Environment.UserName.Substring(2)));
+                mail.CC.Add(GetEmailAddress(Environment.UserName.ToLower().Substring(0, 1) + "%" + Environment.UserName.ToLower().Substring(1, 1) + Environment.UserName.ToLower().Substring(2)));
                 mail.Subject = "REQUEST FOR CHANGES WO# " + orderNumber.ToString();
                 mail.Body = new TextRange(EmailBodyTextBlock.Document.ContentStart, EmailBodyTextBlock.Document.ContentEnd).Text;
                 smtpServer.Send(mail);

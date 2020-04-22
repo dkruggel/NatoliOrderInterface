@@ -768,7 +768,7 @@ namespace NatoliOrderInterface
                   // User = new User("mbouzitoun");
                   // User = new User("billt");
                   // User = new User("rfaltus");
-                  // User = new User("pturner");
+                  User = new User("Pturner");
                   // User = new User("mmulaosmanovic");
                 }
                     App.user = User;
@@ -4119,7 +4119,7 @@ namespace NatoliOrderInterface
         private void GetNatoliOrderList()
         {
             using var _natbcContext = new NATBCContext();
-            string username = Environment.UserDomainName + "\\" + Environment.UserName;
+            string username = Environment.UserDomainName.ToLower() + "\\" + Environment.UserName.ToLower();
             List<NatoliOrderList> _nol = new List<NatoliOrderList>();
             if (User.Department == "D1133")
             {

@@ -130,7 +130,7 @@ namespace NatoliOrderInterface
             Grid grid = (Grid)childGrid.Parent;
 
             int id = Convert.ToInt32(((TextBlock)grid.Children.OfType<TextBlock>().First(tb => tb.Tag.ToString() == "ID")).Text);
-            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, new User(Environment.UserName));
+            CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(id, new User(Environment.UserName.ToLower()));
             customerNoteWindow.Show();
         }
         private void SearchTextBox_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)

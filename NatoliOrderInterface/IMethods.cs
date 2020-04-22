@@ -88,7 +88,7 @@ namespace NatoliOrderInterface
 
                 try
                 {
-                    userFallback = Environment.UserDomainName + "\\" + Environment.UserName;
+                    userFallback = Environment.UserDomainName.ToLower() + "\\" + Environment.UserName.ToLower();
                 }
                 catch
                 { }

@@ -1443,7 +1443,7 @@ namespace NatoliOrderInterface
                             EoiQuoteSMICheck eoiQuoteSMICheck = _nat02Context.EoiQuoteSMICheck.Where(i => i.QuoteNo == quote.QuoteNumber && i.RevNo == (byte)quote.QuoteRevNo && i.CustomerID.Trim() == customerID && i.Sequence == sequence).First();
                             eoiQuoteSMICheck.AppliesToQuote = applies;
                             eoiQuoteSMICheck.Instruction = instruction;
-                            eoiQuoteSMICheck.User = Environment.UserName;
+                            eoiQuoteSMICheck.User = Environment.UserName.ToLower();
                             eoiQuoteSMICheck.DateTimeStamp = DateTime.Now;
                         }
                         else
@@ -1456,7 +1456,7 @@ namespace NatoliOrderInterface
                                 Sequence = sequence,
                                 AppliesToQuote = applies,
                                 Instruction = instruction,
-                                User = Environment.UserName,
+                                User = Environment.UserName.ToLower(),
                                 DateTimeStamp = DateTime.Now
                             };
                             _nat02Context.EoiQuoteSMICheck.Add(eoiQuoteSMICheck);
@@ -2066,7 +2066,7 @@ namespace NatoliOrderInterface
                         quoteScratchPad.BasePrice = basePrice;
                         quoteScratchPad.PercentMark = percentMark;
                         quoteScratchPad.Comment = comment;
-                        quoteScratchPad.User = Environment.UserName;
+                        quoteScratchPad.User = Environment.UserName.ToLower();
                         quoteScratchPad.DateTimeStamp = DateTime.Now;
                     }
                     else
@@ -2080,7 +2080,7 @@ namespace NatoliOrderInterface
                             BasePrice = basePrice,
                             PercentMark = percentMark,
                             Comment = comment,
-                            User = Environment.UserName,
+                            User = Environment.UserName.ToLower(),
                             DateTimeStamp = DateTime.Now
                         };
                         _nat02Context.EoiQuoteScratchPad.Add(quoteScratchPad);
@@ -2263,7 +2263,7 @@ namespace NatoliOrderInterface
                                 quoteScratchPad.BasePrice = basePrice;
                                 quoteScratchPad.PercentMark = percentMark;
                                 quoteScratchPad.Comment = comment;
-                                quoteScratchPad.User = Environment.UserName;
+                                quoteScratchPad.User = Environment.UserName.ToLower();
                                 quoteScratchPad.DateTimeStamp = DateTime.Now;
                             }
                             else
@@ -2277,7 +2277,7 @@ namespace NatoliOrderInterface
                                     BasePrice = basePrice,
                                     PercentMark = percentMark,
                                     Comment = comment,
-                                    User = Environment.UserName,
+                                    User = Environment.UserName.ToLower(),
                                     DateTimeStamp = DateTime.Now
                                 };
                                 _nat02Context.EoiQuoteScratchPad.Add(quoteScratchPad);
@@ -2565,7 +2565,7 @@ namespace NatoliOrderInterface
             try
             {
                 InstructionEnteringTextBox.Text = "";
-                InstructionEnteringUserTextBlock.Text = Environment.UserName;
+                InstructionEnteringUserTextBlock.Text = Environment.UserName.ToLower();
             }
             catch (Exception ex)
             {
@@ -2665,7 +2665,7 @@ namespace NatoliOrderInterface
                         grid.Children.Add(border1);
                         grid.Children.Add(border2);
                         grid.Children.Add(border3);
-                        if (Environment.UserName == eoiOrderEntryInstruction.User && checkBox.IsChecked!=true)
+                        if (Environment.UserName.ToLower() == eoiOrderEntryInstruction.User && checkBox.IsChecked!=true)
                         {
                             BitmapImage _bitmapImage = new BitmapImage(new Uri(@"\\engserver\workstations\TOOLING AUTOMATION\redxdeleteicon.png", UriKind.Absolute));
                             Image image = new Image
@@ -2724,7 +2724,7 @@ namespace NatoliOrderInterface
                     {
                         VerticalAlignment = VerticalAlignment.Center,
                         HorizontalAlignment = HorizontalAlignment.Center,
-                        Text = Environment.UserName,
+                        Text = Environment.UserName.ToLower(),
                         Style = (Style)Application.Current.Resources["NormalTextBlock"]
                     };
                     TextBlock enteredTextBlock = new TextBlock
@@ -2820,7 +2820,7 @@ namespace NatoliOrderInterface
                     RevNo = (short)quote.QuoteRevNo,
                     Checked = false,
                     Instruction = InstructionEnteringTextBox.Text.ToString().Trim(),
-                    User = Environment.UserName,
+                    User = Environment.UserName.ToLower(),
                     TimeEntered = timeEntered,
                     TimeChecked = null
                 };
@@ -2846,7 +2846,7 @@ namespace NatoliOrderInterface
                 TextBlock instructionTextBlock = checkBox.Content as TextBlock;
                 string instruction = instructionTextBlock.Text.ToString();
                 using NAT02Context _nat02Context = new NAT02Context();
-                EoiOrderEntryInstructions eoiOrderEntryInstruction = _nat02Context.EoiOrderEntryInstructions.OrderBy(i=>i.TimeEntered).First(i => i.QuoteNo == quote.QuoteNumber && i.RevNo == quote.QuoteRevNo && i.Instruction == instruction && i.User==Environment.UserName);
+                EoiOrderEntryInstructions eoiOrderEntryInstruction = _nat02Context.EoiOrderEntryInstructions.OrderBy(i=>i.TimeEntered).First(i => i.QuoteNo == quote.QuoteNumber && i.RevNo == quote.QuoteRevNo && i.Instruction == instruction && i.User==Environment.UserName.ToLower());
                 _nat02Context.EoiOrderEntryInstructions.Remove(eoiOrderEntryInstruction);
                 _nat02Context.SaveChanges();
                 _nat02Context.Dispose();

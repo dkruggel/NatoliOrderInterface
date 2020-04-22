@@ -75,6 +75,14 @@ namespace NatoliOrderInterface
         /// <param name="domainName"></param>
         public User(string domainName)
         {
+            try
+            {
+                DomainName = domainName.ToLower();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("User.cs -> Setting domain name.", ex.Message, null);
+            }
             using var _nat02context = new NAT02Context();
             EoiSettings settings = _nat02context.EoiSettings.SingleOrDefault(row => row.DomainName.Trim().ToLower() == domainName.Trim().ToLower());
             try
@@ -94,7 +102,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("User.cs -> Export applications version.", ex.Message, null);
             }
             _nat02context.Dispose();
-            DomainName = domainName;
             string deptCode = DomainName.Length == 0 ? "GUEST" : SetUserName();
             EmployeeCode = settings.EmployeeId;
             userName = settings.FullName;
@@ -121,7 +128,7 @@ namespace NatoliOrderInterface
             ModuleRows = (short)settings.ModuleRows;
             FilterActiveProjects = settings.FilterActiveProjects;
             DepartmentCode = deptCode;
-            if (deptCode == "D1153" || domainName == "pturner" || domainName == "rmouser")
+            if (deptCode == "D1153" || DomainName == "pturner" || DomainName == "rmouser")
             {
                 Department = "Engineering";
             }
@@ -150,15 +157,15 @@ namespace NatoliOrderInterface
                     VisiblePanels.Remove(panel);
                 }
             }
-            if (domainName == "dkruggel") { SignatureLeft = 955; SignatureBottom = 20; }
-            else if (domainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
-            else if (domainName == "dsachuk") { SignatureLeft = 958; SignatureBottom = 20; }
+            if (DomainName == "dkruggel") { SignatureLeft = 955; SignatureBottom = 20; }
+            else if (DomainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
+            else if (DomainName == "dsachuk") { SignatureLeft = 958; SignatureBottom = 20; }
             else { SignatureLeft = 0; SignatureBottom = 0; }
             if (userName.ContainsAny("David Kruggel", "Tyler Williams", "James Willis", "Tiffany Simonpietri", "Barbara Bohling"))
             {
                 ViewReports = true;
             }
-            //if (domainName == "dkruggel" || domainName == "twilliams")
+            //if (DomainName == "dkruggel" || DomainName == "twilliams")
             //{
             //    InputBox inputBox = new InputBox("Enter password", "Password");
             //    inputBox.ShowDialog();
