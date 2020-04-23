@@ -771,7 +771,7 @@ namespace NatoliOrderInterface
                   // User = new User("Pturner");
                   // User = new User("mmulaosmanovic");
                 }
-                    App.user = User;
+                App.user = User;
             }
             catch (Exception ex)
             {
