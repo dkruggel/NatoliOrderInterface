@@ -594,7 +594,6 @@ namespace NatoliOrderInterface
                     {
                         EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
-                        RefreshRoutingButtons();
                         if (!engineeringProject.ActiveProject)
                         {
                             ArchivedOrInactive.Text = "Inactive";
@@ -604,6 +603,7 @@ namespace NatoliOrderInterface
                         {
                             ArchivedOrInactive.Visibility = Visibility.Collapsed;
                         }
+                        RefreshRoutingButtons();
 
                         projectLinkedToQuote = engineeringProject.QuoteNumber.Length > 0;
                         if (projectLinkedToQuote)
@@ -3992,6 +3992,7 @@ namespace NatoliOrderInterface
                         CheckButton.IsEnabled = false;
                         PutOnHoldButton.Content = "Take Off Hold";
                         ArchivedOrInactive.Text = "On Hold";
+                        ArchivedOrInactive.Visibility = Visibility.Visible;
                     }
                     else
                     {
@@ -5628,6 +5629,7 @@ namespace NatoliOrderInterface
                 if(ArchivedOrInactive.Text == "Take Off Hold")
                 {
                     ArchivedOrInactive.Text = "";
+                    ArchivedOrInactive.Visibility = Visibility.Collapsed;
                 }
                 PutOnHoldButton.Content = "Put On Hold";
             }
