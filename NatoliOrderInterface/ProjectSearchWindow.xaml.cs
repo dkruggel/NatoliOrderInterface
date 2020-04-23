@@ -136,6 +136,7 @@ namespace NatoliOrderInterface
         private static List<EngineeringArchivedProjects> ProjectSearch(string searchString, int length = 150)
         {
             List<EngineeringArchivedProjects> res = new List<EngineeringArchivedProjects>();
+            List<AllProjectsView> res2 = new List<AllProjectsView>();
             using var _context = new ProjectsContext();
             
             if (searchString.Contains(":"))
@@ -226,6 +227,9 @@ namespace NatoliOrderInterface
             }
             else
             {
+                res2 = _context.AllProjectsView.FromSqlRaw("SELECT ProjectNumber, RevisionNumber, CSR, CustomerName, EndUser, DueDate, Product" +
+                                                           "FROM Projects.dbo.ProjectSpecSheet UNION SELECT ProjectNumber, RevNumber, CSR, CustomerName, EndUserName, DueDate, Product" + 
+                                                           "FROM Projects.dbo.EngineeringArchivedProjects").OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim())).Take(length).ToList();
                 res = _context.EngineeringArchivedProjects.Where(o => o.ArchivedBy.ToLower().Contains(searchString) ||
                                                                        o.Attention.ToLower().Contains(searchString) ||
                                                                        o.CSR.ToLower().Contains(searchString) ||

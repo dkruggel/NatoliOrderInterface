@@ -17,6 +17,7 @@ namespace NatoliOrderInterface.Models.Projects
 
         public virtual DbSet<AllProjectDataTop> AllProjectDataTop { get; set; }
         public virtual DbSet<AllProjectsData> AllProjectsData { get; set; }
+        public virtual DbSet<AllProjectsView> AllProjectsView { get; set; }
         public virtual DbSet<ChangeLog> ChangeLog { get; set; }
         public virtual DbSet<DelayedProjects> DelayedProjects { get; set; }
         public virtual DbSet<HoldStatus> HoldStatus { get; set; }
@@ -273,6 +274,11 @@ namespace NatoliOrderInterface.Models.Projects
                 entity.Property(e => e.UpperHobNumber)
                     .HasMaxLength(10)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<AllProjectsView>(entity =>
+            {
+                entity.HasKey(e => new { e.ProjectNumber, e.RevNumber });
             });
 
             modelBuilder.Entity<ChangeLog>(entity =>
