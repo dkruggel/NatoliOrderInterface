@@ -3531,6 +3531,34 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                             break;
+                        case "complete":
+                            if (int.TryParse(searchString, out int cInt))
+                            {
+                                _filtered =
+                                     _allTabletProjects.Where(p => p.Complete == cInt)
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            else
+                            {
+                                _filtered =
+                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.Tools == true)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            break;
                         default:
 
                             _filtered =
@@ -3663,6 +3691,50 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                             break;
+                        case "complete":
+
+                            if (int.TryParse(searchString, out int cInt))
+                            {
+                                _filtered =
+                                    _allTabletProjects.Where(p => p.Complete == cInt)
+                                          .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                          .ThenBy(kvp => kvp.Complete == 5)
+                                          .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                          .ThenByDescending(kvp => kvp.Drafter == name)
+                                          .ThenBy(kvp => kvp.Drafter)
+                                          .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                          .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                          .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                          .ThenByDescending(kvp => kvp.MarkedPriority)
+                                          .ThenBy(kvp => kvp.Tools ?? false)
+                                          .ThenBy(kvp => kvp.DueDate)
+                                          .ThenBy(kvp => kvp.ProjectNumber)
+                                          .ToList();
+                            }
+                            else
+                            {
+                                _filtered =
+                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                  p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                  (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            break;
+
                         default:
 
                             _filtered =
@@ -3838,6 +3910,32 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                             break;
+                        case "complete":
+                            if (int.TryParse(searchString, out int cInt))
+                            {
+                                _filtered =
+                                     _allToolProjects.Where(p => p.Complete == cInt)
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            else
+                            {
+                                _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(p => p.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            break;
                         default:
 
                             _filtered =
@@ -3957,6 +4055,44 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
+                            break;
+                        case "complete":
+                            if (int.TryParse(searchString, out int cInt))
+                            {
+                                _filtered =
+                                     _allToolProjects.Where(p => p.Complete == cInt)
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
+                            else
+                            {
+                                _filtered =
+                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                                p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
+                                                (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 5)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenBy(kvp => kvp.Complete)
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                            }
                             break;
                         default:
 
