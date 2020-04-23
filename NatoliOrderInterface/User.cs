@@ -96,6 +96,8 @@ namespace NatoliOrderInterface
                     break;
                 }
                 PackageVersion = version;
+                settings.PackageVersion = PackageVersion;
+                _nat02context.SaveChanges();
             }
             catch (Exception ex)
             {
