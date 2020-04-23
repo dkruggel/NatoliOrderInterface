@@ -1,26 +1,26 @@
 ﻿using DK.WshRuntime;
+using MailKit;
+using MimeKit;
+using NatoliOrderInterface.MimeTypes;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.DriveWorks;
 using NatoliOrderInterface.Models.NAT01;
 using NatoliOrderInterface.Models.Projects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.IO;
-using System.Xml;
-using System.Windows.Markup;
-using MailKit;
-using MimeKit;
-using NatoliOrderInterface.MimeTypes;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Markup;
+using System.Xml;
 
 namespace NatoliOrderInterface
 {
@@ -88,7 +88,7 @@ namespace NatoliOrderInterface
 
                 try
                 {
-                    userFallback = Environment.UserDomainName + "\\" + Environment.UserName;
+                    userFallback = Environment.UserDomainName.ToLower() + "\\" + Environment.UserName.ToLower();
                 }
                 catch
                 { }
@@ -1308,259 +1308,6 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
-        /// Checks to see if file is in use
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        public static bool IsFileInUse(string filename)
-        {
-            try
-            {
-                if (File.Exists(filename))
-                {
-                    using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
-                        return false;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                return true;
-            }
-        }
-        /// <summary>
-        /// Sends project completed E-mail to CSRs
-        /// </summary>
-        /// <param name="CSRs"></param>
-        /// <param name="_projectNumber"></param>
-        /// <param name="_revNo"></param>
-        private static string SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
-        {
-            try
-            {
-                string projectNumber = _projectNumber ?? "";
-                string revNo = _revNo ?? "";
-                string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
-                if (CSRs != null)
-                {
-                    #region Addresses
-                    // Creating email message to store the addresses
-                    EmailMessage emailMessage = new EmailMessage();
-                    foreach (string CSR in CSRs)
-                    {
-                        emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
-                    }
-                    emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
-                    // BCC
-                    emailMessage.BCCAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
-                    emailMessage.BCCAddresses.Add(new EmailAddress("David Kruggel", "eng6@natoli.com"));
-
-                    //CC
-                    if (user != null)
-                    {
-                        try
-                        {
-                            emailMessage.CCAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(user.GetDWPrincipalId()), IMethods.GetEmailAddressFromDWPrincipalID(user.GetDWPrincipalId())));
-                        }
-                        catch (Exception ex)
-                        {
-                            IMethods.WriteToErrorLog("IMethods => SendProjectCompletedEmailToCSR => Attaching User Email to CC", ex.Message, user);
-                        }
-                    }
-                    #endregion
-
-                    var message = new MimeMessage();
-                    // Attaching all addresses to mimemessage
-                    message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-                    message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-                    message.Bcc.AddRange(emailMessage.BCCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-                    message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
-
-                    string cust = "";
-                    using var _ = new ProjectsContext();
-                    if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)))
-                    {
-                        cust = _.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
-                    }
-                    else if (_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()))
-                    {
-                        cust = string.IsNullOrEmpty(_.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName) ?
-                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).CustomerName :
-                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName;
-                    }
-                    _.Dispose();
-                    message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed for " + cust;
-
-                    string comments = "";
-
-                    foreach (string textFile in Directory.GetFiles(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber, "*.txt"))
-                    {
-                        string text = File.ReadAllText(textFile);
-                        string name = Path.GetFileName(textFile);
-                        comments += name + "<br><br>" + text + "<br><br>" + new string('-', 30) + "<br><br>";
-                    }
-                    if (comments.Length > 0)
-                    {
-                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br><br>-End Comments-<br><br>";
-                    }
-                    string debugTest = "";
-                    //#if DEBUG
-                    //                    debugTest = "****************<br>This is a test e-mail. Please ignore.<br>****************<br><br>";
-                    //#endif
-                    var body = new TextPart(MimeKit.Text.TextFormat.Html)
-                    {
-                        Text = debugTest + "Dear " + CSRs.First() + ",<br><br>" +
-
-                        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                        "The drawings for the customer are attached.<br><br>" +
-                        comments +
-                        "Thanks,<br>" +
-                        "Engineering Team<br><br><br>" +
-
-
-                        "This is an automated email and not monitored by any person(s)."
-                    };
-
-                    var multipart = new Multipart("Mixed");
-                    multipart.Add(body);
-
-                    string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
-
-                    if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
-                    {
-                        IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
-                        string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
-                        MimePart attachment = new MimePart(mimetype[0], mimetype[1])
-                        {
-                            Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
-                            ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
-                            ContentTransferEncoding = ContentEncoding.Base64,
-                            FileName = Path.GetFileName(zipFile)
-                        };
-                        multipart.Add(attachment);
-                        message.Body = multipart;
-                    }
-                    else
-                    {
-                        zipFile = null;
-                        message.Body = body;
-                    }
-
-
-                    using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
-                    {
-
-                        emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
-
-                        try
-                        {
-                            //Using SSL connection [needs username and password]
-                            //emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, true);
-
-                            //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
-
-                            //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
-
-                            try
-                            {
-                                emailClient.Send(message);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
-                                {
-                                    var maxSize = emailClient.MaxSize;
-                                    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-                                    {
-                                        Text = "Dear " + CSRs.First() + ",<br><br>" +
-
-                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
-                                    comments +
-                                    "Thanks,<br>" +
-                                    "Engineering Team<br><br><br>" +
-
-
-                                    "This is an automated email and not monitored by any person(s)."
-                                    };
-                                    emailClient.Send(message);
-                                }
-                                else
-                                {
-                                    IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
-                                }
-                                return null;
-                            }
-                            if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
-                            {
-                                var maxSize = emailClient.MaxSize;
-                                message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-                                {
-                                    Text = "Dear " + CSRs.First() + ",<br><br>" +
-
-                                    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
-                                    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
-                                    "Thanks,<br>" +
-                                    "Engineering Team<br><br><br>" +
-
-
-                                    "This is an automated email and not monitored by any person(s)."
-                                };
-                            }
-
-                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
-                            //{
-                            //    var text = "The SMTP server supports delivery-status notifications.";
-                            //}
-
-                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
-                            //{
-                            //    var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
-                            //}
-
-                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
-                            //{
-                            //    var text = "The SMTP server supports Content-Transfer-Encoding: binary";
-                            //}
-
-                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
-                            //{
-                            //    var text = "The SMTP server supports UTF-8 in message headers.";
-                            //}
-                            emailClient.Disconnect(true);
-                            emailClient.Dispose();
-                        }
-                        catch (Exception ex)
-                        {
-
-                            try
-                            {
-                                emailClient.Disconnect(true);
-                            }
-                            catch { }
-                            try
-                            {
-                                emailClient.Dispose();
-                            }
-                            catch { }
-                            IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
-                            return null;
-                        }
-                    }
-                }
-                return zipFile;
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
-                //MessageBox.Show(ex.Message);
-                return null;
-            }
-        }
-        /// <summary>
         /// Returns a list of possible panels to choose from based on user
         /// </summary>
         /// <param name="user"></param>
@@ -1646,6 +1393,261 @@ namespace NatoliOrderInterface
             return possiblePanels;
         }
         /// <summary>
+        /// Checks to see if file is in use
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool IsFileInUse(string filename)
+        {
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+                        return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+        /// <summary>
+        /// Sends project completed E-mail to CSRs
+        /// </summary>
+        /// <param name="CSRs"></param>
+        /// <param name="_projectNumber"></param>
+        /// <param name="_revNo"></param>
+        private static string SendProjectCompletedEmailToCSR(List<string> CSRs, string _projectNumber, string _revNo, User user)
+        {
+            try
+            {
+                string projectNumber = _projectNumber ?? "";
+                string revNo = _revNo ?? "";
+                //string zipFile = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER.zip";
+                if (CSRs != null)
+                {
+                    #region Addresses
+                    // Creating email message to store the addresses
+                    EmailMessage emailMessage = new EmailMessage();
+                    foreach (string CSR in CSRs)
+                    {
+                        emailMessage.ToAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(CSR), IMethods.GetEmailAddressFromDWPrincipalID(CSR)));
+                    }
+                    emailMessage.FromAddresses = new List<EmailAddress> { new EmailAddress("Automated Email", "automatedemail@natoli.com") };
+                    // BCC
+                    emailMessage.BCCAddresses.Add(new EmailAddress("Tyler Williams", "eng5@natoli.com"));
+                    emailMessage.BCCAddresses.Add(new EmailAddress("David Kruggel", "eng6@natoli.com"));
+
+                    //CC
+                    if (user != null)
+                    {
+                        try
+                        {
+                            emailMessage.CCAddresses.Add(new EmailAddress(IMethods.GetDisplayNameFromDWPrincipalID(user.GetDWPrincipalId()), IMethods.GetEmailAddressFromDWPrincipalID(user.GetDWPrincipalId())));
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("IMethods => SendProjectCompletedEmailToCSR => Attaching User Email to CC", ex.Message, user);
+                        }
+                    }
+                    #endregion
+
+                    var message = new MimeMessage();
+                    // Attaching all addresses to mimemessage
+                    message.To.AddRange(emailMessage.ToAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.From.AddRange(emailMessage.FromAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Bcc.AddRange(emailMessage.BCCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+                    message.Cc.AddRange(emailMessage.CCAddresses.Select(x => new MailboxAddress(x.Name, x.Address)));
+
+                    string cust = "";
+                    using var _ = new ProjectsContext();
+                    if (_.ProjectSpecSheet.Any(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)))
+                    {
+                        cust = _.ProjectSpecSheet.First(p => p.ProjectNumber == int.Parse(projectNumber) && p.RevisionNumber == int.Parse(revNo)).CustomerName;
+                    }
+                    else if (_.EngineeringArchivedProjects.Any(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()))
+                    {
+                        cust = string.IsNullOrEmpty(_.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName) ?
+                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).CustomerName :
+                            _.EngineeringArchivedProjects.First(p => p.ProjectNumber == int.Parse(projectNumber).ToString() && p.RevNumber == int.Parse(revNo).ToString()).EndUserName;
+                    }
+                    _.Dispose();
+                    message.Subject = "Project# " + projectNumber.Trim() + "-" + revNo.Trim() + " Completed for " + cust;
+
+                    string comments = "";
+
+                    foreach (string textFile in Directory.GetFiles(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber, "*.txt"))
+                    {
+                        string text = File.ReadAllText(textFile);
+                        string name = Path.GetFileName(textFile);
+                        comments += name + "<br><br>" + text + "<br><br>" + new string('-', 30) + "<br><br>";
+                    }
+                    if (comments.Length > 0)
+                    {
+                        comments = "-See Comments Below-" + "<br><br>" + new string('-', 30) + "<br><br>" + comments + "<br><br>-End Comments-<br><br>";
+                    }
+                    string debugTest = "";
+                    //#if DEBUG
+                    //                    debugTest = "****************<br>This is a test e-mail. Please ignore.<br>****************<br><br>";
+                    //#endif
+                    var body = new TextPart(MimeKit.Text.TextFormat.Html)
+                    {
+                        Text = debugTest + "Dear " + CSRs.First() + ",<br><br>" +
+
+                        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br><br>" +
+                        comments +
+                        "Thanks,<br>" +
+                        "Engineering Team<br><br><br>" +
+
+
+                        "This is an automated email and not monitored by any person(s)."
+                    };
+
+                    //var multipart = new Multipart("Mixed");
+                    //multipart.Add(body);
+
+                    //string filesForCustomerDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\FILES_FOR_CUSTOMER\";
+
+                    //if (System.IO.Directory.Exists(filesForCustomerDirectory) && Directory.GetFiles(filesForCustomerDirectory).Length > 0)
+                    //{
+                    //    IMethods.CreateZipFile(filesForCustomerDirectory, zipFile);
+                    //    string[] mimetype = MimeTypeMap.GetMimeType(Path.GetExtension(zipFile)).Split('/');
+                    //    MimePart attachment = new MimePart(mimetype[0], mimetype[1])
+                    //    {
+                    //        Content = new MimeContent(File.OpenRead(zipFile), ContentEncoding.Default),
+                    //        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                    //        ContentTransferEncoding = ContentEncoding.Base64,
+                    //        FileName = Path.GetFileName(zipFile)
+                    //    };
+                    //    multipart.Add(attachment);
+                    //    message.Body = multipart;
+                    //}
+                    //else
+                    //{
+                    //    zipFile = null;
+                    //    message.Body = body;
+                    //}
+                    message.Body = body;
+
+                    using (var emailClient = new MailKit.Net.Smtp.SmtpClient())
+                    {
+
+                        emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, false);
+
+                        try
+                        {
+                            //Using SSL connection [needs username and password]
+                            //emailClient.Connect(App.SmtpServer, (int)App.SmtpPort, true);
+
+                            //emailClient.AuthenticationMechanisms.Remove("XOAUTH2");
+
+                            //emailClient.Authenticate(_emailConfiguration.SmtpUsername, _emailConfiguration.SmtpPassword);
+
+                            try
+                            {
+                                emailClient.Send(message);
+                            }
+                            catch (Exception ex)
+                            {
+                                //if (ex.Message.StartsWith("5.3.4")) // Zip File too large, failed to attach
+                                //{
+                                //    var maxSize = emailClient.MaxSize;
+                                //    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                                //    {
+                                //        Text = "Dear " + CSRs.First() + ",<br><br>" +
+
+                                //    @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                                //    "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                                //    comments +
+                                //    "Thanks,<br>" +
+                                //    "Engineering Team<br><br><br>" +
+
+
+                                //    "This is an automated email and not monitored by any person(s)."
+                                //    };
+                                //    emailClient.Send(message);
+                                //}
+                                //else
+                                //{
+                                //    IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                //}
+                                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                                return null;
+                            }
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Size))
+                            //{
+                            //    var maxSize = emailClient.MaxSize;
+                            //    message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                            //    {
+                            //        Text = "Dear " + CSRs.First() + ",<br><br>" +
+
+                            //        @"Project# <a href=&quot;\\engserver\workstations\TOOLING%20AUTOMATION\Project%20Specifications\" + projectNumber + @"\&quot;>" + projectNumber + " </a> is completed and ready to be viewed.<br> " +
+                            //        "The zipped files were greater than " + Math.Round((double)maxSize / (double)1048576, 1) + "MB and were not attached. Please use the link to get to the files.<br><br>" +
+                            //        "Thanks,<br>" +
+                            //        "Engineering Team<br><br><br>" +
+
+
+                            //        "This is an automated email and not monitored by any person(s)."
+                            //    };
+                            //}
+
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.Dsn))
+                            //{
+                            //    var text = "The SMTP server supports delivery-status notifications.";
+                            //}
+
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.EightBitMime))
+                            //{
+                            //    var text = "The SMTP server supports Content-Transfer-Encoding: 8bit";
+                            //}
+
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.BinaryMime))
+                            //{
+                            //    var text = "The SMTP server supports Content-Transfer-Encoding: binary";
+                            //}
+
+                            //if (emailClient.Capabilities.HasFlag(MailKit.Net.Smtp.SmtpCapabilities.UTF8))
+                            //{
+                            //    var text = "The SMTP server supports UTF-8 in message headers.";
+                            //}
+                            emailClient.Disconnect(true);
+                            emailClient.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+
+                            try
+                            {
+                                emailClient.Disconnect(true);
+                            }
+                            catch { }
+                            try
+                            {
+                                emailClient.Dispose();
+                            }
+                            catch { }
+                            IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR -> SmtpClient; Project#: " + projectNumber + " RevNo: " + revNo, ex.Message, user);
+                            return null;
+                        }
+                    }
+                }
+                //return zipFile;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSR; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
+                //MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Asynchronously sends project completed E-mail to CSRs. Waits some seconds and deletes the zip attachments
         /// </summary>
         /// <param name="CSRs"></param>
@@ -1674,6 +1676,7 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("IMethods.cs => SendProjectCompletedEmailToCSRAsync; Project#: " + _projectNumber + " RevNo: " + _revNo, ex.Message, user);
             }
         }
+        
         /// <summary>
         /// [Deprecated] Sends project completed E-mail to CSRs
         /// </summary>
@@ -2042,7 +2045,6 @@ namespace NatoliOrderInterface
                             // Machine #'s and Descriptions
                             if (quoteLineItem.MachineNo != null && quoteLineItem.MachineNo > 0)
                             {
-
                                 if (machineNumber == null)
                                 {
                                     machineNumber = quoteLineItem.MachineNo;
@@ -2079,6 +2081,12 @@ namespace NatoliOrderInterface
                                     errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine description.");
                                 }
                             }
+                            else if (quoteLineItem.LineItemType != "Z" && quoteLineItem.LineItemType != "TM" && quoteLineItem.LineItemType != "T" && quoteLineItem.LineItemType != "MC" &&
+                                    quoteLineItem.LineItemType != "M" && quoteLineItem.LineItemType != "H" && quoteLineItem.LineItemType != "E" && quoteLineItem.LineItemType != "CT")
+                            {
+                                errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine number.");
+                            }
+
 
                             // Not Tip or Punch or Hob or D or DS OR M OR MS
                             if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "UA" || quoteLineItem.LineItemType == "UC" || quoteLineItem.LineItemType == "UH" ||
@@ -2091,9 +2099,28 @@ namespace NatoliOrderInterface
                                     errors.Add("'" + quoteLineItem.LineItemType + "' has a hob number '" + quoteLineItem.HobNoShapeID + "' on its line.");
                                 }
                             }
+                            // Is punch / tip / die / alignment
+                            else if (quoteLineItem.LineItemType == "U" || quoteLineItem.LineItemType == "UT" ||
+                                quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" || quoteLineItem.LineItemType == "LT" ||
+                                quoteLineItem.LineItemType == "R" || quoteLineItem.LineItemType == "RT" ||
+                                quoteLineItem.LineItemType == "A" ||
+                                quoteLineItem.LineItemType == "D" || quoteLineItem.LineItemType == "DS")
+                            {
+                                if (string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) || string.IsNullOrEmpty(quoteLineItem.HobNoShapeID))
+                                {
+                                    if (quoteLineItem.LineItemType == "A" || quoteLineItem.LineItemType == "D" || quoteLineItem.LineItemType == "DS")
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs a die number.");
+                                    }
+                                    else
+                                    {
+                                        errors.Add("'" + quoteLineItem.LineItemType + "' needs a hob number.");
+                                    }
+                                }
+                            }
 
-                            // Upper, Lower, Reject
-                            if (quoteLineItem.LineItemType == "U" ||
+                                // Upper, Lower, Reject
+                                if (quoteLineItem.LineItemType == "U" ||
                                 quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
                                 quoteLineItem.LineItemType == "R")
                             {
@@ -3453,7 +3480,6 @@ namespace NatoliOrderInterface
                                 }
 
                             }
-
                         }
                     }
 

@@ -6,22 +6,22 @@ using NatoliOrderInterface.Models.NEC;
 using NatoliOrderInterface.Models.Projects;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Reflection;
-using System.IO;
-using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using System.Windows.Navigation;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
-using System.Diagnostics;
-using System.Text;
+using System.Windows.Media;
+using System.Windows.Navigation;
 
 namespace NatoliOrderInterface
 {

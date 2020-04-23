@@ -65,7 +65,7 @@ namespace NatoliOrderInterface
                         holdStatus.HoldStatus1 = "ON HOLD";
                         holdStatus.TimeSubmitted = DateTime.Now;
                         holdStatus.OnHoldComment = CommentBox.Text;
-                        holdStatus.User = User.GetUserName() ?? Environment.UserName;
+                        holdStatus.User = User.GetUserName() ?? Environment.UserName.ToLower();
                         _projectsContext.HoldStatus.Update(holdStatus);
                     }
                     else
@@ -77,7 +77,7 @@ namespace NatoliOrderInterface
                         holdStatus.TimeSubmitted = DateTime.Now;
                         holdStatus.HoldStatus1 = "ON HOLD";
                         holdStatus.OnHoldComment = CommentBox.Text;
-                        holdStatus.User = User.GetUserName() ?? Environment.UserName;
+                        holdStatus.User = User.GetUserName() ?? Environment.UserName.ToLower();
                         _projectsContext.HoldStatus.Add(holdStatus);
                     }
 
@@ -102,7 +102,7 @@ namespace NatoliOrderInterface
                     eProject.OnHold = true;
                     eProject.OnHoldComment = CommentBox.Text;
                     eProject.OnHoldDateTime = DateTime.UtcNow;
-                    eProject.OnHoldUser = User.GetUserName() ?? Environment.UserName;
+                    eProject.OnHoldUser = User.GetUserName() ?? Environment.UserName.ToLower();
 
                     //string _name = projectNumber + (Convert.ToInt32(revisionNumber) > 0 ? "_" + revisionNumber : "");
                     //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();

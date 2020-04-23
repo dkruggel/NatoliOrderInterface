@@ -6,22 +6,22 @@ using NatoliOrderInterface.Models.NEC;
 using NatoliOrderInterface.Models.Projects;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Reflection;
-using System.IO;
-using System.Collections.Specialized;
-using System.Runtime.InteropServices;
-using System.Windows.Navigation;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
-using System.Diagnostics;
-using System.Text;
+using System.Windows.Media;
+using System.Windows.Navigation;
 
 namespace NatoliOrderInterface
 {
@@ -48,7 +48,7 @@ namespace NatoliOrderInterface
         private string projectRevNumber;
         private readonly MainWindow mainWindow = null;
         private readonly User user = null;
-        private readonly Timer EditedTimer = new Timer(300);
+        private readonly Timer EditedTimer = new Timer(1500);
         string editedText = "";
         string editedTextBoxName = "";
         string upperCupType = "";
@@ -610,6 +610,7 @@ namespace NatoliOrderInterface
                         {
                             LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
                             LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                            LinkQuoteButton.ToolTip = "Unlink Quote";
                             QuoteFolderButton.IsEnabled = true;
                             quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
                         }
@@ -617,6 +618,7 @@ namespace NatoliOrderInterface
                         {
                             LinkedToQuoteBorder.ClearValue(BackgroundProperty);
                             LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
+                            LinkQuoteButton.ToolTip = "Link Quote";
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
@@ -1082,6 +1084,7 @@ namespace NatoliOrderInterface
                         {
                             LinkedToQuoteBorder.Background = Brushes.PaleGoldenrod;
                             LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                            LinkQuoteButton.ToolTip = "Unlink Quote";
                             QuoteFolderButton.IsEnabled = true;
                             quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
                         }
@@ -1089,6 +1092,7 @@ namespace NatoliOrderInterface
                         {
                             LinkedToQuoteBorder.ClearValue(BackgroundProperty);
                             LinkQuoteButton.Tag = Application.Current.Resources["linkDrawingImage"] as DrawingImage;
+                            LinkQuoteButton.ToolTip = "Link Quote";
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
@@ -3478,7 +3482,7 @@ namespace NatoliOrderInterface
                             {"004","European Head" },
                             {"005","Fette European Head" },
                             {"006","Korsch European Head" },
-                            {"007","Fette EU!-441 Head" },
+                            {"007","Fette EU1-441 Head" },
                             {"008","Speacial Head Configuration" },
                             {"009","Kilian European Head" },
                             {"010","Cam-Slot Head" },
@@ -4463,6 +4467,7 @@ namespace NatoliOrderInterface
                                             engineeringProject.QuoteRevNumber = quoteRevNumber;
                                             projectLinkedToQuote = !projectLinkedToQuote;
                                             LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                                            LinkQuoteButton.ToolTip = "Unlink Quote";
                                             QuoteFolderButton.IsEnabled = true;
                                             FillFromQuote(Convert.ToDouble(quoteNumber), Convert.ToInt16(quoteRevNumber), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
                                             break;
@@ -4977,9 +4982,9 @@ namespace NatoliOrderInterface
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
+                                //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = ""));
+                                //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = ""));
+                                //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = ""));
                             }
                             break;
                         case "UpperHobNumber":
@@ -5069,10 +5074,10 @@ namespace NatoliOrderInterface
                                 // Does not match anything, drive to nothing
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupType.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperCupDepth.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperLand.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescription.Text = ""));
                                 }
                             }
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
@@ -5158,10 +5163,10 @@ namespace NatoliOrderInterface
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupType.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerCupDepth.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerLand.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescription.Text = ""));
                                 }
                             }
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
@@ -5247,10 +5252,10 @@ namespace NatoliOrderInterface
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupType.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectCupDepth.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectLand.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescription.Text = ""));
                                 }
                             }
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
@@ -5336,9 +5341,10 @@ namespace NatoliOrderInterface
                                 }
                                 else
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupType.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectCupDepth.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectLand.Text = ""));
+                                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescription.Text = ""));
                                 }
                             }
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LongRejectHobDescriptionPlaceHolder.Visibility = LongRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
