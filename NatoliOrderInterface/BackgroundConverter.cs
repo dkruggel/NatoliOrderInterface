@@ -28,7 +28,7 @@ namespace NatoliOrderInterface
                     {
                         EoiAllTabletProjectsView project = value as EoiAllTabletProjectsView;
                         bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
-                        bool finished = project.Complete == 5;
+                        bool finished = project.Complete == 4;
                         bool onHold = project.HoldStatus == "On Hold";
                         bool submitted = project.Complete == 3;
                         bool drawn = project.Complete == 2;
