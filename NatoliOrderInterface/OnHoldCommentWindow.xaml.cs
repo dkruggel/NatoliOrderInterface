@@ -167,6 +167,7 @@ namespace NatoliOrderInterface
                 if (CommentBox.Text.Length > 0)
                 {
                     SetOnHold();
+                    Dispatcher.Invoke(() => projectWindow.PutOnHoldButton.Content = "Take Off Hold");
                     Close();
                 }
                 else
