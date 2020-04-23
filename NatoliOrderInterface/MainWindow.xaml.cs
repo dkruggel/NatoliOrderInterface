@@ -890,7 +890,14 @@ namespace NatoliOrderInterface
                 ModuleHeightTextBox.Text = (height).ToString();
                 foreach (Grid grid in MainWrapPanel.Children)
                 {
-                    (grid.Children[0] as Label).MaxHeight = (28 * height) + 102;
+                    try
+                    {
+                        (grid.Children[0] as Label).MaxHeight = (28 * height) + 102;
+                    }
+                    catch (Exception ex)
+                    {
+                        IMethods.WriteToErrorLog("ChangeModuleRows => Setting MaxHeight //// height: " + height + " // maxRows: " + maxRows + " // delta: " + delta + " // from: " + from + " ////", ex.Message, User);
+                    }
                 }
 
                 User.ModuleRows = (short)height;
