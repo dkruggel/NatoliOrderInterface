@@ -3482,7 +3482,7 @@ namespace NatoliOrderInterface
                             {"004","European Head" },
                             {"005","Fette European Head" },
                             {"006","Korsch European Head" },
-                            {"007","Fette EU!-441 Head" },
+                            {"007","Fette EU1-441 Head" },
                             {"008","Speacial Head Configuration" },
                             {"009","Kilian European Head" },
                             {"010","Cam-Slot Head" },
