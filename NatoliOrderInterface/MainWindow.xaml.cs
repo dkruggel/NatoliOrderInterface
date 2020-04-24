@@ -822,32 +822,7 @@ namespace NatoliOrderInterface
             updateTimer.Enabled = true;
         }
 
-        private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            try
-            {
-                System.IO.StreamReader streamReader = new System.IO.StreamReader(@"\\nshare\VB_Apps\NatoliOrderInterface\version.json");
-                string version = "";
-                while (!streamReader.ReadLine().Contains(':'))
-                {
-                    version = streamReader.ReadLine().Split(':')[1].Trim('"');
-                    break;
-                }
-                if (User.PackageVersion != version)
-                {
-                    MessageBoxResult result =  MessageBox.Show(this as Window, "There is a new update. Would you like to restart the application to apply?", "New Update", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.DefaultDesktopOnly);
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        restart = true;
-                        Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                IMethods.WriteToErrorLog("UpdateTimer_Elapsed()", ex.Message, User);
-            }
-        }
+        
 
         private void ChangeZoom(decimal? zoom = null)
         {
@@ -1040,6 +1015,40 @@ namespace NatoliOrderInterface
             if (User.Department == "Engineering")
             {
                 QuotesAndOrders();
+            }
+        }
+        private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+           updateTimer.Stop();
+            try
+            {
+                System.IO.StreamReader streamReader = new System.IO.StreamReader(@"\\nshare\VB_Apps\NatoliOrderInterface\version.json");
+                string version = "";
+                while (!streamReader.ReadLine().Contains(':'))
+                {
+                    version = streamReader.ReadLine().Split(':')[1].Trim('"');
+                    streamReader.Dispose();
+                    break;
+                }
+                if (User.PackageVersion != version)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        MessageBoxResult result = MessageBox.Show("There is a new update. Would you like to restart the application to apply?", "New Update for Natoli Order Interface", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.DefaultDesktopOnly);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            restart = true;
+                            Close();
+                        }
+                    });
+                }
+                updateTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("UpdateTimer_Elapsed()", ex.Message, User);
+                updateTimer.Stop();
+                updateTimer.Start();
             }
         }
         private void GridWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
