@@ -895,6 +895,7 @@ namespace NatoliOrderInterface
 
                 maxRows = (int)Math.Floor((MainWrapPanel.ActualHeight - 10 - 102) / 28);
                 height = height > maxRows ? maxRows : height < 0 ? 0 : height;
+                height = Math.Max(height, 0);
                 ModuleHeightTextBox.Text = (height).ToString();
                 foreach (Grid grid in MainWrapPanel.Children)
                 {
