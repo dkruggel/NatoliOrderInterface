@@ -898,6 +898,7 @@ namespace NatoliOrderInterface
                 ModuleHeightTextBox.Text = (height).ToString();
                 foreach (Grid grid in MainWrapPanel.Children)
                 {
+                    // Get state of expand/collapse button to decide if to apply row change event
                     try
                     {
                         (grid.Children[0] as Label).MaxHeight = (28 * height) + 102;

@@ -244,7 +244,9 @@ namespace NatoliOrderInterface
             collapseButton.Visibility = Visibility.Visible;
             double height = 410;
 
-            (collapseButton.TemplatedParent as Label).MaxHeight = height;
+            TextBox tb = (Application.Current.MainWindow as MainWindow).MenuDock.Children.OfType<TextBox>().Single(tb => tb.Name == "ModuleHeightTextBox");
+
+            (collapseButton.TemplatedParent as Label).MaxHeight = (28 * int.Parse(tb.Text)) + 102;
             if (!double.IsNaN((collapseButton.TemplatedParent as Label).Height))
             {
                 (collapseButton.TemplatedParent as Label).Height = height;
