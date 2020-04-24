@@ -41,6 +41,7 @@ namespace NatoliOrderInterface
         private string _panelMainMessage = "Main Loading Message";
         private string _panelSubMessage = "Sub Loading Message";
         public bool isDebugMode = false;
+        private bool restart = false;
 
 
         const string QUOTE_PATH = @"\\nsql03\data1\Quotes\";
@@ -82,6 +83,7 @@ namespace NatoliOrderInterface
         private readonly System.Timers.Timer NatoliOrderListTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer foldersTimer = new System.Timers.Timer();
         private readonly System.Timers.Timer moduleSearchTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer updateTimer = new System.Timers.Timer();
         private string searchedFromModuleName = "";
         private int _projectNumber = 0;
         private int? _revNumber = 0;
@@ -815,7 +817,38 @@ namespace NatoliOrderInterface
             }
             moduleSearchTimer.Elapsed += ModuleSearchTimer_Elapsed;
             moduleSearchTimer.Interval = 0.3 * 1000; // x seconds
+            updateTimer.Elapsed += UpdateTimer_Elapsed;
+            updateTimer.Interval += (60 * (60 * (1000))); // 1 hour
+            updateTimer.Enabled = true;
         }
+
+        private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                System.IO.StreamReader streamReader = new System.IO.StreamReader(@"\\nshare\VB_Apps\NatoliOrderInterface\version.json");
+                string version = "";
+                while (!streamReader.ReadLine().Contains(':'))
+                {
+                    version = streamReader.ReadLine().Split(':')[1].Trim('"');
+                    break;
+                }
+                if (User.PackageVersion != version)
+                {
+                    MessageBoxResult result =  MessageBox.Show(this as Window, "There is a new update. Would you like to restart the application to apply?", "New Update", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No, MessageBoxOptions.DefaultDesktopOnly);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        restart = true;
+                        Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("UpdateTimer_Elapsed()", ex.Message, User);
+            }
+        }
+
         private void ChangeZoom(decimal? zoom = null)
         {
             try
@@ -1058,6 +1091,16 @@ namespace NatoliOrderInterface
             {
                 IMethods.WriteToErrorLog("GridWindow_Closing - Remove from Checking", ex.Message, User);
             }
+            if(restart == true)
+            try
+            {
+                Process.Start(@"\\nshare\VB_Apps\NatoliOrderInterface\NatoliOrderInterfaceLauncher.exe");
+            }
+            catch(Exception ex)
+            {
+                IMethods.WriteToErrorLog("GridWindow_Closing", ex.Message, User);
+            }
+            
             Dispose();
             System.Environment.Exit(0);
         }
