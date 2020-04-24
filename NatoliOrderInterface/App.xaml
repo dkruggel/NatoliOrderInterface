@@ -18,6 +18,7 @@
         <Color x:Key="Medium.Color">#046B99</Color>
         <Color x:Key="Dark.Color">#1C304A</Color>
 
+        <Color x:Key="OffWhite.Color">#F3F3F3</Color>
 
         <SolidColorBrush x:Key="Light" Color="{StaticResource Light.Color}"/>
         <SolidColorBrush x:Key="Bright" Color="{StaticResource Bright.Color}"/>
@@ -25,6 +26,8 @@
         <SolidColorBrush x:Key="Dark" Color="{StaticResource Dark.Color}"/>
         <SolidColorBrush x:Key="Transparent" Color="Transparent" Opacity="0.0"/>
 
+
+        <SolidColorBrush x:Key="OffWhite" Color="{StaticResource OffWhite.Color}" Opacity="1"/>
         <SolidColorBrush x:Key="GridBorder.Top" Color="White" Opacity="1"/>
         <SolidColorBrush x:Key="GridBorder.Bottom" Color="LightGray" Opacity="1"/>
         <!--#endregion-->
@@ -4448,7 +4451,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -4636,7 +4639,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -4836,7 +4839,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -5036,7 +5039,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -5234,7 +5237,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -5425,7 +5428,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -5620,7 +5623,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -5814,7 +5817,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -6008,7 +6011,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -6214,7 +6217,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -6412,7 +6415,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -6556,7 +6559,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -6727,7 +6730,7 @@
                                     <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
                                 </Border.Effect>
                             </Border>
-                            <Grid x:Name="DisplayGrid">
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
