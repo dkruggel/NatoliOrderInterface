@@ -1882,7 +1882,8 @@ namespace NatoliOrderInterface
                     quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
                 }
                 OrderingWindow orderingWindow = new OrderingWindow(quotes, user);
-                if (orderingWindow.ShowDialog() == true)
+                orderingWindow.ShowDialog();
+                if (orderingWindow.Result == true)
                 {
                     foreach (Tuple<int, short> quote in quotes)
                     {
