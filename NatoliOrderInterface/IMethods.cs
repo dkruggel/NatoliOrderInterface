@@ -3371,14 +3371,14 @@ namespace NatoliOrderInterface
                                                                     {
                                                                         if (_nat01Context.BisectCodes.First(bc => bc.ID == upperHob.BisectCode).Description.Contains("EMB"))
                                                                         {
-                                                                            errors.Add("'L' has a key and is embossed. It is running with an embossed upper. Please confirm the orientation of key/embossing.");
+                                                                            errors.Add("'L' has a key and is embossed. It is running with an embossed upper. Please confirm the orientation of key/embossing and give the information to engineering when it becomes an order.");
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                errors.Add("'L' has a key and is embossed. If running with an embossed upper, please confirm the orientation of key/embossing.");
+                                                                errors.Add("'L' has a key and is embossed. If running with an embossed upper, please confirm the orientation of key/embossing and give the information to engineering when it becomes an order.");
                                                             }
                                                         }
                                                     }
