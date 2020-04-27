@@ -249,6 +249,27 @@ namespace NatoliOrderInterface
             EtchingNote.Text = workOrder.EtchingNote;
             ShippingNote.Text = workOrder.ShippingNote;
             ShipsWith.Text = workOrder.ShipWithWONo;
+            if (workOrder.Shipped == true || workOrder.OnHold == true || workOrder.Cancelled == true)
+            {
+                OrderStatus.Visibility = Visibility.Visible;
+                if (workOrder.Shipped == true)
+                {
+                    OrderStatus.Text = "SHIPPED";
+                }
+                else if (workOrder.Cancelled == true)
+                {
+                    OrderStatus.Text = "CANCELLED";
+                }
+                else if (workOrder.OnHold == true)
+                {
+                    OrderStatus.Text = "ON HOLD";
+                }
+            }
+            else
+            {
+                OrderStatus.Visibility = Visibility.Collapsed;
+                OrderStatus.Text = "";
+            }
             CreateLineItemDataGrid();
         }
         private void CreateLineItemDataGrid()

@@ -7,587 +7,594 @@
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
         Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyDown="Order_Info_Window_PreviewKeyDown" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
-    <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
-        <ScrollViewer DockPanel.Dock="Top" x:Name="Scroller" VerticalScrollBarVisibility="Auto"  Background="Transparent">
-            <DockPanel x:Name="OrderDockPanel2" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
-                <DockPanel DockPanel.Dock="Left" x:Name="ButtonPanel" Width="170" Margin="10,0,10,0"  LastChildFill="False">
-                    <Button DockPanel.Dock="Top" x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="SendToOfficeButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="FinishOrderButton" Style="{StaticResource Button}" Content="Finish Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="FinishOrderButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="NotFinishedButton" Style="{StaticResource Button}" Content="Not Finished" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="NotFinishedButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="PrintOrderButton" Style="{StaticResource Button}" Content="Print Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="PrintOrderButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="DoNotProcessOrderButton" Style="{StaticResource Button}" Content="Do Not Process" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="DoNotProcessOrderButton_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" IsEnabled="True" Height="35" Margin="0,0,0,20" Click="CancelButton_Click" />
-                    <DataGrid DockPanel.Dock="Top" x:Name="LineItemsDataGrid" SelectionChanged="LineItemsDataGrid_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,20" CanUserResizeRows="False" SelectionUnit="FullRow" ClipToBounds="True" MouseDoubleClick="LineItemsDataGrid_MouseDoubleClick" MouseUp="LineItemsDataGrid_MouseUp" SelectionMode="Single" >
-                        <DataGrid.VerticalGridLinesBrush>
-                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
-                        </DataGrid.VerticalGridLinesBrush>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding LineNumber}" Header="#" Width="20" CanUserSort="False" CanUserReorder="False" CanUserResize="False"/>
-                            <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="150" CanUserResize="False" CanUserReorder="False" CanUserSort="False"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <Button DockPanel.Dock="Top" x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="35" Click="OpenWOFolderButton_Click" Margin="0,0,0,20" />
-                    <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" />
-                    <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" />
-                    <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="35" Margin="0,0,0,20" Click="OpenBarcodeLocation_Click"/>
-                    <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="35" Margin="0,0,0,20" Click="NewCustomerNote_Click"/>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Left" x:Name="OrderPanel" >
-                    <Grid DockPanel.Dock="Top" x:Name="OrderHeaderGrid" Height="330" Margin="0,0,10,0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label x:Name="OrderTitle" Content="LOWER CORE ROD KEY COLLAR" Grid.Column="0" Grid.ColumnSpan="21" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="3" Margin="0,0,0,12"/>
-                        <Button x:Name="OrderNumberButton" Style="{StaticResource Button}" Content="271958 00" Padding="0"  Grid.Column="20" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="14" Click="OpenWorkOrdersFolder_Click"/>
-                        <Button x:Name="ReferenceOrderButton" Style="{StaticResource Button}" ToolTip="Reference Work Order Number" Content="REF WO #:" Grid.Row="9" Height="24" VerticalContentAlignment="Center" Margin="2,0" Grid.Column="17" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="ReferenceOrderButton_Click" MaxWidth="180"/>
-                        <TextBlock x:Name="EngineeringNotesContext" Text="Engineering Notes: " Grid.Row="10" Margin="0,25,0,0" Grid.ColumnSpan="26" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" TextWrapping="Wrap" FontWeight="Bold" Focusable="False"/>
-                        <TextBlock x:Name="CSRTextBlock" Text="ANNA KING" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.ColumnSpan="5" MouseUp="CSRTextBlock_MouseUp" Cursor="Hand"/>
-                        <Label x:Name="CustomerNumberLabel" Content="Customer Number: " Grid.Row="2" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="11"/>
-                        <Button x:Name="SoldToCustomerNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC" Height="24" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,-8,0,0" FontWeight="Bold" Click="SoldToSMIs_Click" ToolTip="Opens SMI's"/>
-                        <Button x:Name="ShipToCustomerNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC"  Height="24" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,-8,0,0" Click="ShipToSMIs_Click" ToolTip="Opens SMI's"/>
-                        <Button x:Name="EndUserNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="0,-8,0,0" Grid.Row="5"  Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Click="EndUserSMIs_Click" ToolTip="Opens SMI's" Height="24"/>
-                        <Label x:Name="SoldToCustomerNameLabel" Content="Sold To: " Grid.Row="3" Grid.ColumnSpan="2" Margin="0" HorizontalContentAlignment="Right" Padding="5,0,10,5" FontWeight="Bold" FontSize="10"/>
-                        <Label x:Name="ShipToCustomerNameLabel" Content="Ship To: " Grid.Row="3" Grid.Column="12" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10" Margin="0"/>
-                        <Label x:Name="EndUserNameLabel" Content="End User: " Grid.Row="5" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10"/>
-                        <Label x:Name="WorkOrderLabel" Content="WORK ORDER" Grid.Column="20" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
-                        <Label x:Name="AccountNoLabel" Content="ACCOUNT NO." Grid.Column="23" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="4" MinWidth="90">
-                            <Label x:Name="OrderDateLabel" Content="ORDER DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="OrderDateContext" Content="Order Date: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="4" Grid.ColumnSpan="5">
-                            <Label x:Name="CustPOLabel" Content="CUST P.O. #" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="PONumberContext" Content="PO Number: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="9" Grid.ColumnSpan="4" MinWidth="70">
-                            <Label x:Name="SoldByLabel" Content="SOLD BY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="SoldByContext" Content="96-1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="13" Grid.ColumnSpan="4" MinWidth="85">
-                            <Label x:Name="TermsLabel" Content="TERMS" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="TermsContext" Content="NET 30 DAYS" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="17" Grid.ColumnSpan="4" MinWidth="85">
-                            <Label x:Name="ShippedViaLabel" Content="SHIPPED VIA" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="ShippedViaContext" Content="UPS GROUND" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Black"/>
-                        </StackPanel>
-                        <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="21" Grid.ColumnSpan="5" MinWidth="150">
-                            <Label x:Name="ApproxInvoiceDateLabel" Content="APPROX. INVOICE DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                            <Label x:Name="ShipDateContext" Content="09/16/2019" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" Padding="0"/>
-                        </StackPanel>
-                        <DockPanel Grid.Row="10" Grid.ColumnSpan="26" Grid.RowSpan="1" FlowDirection="LeftToRight">
-                            <Label x:Name="QTYBoldLabel" Content="QTY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="35"/>
-                            <Label x:Name="StockNumber" Content="STOCK NUMBER" Foreground="White" FontWeight="Bold" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="150" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                            <Label x:Name="DescriptionLabel" Content="DESCRIPTION" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
-                        </DockPanel>
-                        <!--<Label x:Name="QuoteLabel" Content="Quote #: 178342" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="152" Grid.ColumnSpan="4"/>-->
-                        <!--<Label x:Name="EndUserNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="5" VerticalContentAlignment="Stretch" Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Padding="5,0,5,2"/>-->
-                        <!--<Label x:Name="SoldToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,0,0,1" FontWeight="Bold" Padding="5,0,5,2"/>-->
-                        <!--<Label x:Name="ShipToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,0,0.667,0"/>-->
-                        <Label x:Name="AccountNumberContext" Content="1021900" VerticalContentAlignment="Center" Grid.Column="23" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1,2,2,2" Padding="0" FontWeight="Bold" FontSize="14"/>
-                        <Button x:Name="Project" Style="{StaticResource Button}" ToolTip="Reference Project Number" Height="24" Content="Project: 93457***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="21" Grid.ColumnSpan="3" Margin="2,0" MaxWidth="180" Click="Project_Click"/>
-                        <Label x:Name="HobStatusLabel" Content="Hob?" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="24" Margin="0" Grid.ColumnSpan="2" Width="69"/>
-                        <Label x:Name="OrderHobStatus" Content="Y***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="25" HorizontalContentAlignment="Right" Margin="0"/>
-                        <Label x:Name="Reference" Content="0.3120 x 0.5000 OVAL SHAPE****" Grid.Row="9" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
-                        <Label x:Name="EndUserNumber" Content="End User Number: ***" Grid.Row="4" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" Margin="0" FontWeight="Bold" FontSize="11"/>
-                        <Label x:Name="ProductName" Content="PRODUCT****" Grid.Row="8" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
+    <Grid x:Name="OrderGrid" Margin="0,0,0,0">
+        <TextBlock x:Name="OrderStatus" Text="" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" Opacity=".25" FontSize="120" FontWeight="SemiBold">
+            <TextBlock.RenderTransform>
+                <RotateTransform Angle="-30"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+        <DockPanel x:Name="OrderDockPanel" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
+            <ScrollViewer DockPanel.Dock="Top" x:Name="Scroller" VerticalScrollBarVisibility="Auto"  Background="Transparent">
+                <DockPanel x:Name="OrderDockPanel2" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
+                    <DockPanel DockPanel.Dock="Left" x:Name="ButtonPanel" Width="170" Margin="10,0,10,0"  LastChildFill="False">
+                        <Button DockPanel.Dock="Top" x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="SendToOfficeButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="FinishOrderButton" Style="{StaticResource Button}" Content="Finish Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="FinishOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="NotFinishedButton" Style="{StaticResource Button}" Content="Not Finished" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="NotFinishedButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="PrintOrderButton" Style="{StaticResource Button}" Content="Print Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="PrintOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="DoNotProcessOrderButton" Style="{StaticResource Button}" Content="Do Not Process" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="DoNotProcessOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" IsEnabled="True" Height="35" Margin="0,0,0,20" Click="CancelButton_Click" />
+                        <DataGrid DockPanel.Dock="Top" x:Name="LineItemsDataGrid" SelectionChanged="LineItemsDataGrid_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,20" CanUserResizeRows="False" SelectionUnit="FullRow" ClipToBounds="True" MouseDoubleClick="LineItemsDataGrid_MouseDoubleClick" MouseUp="LineItemsDataGrid_MouseUp" SelectionMode="Single" >
+                            <DataGrid.VerticalGridLinesBrush>
+                                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
+                            </DataGrid.VerticalGridLinesBrush>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding LineNumber}" Header="#" Width="20" CanUserSort="False" CanUserReorder="False" CanUserResize="False"/>
+                                <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="150" CanUserResize="False" CanUserReorder="False" CanUserSort="False"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button DockPanel.Dock="Top" x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="35" Click="OpenWOFolderButton_Click" Margin="0,0,0,20" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="35" Margin="0,0,0,20" Click="OpenBarcodeLocation_Click"/>
+                        <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="35" Margin="0,0,0,20" Click="NewCustomerNote_Click"/>
+                    </DockPanel>
+                    <DockPanel DockPanel.Dock="Left" x:Name="OrderPanel" >
+                        <Grid DockPanel.Dock="Top" x:Name="OrderHeaderGrid" Height="330" Margin="0,0,10,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label x:Name="OrderTitle" Content="LOWER CORE ROD KEY COLLAR" Grid.Column="0" Grid.ColumnSpan="21" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="3" Margin="0,0,0,12"/>
+                            <Button x:Name="OrderNumberButton" Style="{StaticResource Button}" Content="271958 00" Padding="0"  Grid.Column="20" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="14" Click="OpenWorkOrdersFolder_Click"/>
+                            <Button x:Name="ReferenceOrderButton" Style="{StaticResource Button}" ToolTip="Reference Work Order Number" Content="REF WO #:" Grid.Row="9" Height="24" VerticalContentAlignment="Center" Margin="2,0" Grid.Column="17" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="ReferenceOrderButton_Click" MaxWidth="180"/>
+                            <TextBlock x:Name="EngineeringNotesContext" Text="Engineering Notes: " Grid.Row="10" Margin="0,25,0,0" Grid.ColumnSpan="26" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3" TextWrapping="Wrap" FontWeight="Bold" Focusable="False"/>
+                            <TextBlock x:Name="CSRTextBlock" Text="ANNA KING" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.ColumnSpan="5" MouseUp="CSRTextBlock_MouseUp" Cursor="Hand"/>
+                            <Label x:Name="CustomerNumberLabel" Content="Customer Number: " Grid.Row="2" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" FontWeight="Bold" FontSize="11"/>
+                            <Button x:Name="SoldToCustomerNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC" Height="24" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,-8,0,0" FontWeight="Bold" Click="SoldToSMIs_Click" ToolTip="Opens SMI's"/>
+                            <Button x:Name="ShipToCustomerNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC"  Height="24" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,-8,0,0" Click="ShipToSMIs_Click" ToolTip="Opens SMI's"/>
+                            <Button x:Name="EndUserNameButton" Style="{StaticResource Button}" Content="ACCESS BUSINESS GROUP LLC" HorizontalAlignment="Left" VerticalContentAlignment="Center" Margin="0,-8,0,0" Grid.Row="5"  Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Click="EndUserSMIs_Click" ToolTip="Opens SMI's" Height="24"/>
+                            <Label x:Name="SoldToCustomerNameLabel" Content="Sold To: " Grid.Row="3" Grid.ColumnSpan="2" Margin="0" HorizontalContentAlignment="Right" Padding="5,0,10,5" FontWeight="Bold" FontSize="10"/>
+                            <Label x:Name="ShipToCustomerNameLabel" Content="Ship To: " Grid.Row="3" Grid.Column="12" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10" Margin="0"/>
+                            <Label x:Name="EndUserNameLabel" Content="End User: " Grid.Row="5" Grid.ColumnSpan="2" HorizontalContentAlignment="Right" Padding="0,0,10,0" FontWeight="Bold" FontSize="10"/>
+                            <Label x:Name="WorkOrderLabel" Content="WORK ORDER" Grid.Column="20" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
+                            <Label x:Name="AccountNoLabel" Content="ACCOUNT NO." Grid.Column="23" Margin="0" HorizontalContentAlignment="Center" FontWeight="Bold" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom" Padding="0"/>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="4" MinWidth="90">
+                                <Label x:Name="OrderDateLabel" Content="ORDER DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="OrderDateContext" Content="Order Date: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="4" Grid.ColumnSpan="5">
+                                <Label x:Name="CustPOLabel" Content="CUST P.O. #" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="PONumberContext" Content="PO Number: " VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="9" Grid.ColumnSpan="4" MinWidth="70">
+                                <Label x:Name="SoldByLabel" Content="SOLD BY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="SoldByContext" Content="96-1" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="13" Grid.ColumnSpan="4" MinWidth="85">
+                                <Label x:Name="TermsLabel" Content="TERMS" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="TermsContext" Content="NET 30 DAYS" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="17" Grid.ColumnSpan="4" MinWidth="85">
+                                <Label x:Name="ShippedViaLabel" Content="SHIPPED VIA" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="ShippedViaContext" Content="UPS GROUND" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="Black"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="6" Grid.RowSpan="2" Grid.Column="21" Grid.ColumnSpan="5" MinWidth="150">
+                                <Label x:Name="ApproxInvoiceDateLabel" Content="APPROX. INVOICE DATE" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                                <Label x:Name="ShipDateContext" Content="09/16/2019" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold" FontSize="16" Padding="0"/>
+                            </StackPanel>
+                            <DockPanel Grid.Row="10" Grid.ColumnSpan="26" Grid.RowSpan="1" FlowDirection="LeftToRight">
+                                <Label x:Name="QTYBoldLabel" Content="QTY" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="35"/>
+                                <Label x:Name="StockNumber" Content="STOCK NUMBER" Foreground="White" FontWeight="Bold" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black" MinWidth="150" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                <Label x:Name="DescriptionLabel" Content="DESCRIPTION" Foreground="White" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="{Binding BorderBrush, ElementName=Order_Info_Window}" BorderThickness="2,0" Background="Black"/>
+                            </DockPanel>
+                            <!--<Label x:Name="QuoteLabel" Content="Quote #: 178342" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="152" Grid.ColumnSpan="4"/>-->
+                            <!--<Label x:Name="EndUserNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="5" VerticalContentAlignment="Stretch" Grid.ColumnSpan="10" Grid.Column="2" FontWeight="Bold" Padding="5,0,5,2"/>-->
+                            <!--<Label x:Name="SoldToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.ColumnSpan="10" Grid.Column="2" Margin="0,0,0,1" FontWeight="Bold" Padding="5,0,5,2"/>-->
+                            <!--<Label x:Name="ShipToCustomerNameContext" Content="ACCESS BUSINESS GROUP LLC" Grid.Row="3" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Padding="5,0,5,2" Margin="0,0,0.667,0"/>-->
+                            <Label x:Name="AccountNumberContext" Content="1021900" VerticalContentAlignment="Center" Grid.Column="23" Margin="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1,2,2,2" Padding="0" FontWeight="Bold" FontSize="14"/>
+                            <Button x:Name="Project" Style="{StaticResource Button}" ToolTip="Reference Project Number" Height="24" Content="Project: 93457***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="21" Grid.ColumnSpan="3" Margin="2,0" MaxWidth="180" Click="Project_Click"/>
+                            <Label x:Name="HobStatusLabel" Content="Hob?" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="24" Margin="0" Grid.ColumnSpan="2" Width="69"/>
+                            <Label x:Name="OrderHobStatus" Content="Y***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="25" HorizontalContentAlignment="Right" Margin="0"/>
+                            <Label x:Name="Reference" Content="0.3120 x 0.5000 OVAL SHAPE****" Grid.Row="9" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
+                            <Label x:Name="EndUserNumber" Content="End User Number: ***" Grid.Row="4" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" Margin="0" FontWeight="Bold" FontSize="11"/>
+                            <Label x:Name="ProductName" Content="PRODUCT****" Grid.Row="8" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
 
-                        <Button x:Name="QuoteButton" Style="{StaticResource Button}" Content="Quote#: 178342" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Grid.RowSpan="2" Height="24" Grid.ColumnSpan="6" Margin="0,0,0,0" Click="QuoteButton_Click"/>
-                        <Label x:Name="RushLabel" Content="+RUSH+" Grid.Column="19" Grid.ColumnSpan="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="2" Margin="0" Grid.Row="4"/>
-                    </Grid>
-                    <Grid DockPanel.Dock="Top" x:Name="OrderDetailsGrid" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="29*"/>
-                            <ColumnDefinition Width="21*"/>
-                            <ColumnDefinition Width="22*"/>
-                            <ColumnDefinition Width="66*"/>
-                            <ColumnDefinition Width="66*"/>
-                            <ColumnDefinition Width="34*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <Label x:Name="QTYLabel" Content="55***" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
-                        <Label x:Name="LineItemType" Content="U*" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,0,0,0" FontWeight="Bold"/>
-                        <Label x:Name="HobOrDieNo" Content="132389" Padding="0" VerticalContentAlignment="Center" Grid.Column="3" FontWeight="Bold"/>
-                        <DockPanel Grid.Column="4" Grid.ColumnSpan="2">
-                            <Label x:Name="NoOfTips" Content="2-" Padding="0" Margin="1,0,0,0" Width="14" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
-                            <Label x:Name="MachineNo" Content="2355" Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
-                        </DockPanel>
-                        <Label x:Name="Material" Content="ESR S7 STEEL" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="1" Grid.ColumnSpan="4"/>
-                        <Label x:Name="StockSize" Content="1 x 5-3/4" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="4"/>
-                        <Label x:Name="HobDescription1" Content="UPPER PUNCH FROM HOB # 132389***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="9" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        <Label x:Name="HobDescription2" Content="CUP DEPTH 0.0520, LAND 0.0050 BLD. LD.,***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
-                        <Label x:Name="HobDescription3" Content="SHALLOW CONCAVE  (12MM CUP RAD.) PLAIN***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
-                        <Label x:Name="ShapeDescription" Content="0.3120 x 0.5000 OVAL SHAPE***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Margin="0"/>
-                        <Label x:Name="MachineDescription" Content="KIKUSUI GEMINI 855-55 STA. (B)***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Grid.Row="3" Margin="0"/>
-                        <Label x:Name="DetailHobStatus" Content="Y***" Padding="0" VerticalContentAlignment="Center" Grid.Column="25" FontWeight="Bold" Margin="0" HorizontalContentAlignment="Center"/>
-                        <Label x:Name="BoreCircle" Content="BORE CIRCLE: 0.4700" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="0" Grid.Row="3" Grid.ColumnSpan="4" FontStyle="Italic"/>
-                    </Grid>
-                    <Grid DockPanel.Dock="Top" x:Name="OrderDetailOptionsGrid" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="29*"/>
-                            <ColumnDefinition Width="21*"/>
-                            <ColumnDefinition Width="28*"/>
-                            <ColumnDefinition Width="66*"/>
-                            <ColumnDefinition Width="50*"/>
-                            <ColumnDefinition Width="34*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="40*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="39*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="37*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                            <ColumnDefinition Width="38*"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel x:Name="OptionsStackOne" Grid.Column="2" Grid.ColumnSpan="24" Margin="0,20,0,0">
-                        </StackPanel>
-                        <StackPanel x:Name="OptionsStackTwo" Grid.Column="14" Grid.ColumnSpan="12" Margin="0,20,0,0">
-                        </StackPanel>
-                    </Grid>
-                    <Border DockPanel.Dock="Top" BorderBrush="Gray" BorderThickness="0,1,0,0" Margin="0,0,10,0"/>
-                    <DockPanel DockPanel.Dock="Bottom" x:Name="Docker" LastChildFill="False" Margin="0,0,12,0">
-                        <Border  DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="Gray" Margin="0,0,10,0">
-                            <DockPanel LastChildFill="False">
-                                <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="ETCHING" FontSize="24" Style="{StaticResource BoldTextBlock}"/>
-                                <TabControl x:Name="OrderEtchingTabs" DockPanel.Dock="Top" Margin="0,0,10,0" MinWidth="346" BorderBrush="Black" BorderThickness="1">
-                                    <TabItem x:Name="UpperEtchingTab" Style="{StaticResource TabItem}" Header="UPPERS">
-                                        <DockPanel LastChildFill="False">
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="UPPERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Grid>
-                                            <Grid DockPanel.Dock="Top" Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                </Grid.RowDefinitions>
-                                                <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="TESTING" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </DockPanel>
-                                    </TabItem>
-                                    <TabItem x:Name="LowerEtchingTab" Style="{StaticResource TabItem}" Header="LOWERS">
-                                        <DockPanel LastChildFill="False">
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="LOWERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Grid>
-                                            <Grid DockPanel.Dock="Top" Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                </Grid.RowDefinitions>
-                                                <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </DockPanel>
-                                    </TabItem>
-                                    <TabItem x:Name="DieEtchingTab" Style="{StaticResource TabItem}" Header="DIES">
-                                        <DockPanel LastChildFill="False">
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="DIES" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Grid>
-                                            <Grid DockPanel.Dock="Top" Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                </Grid.RowDefinitions>
-                                                <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </DockPanel>
-                                    </TabItem>
-                                    <TabItem x:Name="RejectEtchingTab" Style="{StaticResource TabItem}" Header="REJECTS">
-                                        <DockPanel LastChildFill="False">
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="REJECTS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Grid>
-                                            <Grid DockPanel.Dock="Top" Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                </Grid.RowDefinitions>
-                                                <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </DockPanel>
-                                    </TabItem>
-                                    <TabItem x:Name="AlignmentEtchingTab" Style="{StaticResource TabItem}" Header="ALIGNMENT">
-                                        <DockPanel LastChildFill="False">
-                                            <Grid DockPanel.Dock="Top">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="1 - 5" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="6 - 10" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                <TextBlock Text="ALIGNMENT" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Grid>
-                                            <Grid DockPanel.Dock="Top" Margin="0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                    <RowDefinition Height="24"/>
-                                                </Grid.RowDefinitions>
-                                                <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                                <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
-                                                    <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Border>
-                                            </Grid>
-                                        </DockPanel>
-                                    </TabItem>
-                                </TabControl>
+                            <Button x:Name="QuoteButton" Style="{StaticResource Button}" Content="Quote#: 178342" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Grid.RowSpan="2" Height="24" Grid.ColumnSpan="6" Margin="0,0,0,0" Click="QuoteButton_Click"/>
+                            <Label x:Name="RushLabel" Content="+RUSH+" Grid.Column="19" Grid.ColumnSpan="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="2" Margin="0" Grid.Row="4"/>
+                        </Grid>
+                        <Grid DockPanel.Dock="Top" x:Name="OrderDetailsGrid" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="29*"/>
+                                <ColumnDefinition Width="21*"/>
+                                <ColumnDefinition Width="22*"/>
+                                <ColumnDefinition Width="66*"/>
+                                <ColumnDefinition Width="66*"/>
+                                <ColumnDefinition Width="34*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                            </Grid.RowDefinitions>
+                            <Label x:Name="QTYLabel" Content="55***" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
+                            <Label x:Name="LineItemType" Content="U*" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Margin="1,0,0,0" FontWeight="Bold"/>
+                            <Label x:Name="HobOrDieNo" Content="132389" Padding="0" VerticalContentAlignment="Center" Grid.Column="3" FontWeight="Bold"/>
+                            <DockPanel Grid.Column="4" Grid.ColumnSpan="2">
+                                <Label x:Name="NoOfTips" Content="2-" Padding="0" Margin="1,0,0,0" Width="14" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
+                                <Label x:Name="MachineNo" Content="2355" Padding="0" HorizontalAlignment="Left" VerticalContentAlignment="Center" Grid.Column="4" Grid.ColumnSpan="2" FontWeight="Bold"/>
                             </DockPanel>
-                        </Border>
-                        <DockPanel DockPanel.Dock="Top">
-                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
-                                <TextBlock Text="Inspection:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="InspectionNote"/>
-                            </DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
-                                <TextBlock Text="Etching:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="EtchingNote" TextWrapping="Wrap"/>
-                            </DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
-                                <TextBlock Text="Shipping:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="ShippingNote" TextWrapping="Wrap"/>
-                            </DockPanel>
-                            <DockPanel DockPanel.Dock="Top" Margin="0,4">
-                                <TextBlock Text="Ships With:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
-                                <TextBlock x:Name="ShipsWith" TextWrapping="Wrap"/>
+                            <Label x:Name="Material" Content="ESR S7 STEEL" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="1" Grid.ColumnSpan="4"/>
+                            <Label x:Name="StockSize" Content="1 x 5-3/4" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="1,0,0,0" FontWeight="Bold" Grid.Row="2" Grid.ColumnSpan="4"/>
+                            <Label x:Name="HobDescription1" Content="UPPER PUNCH FROM HOB # 132389***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="9" FontWeight="Bold" Margin="5,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            <Label x:Name="HobDescription2" Content="CUP DEPTH 0.0520, LAND 0.0050 BLD. LD.,***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="1" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
+                            <Label x:Name="HobDescription3" Content="SHALLOW CONCAVE  (12MM CUP RAD.) PLAIN***" Padding="0" VerticalContentAlignment="Center" Grid.Column="5" Grid.ColumnSpan="21" FontWeight="Bold" Grid.Row="2" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch"/>
+                            <Label x:Name="ShapeDescription" Content="0.3120 x 0.5000 OVAL SHAPE***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Margin="0"/>
+                            <Label x:Name="MachineDescription" Content="KIKUSUI GEMINI 855-55 STA. (B)***" Padding="0" VerticalContentAlignment="Center" Grid.Column="14" Grid.ColumnSpan="12" FontWeight="Bold" Grid.Row="3" Margin="0"/>
+                            <Label x:Name="DetailHobStatus" Content="Y***" Padding="0" VerticalContentAlignment="Center" Grid.Column="25" FontWeight="Bold" Margin="0" HorizontalContentAlignment="Center"/>
+                            <Label x:Name="BoreCircle" Content="BORE CIRCLE: 0.4700" Padding="0" VerticalContentAlignment="Center" Grid.Column="1" Margin="0" Grid.Row="3" Grid.ColumnSpan="4" FontStyle="Italic"/>
+                        </Grid>
+                        <Grid DockPanel.Dock="Top" x:Name="OrderDetailOptionsGrid" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="29*"/>
+                                <ColumnDefinition Width="21*"/>
+                                <ColumnDefinition Width="28*"/>
+                                <ColumnDefinition Width="66*"/>
+                                <ColumnDefinition Width="50*"/>
+                                <ColumnDefinition Width="34*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="40*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="39*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="37*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                                <ColumnDefinition Width="38*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="OptionsStackOne" Grid.Column="2" Grid.ColumnSpan="24" Margin="0,20,0,0">
+                            </StackPanel>
+                            <StackPanel x:Name="OptionsStackTwo" Grid.Column="14" Grid.ColumnSpan="12" Margin="0,20,0,0">
+                            </StackPanel>
+                        </Grid>
+                        <Border DockPanel.Dock="Top" BorderBrush="Gray" BorderThickness="0,1,0,0" Margin="0,0,10,0"/>
+                        <DockPanel DockPanel.Dock="Bottom" x:Name="Docker" LastChildFill="False" Margin="0,0,12,0">
+                            <Border  DockPanel.Dock="Left" BorderThickness="0,0,1,0" BorderBrush="Gray" Margin="0,0,10,0">
+                                <DockPanel LastChildFill="False">
+                                    <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="ETCHING" FontSize="24" Style="{StaticResource BoldTextBlock}"/>
+                                    <TabControl x:Name="OrderEtchingTabs" DockPanel.Dock="Top" Margin="0,0,10,0" MinWidth="346" BorderBrush="Black" BorderThickness="1">
+                                        <TabItem x:Name="UpperEtchingTab" Style="{StaticResource TabItem}" Header="UPPERS">
+                                            <DockPanel LastChildFill="False">
+                                                <Grid DockPanel.Dock="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="UPPERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                                <Grid DockPanel.Dock="Top" Margin="0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="TESTING" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+                                        </TabItem>
+                                        <TabItem x:Name="LowerEtchingTab" Style="{StaticResource TabItem}" Header="LOWERS">
+                                            <DockPanel LastChildFill="False">
+                                                <Grid DockPanel.Dock="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="LOWERS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                                <Grid DockPanel.Dock="Top" Margin="0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+                                        </TabItem>
+                                        <TabItem x:Name="DieEtchingTab" Style="{StaticResource TabItem}" Header="DIES">
+                                            <DockPanel LastChildFill="False">
+                                                <Grid DockPanel.Dock="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="DIES" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                                <Grid DockPanel.Dock="Top" Margin="0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+                                        </TabItem>
+                                        <TabItem x:Name="RejectEtchingTab" Style="{StaticResource TabItem}" Header="REJECTS">
+                                            <DockPanel LastChildFill="False">
+                                                <Grid DockPanel.Dock="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="FRONT" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="BACK" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="REJECTS" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                                <Grid DockPanel.Dock="Top" Margin="0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="5" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="6" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+                                        </TabItem>
+                                        <TabItem x:Name="AlignmentEtchingTab" Style="{StaticResource TabItem}" Header="ALIGNMENT">
+                                            <DockPanel LastChildFill="False">
+                                                <Grid DockPanel.Dock="Top">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="1 - 5" Style="{StaticResource NormalTextBlock}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="6 - 10" Style="{StaticResource NormalTextBlock}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="ALIGNMENT" FontSize="16" Style="{StaticResource BoldTextBlock}" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Grid>
+                                                <Grid DockPanel.Dock="Top" Margin="0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                        <RowDefinition Height="24"/>
+                                                    </Grid.RowDefinitions>
+                                                    <Border Grid.Row="0" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="0" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="0" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="1" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="2" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="3" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                    <Border Grid.Row="4" Grid.Column="1" Margin="10,2,5,2" BorderBrush="Black" BorderThickness="1">
+                                                        <TextBlock Text="" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </Grid>
+                                            </DockPanel>
+                                        </TabItem>
+                                    </TabControl>
+                                </DockPanel>
+                            </Border>
+                            <DockPanel DockPanel.Dock="Top">
+                                <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                    <TextBlock Text="Inspection:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                    <TextBlock x:Name="InspectionNote"/>
+                                </DockPanel>
+                                <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                    <TextBlock Text="Etching:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                    <TextBlock x:Name="EtchingNote" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                    <TextBlock Text="Shipping:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                    <TextBlock x:Name="ShippingNote" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <DockPanel DockPanel.Dock="Top" Margin="0,4">
+                                    <TextBlock Text="Ships With:" FontWeight="Bold" FontSize="12" Margin="4,0"/>
+                                    <TextBlock x:Name="ShipsWith" TextWrapping="Wrap"/>
+                                </DockPanel>
                             </DockPanel>
                         </DockPanel>
                     </DockPanel>
                 </DockPanel>
-            </DockPanel>
-        </ScrollViewer>
-    </DockPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
 </Window>
