@@ -3242,12 +3242,12 @@ namespace NatoliOrderInterface
                                                     {
                                                         try
                                                         {
-                                                            dieWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
-                                                            dieLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
+                                                            dieWidth = dieQuoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
+                                                            dieLength = dieQuoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
                                                         }
                                                         catch
                                                         {
-                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (425) without a value.");
+                                                            errors.Add("'" + dieQuoteLineItem.LineItemType + "' has option (425) without a value.");
                                                         }
                                                     }
                                                     else
