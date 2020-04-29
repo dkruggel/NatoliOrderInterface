@@ -3605,6 +3605,11 @@
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight">
+                <Setter.Value>
+                    <Binding Converter="{StaticResource textConverter}"  ElementName="CheckBox" Path="IsChecked"/>
+                </Setter.Value>
+            </Setter>
         </Style>
         <!--#endregion-->
         
@@ -5520,16 +5525,21 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
-                                                                            <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
-                                                                            <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
-                                                                            <TextBlock Tag="DaysInArea" Text="{Binding DaysInDept}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="DaysInArea" Text="{Binding DaysInDept}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0">
+                                                                            </TextBlock>
                                                                             <Grid Grid.Column="5">
                                                                                 <Grid.ColumnDefinitions>
                                                                                     <ColumnDefinition Width="*" MinWidth="100"/>
                                                                                     <ColumnDefinition Width="Auto"/>
                                                                                 </Grid.ColumnDefinitions>
-                                                                                <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis"/>
+                                                                                <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis">
+                                                                                </TextBlock>
                                                                                 <!--<StackPanel Grid.Column="1">
                                                                                     <Image x:Name="OpenImage" Height="35" Width="35" Source="{DynamicResource window_plusDrawingImage}" Cursor="Hand" Visibility="Visible" MouseUp="OpenOrderButton_Click">
                                                                                         <Image.Style>
