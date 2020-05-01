@@ -31,5 +31,35 @@ namespace NatoliOrderInterface.Models
         public int Tablet { get; set; }
         public int Tool { get; set; }
         public int VariablesExist { get; set; }
+
+        public bool Equals(EoiAllOrdersView other)
+        {
+            if (other is null)
+                return false;
+
+            return this.OrderNumber == other.OrderNumber &&
+                   this.QuoteNumber == other.QuoteNumber &&
+                   this.QuoteRev == other.QuoteRev &&
+                   this.CustomerName == other.CustomerName &&
+                   this.NumDaysToShip == other.NumDaysToShip &&
+                   this.RushYorN == other.RushYorN &&
+                   this.PaidRushFee == other.PaidRushFee &&
+                   this.ProcessState == other.ProcessState &&
+                   this.TransitionName == other.TransitionName &&
+                   this.DoNotProcess == other.DoNotProcess &&
+                   this.DaysInDept == other.DaysInDept &&
+                   this.EmployeeName == other.EmployeeName &&
+                   this.BeingChecked == other.BeingChecked &&
+                   this.MarkedForChecking == other.MarkedForChecking &&
+                   this.Csr == other.Csr &&
+                   this.CheckedBy == other.CheckedBy &&
+                   this.Tm2 == other.Tm2 &&
+                   this.Tablet == other.Tablet &&
+                   this.Tool == other.Tool &&
+                   this.VariablesExist == other.VariablesExist;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as EoiAllOrdersView);
+        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist).GetHashCode();
     }
 }

@@ -1241,6 +1241,66 @@ namespace NatoliOrderInterface
             double_click_timer.Start();
             end:;
         }
+        private void HeaderToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton)
+            {
+                ToggleButton toggleButton = sender as ToggleButton;
+                Grid headerGrid = toggleButton.Parent as Grid;
+                foreach(ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => tb != toggleButton && !(tb is CheckBox)))
+                {
+                    tb.IsChecked = null;
+                }
+                Grid displayGrid = headerGrid.Parent as Grid;
+                ListBox listBox = displayGrid.Children.OfType<ListBox>().First();
+                Dispatcher.Invoke((Action)(()=>
+                {
+                    switch (listBox.Name)
+                    {
+                        case "CustomerNotesModule":
+                            break;
+                        case "QuotesNotConvertedListBox":
+                            (Application.Current.MainWindow as MainWindow).BindQuotesNotConverted();
+                            break;
+                        case "QuotesToConvertListBox":
+                            (Application.Current.MainWindow as MainWindow).BindQuotesToConvert();
+                            break;
+                        case "BeingEnteredListBox":
+                            (Application.Current.MainWindow as MainWindow).BindBeingEntered();
+                            break;
+                        case "InTheOfficeListBox":
+                            (Application.Current.MainWindow as MainWindow).BindInTheOffice();
+                            break;
+                        case "EnteredUnscannedListBox":
+                            (Application.Current.MainWindow as MainWindow).BindEnteredUnscanned();
+                            break;
+                        case "InEngineeringListBox":
+                            (Application.Current.MainWindow as MainWindow).BindInEngineering();
+                            break;
+                        case "ReadyToPrintListBox":
+                            (Application.Current.MainWindow as MainWindow).BindReadyToPrint();
+                            break;
+                        case "PrintedInEngineeringListBox":
+                            (Application.Current.MainWindow as MainWindow).BindPrintedInEngineering();
+                            break;
+                        case "AllTabletProjectsListBox":
+                            (Application.Current.MainWindow as MainWindow).BindAllTabletProjects();
+                            break;
+                        case "AllToolProjectsListBox":
+                            (Application.Current.MainWindow as MainWindow).BindAllToolProjects();
+                            break;
+                        case "DriveWorksQueueListBox":
+                            (Application.Current.MainWindow as MainWindow).BindDriveWorksQueue();
+                            break;
+                        case "NatoliOrderListListBox":
+                            (Application.Current.MainWindow as MainWindow).BindNatoliOrderList();
+                            break;
+                        default:
+                            break;
+                    }
+                }),DispatcherPriority.DataBind);
+            }
+        }
         /// <summary>
         /// Timer Elapsed from ToggleButton MouseDown Event
         /// </summary>
@@ -3363,5 +3423,7 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
+
+        
     }
 }

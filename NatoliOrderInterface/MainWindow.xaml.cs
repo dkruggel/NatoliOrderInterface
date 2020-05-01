@@ -182,7 +182,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersBeingEntered).Count() > 0 || ordersBeingEntered.Except(value).Count() > 0)
+                if (!ordersBeingEntered.SequenceEqual(value))
                 {
                     ordersBeingEntered = value;
                     OrdersBeingEnteredListBox.ItemsSource = null;
@@ -203,7 +203,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersInTheOffice).Count() > 0 || ordersInTheOffice.Except(value).Count() > 0)
+                if (!ordersInTheOffice.SequenceEqual(value))
                 {
                     ordersInTheOffice = value;
                     OrdersInTheOfficeListBox.ItemsSource = null;
@@ -224,7 +224,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersEntered).Count() > 0 || ordersEntered.Except(value).Count() > 0)
+                if (!ordersEntered.SequenceEqual(value)) //value.Except(ordersEntered).Count() > 0 || ordersEntered.Except(value).Count() > 0)
                 {
                     ordersEntered = value;
                     OrdersEnteredListBox.ItemsSource = null;
@@ -245,7 +245,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(ordersInEng).Count() > 0 || ordersInEng.Except(value).Count() > 0)
+                if (!ordersInEng.SequenceEqual(value))
                 {
                     ordersInEng = value;
                     OrdersInEngListBox.ItemsSource = null;
@@ -291,7 +291,7 @@ namespace NatoliOrderInterface
 
                 }
 
-                if (value.Except(ordersReadyToPrint).Count() > 0 || ordersReadyToPrint.Except(value).Count() > 0 || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
+                if (!ordersReadyToPrint.SequenceEqual(value) || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
                 {
                     ordersReadyToPrint = value;
                     OrdersReadyToPrintListBox.ItemsSource = null;
@@ -337,7 +337,7 @@ namespace NatoliOrderInterface
 
                 }
 
-                if (value.Except(ordersPrinted).Count() > 0 || ordersPrinted.Except(value).Count() > 0 || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
+                if (!ordersPrinted.SequenceEqual(value) || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
                 {
                     ordersPrinted = value;
                     OrdersPrintedListBox.ItemsSource = null;
@@ -358,7 +358,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(quotesNotConverted).Count() > 0 || quotesNotConverted.Except(value).Count() > 0)
+                if (!quotesNotConverted.SequenceEqual(value))
                 {
                     quotesNotConverted = value;
                     QuotesNotConvertedListBox.ItemsSource = null;
@@ -379,7 +379,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(quotesToConvert).Count() > 0 || quotesToConvert.Except(value).Count() > 0)
+                if (!quotesToConvert.SequenceEqual(value))
                 {
                     quotesToConvert = value;
                     QuotesToConvertListBox.ItemsSource = null;
@@ -400,7 +400,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(allTabletProjects).Count() > 0 || allTabletProjects.Except(value).Count() > 0)
+                if (!allTabletProjects.SequenceEqual(value))
                 {
                     allTabletProjects = value;
                     AllTabletProjectsListBox.ItemsSource = null;
@@ -421,7 +421,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(allToolProjects).Count() > 0 || allToolProjects.Except(value).Count() > 0)
+                if (!allToolProjects.SequenceEqual(value))
                 {
                     allToolProjects = value;
                     AllToolProjectsListBox.ItemsSource = null;
@@ -442,7 +442,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(driveWorksQueue).Count() > 0 || driveWorksQueue.Except(value).Count() > 0)
+                if (!driveWorksQueue.SequenceEqual(value))
                 {
                     driveWorksQueue = value;
                     DriveWorksQueueListBox.ItemsSource = null;
@@ -463,7 +463,7 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (value.Except(natoliOrderList).Count() > 0 || natoliOrderList.Except(value).Count() > 0)
+                if (!natoliOrderList.SequenceEqual(value))
                 {
                     natoliOrderList = value;
                     NatoliOrderListListBox.ItemsSource = null;
@@ -559,84 +559,84 @@ namespace NatoliOrderInterface
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetBeingEntered());
-                                Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "InTheOffice":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetInTheOffice());
-                                Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "QuotesNotConverted":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetQuotesNotConverted());
-                                Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "EnteredUnscanned":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetEnteredUnscanned());
-                                Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "InEngineering":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetInEngineering());
-                                Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "QuotesToConvert":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetQuotesToConvert());
-                                Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "ReadyToPrint":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetReadyToPrint());
-                                Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "PrintedInEngineering":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetPrintedInEngineering());
-                                Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "AllTabletProjects":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetAllTabletProjects());
-                                Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "AllToolProjects":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetAllToolProjects());
-                                Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "DriveWorksQueue":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetDriveWorksQueue());
-                                Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         case "NatoliOrderList":
                             taskList.Add(Task.Run(async () =>
                             {
                                 await Task.Run(() => GetNatoliOrderList());
-                                Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             }));
                             break;
                         default:
@@ -667,51 +667,51 @@ namespace NatoliOrderInterface
                 {
                     case "BeingEntered":
                         await Task.Run(() => GetBeingEntered());
-                        Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "InTheOffice":
                         await Task.Run(() => GetInTheOffice());
-                        Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "QuotesNotConverted":
                         await Task.Run(() => GetQuotesNotConverted());
-                        Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "EnteredUnscanned":
                         await Task.Run(() => GetEnteredUnscanned());
-                        Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "InEngineering":
                         await Task.Run(() => GetInEngineering());
-                        Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "QuotesToConvert":
                         await Task.Run(() => GetQuotesToConvert());
-                        Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "ReadyToPrint":
                         await Task.Run(() => GetReadyToPrint());
-                        Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "PrintedInEngineering":
                         await Task.Run(() => GetPrintedInEngineering());
-                        Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "AllTabletProjects":
                         await Task.Run(() => GetAllTabletProjects());
-                        Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "AllToolProjects":
                         await Task.Run(() => GetAllToolProjects());
-                        Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "DriveWorksQueue":
                         await Task.Run(() => GetDriveWorksQueue());
-                        Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     case "NatoliOrderList":
                         await Task.Run(() => GetNatoliOrderList());
-                        Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                        Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                         break;
                     default:
                         break;
@@ -2452,7 +2452,7 @@ namespace NatoliOrderInterface
 
                     OrdersBeingEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.BeginInvoke((Action) BindBeingEntered,System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetBeingEntered()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()),System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersBeingEnteredListBox.ItemsSource = null;
                     OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
@@ -2478,7 +2478,7 @@ namespace NatoliOrderInterface
 
                     OrdersInTheOfficeListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetInTheOffice()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersInTheOfficeListBox.ItemsSource = null;
                     OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
@@ -2504,7 +2504,7 @@ namespace NatoliOrderInterface
 
                     QuotesNotConvertedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetQuotesNotConverted()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     QuotesNotConvertedListBox.ItemsSource = null;
                     QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
@@ -2530,7 +2530,7 @@ namespace NatoliOrderInterface
 
                     OrdersEnteredListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetEnteredUnscanned()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersEnteredListBox.ItemsSource = null;
                     OrdersEnteredListBox.ItemsSource = ordersEntered;
@@ -2556,7 +2556,7 @@ namespace NatoliOrderInterface
 
                     OrdersInEngListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersInEngListBox.ItemsSource = null;
                     OrdersInEngListBox.ItemsSource = ordersInEng;
@@ -2582,7 +2582,7 @@ namespace NatoliOrderInterface
 
                     QuotesToConvertListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetQuotesToConvert()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     QuotesToConvertListBox.ItemsSource = null;
                     QuotesToConvertListBox.ItemsSource = quotesToConvert;
@@ -2608,7 +2608,7 @@ namespace NatoliOrderInterface
 
                     OrdersReadyToPrintListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetReadyToPrint()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersReadyToPrintListBox.ItemsSource = null;
                     OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
@@ -2634,7 +2634,7 @@ namespace NatoliOrderInterface
 
                     OrdersPrintedListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetPrintedInEngineering()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     OrdersPrintedListBox.ItemsSource = null;
                     OrdersPrintedListBox.ItemsSource = ordersPrinted;
@@ -2660,7 +2660,7 @@ namespace NatoliOrderInterface
 
                     AllTabletProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetAllTabletProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     AllTabletProjectsListBox.ItemsSource = null;
                     AllTabletProjectsListBox.ItemsSource = allTabletProjects;
@@ -2686,7 +2686,7 @@ namespace NatoliOrderInterface
 
                     AllToolProjectsListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetAllToolProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     AllToolProjectsListBox.ItemsSource = null;
                     AllToolProjectsListBox.ItemsSource = allToolProjects;
@@ -2712,7 +2712,7 @@ namespace NatoliOrderInterface
 
                     DriveWorksQueueListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetDriveWorksQueue()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     DriveWorksQueueListBox.ItemsSource = null;
                     DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
@@ -2738,7 +2738,7 @@ namespace NatoliOrderInterface
 
                     NatoliOrderListListBox = (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First() as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+                    Task.Run(() => GetNatoliOrderList()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
 
                     NatoliOrderListListBox.ItemsSource = null;
                     NatoliOrderListListBox.ItemsSource = natoliOrderList;
@@ -2817,40 +2817,40 @@ namespace NatoliOrderInterface
                     switch (mod)
                     {
                         case "BeingEntered":
-                            Dispatcher.BeginInvoke((Action)BindBeingEntered, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "InTheOffice":
-                            Dispatcher.BeginInvoke((Action)BindInTheOffice, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "QuotesNotConverted":
-                            Dispatcher.BeginInvoke((Action)BindQuotesNotConverted, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "EnteredUnscanned":
-                            Dispatcher.BeginInvoke((Action)BindEnteredUnscanned, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "InEngineering":
-                            Dispatcher.BeginInvoke((Action)BindInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "QuotesToConvert":
-                            Dispatcher.BeginInvoke((Action)BindQuotesToConvert, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "ReadyToPrint":
-                            Dispatcher.BeginInvoke((Action)BindReadyToPrint, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "PrintedInEngineering":
-                            Dispatcher.BeginInvoke((Action)BindPrintedInEngineering, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "AllTabletProjects":
-                            Dispatcher.BeginInvoke((Action)BindAllTabletProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "AllToolProjects":
-                            Dispatcher.BeginInvoke((Action)BindAllToolProjects, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "DriveWorksQueue":
-                            Dispatcher.BeginInvoke((Action)BindDriveWorksQueue, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "NatoliOrderList":
-                            Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                            Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         default:
                             break;
@@ -2929,7 +2929,11 @@ namespace NatoliOrderInterface
 
             return false;
         }
-
+        private Grid GetHeaderGridFromListBox(ListBox listBox)
+        {
+            Grid displayGrid = listBox.Parent as Grid;
+            return displayGrid.Children.OfType<Grid>().First(g => g.Name == "HeaderGrid");
+        }
         #region Gets And Binds
         private void GetBeingEntered()
         {
@@ -2944,7 +2948,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindBeingEntered()
+        public void BindBeingEntered()
         {
             string searchString = GetSearchString("BeingEntered");
             string column;
@@ -2992,7 +2996,59 @@ namespace NatoliOrderInterface
                                    .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
             }
-
+            
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersBeingEnteredListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                
+                if (tb.IsChecked == false)
+                { 
+                    switch(tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered.OrderBy(o => o.OrderNumber).ToList();
+                            break;
+                        case "Quote #":
+                            _filtered = _filtered.OrderBy(o => o.QuoteNumber).ToList();
+                            break;
+                        case "Rev #":
+                            _filtered = _filtered.OrderBy(o => o.QuoteRev).ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered.OrderBy(o => o.CustomerName).ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered.OrderBy(o => o.NumDaysToShip).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if(tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered.OrderByDescending(o => o.OrderNumber).ToList();
+                            break;
+                        case "Quote #":
+                            _filtered = _filtered.OrderByDescending(o => o.QuoteNumber).ToList();
+                            break;
+                        case "Rev #":
+                            _filtered = _filtered.OrderByDescending(o => o.QuoteRev).ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered.OrderByDescending(o => o.CustomerName).ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered.OrderByDescending(o => o.NumDaysToShip).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
+            }
             OrdersBeingEntered = _filtered;
         }
         private void GetInTheOffice()
@@ -3008,7 +3064,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindInTheOffice()
+        public void BindInTheOffice()
         {
             string searchString = GetSearchString("InTheOffice");
             string column;
@@ -3068,6 +3124,130 @@ namespace NatoliOrderInterface
                                   .ThenBy(o => o.OrderNumber)
                                   .ToList();
             }
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersInTheOfficeListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.OrderNumber)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList(); 
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Office":
+                            _filtered = _filtered
+                                .OrderBy(o => o.InTheOffice)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderBy(o => o.EmployeeName)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "CSR":
+                            _filtered = _filtered
+                                .OrderBy(o => o.Csr)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.OrderNumber)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.NumDaysToShip)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Office":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.InTheOffice)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.EmployeeName)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "CSR":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.Csr)
+                                .ThenBy(o => o.CustomerName)
+                                .ThenBy(o => o.NumDaysToShip)
+                                .ThenBy(o => o.DaysInDept)
+                                .ThenBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
 
             OrdersInTheOffice = _filtered;
         }
@@ -3100,7 +3280,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindQuotesNotConverted()
+        public void BindQuotesNotConverted()
         {
             string searchString = GetSearchString("QuotesNotConverted");
 
@@ -3124,6 +3304,76 @@ namespace NatoliOrderInterface
                                    .ToList();
             }
 
+            Grid headerGrid = GetHeaderGridFromListBox(QuotesNotConvertedListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.QuoteNo)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Rev #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.QuoteRevNo)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderBy(o => o.Csr)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.QuoteNo)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Rev #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.QuoteRevNo)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.Csr)
+                                .ThenByDescending(kvp => kvp.QuoteNo)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+
             QuotesNotConverted = _filtered;
         }
         private void GetEnteredUnscanned()
@@ -3139,7 +3389,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindEnteredUnscanned()
+        public void BindEnteredUnscanned()
         {
             string searchString = GetSearchString("EnteredUnscanned");
 
@@ -3154,8 +3404,8 @@ namespace NatoliOrderInterface
                     case "order no":
                         _filtered =
                             _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString))
-                            .OrderBy(kvp => kvp.NumDaysToShip)
-                            .ThenBy(kvp => kvp.OrderNumber)
+                            .OrderBy(kvp => kvp.OrderNumber)
+                            .ThenBy(kvp => kvp.NumDaysToShip)
                             .ToList();
                         break;
                     case "customer name":
@@ -3169,7 +3419,8 @@ namespace NatoliOrderInterface
                         _filtered =
                             _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                           (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
-                              .OrderBy(kvp => kvp.OrderNumber)
+                              .OrderBy(kvp => kvp.NumDaysToShip)
+                              .ThenBy(kvp => kvp.OrderNumber)
                               .ToList();
                         break;
                 }
@@ -3179,8 +3430,82 @@ namespace NatoliOrderInterface
                 _filtered =
                             _ordersEntered.Where(p => p.OrderNumber.ToString().ToLower().Contains(searchString) ||
                                           (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)))
-                              .OrderBy(kvp => kvp.OrderNumber)
+                              .OrderBy(kvp => kvp.NumDaysToShip)
+                              .ThenBy(kvp => kvp.OrderNumber)
                               .ToList();
+            }
+
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersEnteredListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.OrderNumber)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Days In":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.OrderNumber)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Days In":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
             OrdersEntered = _filtered;
@@ -3198,7 +3523,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindInEngineering()
+        public void BindInEngineering()
         {
             string searchString = GetSearchString("InEngineering");
 
@@ -3262,6 +3587,101 @@ namespace NatoliOrderInterface
                             .ToList();
             }
 
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersInEngListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.OrderNumber)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ToList();
+                                break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.NumDaysToShip)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "In Eng":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderBy(o => o.EmployeeName)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.OrderNumber)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships In":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.NumDaysToShip)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "In Eng":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.EmployeeName)
+                                .ThenByDescending(kvp => kvp.DaysInDept)
+                                .ThenBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
             OrdersInEng = _filtered;
         }
         private void GetQuotesToConvert()
@@ -3292,24 +3712,155 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindQuotesToConvert()
+        public void BindQuotesToConvert()
         {
             string searchString = GetSearchString("QuotesToConvert");
 
-            //_quotesToConvert =
-            //    _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
-            //                                p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
-            //                                p.CustomerName.ToLower().Contains(searchString) ||
-            //                                p.Csr.ToLower().Contains(searchString))
-            //                    .OrderBy(kvp => kvp.TimeSubmitted)
-            //                    .ToList();
+            string column;
+            var _filtered = _quotesToConvert;
+            if (searchString.Contains(":"))
+            {
+                column = searchString.Split(':')[0];
+                searchString = searchString.Split(':')[1].Trim();
+                switch (column)
+                {
+                    case "quote no":
 
-            QuotesToConvert = _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+                        _filtered =
+                            _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                        break;
+                    case "rev":
+
+                        _filtered =
+                            _quotesToConvert.Where(p => p.QuoteRevNo.ToString().ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                        break;
+                    case "customer name":
+
+                        _filtered =
+                            _quotesToConvert.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                        break;
+                    case "employee name":
+
+                        _filtered =
+                            _quotesToConvert.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                            .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                        break;
+                    case "days in":
+
+                        _filtered =
+                            _quotesToConvert.Where(p => p.DaysMarked != null && p.DaysMarked.ToString()==searchString)
+                            .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                        break;
+                    default:
+
+                        _filtered =
+                            _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
                                             p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
                                             (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                             (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)))
                                 .OrderBy(kvp => kvp.TimeSubmitted)
                                 .ToList();
+                        break;
+                }
+            }
+            else
+            {
+                _filtered =
+                            _quotesToConvert.Where(p => p.QuoteNo.ToString().ToLower().Contains(searchString) ||
+                                            p.QuoteRevNo.ToString().ToLower().Contains(searchString) ||
+                                            (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)))
+                                .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+            }
+
+            Grid headerGrid = GetHeaderGridFromListBox(QuotesToConvertListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.QuoteNo)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Rev":
+                            _filtered = _filtered
+                                .OrderBy(o => o.QuoteRevNo)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Employee Name":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.Csr)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Days In":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.QuoteNo)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Rev":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.QuoteRevNo)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Employee Name":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.Csr)
+                                .ThenBy(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        case "Days In":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.TimeSubmitted)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            QuotesToConvert = _filtered;
         }
         private void GetReadyToPrint()
         {
@@ -3324,7 +3875,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindReadyToPrint()
+        public void BindReadyToPrint()
         {
             string searchString = GetSearchString("ReadyToPrint");
 
@@ -3385,6 +3936,85 @@ namespace NatoliOrderInterface
                                                (!string.IsNullOrEmpty(p.CheckedBy) && p.CheckedBy.ToLower().Contains(searchString)))
                                    .OrderBy(kvp => kvp.OrderNumber)
                                    .ToList();
+            }
+
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersReadyToPrintListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.EmployeeName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Checker":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.CheckedBy)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.EmployeeName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Checker":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.CheckedBy)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
             OrdersReadyToPrint = _filtered;
@@ -3465,6 +4095,85 @@ namespace NatoliOrderInterface
                                           .ToList();
             }
 
+            Grid headerGrid = GetHeaderGridFromListBox(OrdersPrintedListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.EmployeeName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Checker":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.CheckedBy)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Ships":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.NumDaysToShip)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Employee":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.EmployeeName)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        case "Checker":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.CheckedBy)
+                                .ThenBy(kvp => kvp.OrderNumber)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
             OrdersPrinted = _filtered;
         }
         private void GetAllTabletProjects()
@@ -3516,7 +4225,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindAllTabletProjects()
+        public void BindAllTabletProjects()
         {
             string searchString = GetSearchString("AllTabletProjects");
 
@@ -3644,6 +4353,143 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
+                }
+
+                Grid headerGrid = GetHeaderGridFromListBox(AllTabletProjectsListBox);
+                foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                {
+                    if (tb.IsChecked == false)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.CustomerName)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Csr)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Drafter)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.DueDate)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (tb.IsChecked == true)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.CustomerName)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Csr)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Drafter)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.DueDate)
+                                    .ThenByDescending(p => p.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.Tools == true)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
             }
             else if (User.Department == "Engineering")
@@ -3835,6 +4681,226 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                 }
+
+                Grid headerGrid = GetHeaderGridFromListBox(AllTabletProjectsListBox);
+                foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                {
+                    if (tb.IsChecked == false)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.ProjectNumber)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.RevisionNumber)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.CustomerName)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.Csr)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                      .OrderBy(kvp => kvp.DueDate)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (tb.IsChecked == true)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.ProjectNumber)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.RevisionNumber)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.CustomerName)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.Csr)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.DueDate)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                      .OrderByDescending(kvp => kvp.DueDate)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                      .ThenBy(kvp => kvp.Complete == 4)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                      .ThenByDescending(kvp => kvp.Drafter == name)
+                                      .ThenBy(kvp => kvp.Drafter)
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTablet))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletDrawnBy))
+                                      .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.TabletSubmittedBy))
+                                      .ThenByDescending(kvp => kvp.MarkedPriority)
+                                      .ThenBy(kvp => kvp.Tools ?? false)
+                                      .ThenBy(kvp => kvp.ProjectNumber)
+                                      .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+
             }
             else
             {
@@ -3848,6 +4914,119 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.DueDate)
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
+
+                Grid headerGrid = GetHeaderGridFromListBox(AllTabletProjectsListBox);
+                foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                {
+                    if (tb.IsChecked == false)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (tb.IsChecked == true)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
             AllTabletProjects = _filtered;
         }
@@ -3900,7 +5079,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindAllToolProjects()
+        public void BindAllToolProjects()
         {
             string searchString = GetSearchString("AllToolProjects");
 
@@ -4019,6 +5198,131 @@ namespace NatoliOrderInterface
                                     .ThenBy(kvp => kvp.DueDate)
                                     .ThenBy(kvp => kvp.ProjectNumber)
                                     .ToList();
+
+                    Grid headerGrid = GetHeaderGridFromListBox(AllToolProjectsListBox);
+                    foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                    {
+                        if (tb.IsChecked == false)
+                        {
+                            switch (tb.Tag.ToString())
+                            {
+                                case "Proj #":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.ProjectNumber)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ToList();
+                                    break;
+                                case "Rev":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.RevisionNumber)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Customer Name":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.CustomerName)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "CSR":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.Csr)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Drafter":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.Drafter)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Due Date":
+                                    _filtered = _filtered
+                                        .OrderBy(kvp => kvp.DueDate)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else if (tb.IsChecked == true)
+                        {
+                            switch (tb.Tag.ToString())
+                            {
+                                case "Proj #":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.ProjectNumber)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ToList();
+                                    break;
+                                case "Rev":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.RevisionNumber)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Customer Name":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.CustomerName)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "CSR":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.Csr)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Drafter":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.Drafter)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.DueDate)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                case "Due Date":
+                                    _filtered = _filtered
+                                        .OrderByDescending(kvp => kvp.DueDate)
+                                        .ThenByDescending(kvp => kvp.Complete)
+                                        .ThenByDescending(kvp => kvp.MarkedPriority)
+                                        .ThenBy(kvp => kvp.ProjectNumber)
+                                        .ToList();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
                 }
             }
             else if (User.Department == "Engineering")
@@ -4190,6 +5494,200 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                 }
+                Grid headerGrid = GetHeaderGridFromListBox(AllToolProjectsListBox);
+                foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                {
+                    if (tb.IsChecked == false)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (tb.IsChecked == true)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenBy(kvp => kvp.Complete == 5)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
+                                    .ThenByDescending(kvp => kvp.Drafter == name)
+                                    .ThenBy(kvp => kvp.Drafter)
+                                    .ThenBy(kvp => kvp.Complete)
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
             else
             {
@@ -4292,6 +5790,154 @@ namespace NatoliOrderInterface
                                       .ThenBy(kvp => kvp.ProjectNumber)
                                       .ToList();
                 }
+                Grid headerGrid = GetHeaderGridFromListBox(AllToolProjectsListBox);
+                foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+                {
+                    if (tb.IsChecked == false)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderBy(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else if (tb.IsChecked == true)
+                    {
+                        switch (tb.Tag.ToString())
+                        {
+                            case "Proj #":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.ProjectNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ToList();
+                                break;
+                            case "Rev":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.RevisionNumber)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Customer Name":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.CustomerName)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "CSR":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Csr)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Drafter":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.Drafter)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.DueDate)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            case "Due Date":
+                                _filtered = _filtered
+                                    .OrderByDescending(kvp => kvp.DueDate)
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
+                                    .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.ProjectStartedTool))
+                                    .ThenByDescending(kvp => kvp.MarkedPriority)
+                                    .ThenByDescending(kvp => kvp.MultiTipSketch)
+                                    .ThenBy(kvp => kvp.ProjectNumber)
+                                    .ToList();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
             }
 
             AllToolProjects = _filtered;
@@ -4309,7 +5955,7 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
             }
         }
-        private void BindDriveWorksQueue()
+        public void BindDriveWorksQueue()
         {
             DriveWorksQueue = _driveWorksQueue;
         }
@@ -4360,7 +6006,7 @@ namespace NatoliOrderInterface
             _.Dispose();
             _natbcContext.Dispose();
         }
-        private void BindNatoliOrderList()
+        public void BindNatoliOrderList()
         {
             string searchString = GetSearchString("NatoliOrderList");
 
@@ -4380,6 +6026,97 @@ namespace NatoliOrderInterface
                                             !string.IsNullOrEmpty(p.Customer) && p.Customer.ToLower().Contains(searchString))
                                 .OrderBy(kvp => kvp.ShipDate)
                                 .ToList();
+            }
+
+            Grid headerGrid = GetHeaderGridFromListBox(NatoliOrderListListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
+            {
+                if (tb.IsChecked == false)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.OrderNo)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Customer":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.Customer)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Ship Date":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Rush":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.Rush)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "On Hold":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.OnHold)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                            case "Rep":
+                            _filtered = _filtered
+                                .OrderBy(kvp => kvp.RepId)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (tb.IsChecked == true)
+                {
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Order #":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.OrderNo)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Customer":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.Customer)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Ship Date":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Rush":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.Rush)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "On Hold":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.OnHold)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        case "Rep":
+                            _filtered = _filtered
+                                .OrderByDescending(kvp => kvp.RepId)
+                                .ThenBy(kvp => kvp.ShipDate)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
             NatoliOrderList = _filtered;
@@ -4504,7 +6241,6 @@ namespace NatoliOrderInterface
                     }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     break;
                 case "NatoliOrderList":
-                    Dispatcher.BeginInvoke((Action)BindNatoliOrderList, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                     Dispatcher.BeginInvoke((Action)(() =>
                     {
                         BindNatoliOrderList();
