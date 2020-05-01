@@ -1766,11 +1766,12 @@ namespace NatoliOrderInterface
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Width = 250,
-                Height = 350
+                SizeToContent = SizeToContent.Height,
+                Title = "Add New Module"
             };
 
             DockPanel dockPanel = new DockPanel();
-
+            dockPanel.LastChildFill = false;
             ListBox listBox = new ListBox();
             DockPanel.SetDock(listBox, Dock.Top);
             listBox.SelectionChanged += ListBox_SelectionChanged;
@@ -1779,7 +1780,7 @@ namespace NatoliOrderInterface
             List<string> visiblePanels = _.EoiSettings.Single(s => s.DomainName == User.DomainName).Panels.Split(',').ToList();
             _.Dispose();
             List<string> possiblePanels = IMethods.GetPossiblePanels(User);
-            listBox.ItemsSource = possiblePanels.Except(visiblePanels);
+            listBox.ItemsSource = possiblePanels.Except(visiblePanels).Where(p => !string.IsNullOrEmpty(p));
 
             dockPanel.Children.Add(listBox);
             addModuleWindow.Content = dockPanel;
@@ -1789,17 +1790,21 @@ namespace NatoliOrderInterface
         {
             DockPanel dockPanel = (sender as ListBox).Parent as DockPanel;
             Window w = dockPanel.Parent as Window;
-
-            if (dockPanel.Children.OfType<Button>().Any())
-                dockPanel.Children.Remove(dockPanel.Children.OfType<Button>().First());
-
-            Button button = new Button()
+            //dockPanel.Children.Remove(dockPanel.Children.OfType<Button>().First());
+            if (!dockPanel.Children.OfType<Button>().Any())
             {
-                Content = "Add Module"
-            };
-            DockPanel.SetDock(button, Dock.Top);
-            dockPanel.Children.Add(button);
-            button.Click += AddNewModule_Click;
+
+                Button button = new Button()
+                {
+                    Content = "Add Module",
+                    Margin = new Thickness(10),
+                    Style = Application.Current.Resources["Button"] as Style,
+                    Width = 150
+                };
+                DockPanel.SetDock(button, Dock.Top);
+                dockPanel.Children.Add(button);
+                button.Click += AddNewModule_Click;
+            }
         }
         private void AddNewModule_Click(object sender, RoutedEventArgs e)
         {
