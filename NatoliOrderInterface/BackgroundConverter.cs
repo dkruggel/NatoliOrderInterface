@@ -193,10 +193,8 @@ namespace NatoliOrderInterface
 
                     if (order.EnteredUnscanned == 1)
                     {
-                        using var _driveworksContext = new DriveWorksContext();
-                        bool running = _driveworksContext.QueueView.Count(q => q.TargetName.Contains(order.OrderNumber.ToString())) > 0;
-                        bool ran = _driveworksContext.DrivenComponents.Count(dc => dc.TargetName.Contains(order.OrderNumber.ToString()) && (dc.Generating || dc.Generated)) > 0;
-                        _driveworksContext.Dispose();
+                        bool running = order.Generating;
+                        bool ran = !order.Generating && order.Generated;
 
                         if (order.DoNotProcess == 1)
                         {

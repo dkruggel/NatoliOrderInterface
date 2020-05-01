@@ -31,6 +31,8 @@ namespace NatoliOrderInterface.Models
         public int Tablet { get; set; }
         public int Tool { get; set; }
         public int VariablesExist { get; set; }
+        public bool Generated { get; set; }
+        public bool Generating { get; set; }
 
         public bool Equals(EoiAllOrdersView other)
         {
@@ -56,10 +58,12 @@ namespace NatoliOrderInterface.Models
                    this.Tm2 == other.Tm2 &&
                    this.Tablet == other.Tablet &&
                    this.Tool == other.Tool &&
-                   this.VariablesExist == other.VariablesExist;
+                   this.VariablesExist == other.VariablesExist &&
+                   this.Generated == other.Generated &&
+                   this.Generating == other.Generating;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiAllOrdersView);
-        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist).GetHashCode();
+        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist, Generated, Generating).GetHashCode();
     }
 }
