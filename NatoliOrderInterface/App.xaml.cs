@@ -1101,7 +1101,7 @@ namespace NatoliOrderInterface
                 using var _ = new ProjectsContext();
                 foreach (var p in selectedProjects)
                 {
-                    if (int.Parse(p.Item1) > 110000)
+                    if (int.Parse(p.Item1) > 110000 && _.EngineeringArchivedProjects.Any(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2))
                     {
                         EngineeringArchivedProjects project = _.EngineeringArchivedProjects.Single(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2);
                         if (project.CSR == user.GetDWPrincipalId() || project.ReturnToCSR == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
@@ -1115,7 +1115,7 @@ namespace NatoliOrderInterface
                             return false;
                         }
                     }
-                    else
+                    else if(_.ProjectSpecSheet.Any(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2))
                     {
                         ProjectSpecSheet project = _.ProjectSpecSheet.Single(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2);
                         if (project.Csr == user.GetDWPrincipalId() || project.ReturnToCsr == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
@@ -1129,12 +1129,17 @@ namespace NatoliOrderInterface
                             return false;
                         }
                     }
+                    else
+                    {
+                        _.Dispose();
+                        return false;
+                    }
                 }
                 _.Dispose();
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("App.caml.cs => RemoveEventHandlers", ex.Message, user);
+                IMethods.WriteToErrorLog("App.caml.cs => CanUserCompleteProject", ex.Message, user);
             }
             return true;
         }
