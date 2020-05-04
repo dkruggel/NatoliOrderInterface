@@ -765,13 +765,14 @@ namespace NatoliOrderInterface
                 
                 User = new User(Environment.UserName);
                 if (isDebugMode)
-                { 
-                  // User = new User("jwillis");
-                  // User = new User("mbouzitoun");
-                  // User = new User("billt");
-                  // User = new User("rfaltus");
-                  // User = new User("Pturner");
-                  // User = new User("mmulaosmanovic");
+                {
+                    // User = new User("jwillis");
+                    // User = new User("mbouzitoun");
+                    // User = new User("billt");
+                    // User = new User("rfaltus");
+                    // User = new User("Pturner");
+                    // User = new User("mmulaosmanovic");
+                    // User = new User("hwillmuth");
                 }
                 App.user = User;
             }
