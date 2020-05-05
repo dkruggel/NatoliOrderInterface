@@ -3605,6 +3605,11 @@
             <Setter Property="TextTrimming" Value="WordEllipsis"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight">
+                <Setter.Value>
+                    <Binding Converter="{StaticResource textConverter}"  ElementName="CheckBox" Path="IsChecked"/>
+                </Setter.Value>
+            </Setter>
         </Style>
         <!--#endregion-->
         
@@ -3967,7 +3972,44 @@
             </Setter>
         </Style>
         <!--#endregion-->
-        
+
+        <!--#region Toggle Buttons -->
+        <Style x:Key="HeaderToggleButton" TargetType="ToggleButton">
+            <Setter Property="IsThreeState" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsChecked" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Margin="0">
+                            <TextBlock Text="{TemplateBinding Tag}" Style="{StaticResource ModuleHeaderTextBlock}"/>
+                            <Path x:Name="Arrow" Fill="{StaticResource Dark}" HorizontalAlignment="Center" Visibility="Collapsed">
+                            </Path>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="Arrow" Property="Data" Value="M 0 0 L 4 4 L 8 0 Z"/>
+                                <Setter TargetName="Arrow" Property="VerticalAlignment" Value="Bottom"/>
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter TargetName="Arrow" Property="Data" Value="M 0 4 L 4 0 L 8 4 Z"/>
+                                <Setter TargetName="Arrow" Property="VerticalAlignment" Value="Top"/>
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter TargetName="Arrow" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="Click" Handler="HeaderToggleButton_Click"/>
+        </Style>
+        <!--#endregion -->
+
         <!--#region Module Grids -->
         <Storyboard x:Key="listBoxHighlight">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">
@@ -4164,20 +4206,20 @@
                                     <ColumnDefinition SharedSizeGroup="NotifcationDate" Width="180"/>
                                     <ColumnDefinition SharedSizeGroup="Buttons" Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="ID" Style="{StaticResource BoldTextBlock}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-                                <TextBlock Text="Cust. No." Style="{StaticResource BoldTextBlock}" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-                                <TextBlock Text="Customer Name" Style="{StaticResource BoldTextBlock}" Grid.Column="2" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
-                                <TextBlock Text="Ship To No." Style="{StaticResource BoldTextBlock}" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-                                <TextBlock Text="Ship To Name" Style="{StaticResource BoldTextBlock}" Grid.Column="4" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"  Margin="16,0,0,0"/>
-                                <TextBlock Text="End User No." Style="{StaticResource BoldTextBlock}" Grid.Column="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-                                <TextBlock Text="End User Name" Style="{StaticResource BoldTextBlock}" Grid.Column="6" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
-                                <TextBlock Text="Category" Style="{StaticResource BoldTextBlock}" Grid.Column="7" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
-                                <TextBlock Text="Note" Style="{StaticResource BoldTextBlock}" Grid.Column="8" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
-                                <TextBlock Text="Quote #s" Style="{StaticResource BoldTextBlock}" Grid.Column="9" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
-                                <TextBlock Text="Order #s" Style="{StaticResource BoldTextBlock}" Grid.Column="10" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
-                                <TextBlock Text="User" Style="{StaticResource BoldTextBlock}" Grid.Column="11" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,8,0"/>
-                                <TextBlock Text="Timestamp" Style="{StaticResource BoldTextBlock}" Grid.Column="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
-                                <TextBlock Text="Notif. Date" Style="{StaticResource BoldTextBlock}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                                <ToggleButton Tag="ID" Style="{StaticResource HeaderToggleButton}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                <ToggleButton Tag="Cust. No." Style="{StaticResource HeaderToggleButton}" Grid.Column="1" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
+                                <ToggleButton Tag="Ship To No." Style="{StaticResource HeaderToggleButton}" Grid.Column="3" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                <ToggleButton Tag="Ship To Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"  Margin="16,0,0,0"/>
+                                <ToggleButton Tag="End User No." Style="{StaticResource HeaderToggleButton}" Grid.Column="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                <ToggleButton Tag="End User Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
+                                <ToggleButton Tag="Category" Style="{StaticResource HeaderToggleButton}" Grid.Column="7" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                <ToggleButton Tag="Note" Style="{StaticResource HeaderToggleButton}" Grid.Column="8" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,0,0,0"/>
+                                <ToggleButton Tag="Quote #s" Style="{StaticResource HeaderToggleButton}" Grid.Column="9" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                                <ToggleButton Tag="Order #s" Style="{StaticResource HeaderToggleButton}" Grid.Column="10" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,0,0"/>
+                                <ToggleButton Tag="User" Style="{StaticResource HeaderToggleButton}" Grid.Column="11" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3,0,8,0"/>
+                                <ToggleButton Tag="Timestamp" Style="{StaticResource HeaderToggleButton}" Grid.Column="12" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                                <ToggleButton Tag="Notif. Date" Style="{StaticResource HeaderToggleButton}" Grid.Column="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"/>
                             </Grid>
                             <Border x:Name="TopBorder" Panel.ZIndex="3" DockPanel.Dock="Top" Margin="-8,0,-8,0" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,1,1" CornerRadius="0">
                                 <Border.Effect>
@@ -4484,10 +4526,10 @@
                                         <ColumnDefinition Width="180"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Quote #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Rev #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Quote #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Rev #" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Employee" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -4671,11 +4713,11 @@
                                         <ColumnDefinition Width="70"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Quote #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Rev" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Employee Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Days In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Quote #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Rev" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Employee Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Days In" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -4873,11 +4915,11 @@
                                         <ColumnDefinition SharedSizeGroup="DaysToShip" Width="90"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Quote #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Rev #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Quote #" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Rev #" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships In" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -5074,12 +5116,12 @@
                                         <ColumnDefinition Width="135"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Office" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
-                                    <TextBlock Text="CSR" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="6" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Office" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Employee" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="CSR" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -5271,10 +5313,10 @@
                                         <ColumnDefinition SharedSizeGroup="DaysInArea" Width="75"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Days In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships In" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Days In" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -5464,11 +5506,11 @@
                                         <ColumnDefinition Width="140"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships In" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
-                                    <TextBlock Text="In Eng" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships In" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="In Eng" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Employee" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -5520,16 +5562,21 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
-                                                                            <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
-                                                                            <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
-                                                                            <TextBlock Tag="DaysInArea" Text="{Binding DaysInDept}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0">
+                                                                            </TextBlock>
+                                                                            <TextBlock Tag="DaysInArea" Text="{Binding DaysInDept}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0">
+                                                                            </TextBlock>
                                                                             <Grid Grid.Column="5">
                                                                                 <Grid.ColumnDefinitions>
                                                                                     <ColumnDefinition Width="*" MinWidth="100"/>
                                                                                     <ColumnDefinition Width="Auto"/>
                                                                                 </Grid.ColumnDefinitions>
-                                                                                <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis"/>
+                                                                                <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Grid.Column="0" Style="{StaticResource ModuleTextBlock}" Margin="8,0" TextTrimming="CharacterEllipsis">
+                                                                                </TextBlock>
                                                                                 <!--<StackPanel Grid.Column="1">
                                                                                     <Image x:Name="OpenImage" Height="35" Width="35" Source="{DynamicResource window_plusDrawingImage}" Cursor="Hand" Visibility="Visible" MouseUp="OpenOrderButton_Click">
                                                                                         <Image.Style>
@@ -5658,11 +5705,11 @@
                                         <ColumnDefinition Width="135"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Checker" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Employee" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Checker" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -5852,11 +5899,11 @@
                                         <ColumnDefinition Width="140"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ships" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Employee" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Checker" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ships" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Employee" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Checker" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -6049,12 +6096,12 @@
                                         <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Proj #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Rev" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="5,0,0,0"/>
-                                    <TextBlock Text="CSR" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Drafter" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Due Date" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="6" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Proj #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Rev" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="CSR" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Drafter" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Due Date" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -6254,12 +6301,12 @@
                                         <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Proj #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="7,0,0,0"/>
-                                    <TextBlock Text="Rev" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="5,0,0,0"/>
-                                    <TextBlock Text="CSR" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Drafter" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="0,0,0,0"/>
-                                    <TextBlock Text="Due Date" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="6" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Proj #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="7,0,0,0"/>
+                                    <ToggleButton Tag="Rev" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="CSR" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Drafter" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Due Date" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -6443,10 +6490,10 @@
                                         <ColumnDefinition SharedSizeGroup="Tag" Width="140"/>
                                         <ColumnDefinition SharedSizeGroup="ReleaseTime" Width="120"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Model Name" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="0" Margin="7,0,0,0"/>
-                                    <TextBlock Text="Released By" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="-7,0,0,0"/>
-                                    <TextBlock Text="Tag" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="-7,0,0,0"/>
-                                    <TextBlock Text="Release Time" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Model Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="0" Margin="7,0,0,0"/>
+                                    <ToggleButton Tag="Released By" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="Tag" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="Release Time" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="0,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>
@@ -6592,12 +6639,12 @@
                                         <ColumnDefinition SharedSizeGroup="Rep" Width="50"/>
                                     </Grid.ColumnDefinitions>
                                     <CheckBox x:Name="HeaderCheckBox" Grid.Column="0" Margin="7,0,0,0" Checked="HeaderCheckBox_Checked" Unchecked="HeaderCheckBox_Unchecked"/>
-                                    <TextBlock Text="Order #" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="1" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Customer" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="2" Margin="5,0,0,0"/>
-                                    <TextBlock Text="Ship Date" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="3" Margin="-7,0,0,0"/>
-                                    <TextBlock Text="Rush" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="4" Margin="-7,0,0,0"/>
-                                    <TextBlock Text="On Hold" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="5" Margin="-7,0,0,0"/>
-                                    <TextBlock Text="Rep" Style="{StaticResource ModuleHeaderTextBlock}" Grid.Column="6" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="Order #" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Ship Date" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="Rush" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="On Hold" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="-7,0,0,0"/>
+                                    <ToggleButton Tag="Rep" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" Margin="-7,0,0,0"/>
                                 </Grid>
                                 <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
                                     <Border.Effect>

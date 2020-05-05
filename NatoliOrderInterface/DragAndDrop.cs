@@ -283,8 +283,22 @@ namespace NatoliOrderInterface
             try
             {
                 DraggedLabel = ((sender as Grid).Children.OfType<Label>().First()) as Label;
+                var name = (VisualTreeHelper.GetChild(Grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
+                int index = user.VisiblePanels.IndexOf(name);
                 if (e.Effects == DragDropEffects.Move)
                 {
+                    //if (storyboard.GetCurrentState((Application.Current.MainWindow as MainWindow).RemoveModuleButton) == ClockState.Stopped && !storyboard.GetIsPaused((Application.Current.MainWindow as MainWindow).RemoveModuleButton))
+                    //{
+                    //    storyboard.Begin((Application.Current.MainWindow as MainWindow).RemoveModuleButton);
+                    //}
+                    foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+                    {
+                        if(name == (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7])
+                        {
+                            grid.Visibility = Visibility.Collapsed;
+                            break;
+                        }
+                    }
                     e.UseDefaultCursors = false;
                     Mouse.SetCursor(Cursors.SizeAll);
                     if (DragDropWindow == null)
@@ -316,12 +330,23 @@ namespace NatoliOrderInterface
                 }
                 else if (e.Effects == DragDropEffects.None)
                 {
+                    storyboard.Stop((Application.Current.MainWindow as MainWindow).RemoveModuleButton);
+                    foreach (Grid grid in (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.OfType<Grid>())
+                    {
+                        if (name == (VisualTreeHelper.GetChild(grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7])
+                        {
+                            grid.Visibility = Visibility.Visible;
+                            break;
+                        }
+                    }
                     if (CloseWindow())
                     {
                         foreach (UIElement uIElement in Grid.Children)
                         {
                             uIElement.ClearValue(EffectProperty);
                         }
+                        bool collapsed = false;
+                        
                         return;
                     }
                 }
@@ -403,12 +428,9 @@ namespace NatoliOrderInterface
         {
             try
             {
-
-
-                Button button = (Application.Current.MainWindow as MainWindow).RemoveModuleButton;
                 try
                 {
-                    storyboard.Stop(button);
+                    
 
                     var name = (VisualTreeHelper.GetChild(Grid.Children.OfType<Label>().First(), 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First().Name[0..^7];
 
@@ -493,7 +515,8 @@ namespace NatoliOrderInterface
                 {
                     IMethods.WriteToErrorLog("DragAndDrop.cs => Grid_Dropping", ex.Message, user);
                 }
-                button.IsEnabled = false;
+                storyboard.Stop((Application.Current.MainWindow as MainWindow).RemoveModuleButton);
+                (Application.Current.MainWindow as MainWindow).RemoveModuleButton.IsEnabled = false;
                 CloseWindow();
             }
             catch (Exception ex)

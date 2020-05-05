@@ -34,6 +34,7 @@ namespace NatoliOrderInterface
         private readonly string directory = "";
         private readonly User user = null;
         private readonly WorkOrder workOrder = null;
+        public bool Result = false;
         private Window _dragdropWindow = null;
         private List<Tuple<int, short>> quotesList = new List<Tuple<int, short>>();
         public List<Tuple<int, short>> QuotesList 
@@ -189,7 +190,6 @@ namespace NatoliOrderInterface
             }
             catch
             {
-
                 this.Close();
             }
         }
@@ -247,7 +247,7 @@ namespace NatoliOrderInterface
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            Result = false;
             this.Close();
         }
         private void SignAndMove_Click(object sender, RoutedEventArgs e)
@@ -315,7 +315,7 @@ namespace NatoliOrderInterface
                     string[] quote = textBlock.Text.Split('-');
                     quotesList.Add(new Tuple<int, short>(Convert.ToInt32(quote[0]), Convert.ToInt16(quote[1].Trim())));
                 }
-                this.DialogResult = true;
+                Result = true;
                 this.Close();
             }
             catch(Exception ex)

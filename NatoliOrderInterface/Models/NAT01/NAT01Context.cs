@@ -76,6 +76,8 @@ namespace NatoliOrderInterface.Models.NAT01
         public virtual DbSet<CustomerMachines> CustomerMachines { get; set; }
         public virtual DbSet<Keys> Keys { get; set; }
 
+        public virtual DbSet<BisectCodes> BisectCodes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (optionsBuilder != null)
@@ -4278,6 +4280,11 @@ namespace NatoliOrderInterface.Models.NAT01
                 modelBuilder.Entity<Keys>(entity =>
                 {
                     entity.HasKey(e => e.DrawingNo);
+                });
+
+                modelBuilder.Entity<BisectCodes>(entity =>
+                {
+                    entity.HasKey(e => new { e.ID });
                 });
 
                 OnModelCreatingPartial(modelBuilder);

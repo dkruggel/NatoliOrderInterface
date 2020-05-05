@@ -111,7 +111,7 @@
         </Style>
     </Window.Resources>
     <DockPanel x:Name="MainDock" LastChildFill="True">
-        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" DockPanel.ZIndex="2">
+        <Grid x:Name="MenuGrid" DockPanel.Dock="Top" Background="{Binding Background, ElementName=MainMenu}" DockPanel.ZIndex="2" AllowDrop="False">
                 <WrapPanel>
                 <DockPanel x:Name="MenuDock" Height="30" LastChildFill="False">
                     <Menu DockPanel.Dock="Left" x:Name="MainMenu" Height="30" HorizontalContentAlignment="Center" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" Foreground="{StaticResource Dark}">
@@ -119,7 +119,7 @@
                     </Menu>
                     <Button Name="NotificationButton" DockPanel.Dock="Left" Style="{StaticResource ShakeButtonIcon}" Tag="{StaticResource bellDrawingImage}" Background="Transparent" BorderThickness="0" Click="NotificationsMenu_Click" ToolTip="Notifications"/>
                     <Button x:Name="RefreshButton" DockPanel.Dock="Left" Style="{StaticResource RotateButtonIcon}" Tag="{StaticResource refresh_doubleDrawingImage}" Background="Transparent" BorderThickness="0" Click="ForceRefresh_Click" ToolTip="Refresh"/>
-                    <Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource add_item_altDrawingImage}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>
+                    <Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource add_item_altDrawingImage}" Background="Transparent" BorderThickness="0" Click="AddModule_Click"/>
                     <!--<Button x:Name="AddModuleButton" DockPanel.Dock="Left" Style="{StaticResource AddModuleButton}" Background="Transparent" BorderThickness="0" Click="AddModule_Click" AllowDrop="True"/>-->
                     <Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource ButtonIcon}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" AllowDrop="True" IsEnabled="False"/>
                     <!--<Button x:Name="RemoveModuleButton" DockPanel.Dock="Left" Style="{StaticResource TrashButton}" Tag="{StaticResource trashDrawingImage}" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Dark}" AllowDrop="True"/>-->

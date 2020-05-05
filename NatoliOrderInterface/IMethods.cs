@@ -2979,6 +2979,7 @@ namespace NatoliOrderInterface
                                                 errors.Add("Cannot micro-mirror finish non B or D tools.");
                                             }
                                         }
+
                                     }
                                 }
                                 catch (Exception ex)
@@ -3241,12 +3242,12 @@ namespace NatoliOrderInterface
                                                     {
                                                         try
                                                         {
-                                                            dieWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
-                                                            dieLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
+                                                            dieWidth = dieQuoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number1;
+                                                            dieLength = dieQuoteLineItem.optionValuesB.First(qov => qov.OptionCode == "425").Number2;
                                                         }
                                                         catch
                                                         {
-                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has option (425) without a value.");
+                                                            errors.Add("'" + dieQuoteLineItem.LineItemType + "' has option (425) without a value.");
                                                         }
                                                     }
                                                     else
@@ -3355,6 +3356,31 @@ namespace NatoliOrderInterface
                                                     if (quoteLineItem.OptionNumbers.Contains("156") || (quoteLineItem.OptionNumbers.Contains("155") && quoteLineItem.optionValuesG.Any(qov => qov.Degrees == 0)))
                                                     {
                                                         errors.Add("'L' is bisected. Please check that the key is oriented for proper take-off.");
+                                                    }
+                                                    if(_nat01Context.BisectCodes.Any(bc=> bc.ID == hob.BisectCode))
+                                                    {
+                                                        if(_nat01Context.BisectCodes.First(bc => bc.ID == hob.BisectCode).Description.Contains("EMB"))
+                                                        {
+                                                            if (quoteLineItems.Any(qli => qli.LineItemType == "U"))
+                                                            {
+                                                                QuoteLineItem upper = quoteLineItems.First(qli => qli.LineItemType == "U");
+                                                                if (!string.IsNullOrWhiteSpace(upper.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == upper.HobNoShapeID && h.TipQty == (upper.TipQTY ?? 1) && h.BoreCircle == (upper.BoreCircle ?? 0)))
+                                                                {
+                                                                    HobList upperHob = _nat01Context.HobList.First(h => h.HobNo == upper.HobNoShapeID && h.TipQty == (upper.TipQTY ?? 1) && h.BoreCircle == (upper.BoreCircle ?? 0));
+                                                                    if (_nat01Context.BisectCodes.Any(bc => bc.ID == upperHob.BisectCode))
+                                                                    {
+                                                                        if (_nat01Context.BisectCodes.First(bc => bc.ID == upperHob.BisectCode).Description.Contains("EMB"))
+                                                                        {
+                                                                            errors.Add("'L' has a key and is embossed. It is running with an embossed upper. Please confirm the orientation of key/embossing and give the information to engineering when it becomes an order.");
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                errors.Add("'L' has a key and is embossed. If running with an embossed upper, please confirm the orientation of key/embossing and give the information to engineering when it becomes an order.");
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }

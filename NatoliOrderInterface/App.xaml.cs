@@ -1101,7 +1101,7 @@ namespace NatoliOrderInterface
                 using var _ = new ProjectsContext();
                 foreach (var p in selectedProjects)
                 {
-                    if (int.Parse(p.Item1) > 110000)
+                    if (int.Parse(p.Item1) > 110000 && _.EngineeringArchivedProjects.Any(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2))
                     {
                         EngineeringArchivedProjects project = _.EngineeringArchivedProjects.Single(p2 => p2.ProjectNumber == p.Item1 && p2.RevNumber == p.Item2);
                         if (project.CSR == user.GetDWPrincipalId() || project.ReturnToCSR == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
@@ -1115,7 +1115,7 @@ namespace NatoliOrderInterface
                             return false;
                         }
                     }
-                    else
+                    else if(_.ProjectSpecSheet.Any(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2))
                     {
                         ProjectSpecSheet project = _.ProjectSpecSheet.Single(p2 => p2.ProjectNumber.ToString() == p.Item1 && p2.RevisionNumber.ToString() == p.Item2);
                         if (project.Csr == user.GetDWPrincipalId() || project.ReturnToCsr == user.GetDWPrincipalId() || user.EmployeeCode == "E4408" ||
@@ -1129,12 +1129,17 @@ namespace NatoliOrderInterface
                             return false;
                         }
                     }
+                    else
+                    {
+                        _.Dispose();
+                        return false;
+                    }
                 }
                 _.Dispose();
             }
             catch (Exception ex)
             {
-                IMethods.WriteToErrorLog("App.caml.cs => RemoveEventHandlers", ex.Message, user);
+                IMethods.WriteToErrorLog("App.caml.cs => CanUserCompleteProject", ex.Message, user);
             }
             return true;
         }
@@ -1240,6 +1245,66 @@ namespace NatoliOrderInterface
             // Start new double-click timer
             double_click_timer.Start();
             end:;
+        }
+        private void HeaderToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is ToggleButton)
+            {
+                ToggleButton toggleButton = sender as ToggleButton;
+                Grid headerGrid = toggleButton.Parent as Grid;
+                foreach(ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => tb != toggleButton && !(tb is CheckBox)))
+                {
+                    tb.IsChecked = null;
+                }
+                Grid displayGrid = headerGrid.Parent as Grid;
+                ListBox listBox = displayGrid.Children.OfType<ListBox>().First();
+                Dispatcher.Invoke((Action)(()=>
+                {
+                    switch (listBox.Name)
+                    {
+                        case "CustomerNotesModule":
+                            break;
+                        case "QuotesNotConvertedListBox":
+                            (Application.Current.MainWindow as MainWindow).BindQuotesNotConverted();
+                            break;
+                        case "QuotesToConvertListBox":
+                            (Application.Current.MainWindow as MainWindow).BindQuotesToConvert();
+                            break;
+                        case "BeingEnteredListBox":
+                            (Application.Current.MainWindow as MainWindow).BindBeingEntered();
+                            break;
+                        case "InTheOfficeListBox":
+                            (Application.Current.MainWindow as MainWindow).BindInTheOffice();
+                            break;
+                        case "EnteredUnscannedListBox":
+                            (Application.Current.MainWindow as MainWindow).BindEnteredUnscanned();
+                            break;
+                        case "InEngineeringListBox":
+                            (Application.Current.MainWindow as MainWindow).BindInEngineering();
+                            break;
+                        case "ReadyToPrintListBox":
+                            (Application.Current.MainWindow as MainWindow).BindReadyToPrint();
+                            break;
+                        case "PrintedInEngineeringListBox":
+                            (Application.Current.MainWindow as MainWindow).BindPrintedInEngineering();
+                            break;
+                        case "AllTabletProjectsListBox":
+                            (Application.Current.MainWindow as MainWindow).BindAllTabletProjects();
+                            break;
+                        case "AllToolProjectsListBox":
+                            (Application.Current.MainWindow as MainWindow).BindAllToolProjects();
+                            break;
+                        case "DriveWorksQueueListBox":
+                            (Application.Current.MainWindow as MainWindow).BindDriveWorksQueue();
+                            break;
+                        case "NatoliOrderListListBox":
+                            (Application.Current.MainWindow as MainWindow).BindNatoliOrderList();
+                            break;
+                        default:
+                            break;
+                    }
+                }),DispatcherPriority.DataBind);
+            }
         }
         /// <summary>
         /// Timer Elapsed from ToggleButton MouseDown Event
@@ -1882,7 +1947,8 @@ namespace NatoliOrderInterface
                     quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
                 }
                 OrderingWindow orderingWindow = new OrderingWindow(quotes, user);
-                if (orderingWindow.ShowDialog() == true)
+                orderingWindow.ShowDialog();
+                if (orderingWindow.Result == true)
                 {
                     foreach (Tuple<int, short> quote in quotes)
                     {
@@ -3362,5 +3428,7 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
+
+        
     }
 }

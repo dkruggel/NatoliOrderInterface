@@ -681,6 +681,27 @@ namespace NatoliOrderInterface
             set { this.shipWithWONo = value; }
         }
 
+        private bool? shipped = null;
+        public bool? Shipped
+        {
+            get { return shipped; }
+            set { this.shipped = value; }
+        }
+
+        private bool? onHold = null;
+        public bool? OnHold
+        {
+            get { return onHold; }
+            set { this.onHold = value; }
+        }
+
+        private bool cancelled = false;
+        public bool Cancelled
+        {
+            get { return cancelled; }
+            set { this.cancelled = value; }
+        }
+
 
         private List<OrderLineItem> lineItemsList;
         public List<OrderLineItem> LineItemsList
@@ -766,6 +787,9 @@ namespace NatoliOrderInterface
             {
                 shipDate = (DateTime)orderHeader.RequestedShipDate;
             }
+            shipped = orderHeader.ShippedYn == "Y" ? true : (orderHeader.ShippedYn == "N" ? false : (bool?)null);
+            onHold = orderHeader.OnHold == "Y" ? true : (orderHeader.OnHold == "N" ? false : (bool?)null);
+            cancelled = orderHeader.PostedtoGpasyn == "C" || orderHeader.RestrictShipmentDesc.Contains("CANCEL") ? true : false;
             shipToCustomerName = string.IsNullOrEmpty(orderHeader.ShiptoName) ? "" : orderHeader.ShiptoName.Trim();
             this.endUserName = string.IsNullOrEmpty(endUserName) ? "" : endUserName.Trim();
             referenceOrder = orderHeader.RefWo;
