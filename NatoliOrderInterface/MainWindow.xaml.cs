@@ -1,4 +1,5 @@
-﻿using F23.StringSimilarity;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using F23.StringSimilarity;
 using Microsoft.EntityFrameworkCore;
 using NatoliOrderInterface;
 using NatoliOrderInterface.FolderIntegrity;
@@ -280,11 +281,14 @@ namespace NatoliOrderInterface
                         incBack.Add((el.GetValue(BackgroundProperty) as SolidColorBrush) == new SolidColorBrush(Colors.MediumPurple));
                     }
 
+                    DateTime start = DateTime.Now;
                     // Get future background color
                     foreach (EoiAllOrdersView order in value)
                     {
                         outBack.Add(CheckIfPrintsAreMissing(order));
                     }
+                    DateTime end = DateTime.Now;
+                    MessageBox.Show((end - start).TotalSeconds.ToString());
                 }
                 catch (Exception ex)
                 {
