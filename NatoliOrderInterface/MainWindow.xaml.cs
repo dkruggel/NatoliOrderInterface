@@ -338,7 +338,7 @@ namespace NatoliOrderInterface
                     {
                         ordersPrinted = value;
                         OrdersPrintedListBox.ItemsSource = null;
-                        OrdersPrintedListBox.ItemsSource = ordersReadyToPrint;
+                        OrdersPrintedListBox.ItemsSource = ordersPrinted;
                     }
                     // Check if missing prints changed
                     else
@@ -366,7 +366,7 @@ namespace NatoliOrderInterface
                         {
                             ordersPrinted = value;
                             OrdersPrintedListBox.ItemsSource = null;
-                            OrdersPrintedListBox.ItemsSource = ordersReadyToPrint;
+                            OrdersPrintedListBox.ItemsSource = ordersPrinted;
                         }
                     }
 
