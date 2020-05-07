@@ -34,7 +34,6 @@ namespace NatoliOrderInterface
                         bool drawn = project.Complete == 2;
                         bool started = project.Complete == 1;
                         bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
-
                         if (onHold)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
