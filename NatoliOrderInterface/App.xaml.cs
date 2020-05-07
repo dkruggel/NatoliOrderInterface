@@ -479,6 +479,7 @@ namespace NatoliOrderInterface
             if (grid is null) { grid = newObj; }
             return newObj;
         }
+        
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             using var _ = new ProjectsContext();

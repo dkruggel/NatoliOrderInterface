@@ -256,37 +256,31 @@ namespace NatoliOrderInterface
                             bool tm2 = System.Convert.ToBoolean(order.Tm2);
                             bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
                             bool toolPrints = System.Convert.ToBoolean(order.Tool);
-                            List<OrderDetails> orderDetails;
-                            OrderHeader orderHeader;
-                            using var nat01context = new NAT01Context();
-                            orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
-                            orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
-                            nat01context.Dispose();
-
+                            List<string> hobNumbers = null;
+                            hobNumbers = !string.IsNullOrEmpty(order.HobNumbers) && !string.IsNullOrEmpty(order.HobNumbers) ? order.HobNumbers.Split(",").ToList() : null;
                             if (tm2 || tabletPrints)
                             {
-                                foreach (OrderDetails od in orderDetails)
+                                foreach(string hobNumber in hobNumbers)
                                 {
-                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + hobNumber + ".pdf";
+                                    if (!System.IO.File.Exists(path))
                                     {
-                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                                        if (!System.IO.File.Exists(path))
-                                        {
-                                            goto Missing;
-                                        }
+                                        goto Missing;
                                     }
                                 }
                             }
 
                             if (tm2 || toolPrints)
                             {
-                                foreach (OrderDetails od in orderDetails)
+                                List<string> detailTypes = null;
+                                detailTypes = !string.IsNullOrEmpty(order.DetailTypes) ? order.DetailTypes.Split(",").ToList() : null;
+                                foreach (string detailTypeID in detailTypes)
                                 {
-                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                                    if (detailTypeID == "U" || detailTypeID == "L" || detailTypeID == "D" || detailTypeID == "DS" || detailTypeID == "R")
                                     {
-                                        string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                                        string detailType = oeDetailTypes[detailTypeID];
                                         detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                        string international = orderHeader.UnitOfMeasure;
+                                        string international = order.UnitOfMeasure;
                                         string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
                                         if (!System.IO.File.Exists(path))
                                         {
