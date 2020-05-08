@@ -259,12 +259,15 @@ namespace NatoliOrderInterface
                             hobNumbers = !string.IsNullOrEmpty(order.HobNumbers) && !string.IsNullOrEmpty(order.HobNumbers) ? order.HobNumbers.Split(",").ToList() : null;
                             if (tm2 || tabletPrints)
                             {
-                                foreach(string hobNumber in hobNumbers)
+                                if (hobNumbers != null)
                                 {
-                                    string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + hobNumber + ".pdf";
-                                    if (!System.IO.File.Exists(path))
+                                    foreach (string hobNumber in hobNumbers)
                                     {
-                                        goto Missing;
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + hobNumber + ".pdf";
+                                        if (!System.IO.File.Exists(path))
+                                        {
+                                            goto Missing;
+                                        }
                                     }
                                 }
                             }
