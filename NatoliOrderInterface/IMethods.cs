@@ -2790,6 +2790,27 @@ namespace NatoliOrderInterface
                                             }
                                         }
 
+                                        // Rotating Head
+                                        if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "LHD" || quoteLineItem.LineItemType == "RHD")
+                                        {
+                                            // Special head flat or special head configuration.
+                                            if(ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "008", "020"}, StringComparison.CurrentCulture))
+                                            {
+                                                // Rotating Head option on holder
+                                                if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("025")))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' is a rotating head. The head flat should not be greater than the centerline of the pins. Consult with technical service before proceeding.");
+                                                }
+                                                // No holder line items (can't be certain it is not a rotating head.
+                                                else if (!quoteLineItems.Any(qli => qli.LineItemType == "UH" || qli.LineItemType == "LH" || qli.LineItemType == "RH"))
+                                                {
+                                                    errors.Add("If '" + quoteLineItem.LineItemType + "' is a rotating head, the head flat should not be greater than the centerline of the pins. You should consult with technical service before proceeding.");
+                                                }
+                                            }
+                                        }
+                                            
+                                            
+
 
                                         // Machine is D and NOT EU1-441
                                         if ((machine.MachineTypePrCode.Trim() == "D" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") || machine.MachineNo == 1015) &&
