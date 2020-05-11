@@ -4290,6 +4290,7 @@ namespace NatoliOrderInterface
                 HeadType.IsEnabled = isEnabled;
                 CarbideTips.IsEnabled = isEnabled;
                 MachineNotes.IsEnabled = isEnabled;
+                SpecificationsButton.IsEnabled = isEnabled;
                 UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
                 LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
                 ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -4525,7 +4526,7 @@ namespace NatoliOrderInterface
         {
             try
             {
-                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Visibility == Visibility.Visible, NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
+                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Content == "Revise", NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
                     PerSampleTool, RefToolDrawing, PerSuppliedPicture, RefNatoliDrawing, RefNonNatoliDrawing, BinLocation);
                 if (projectSpecificationsWindow.ShowDialog() == true)
                 {
