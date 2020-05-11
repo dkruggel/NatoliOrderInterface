@@ -612,7 +612,14 @@ namespace NatoliOrderInterface
                             LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                             LinkQuoteButton.ToolTip = "Unlink Quote";
                             QuoteFolderButton.IsEnabled = true;
-                            quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
+                            try
+                            {
+                                quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), string.IsNullOrEmpty(engineeringProject.QuoteRevNumber) ? (short)0 : Convert.ToInt16(engineeringProject.QuoteRevNumber));
+                            }
+                            catch
+                            {
+
+                            }
                         }
                         else
                         {
