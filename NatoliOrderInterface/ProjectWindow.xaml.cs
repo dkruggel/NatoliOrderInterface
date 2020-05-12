@@ -4454,10 +4454,12 @@ namespace NatoliOrderInterface
                         if (string.IsNullOrEmpty(QuoteNumber.Text) || !uint.TryParse(QuoteNumber.Text.ToString().Trim(), out uint quoteNumberInt))
                         {
                             MessageBox.Show("Please check the quote number.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                         else if (string.IsNullOrEmpty(QuoteRevNumber.Text) || !ushort.TryParse(QuoteRevNumber.Text.ToString().Trim(), out ushort quoteRevNumberShort))
                         {
                             MessageBox.Show("Please check the quote revision number.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                         else
                         {
