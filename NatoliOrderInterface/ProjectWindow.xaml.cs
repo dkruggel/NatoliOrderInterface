@@ -5986,7 +5986,7 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
             try
             {
-                if(quote == null)
+                if(quote != null)
                 {
                     if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
                     {
