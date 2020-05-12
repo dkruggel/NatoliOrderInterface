@@ -1930,77 +1930,93 @@ namespace NatoliOrderInterface
         }
         private void SubmitQuote_Click(object sender, RoutedEventArgs e)
         {
-            this.MainWindow.Cursor = Cursors.AppStarting;
-            using var context = new NAT01Context();
-            using var nat02Context = new NAT02Context();
-            using var necContext = new NECContext();
-            // New list of projects that are in the same module that was right clicked inside of
-            string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-            List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == currModule).ToList();
-            List<Tuple<int, short>> quotes = new List<Tuple<int, short>>();
-            List<Quote> quoteItems = new List<Quote>();
-            List<string> quoteErrorNumbers = new List<string>();
-            if (validQuotes.Any())
-            {
-
-                for (int i = 0; i < validQuotes.Count; i++)
-                {
-                    quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
-                }
-                OrderingWindow orderingWindow = new OrderingWindow(quotes, user);
-                orderingWindow.ShowDialog();
-                if (orderingWindow.Result == true)
-                {
-                    foreach (Tuple<int, short> quote in quotes)
-                    {
-                        if (IMethods.QuoteErrors(quote.Item1.ToString(), quote.Item2.ToString(), user).Count > 0)
-                        {
-                            quoteErrorNumbers.Add(quote.Item1.ToString() + "-" + quote.Item2.ToString());
-                        }
-                        quoteItems.Add(new Quote(quote.Item1, quote.Item2));
-                    }
-                    if (quoteErrorNumbers.Any() && MessageBoxResult.Yes != MessageBox.Show((quoteErrorNumbers.Count == 1 ? "Quote" : "Quotes") + string.Concat(quoteErrorNumbers.Select(q => q + ", ")).TrimEnd().TrimEnd(',') + (quoteErrorNumbers.Count == 1 ? " has" : " have") + " quote check errors.\n\nWould you still like to submit these quotes?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
-                    {
-                        // Do nothing
-                    }
-                    else
-                    {
-                        foreach (Quote quote in quoteItems)
-                        {
-                            QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
-                            string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
-                            string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
-                            EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
-                            {
-                                QuoteNo = quote.QuoteNumber,
-                                QuoteRevNo = quote.QuoteRevNo,
-                                CustomerName = customerName,
-                                Csr = csr,
-                                CsrMarked = user.GetUserName(),
-                                TimeSubmitted = DateTime.Now,
-                                Rush = r.RushYorN
-                            };
-                            nat02Context.EoiQuotesMarkedForConversion.Add(q);
-                            quote.Dispose();
-                        }
-                    }
-                }
-            }
-
-            nat02Context.SaveChanges();
-            nat02Context.Dispose();
-            necContext.Dispose();
-            context.Dispose();
-            selectedQuotes.Clear();
-            this.MainWindow.Cursor = Cursors.Arrow;
             try
             {
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
-                (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("QuotesToConvert");
+                this.MainWindow.Cursor = Cursors.AppStarting;
+                using var context = new NAT01Context();
+                using var nat02Context = new NAT02Context();
+                using var necContext = new NECContext();
+                // New list of projects that are in the same module that was right clicked inside of
+                string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+                List<(string, string, CheckBox, string)> validQuotes = selectedQuotes.Where(p => p.Item4 == currModule).ToList();
+                List<Tuple<int, short>> quotes = new List<Tuple<int, short>>();
+                List<Quote> quoteItems = new List<Quote>();
+                List<string> quoteErrorNumbers = new List<string>();
+                List<string> quoteErrorMessages = new List<string>();
+                string finalErrorMessages = "";
+                if (validQuotes.Any())
+                {
+
+                    for (int i = 0; i < validQuotes.Count; i++)
+                    {
+                        quotes.Add(new Tuple<int, short>(Convert.ToInt32(validQuotes[i].Item1), Convert.ToInt16(validQuotes[i].Item2)));
+                    }
+                    OrderingWindow orderingWindow = new OrderingWindow(quotes, user);
+                    orderingWindow.ShowDialog();
+                    if (orderingWindow.Result == true)
+                    {
+                        foreach (Tuple<int, short> quote in quotes)
+                        {
+                            List<string> errorMessages = IMethods.QuoteErrors(quote.Item1.ToString(), quote.Item2.ToString(), user);
+                            if (errorMessages.Count > 0)
+                            {
+                                quoteErrorNumbers.Add(quote.Item1.ToString() + "-" + quote.Item2.ToString());
+                                quoteErrorMessages.AddRange(errorMessages);
+                            }
+                            quoteItems.Add(new Quote(quote.Item1, quote.Item2));
+                        }
+                        foreach(string error in quoteErrorMessages)
+                        {
+                            finalErrorMessages += "- " + error + System.Environment.NewLine;
+                        }
+                        if (quoteErrorNumbers.Any() && MessageBoxResult.Yes != MessageBox.Show((quoteErrorNumbers.Count == 1 ? "Quote" : "Quotes") + string.Concat(quoteErrorNumbers.Select(q => q + ", ")).TrimEnd().TrimEnd(',') + (quoteErrorNumbers.Count == 1 ? " has" : " have") + " quote check errors." + System.Environment.NewLine + "Errors listed below:" + System.Environment.NewLine + finalErrorMessages + "Would you still like to submit these quote(s)?", "ERRORS", MessageBoxButton.YesNo, MessageBoxImage.Question))
+                        {
+                            // Do nothing
+                        }
+                        else
+                        {
+                            foreach (Quote quote in quoteItems)
+                            {
+                                QuoteHeader r = context.QuoteHeader.Where(q => q.QuoteNo == quote.QuoteNumber && q.QuoteRevNo == quote.QuoteRevNo).FirstOrDefault();
+                                string customerName = necContext.Rm00101.Where(c => c.Custnmbr == r.UserAcctNo).First().Custname;
+                                string csr = context.QuoteRepresentative.Where(r => r.RepId == quote.QuoteRepID).First().Name;
+                                EoiQuotesMarkedForConversion q = new EoiQuotesMarkedForConversion()
+                                {
+                                    QuoteNo = quote.QuoteNumber,
+                                    QuoteRevNo = quote.QuoteRevNo,
+                                    CustomerName = customerName,
+                                    Csr = csr,
+                                    CsrMarked = user.GetUserName(),
+                                    TimeSubmitted = DateTime.Now,
+                                    Rush = r.RushYorN
+                                };
+                                nat02Context.EoiQuotesMarkedForConversion.Add(q);
+                                quote.Dispose();
+                            }
+                        }
+                        nat02Context.SaveChanges();
+                    }
+                }
+
+
+                nat02Context.Dispose();
+                necContext.Dispose();
+                context.Dispose();
+                selectedQuotes.Clear();
+                this.MainWindow.Cursor = Cursors.Arrow;
+                try
+                {
+                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
+                    (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh("QuotesToConvert");
+                }
+                catch (Exception ex)
+                {
+                    IMethods.WriteToErrorLog("App.xaml.cs => SubmitQuote_Click => Refresh Quotes Modules", ex.Message, user);
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                
+                IMethods.WriteToErrorLog("App.xaml.cs => SubmitQuote_Click", ex.Message, user);
             }
         }
         private void RecallQuote_Click(object sender, RoutedEventArgs e)
