@@ -3212,10 +3212,9 @@ namespace NatoliOrderInterface
                             break;
                         case "Office":
                             _filtered = _filtered
-                                .OrderBy(o => o.InTheOffice)
+                                .OrderBy(o => o.DaysInDept)
                                 .ThenBy(o => o.CustomerName)
                                 .ThenBy(o => o.NumDaysToShip)
-                                .ThenBy(o => o.DaysInDept)
                                 .ThenBy(o => o.OrderNumber)
                                 .ToList();
                             break;
@@ -3272,10 +3271,9 @@ namespace NatoliOrderInterface
                             break;
                         case "Office":
                             _filtered = _filtered
-                                .OrderByDescending(o => o.InTheOffice)
+                                .OrderByDescending(o => o.DaysInDept)
                                 .ThenBy(o => o.CustomerName)
                                 .ThenBy(o => o.NumDaysToShip)
-                                .ThenBy(o => o.DaysInDept)
                                 .ThenBy(o => o.OrderNumber)
                                 .ToList();
                             break;
