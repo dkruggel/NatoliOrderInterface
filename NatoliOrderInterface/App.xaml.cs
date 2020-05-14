@@ -1395,7 +1395,7 @@ namespace NatoliOrderInterface
                 }
                 else if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
                 {
-                    string revNumber = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    string revNumber = _projectsContext.EngineeringArchivedProjects.Where(p => p.ProjectNumber == projectNumber).Max(p => p.RevNumber);
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
@@ -2102,6 +2102,8 @@ namespace NatoliOrderInterface
             string currModule = ((((sender as Button).Parent as StackPanel).Parent as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
 
             projectsToMove = selectedProjects.Where(p => p.Item5 == selectedProjects.Last().Item5).ToList();
+
+            (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
         }
         private void StartProject_Click(object sender, RoutedEventArgs e)
         {
