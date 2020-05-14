@@ -4831,6 +4831,7 @@ namespace NatoliOrderInterface
                 {
                     MultiTipSketchTabItem.IsEnabled = true;
                 }
+                SetProjectWarningText();
             }
             catch (Exception ex)
             {
@@ -4850,6 +4851,7 @@ namespace NatoliOrderInterface
                 {
                     MultiTipSketchTabItem.IsEnabled = true;
                 }
+                SetProjectWarningText();
             }
             catch (Exception ex)
             {
@@ -6307,8 +6309,72 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
 
+
         #endregion
 
-       
+        private void SetProjectWarningText()
+        {
+            #region ProjectsWarning
+            if (DueDate.SelectedValue.ToString().Length > 0 && (TabletsRequired.IsChecked == true || ToolsRequired.IsChecked == true))
+            {
+                string message = "";
+                DateTime dueDate = Convert.ToDateTime(DueDate.SelectedValue.ToString().Split("|")[1].Trim());
+                dueDate = dueDate.AddHours(15.5);
+                TimeSpan timeSpan = dueDate - DateTime.Now;
+                double totalDays = timeSpan.TotalDays;
+                int weeks = (int)(totalDays / 7);
+                int weekendDays = weeks * 2;
+                if (6 - (int)DateTime.Today.DayOfWeek < totalDays - weeks * 7)
+                {
+                    weekendDays += 2;
+                }
+                double workDays = totalDays - weekendDays;
+                using var _nat02Context = new NAT02Context();
+                if (TabletsRequired.IsChecked == true)
+                {
+                    int projectsDueInTimeSpan = _nat02Context.EoiAllTabletProjectsView.Count(p => p.Complete < 4 && p.DueDate <= dueDate);
+                    int projectsDueOnThatDay = _nat02Context.EoiAllTabletProjectsView.Count(p => p.Complete < 4 && p.DueDate == dueDate);
+                    double tabletProjectsPerDay = Math.Round(projectsDueInTimeSpan / workDays, 1);
+                    message += tabletProjectsPerDay + " tablet projects due per day until due date. " + projectsDueOnThatDay + " tablet projects due on that day.";
+                    if(tabletProjectsPerDay>20)
+                    {
+                        DueDateWarning.Foreground = Brushes.Red;
+                    }
+                }
+                if (ToolsRequired.IsChecked == true)
+                {
+                    int projectsDueInTimeSpan = _nat02Context.EoiAllToolProjectsView.Count(p => p.Complete < 5 && p.DueDate <= dueDate);
+                    int projectsDueOnThatDay = _nat02Context.EoiAllToolProjectsView.Count(p => p.Complete < 5 && p.DueDate == dueDate);
+                    double toolprojectsPerDay = Math.Round(projectsDueInTimeSpan / workDays, 1);
+                    string messageAddition = toolprojectsPerDay + " tool projects due per day until due date. " + projectsDueOnThatDay + " tool projects due on that day.";
+                    if (message == "")
+                    {
+                        message += messageAddition;
+                    }
+                    else
+                    {
+                        message += System.Environment.NewLine + messageAddition;
+
+                    }
+                    if (toolprojectsPerDay > 10)
+                    {
+                        DueDateWarning.Foreground = Brushes.Red;
+                    }
+                }
+                DueDateWarning.Text = message;
+                DueDateWarning.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DueDateWarning.Text = "";
+                DueDateWarning.Visibility = Visibility.Hidden;
+                DueDateWarning.Foreground = Application.Current.Resources["Dark"] as SolidColorBrush;
+            }
+            #endregion
+        }
+        private void DueDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetProjectWarningText();
+        }
     }
 }

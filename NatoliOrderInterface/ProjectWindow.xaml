@@ -218,7 +218,8 @@
                                         <Border Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="0,0,0,2">
                                             <StackPanel VerticalAlignment="Center" >
                                                 <TextBlock Text="DUE DATE" Style="{StaticResource NormalTextBlock}" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center"/>
-                                                <ComboBox x:Name="DueDate" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" HorizontalContentAlignment="Center" Margin="30,0"/>
+                                                <ComboBox x:Name="DueDate" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" HorizontalContentAlignment="Center" Margin="30,0" SelectionChanged="DueDate_SelectionChanged"/>
+                                                <TextBlock x:Name="DueDateWarning" Text="" Style="{StaticResource NormalTextBlock}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Border>
                                         <Border BorderBrush="Black" Grid.Row="1" Grid.Column="0" BorderThickness="0,0,2,0" Margin="0,0,0,0">
