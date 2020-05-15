@@ -3350,7 +3350,7 @@ namespace NatoliOrderInterface
                                                         }
                                                     }
                                                 }
-                                                if(!(die.ShapeCode == "1" || die.ShapeCode == "18" || die.ShapeCode == "93"))
+                                                if(!(die.ShapeId == 1 || die.ShapeId == 18 || die.ShapeId == 93))
                                                 {
                                                     clearance = Math.Round((decimal)dieLength, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchLength, 4, MidpointRounding.AwayFromZero);
                                                     if (clearance < (decimal).001)
