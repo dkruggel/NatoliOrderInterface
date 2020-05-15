@@ -4294,7 +4294,7 @@ namespace NatoliOrderInterface
                         case "project number":
 
                             _filtered =
-                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete!=-1 && p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4305,7 +4305,7 @@ namespace NatoliOrderInterface
                         case "revision number":
 
                             _filtered =
-                                _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4316,7 +4316,7 @@ namespace NatoliOrderInterface
                         case "customer name":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4327,7 +4327,7 @@ namespace NatoliOrderInterface
                         case "csr":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4338,7 +4338,7 @@ namespace NatoliOrderInterface
                         case "drafter":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4350,7 +4350,7 @@ namespace NatoliOrderInterface
                             if (int.TryParse(searchString, out int cInt))
                             {
                                 _filtered =
-                                     _allTabletProjects.Where(p => p.Complete == cInt)
+                                     _allTabletProjects.Where(p => p.Complete != -1 && p.Complete == cInt)
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4361,7 +4361,7 @@ namespace NatoliOrderInterface
                             else
                             {
                                 _filtered =
-                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allTabletProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -4377,7 +4377,7 @@ namespace NatoliOrderInterface
                         default:
 
                             _filtered =
-                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allTabletProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -4394,11 +4394,11 @@ namespace NatoliOrderInterface
                 else
                 {
                     _filtered =
-                               _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                               _allTabletProjects.Where(p => p.Complete != -1 && (p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
-                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenByDescending(kvp => kvp.Tools == true)
@@ -4556,7 +4556,7 @@ namespace NatoliOrderInterface
                         case "project number":
 
                             _filtered =
-                                _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4574,7 +4574,7 @@ namespace NatoliOrderInterface
                         case "revision number":
 
                             _filtered =
-                                _allTabletProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4592,7 +4592,7 @@ namespace NatoliOrderInterface
                         case "customer name":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4610,7 +4610,7 @@ namespace NatoliOrderInterface
                         case "csr":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4628,7 +4628,7 @@ namespace NatoliOrderInterface
                         case "drafter":
 
                             _filtered =
-                                _allTabletProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                _allTabletProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4648,7 +4648,7 @@ namespace NatoliOrderInterface
                             if (int.TryParse(searchString, out int cInt))
                             {
                                 _filtered =
-                                    _allTabletProjects.Where(p => p.Complete == cInt)
+                                    _allTabletProjects.Where(p => p.Complete != -1 && p.Complete == cInt)
                                           .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                           .ThenBy(kvp => kvp.Complete == 4)
                                           .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -4666,7 +4666,7 @@ namespace NatoliOrderInterface
                             else
                             {
                                 _filtered =
-                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                 _allTabletProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -4690,7 +4690,7 @@ namespace NatoliOrderInterface
                         default:
 
                             _filtered =
-                                 _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                 _allTabletProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -4714,11 +4714,11 @@ namespace NatoliOrderInterface
                 else
                 {
                     _filtered =
-                               _allTabletProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                               _allTabletProjects.Where(p => p.Complete != -1 && (p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                   p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                   (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                   (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
-                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                  (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 4)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5148,7 +5148,7 @@ namespace NatoliOrderInterface
                         case "project number":
 
                             _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -5158,7 +5158,7 @@ namespace NatoliOrderInterface
                         case "revision number":
 
                             _filtered =
-                                _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -5168,7 +5168,7 @@ namespace NatoliOrderInterface
                         case "customer name":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -5178,7 +5178,7 @@ namespace NatoliOrderInterface
                         case "csr":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -5188,7 +5188,7 @@ namespace NatoliOrderInterface
                         case "drafter":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(p => p.Complete)
                                       .ThenByDescending(kvp => kvp.MarkedPriority)
                                       .ThenBy(kvp => kvp.DueDate)
@@ -5209,7 +5209,7 @@ namespace NatoliOrderInterface
                             else
                             {
                                 _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -5224,7 +5224,7 @@ namespace NatoliOrderInterface
                         default:
 
                             _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -5240,11 +5240,11 @@ namespace NatoliOrderInterface
                 else
                 {
                     _filtered =
-                              _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                              _allToolProjects.Where(p => p.Complete != -1 && (p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
-                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))))
                                     .OrderByDescending(kvp => kvp.Complete)
                                     .ThenByDescending(kvp => kvp.MarkedPriority)
                                     .ThenBy(kvp => kvp.DueDate)
@@ -5389,7 +5389,7 @@ namespace NatoliOrderInterface
                         case "project number":
 
                             _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5405,7 +5405,7 @@ namespace NatoliOrderInterface
                         case "revision number":
 
                             _filtered =
-                                _allToolProjects.Where(p => p.RevisionNumber.ToString().ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && p.RevisionNumber.ToString().ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5421,7 +5421,7 @@ namespace NatoliOrderInterface
                         case "customer name":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5437,7 +5437,7 @@ namespace NatoliOrderInterface
                         case "csr":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5453,7 +5453,7 @@ namespace NatoliOrderInterface
                         case "drafter":
 
                             _filtered =
-                                _allToolProjects.Where(p => !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
+                                _allToolProjects.Where(p => p.Complete != -1 && !string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
@@ -5486,7 +5486,7 @@ namespace NatoliOrderInterface
                             else
                             {
                                 _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -5507,7 +5507,7 @@ namespace NatoliOrderInterface
                         default:
 
                             _filtered =
-                                _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                _allToolProjects.Where(p => p.Complete != -1 && p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
@@ -5529,11 +5529,11 @@ namespace NatoliOrderInterface
                 else
                 {
                     _filtered =
-                              _allToolProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                              _allToolProjects.Where(p => p.Complete != -1 && (p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
                                                 p.RevisionNumber.ToString().ToLower().Contains(searchString) ||
                                                 (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
                                                 (!string.IsNullOrEmpty(p.Csr) && p.Csr.ToLower().Contains(searchString)) ||
-                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString)))
+                                                (!string.IsNullOrEmpty(p.Drafter) && p.Drafter.ToLower().Contains(searchString))))
                                       .OrderByDescending(kvp => string.IsNullOrEmpty(kvp.HoldStatus) || kvp.HoldStatus == "OFF HOLD")
                                       .ThenBy(kvp => kvp.Complete == 5)
                                       .ThenByDescending(kvp => string.IsNullOrEmpty(kvp.Drafter))
