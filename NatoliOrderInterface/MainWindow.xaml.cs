@@ -266,37 +266,53 @@ namespace NatoliOrderInterface
             }
             set
             {
-                List<bool> incBack = new List<bool>();
-                List<bool> outBack = new List<bool>();
-
                 try
                 {
-                    // Bool for missing drawings changing state
-                    // Get current background color
-                    var kid = (VisualTreeHelper.GetChild(((
-                               VisualTreeHelper.GetChild(OrdersReadyToPrintListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
-                    foreach (UIElement el in kid)
+                    List<bool> incBack = new List<bool>();
+                    List<bool> outBack = new List<bool>();
+                    // Check if data differs
+                    if (!ordersReadyToPrint.SequenceEqual(value))
                     {
-                        incBack.Add((el.GetValue(BackgroundProperty) as SolidColorBrush) == new SolidColorBrush(Colors.MediumPurple));
+                        ordersReadyToPrint = value;
+                        OrdersReadyToPrintListBox.ItemsSource = null;
+                        OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
+                    }
+                    // Check if missing prints changed
+                    else
+                    {
+                        // Get current bg colors bool
+                        var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(OrdersReadyToPrintListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                        foreach (UIElement el in kid)
+                        {
+                            ListBoxItem listBoxItem = el as ListBoxItem;
+                            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
+                            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
+                            ToggleButton myToggleButton = (ToggleButton)myDataTemplate.FindName("ToggleButton", myContentPresenter);
+                            myToggleButton.ApplyTemplate();
+                            Color firstColor = ((VisualTreeHelper.GetChild(myToggleButton, 0) as Grid).Background as LinearGradientBrush).GradientStops[0].Color;
+                            incBack.Add(firstColor == Colors.MediumPurple);
+                        }
+
+                        // Get future bg colors bool
+                        foreach (EoiAllOrdersView order in value)
+                        {
+                            outBack.Add(CheckIfPrintsAreMissing(order));
+                        }
+                        if (!incBack.SequenceEqual(outBack))
+                        {
+                            ordersReadyToPrint = value;
+                            OrdersReadyToPrintListBox.ItemsSource = null;
+                            OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
+                        }
                     }
 
-                    // Get future background color
-                    foreach (EoiAllOrdersView order in value)
-                    {
-                        outBack.Add(CheckIfPrintsAreMissing(order));
-                    }
                 }
                 catch (Exception ex)
                 {
 
                 }
 
-                if (!ordersReadyToPrint.SequenceEqual(value) || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
-                {
-                    ordersReadyToPrint = value;
-                    OrdersReadyToPrintListBox.ItemsSource = null;
-                    OrdersReadyToPrintListBox.ItemsSource = ordersReadyToPrint;
-                }
             }
         }
         #endregion
@@ -312,36 +328,55 @@ namespace NatoliOrderInterface
             }
             set
             {
-                List<bool> incBack = new List<bool>();
-                List<bool> outBack = new List<bool>();
-
                 try
                 {
-                    // Bool for missing drawings changing state
-                    // Get current background color
-                    var kid = (VisualTreeHelper.GetChild(((
-                               VisualTreeHelper.GetChild(OrdersPrintedListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
-                    foreach (UIElement el in kid)
+                    List<bool> incBack = new List<bool>();
+                    List<bool> outBack = new List<bool>();
+
+                    // Check if data differs
+                    if (!ordersPrinted.SequenceEqual(value))
                     {
-                        incBack.Add((el.GetValue(BackgroundProperty) as SolidColorBrush) == new SolidColorBrush(Colors.MediumPurple));
+                        ordersPrinted = value;
+                        OrdersPrintedListBox.ItemsSource = null;
+                        OrdersPrintedListBox.ItemsSource = ordersPrinted;
+                    }
+                    // Check if missing prints changed
+                    else
+                    {
+                        // Get current bg colors bool
+                        var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(OrdersPrintedListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                        foreach (UIElement el in kid)
+                        {
+                            ListBoxItem listBoxItem = el as ListBoxItem;
+                            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
+                            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
+                            ToggleButton myToggleButton = (ToggleButton)myDataTemplate.FindName("ToggleButton", myContentPresenter);
+                            myToggleButton.ApplyTemplate();
+                            Color firstColor = ((VisualTreeHelper.GetChild(myToggleButton, 0) as Grid).Background as LinearGradientBrush).GradientStops[0].Color;
+                            incBack.Add(firstColor == Colors.MediumPurple);
+                        }
+
+                        // Get future bg colors bool
+                        foreach (EoiAllOrdersView order in value)
+                        {
+                            outBack.Add(CheckIfPrintsAreMissing(order));
+                        }
+                        if (!incBack.SequenceEqual(outBack))
+                        {
+                            ordersPrinted = value;
+                            OrdersPrintedListBox.ItemsSource = null;
+                            OrdersPrintedListBox.ItemsSource = ordersPrinted;
+                        }
                     }
 
-                    // Get future background color
-                    foreach (EoiAllOrdersView order in value)
-                    {
-                        outBack.Add(CheckIfPrintsAreMissing(order));
-                    }
+
+
+
                 }
                 catch (Exception ex)
-                {
+                { 
 
-                }
-
-                if (!ordersPrinted.SequenceEqual(value) || incBack.Except(outBack).Count() > 0 || outBack.Except(incBack).Count() > 0 || incBack.Count != outBack.Count)
-                {
-                    ordersPrinted = value;
-                    OrdersPrintedListBox.ItemsSource = null;
-                    OrdersPrintedListBox.ItemsSource = ordersPrinted;
                 }
             }
         }
@@ -545,6 +580,25 @@ namespace NatoliOrderInterface
             {
                 IMethods.WriteToErrorLog("MainWindow Entry", ex.Message, User);
             }
+        }
+        private childItem FindVisualChild<childItem>(DependencyObject obj)
+    where childItem : DependencyObject
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                if (child != null && child is childItem)
+                {
+                    return (childItem)child;
+                }
+                else
+                {
+                    childItem childOfChild = FindVisualChild<childItem>(child);
+                    if (childOfChild != null)
+                        return childOfChild;
+                }
+            }
+            return null;
         }
         public async void MainRefresh(string module = "")
         {
@@ -773,7 +827,7 @@ namespace NatoliOrderInterface
                     // User = new User("Pturner");
                     // User = new User("mmulaosmanovic");
                     // User = new User("hwillmuth");
-                    // User = new User("kbochantin");
+                    // User = new User("kbergerdine");
                 }
                 App.user = User;
             }
@@ -2883,41 +2937,36 @@ namespace NatoliOrderInterface
         }
         private bool CheckIfPrintsAreMissing(EoiAllOrdersView order)
         {
-            using var nat01context = new NAT01Context();
             if (order.Tablet == 1 || order.Tool == 1 || order.Tm2 == 1)
             {
                 bool tm2 = System.Convert.ToBoolean(order.Tm2);
                 bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
                 bool toolPrints = System.Convert.ToBoolean(order.Tool);
-                List<OrderDetails> orderDetails;
-                OrderHeader orderHeader;
-                orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
-                orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
-
+                List<string> hobNumbers = null;
+                hobNumbers = !string.IsNullOrEmpty(order.HobNumbers) && !string.IsNullOrEmpty(order.HobNumbers) ? order.HobNumbers.Split(",").ToList() : null;
                 if (tm2 || tabletPrints)
                 {
-                    foreach (OrderDetails od in orderDetails)
+                    foreach (string hobNumber in hobNumbers)
                     {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + hobNumber + ".pdf";
+                        if (!System.IO.File.Exists(path))
                         {
-                            string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
-                            if (!System.IO.File.Exists(path))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
 
                 if (tm2 || toolPrints)
                 {
-                    foreach (OrderDetails od in orderDetails)
+                    List<string> detailTypes = null;
+                    detailTypes = !string.IsNullOrEmpty(order.DetailTypes) ? order.DetailTypes.Split(",").ToList() : null;
+                    foreach (string detailTypeID in detailTypes)
                     {
-                        if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                        if (detailTypeID == "U" || detailTypeID == "L" || detailTypeID == "D" || detailTypeID == "DS" || detailTypeID == "R")
                         {
-                            string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                            string detailType = oeDetailTypes[detailTypeID];
                             detailType = detailType == "MISC" ? "REJECT" : detailType;
-                            string international = orderHeader.UnitOfMeasure;
+                            string international = order.UnitOfMeasure;
                             string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
                             if (!System.IO.File.Exists(path))
                             {
@@ -2931,8 +2980,6 @@ namespace NatoliOrderInterface
                     }
                 }
             }
-
-            nat01context.Dispose();
 
             return false;
         }
@@ -3165,10 +3212,9 @@ namespace NatoliOrderInterface
                             break;
                         case "Office":
                             _filtered = _filtered
-                                .OrderBy(o => o.InTheOffice)
+                                .OrderBy(o => o.DaysInDept)
                                 .ThenBy(o => o.CustomerName)
                                 .ThenBy(o => o.NumDaysToShip)
-                                .ThenBy(o => o.DaysInDept)
                                 .ThenBy(o => o.OrderNumber)
                                 .ToList();
                             break;
@@ -3225,10 +3271,9 @@ namespace NatoliOrderInterface
                             break;
                         case "Office":
                             _filtered = _filtered
-                                .OrderByDescending(o => o.InTheOffice)
+                                .OrderByDescending(o => o.DaysInDept)
                                 .ThenBy(o => o.CustomerName)
                                 .ThenBy(o => o.NumDaysToShip)
-                                .ThenBy(o => o.DaysInDept)
                                 .ThenBy(o => o.OrderNumber)
                                 .ToList();
                             break;

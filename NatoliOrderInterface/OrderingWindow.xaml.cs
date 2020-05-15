@@ -165,6 +165,8 @@ namespace NatoliOrderInterface
             {
                 this.user = user;
                 quotesList = quotes;
+                Header.Text = "Confirm quote(s) to submit.";
+                Title = "Submit Quote(s)";
                 // Populate the textblocks for the listbox
                 foreach (Tuple<int, short> quote in quotesList)
                 {

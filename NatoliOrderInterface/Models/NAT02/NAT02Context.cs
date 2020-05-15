@@ -111,6 +111,7 @@ namespace NatoliOrderInterface.Models
                 entity.Property(e => e.TransitionName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                
             });
 
             modelBuilder.Entity<EoiAllTabletProjectsView>(entity =>

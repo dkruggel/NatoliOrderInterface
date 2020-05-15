@@ -1857,14 +1857,15 @@ namespace NatoliOrderInterface
                         List<string> etchings = new List<string>();
                         string size = quoteDetails[0].Desc2;
                         bool round = quoteDetails[0].Desc2.Contains("DIAMETER");
-                        string regex = round ? @"^\d*\.\d" : @"[0-9\.mM] x [0-9\.mM]";
+                        string regex = round ? @"^\d*\.\d*" : @"[0-9\. mM]* x [0-9\. mM]*";
                         PropertyInfo[] properties = quote.GetType().GetProperties();
                         foreach (PropertyInfo property in properties)
                         {
                             if (property.Name.Contains("Etching"))
                             {
+                                //string x = property.GetValue(quote, null).ToString();
                                 var match = Regex.Match(property.GetValue(quote, null).ToString(), regex);
-                                if (match.Success) { etchings.Add(property.GetValue(quote, null).ToString()); }
+                                if (match.Success) { etchings.Add(match.Value.TrimEnd()); }
                             }
                         }
 
@@ -2082,7 +2083,7 @@ namespace NatoliOrderInterface
                                 }
                             }
                             else if (quoteLineItem.LineItemType != "Z" && quoteLineItem.LineItemType != "TM" && quoteLineItem.LineItemType != "T" && quoteLineItem.LineItemType != "MC" &&
-                                    quoteLineItem.LineItemType != "M" && quoteLineItem.LineItemType != "H" && quoteLineItem.LineItemType != "E" && quoteLineItem.LineItemType != "CT")
+                                    quoteLineItem.LineItemType != "M" && quoteLineItem.LineItemType != "H" && quoteLineItem.LineItemType != "E" && quoteLineItem.LineItemType != "CT" && quoteLineItem.LineItemType != "K")
                             {
                                 errors.Add("'" + quoteLineItem.LineItemType + "' does not have a machine number.");
                             }
@@ -2261,7 +2262,14 @@ namespace NatoliOrderInterface
                                     }
                                     else
                                     {
-                                        errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                        if (quoteLineItem.TipQTY > 1 && (quoteLineItem.BoreCircle ?? 0) == 0)
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a multitip hob but the bore circle has not been added to the line item. Check that you have refreshed the hob information.");
+                                        }
+                                        else
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                        }
                                     }
 
                                 }
@@ -2790,6 +2798,27 @@ namespace NatoliOrderInterface
                                             }
                                         }
 
+                                        // Rotating Head
+                                        if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "LHD" || quoteLineItem.LineItemType == "RHD")
+                                        {
+                                            // Special head flat or special head configuration.
+                                            if(ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "008", "020"}, StringComparison.CurrentCulture))
+                                            {
+                                                // Rotating Head option on holder
+                                                if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("025")))
+                                                {
+                                                    errors.Add("'" + quoteLineItem.LineItemType + "' is a rotating head. The head flat should not be greater than the centerline of the pins. Consult with technical service before proceeding.");
+                                                }
+                                                // No holder line items (can't be certain it is not a rotating head.
+                                                else if (!quoteLineItems.Any(qli => qli.LineItemType == "UH" || qli.LineItemType == "LH" || qli.LineItemType == "RH"))
+                                                {
+                                                    errors.Add("If '" + quoteLineItem.LineItemType + "' is a rotating head, the head flat should not be greater than the centerline of the pins. You should consult with technical service before proceeding.");
+                                                }
+                                            }
+                                        }
+                                            
+                                            
+
 
                                         // Machine is D and NOT EU1-441
                                         if ((machine.MachineTypePrCode.Trim() == "D" || ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1-1/4 x 5-3/4") || machine.MachineNo == 1015) &&
@@ -3297,25 +3326,53 @@ namespace NatoliOrderInterface
                                                 decimal clearance = Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero);
                                                 if (clearance < (decimal).001)
                                                 {
-                                                    // No hold low tip size toleracne
-                                                    //if (!quoteLineItem.OptionNumbers.Contains("207"))
-                                                    //{
-                                                    //    errors.Add("'" + quoteLineItem.LineItemType + "' should have HOLD LOW TIP SIZE TOLERANCE (207) because the clearance is " + clearance + "\"");
-                                                    //}
-                                                    // No tip concentricity or 100% interx
-                                                    if (!quoteLineItem.OptionNumbers.Contains("202") && !quoteLineItem.OptionNumbers.Contains("160"))
+                                                    // Less than 0 clearance
+                                                    if (clearance < 0)
                                                     {
-                                                        errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has a width ("+ Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero) + "\") greater than the tablet width ("+ Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) + "\").");
                                                     }
-                                                    // No tip concentricity, has 100% interx, but clearance is less than .0005"
-                                                    if (!quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.OptionNumbers.Contains("160") && clearance < (decimal).0005)
+                                                    else
                                                     {
-                                                        errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        // No tip concentricity or 100% interx
+                                                        if (!quoteLineItem.OptionNumbers.Contains("202") && !quoteLineItem.OptionNumbers.Contains("160"))
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
+                                                        // No tip concentricity, has 100% interx, but clearance is less than .0005"
+                                                        if (!quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.OptionNumbers.Contains("160") && clearance < (decimal).0005)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
+                                                        // Tip concentricity is not tight enough
+                                                        if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov => qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
                                                     }
-                                                    // Tip concentricity is not tight enough
-                                                    if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov => qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                                }
+                                                if(!(die.ShapeCode == "1" || die.ShapeCode == "18" || die.ShapeCode == "93"))
+                                                {
+                                                    clearance = Math.Round((decimal)dieLength, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchLength, 4, MidpointRounding.AwayFromZero);
+                                                    if (clearance < (decimal).001)
                                                     {
-                                                        errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        if (clearance < 0)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' has length (" + Math.Round((decimal)punchLength, 4, MidpointRounding.AwayFromZero) + "\") greater than the tablet length (" + Math.Round((decimal)dieLength, 4, MidpointRounding.AwayFromZero) + "\").");
+                                                        }
+                                                        if (!quoteLineItem.OptionNumbers.Contains("202") && !quoteLineItem.OptionNumbers.Contains("160"))
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
+                                                        // No tip concentricity, has 100% interx, but clearance is less than .0005"
+                                                        if (!quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.OptionNumbers.Contains("160") && clearance < (decimal).0005)
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
+                                                        // Tip concentricity is not tight enough
+                                                        if (quoteLineItem.OptionNumbers.Contains("202") && quoteLineItem.optionValuesA.Any(qov => qov.OptionCode == "202" && (decimal)qov.Number1 > clearance))
+                                                        {
+                                                            errors.Add("'" + quoteLineItem.LineItemType + "' should have SPECIAL TIP CONCENTRICITY (202) of LESS than or equal to " + clearance + "\". Please also add to die if ordered.");
+                                                        }
                                                     }
                                                 }
                                             }
@@ -3479,7 +3536,14 @@ namespace NatoliOrderInterface
                                     }
                                     else
                                     {
-                                        errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                        if (quoteLineItem.TipQTY > 1 && (quoteLineItem.BoreCircle ?? 0) == 0)
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a multitip hob but the bore circle has not been added to the line item. Check that you have refreshed the hob information.");
+                                        }
+                                        else
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' does not have a valid Hob Number. Check your Hob Number, Tip QTY, and Bore Circle.");
+                                        }
                                     }
                                 }
                                 catch (Exception ex)
@@ -3511,6 +3575,7 @@ namespace NatoliOrderInterface
 
                     if (errors.Count > 0)
                     {
+                        errors = errors.Distinct().ToList();
                         errors.Sort();
                     }
 

@@ -612,7 +612,14 @@ namespace NatoliOrderInterface
                             LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
                             LinkQuoteButton.ToolTip = "Unlink Quote";
                             QuoteFolderButton.IsEnabled = true;
-                            quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), Convert.ToInt16(engineeringProject.QuoteRevNumber));
+                            try
+                            {
+                                quote = new Quote(Convert.ToInt32(engineeringProject.QuoteNumber), string.IsNullOrEmpty(engineeringProject.QuoteRevNumber) ? (short)0 : Convert.ToInt16(engineeringProject.QuoteRevNumber));
+                            }
+                            catch
+                            {
+
+                            }
                         }
                         else
                         {
@@ -4290,6 +4297,7 @@ namespace NatoliOrderInterface
                 HeadType.IsEnabled = isEnabled;
                 CarbideTips.IsEnabled = isEnabled;
                 MachineNotes.IsEnabled = isEnabled;
+                SpecificationsButton.IsEnabled = isEnabled;
                 UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
                 LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
                 ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.ToString().Length > 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -4446,10 +4454,12 @@ namespace NatoliOrderInterface
                         if (string.IsNullOrEmpty(QuoteNumber.Text) || !uint.TryParse(QuoteNumber.Text.ToString().Trim(), out uint quoteNumberInt))
                         {
                             MessageBox.Show("Please check the quote number.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                         else if (string.IsNullOrEmpty(QuoteRevNumber.Text) || !ushort.TryParse(QuoteRevNumber.Text.ToString().Trim(), out ushort quoteRevNumberShort))
                         {
                             MessageBox.Show("Please check the quote revision number.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
                         }
                         else
                         {
@@ -4525,7 +4535,7 @@ namespace NatoliOrderInterface
         {
             try
             {
-                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Visibility == Visibility.Visible, NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
+                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Content == "Revise", NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
                     PerSampleTool, RefToolDrawing, PerSuppliedPicture, RefNatoliDrawing, RefNonNatoliDrawing, BinLocation);
                 if (projectSpecificationsWindow.ShowDialog() == true)
                 {
@@ -4821,6 +4831,7 @@ namespace NatoliOrderInterface
                 {
                     MultiTipSketchTabItem.IsEnabled = true;
                 }
+                SetProjectWarningText();
             }
             catch (Exception ex)
             {
@@ -4840,6 +4851,7 @@ namespace NatoliOrderInterface
                 {
                     MultiTipSketchTabItem.IsEnabled = true;
                 }
+                SetProjectWarningText();
             }
             catch (Exception ex)
             {
@@ -5976,7 +5988,7 @@ namespace NatoliOrderInterface
             Cursor = Cursors.AppStarting;
             try
             {
-                if(quote == null)
+                if(quote != null)
                 {
                     if(int.TryParse(QuoteNumber.Text,out int quoteNumber) && short.TryParse(QuoteRevNumber.Text, out short quoteRevNumber))
                     {
@@ -6297,8 +6309,72 @@ namespace NatoliOrderInterface
             GC.SuppressFinalize(this);
         }
 
+
         #endregion
 
-       
+        private void SetProjectWarningText()
+        {
+            #region ProjectsWarning
+            if (DueDate.SelectedValue.ToString().Length > 0 && (TabletsRequired.IsChecked == true || ToolsRequired.IsChecked == true))
+            {
+                string message = "";
+                DateTime dueDate = Convert.ToDateTime(DueDate.SelectedValue.ToString().Split("|")[1].Trim());
+                dueDate = dueDate.AddHours(15.5);
+                TimeSpan timeSpan = dueDate - DateTime.Now;
+                double totalDays = timeSpan.TotalDays;
+                int weeks = (int)(totalDays / 7);
+                int weekendDays = weeks * 2;
+                if (6 - (int)DateTime.Today.DayOfWeek < totalDays - weeks * 7)
+                {
+                    weekendDays += 2;
+                }
+                double workDays = totalDays - weekendDays;
+                using var _nat02Context = new NAT02Context();
+                if (TabletsRequired.IsChecked == true)
+                {
+                    int projectsDueInTimeSpan = _nat02Context.EoiAllTabletProjectsView.Count(p => p.Complete < 4 && p.DueDate <= dueDate);
+                    int projectsDueOnThatDay = _nat02Context.EoiAllTabletProjectsView.Count(p => p.Complete < 4 && p.DueDate == dueDate);
+                    double tabletProjectsPerDay = Math.Round(projectsDueInTimeSpan / workDays, 1);
+                    message += tabletProjectsPerDay + " tablet projects due per day until due date. " + projectsDueOnThatDay + " tablet projects due on that day.";
+                    if(tabletProjectsPerDay>20)
+                    {
+                        DueDateWarning.Foreground = Brushes.Red;
+                    }
+                }
+                if (ToolsRequired.IsChecked == true)
+                {
+                    int projectsDueInTimeSpan = _nat02Context.EoiAllToolProjectsView.Count(p => p.Complete < 5 && p.DueDate <= dueDate);
+                    int projectsDueOnThatDay = _nat02Context.EoiAllToolProjectsView.Count(p => p.Complete < 5 && p.DueDate == dueDate);
+                    double toolprojectsPerDay = Math.Round(projectsDueInTimeSpan / workDays, 1);
+                    string messageAddition = toolprojectsPerDay + " tool projects due per day until due date. " + projectsDueOnThatDay + " tool projects due on that day.";
+                    if (message == "")
+                    {
+                        message += messageAddition;
+                    }
+                    else
+                    {
+                        message += System.Environment.NewLine + messageAddition;
+
+                    }
+                    if (toolprojectsPerDay > 10)
+                    {
+                        DueDateWarning.Foreground = Brushes.Red;
+                    }
+                }
+                DueDateWarning.Text = message;
+                DueDateWarning.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DueDateWarning.Text = "";
+                DueDateWarning.Visibility = Visibility.Hidden;
+                DueDateWarning.Foreground = Application.Current.Resources["Dark"] as SolidColorBrush;
+            }
+            #endregion
+        }
+        private void DueDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SetProjectWarningText();
+        }
     }
 }

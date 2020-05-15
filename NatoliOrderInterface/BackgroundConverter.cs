@@ -34,7 +34,6 @@ namespace NatoliOrderInterface
                         bool drawn = project.Complete == 2;
                         bool started = project.Complete == 1;
                         bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
-
                         if (onHold)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
@@ -45,15 +44,15 @@ namespace NatoliOrderInterface
                             if (priority) { return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
                             return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
                         }
-                        if (submitted)
-                        {
-                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
-                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
-                        }
                         if (sentBack)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
                             return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
+                        if (submitted)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.DodgerBlue, Colors.DodgerBlue, Colors.DodgerBlue, Colors.Transparent);
                         }
                         if (drawn)
                         {
@@ -256,20 +255,15 @@ namespace NatoliOrderInterface
                             bool tm2 = System.Convert.ToBoolean(order.Tm2);
                             bool tabletPrints = System.Convert.ToBoolean(order.Tablet);
                             bool toolPrints = System.Convert.ToBoolean(order.Tool);
-                            List<OrderDetails> orderDetails;
-                            OrderHeader orderHeader;
-                            using var nat01context = new NAT01Context();
-                            orderDetails = nat01context.OrderDetails.Where(o => o.OrderNo == order.OrderNumber * 100).ToList();
-                            orderHeader = nat01context.OrderHeader.Single(o => o.OrderNo == order.OrderNumber * 100);
-                            nat01context.Dispose();
-
+                            List<string> hobNumbers = null;
+                            hobNumbers = !string.IsNullOrEmpty(order.HobNumbers) && !string.IsNullOrEmpty(order.HobNumbers) ? order.HobNumbers.Split(",").ToList() : null;
                             if (tm2 || tabletPrints)
                             {
-                                foreach (OrderDetails od in orderDetails)
+                                if (hobNumbers != null)
                                 {
-                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "R")
+                                    foreach (string hobNumber in hobNumbers)
                                     {
-                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + od.HobNoShapeId.Trim() + ".pdf";
+                                        string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + hobNumber + ".pdf";
                                         if (!System.IO.File.Exists(path))
                                         {
                                             goto Missing;
@@ -280,13 +274,15 @@ namespace NatoliOrderInterface
 
                             if (tm2 || toolPrints)
                             {
-                                foreach (OrderDetails od in orderDetails)
+                                List<string> detailTypes = null;
+                                detailTypes = !string.IsNullOrEmpty(order.DetailTypes) ? order.DetailTypes.Split(",").ToList() : null;
+                                foreach (string detailTypeID in detailTypes)
                                 {
-                                    if (od.DetailTypeId.Trim() == "U" || od.DetailTypeId.Trim() == "L" || od.DetailTypeId.Trim() == "D" || od.DetailTypeId.Trim() == "DS" || od.DetailTypeId.Trim() == "R")
+                                    if (detailTypeID == "U" || detailTypeID == "L" || detailTypeID == "D" || detailTypeID == "DS" || detailTypeID == "R")
                                     {
-                                        string detailType = oeDetailTypes[od.DetailTypeId.Trim()];
+                                        string detailType = oeDetailTypes[detailTypeID];
                                         detailType = detailType == "MISC" ? "REJECT" : detailType;
-                                        string international = orderHeader.UnitOfMeasure;
+                                        string international = order.UnitOfMeasure;
                                         string path = @"\\engserver\workstations\tool_drawings\" + order.OrderNumber + @"\" + detailType + ".pdf";
                                         if (!System.IO.File.Exists(path))
                                         {

@@ -3050,9 +3050,19 @@ namespace NatoliOrderInterface
             {
                 if (QuoteErrorsTabItem.Header.ToString() == "Errors" && errorNotificationPopped == false)
                 {
+                    string errorMessage = "This quote has errors, please ensure that they have been reviewed.";
+                    List<BulletDecorator> bullets = ErrorsDockPanel.Children.OfType<BulletDecorator>().ToList();
+                    if(bullets.Count>0)
+                    {
+                        errorMessage += System.Environment.NewLine;
+                        foreach(BulletDecorator bullet in bullets)
+                        {
+                            errorMessage += "- " + (bullet.Child as TextBlock).Text.ToString() + System.Environment.NewLine;
+                        }
+                    }
                     QuoteErrorsTabItem.IsSelected = true;
                     Cursor = Cursors.Arrow;
-                    MessageBox.Show("This quote has errors, please ensure that they have been reviewed.", "ERRORS", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(errorMessage, "ERRORS", MessageBoxButton.OK, MessageBoxImage.Information);
                     errorNotificationPopped = true;
                 }
                 else

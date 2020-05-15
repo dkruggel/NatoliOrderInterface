@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NatoliOrderInterface.Models
 {
@@ -33,6 +34,9 @@ namespace NatoliOrderInterface.Models
         public int VariablesExist { get; set; }
         public bool Generated { get; set; }
         public bool Generating { get; set; }
+        public string HobNumbers { get; set; }
+        public string DetailTypes { get; set; }
+        public string UnitOfMeasure { get; set; }
 
         public bool Equals(EoiAllOrdersView other)
         {
@@ -60,10 +64,13 @@ namespace NatoliOrderInterface.Models
                    this.Tool == other.Tool &&
                    this.VariablesExist == other.VariablesExist &&
                    this.Generated == other.Generated &&
-                   this.Generating == other.Generating;
+                   this.Generating == other.Generating &&
+                   this.HobNumbers == other.HobNumbers &&
+                   this.DetailTypes == other.DetailTypes &&
+                   this.UnitOfMeasure == other.UnitOfMeasure;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiAllOrdersView);
-        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist, Generated, Generating).GetHashCode();
+        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist, Generated, Generating, HobNumbers, DetailTypes, UnitOfMeasure).GetHashCode();
     }
 }
