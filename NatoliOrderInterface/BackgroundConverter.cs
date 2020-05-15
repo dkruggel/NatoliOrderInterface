@@ -28,12 +28,18 @@ namespace NatoliOrderInterface
                     {
                         EoiAllTabletProjectsView project = value as EoiAllTabletProjectsView;
                         bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+                        bool inactive = project.Complete == -1;
                         bool finished = project.Complete == 4;
                         bool onHold = project.HoldStatus == "On Hold";
                         bool submitted = project.Complete == 3;
                         bool drawn = project.Complete == 2;
                         bool started = project.Complete == 1;
                         bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
+                        if (inactive)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.BlanchedAlmond, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.BlanchedAlmond, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
                         if (onHold)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
@@ -77,6 +83,7 @@ namespace NatoliOrderInterface
                     {
                         EoiAllToolProjectsView project = value as EoiAllToolProjectsView;
                         bool priority = project.MarkedPriority is null ? false : project.MarkedPriority == "PRIORITY";
+                        bool inactive = project.Complete == -1;
                         bool finished = project.Complete == 5;
                         bool tablets = project.Complete == 1;
                         bool multitip = project.MultiTipSketch;
@@ -84,7 +91,11 @@ namespace NatoliOrderInterface
                         bool submitted = project.Complete == 4;
                         bool drawn = project.Complete == 3;
                         bool started = project.Complete == 2;
-
+                        if (inactive)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.BlanchedAlmond, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.BlanchedAlmond, Colors.Transparent, Colors.Transparent, Colors.Transparent);
+                        }
                         if (onHold)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.MediumPurple, Colors.Transparent, Colors.Transparent, Colors.Red); }
