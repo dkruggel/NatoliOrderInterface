@@ -743,39 +743,41 @@ namespace NatoliOrderInterface
                     EoiAllOrdersView _order = __.EoiAllOrdersView.Single(o => o.OrderNumber == double.Parse(col0val));
                     __.Dispose();
 
-                    
+
 
                     // Get location to determine button functions
+                    // If user is in this group, disable all buttons
+                    bool noMovement = user.DepartmentCode == "D1102" || user.DomainName == "jlumpkin";
                     switch (type)
                     {
                         case "BeingEntered":
                             // To Office: Enabled, "Send To Office"
-                            orderToOfficeButton.IsEnabled = true;
+                            orderToOfficeButton.IsEnabled = !noMovement;
                             orderToOfficeButton.ToolTip = "Send To Office";
                             break;
                         case "InTheOffice":
                             // Start Order: Enabled, "Start Order"
-                            orderStartButton.IsEnabled = true;
+                            orderStartButton.IsEnabled = !noMovement;
                             orderStartButton.ToolTip = "Start Order";
                             break;
                         case "EnteredUnscanned":
                             // To Office: Enabled, "Send To Office"
-                            orderToOfficeButton.IsEnabled = true;
+                            orderToOfficeButton.IsEnabled = !noMovement;
                             orderToOfficeButton.ToolTip = "Send To Office";
 
                             // Start Order: Enabled, "Start Order"
-                            orderStartButton.IsEnabled = true;
+                            orderStartButton.IsEnabled = !noMovement;
                             orderStartButton.ToolTip = "Start Order";
                             break;
                         case "InEngineering":
                             // To Office: Enabled, "Send To Office"
-                            orderToOfficeButton.IsEnabled = true;
+                            orderToOfficeButton.IsEnabled = !noMovement;
                             orderToOfficeButton.ToolTip = "Send To Office";
 
                             if (_order.MarkedForChecking == 0)
                             {
                                 // Finish Order: Enabled, "Mark As Finished"
-                                orderFinishButton.IsEnabled = true;
+                                orderFinishButton.IsEnabled = !noMovement;
                                 orderFinishButton.ToolTip = "Mark As Finished";
                             }
                             else
@@ -787,20 +789,20 @@ namespace NatoliOrderInterface
                             break;
                         case "ReadyToPrint":
                             // To Office: Enabled, "Send To Office"
-                            orderToOfficeButton.IsEnabled = true;
+                            orderToOfficeButton.IsEnabled = !noMovement;
                             orderToOfficeButton.ToolTip = "Send To Office";
 
                             // Not Finish Order: Enabled, "Order Not Finished"
-                            orderNotFinishedButton.IsEnabled = true;
+                            orderNotFinishedButton.IsEnabled = !noMovement;
                             orderNotFinishedButton.ToolTip = "Order Not Finished";
                             break;
                         case "PrintedInEngineering":
                             // To Office: Enabled, "Send To Office"
-                            orderToOfficeButton.IsEnabled = true;
+                            orderToOfficeButton.IsEnabled = !noMovement;
                             orderToOfficeButton.ToolTip = "Send To Office";
 
                             // Send To Production: Enabled, "Send To Production"
-                            orderToProductionButton.IsEnabled = true;
+                            orderToProductionButton.IsEnabled = !noMovement;
                             orderToProductionButton.ToolTip = "Send To Production";
                             break;
                         default:
@@ -811,14 +813,14 @@ namespace NatoliOrderInterface
                     selectedOrders = selectedOrders.Distinct().ToList();
                     if (_order.DoNotProcess == 0)
                     {
-                        orderDoNotProcessButton.IsEnabled = true;
+                        orderDoNotProcessButton.IsEnabled = !noMovement;
                         orderCanProcessButton.IsEnabled = false;
                     }
                     else
                     {
 
                         orderDoNotProcessButton.IsEnabled = false;
-                        orderCanProcessButton.IsEnabled = true;
+                        orderCanProcessButton.IsEnabled = !noMovement;
                     }
 
                     
