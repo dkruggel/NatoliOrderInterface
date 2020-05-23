@@ -22,6 +22,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Interop;
 using System.ComponentModel;
+using NatoliOrderInterface.Models.Projects;
 
 namespace NatoliOrderInterface
 {
@@ -3403,6 +3404,24 @@ namespace NatoliOrderInterface
         {
             CustomerNoteWindow customerNoteWindow = new CustomerNoteWindow(user, quote.QuoteNumber, quote.QuoteRevNo ?? 0);
             customerNoteWindow.Show();
+        }
+        private void ProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Create new project with link to active quote
+            // Select max project number
+            using var projectsContext = new ProjectsContext();
+            int engProjMax = projectsContext.EngineeringProjects.Any() ? Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1 : 0;
+            int engProjArchMax = Convert.ToInt32(projectsContext.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
+            string projectNumber = engProjArchMax > engProjMax ? engProjArchMax.ToString() : engProjMax.ToString();
+
+
+            // Dispose of project context
+            projectsContext.Dispose();
+
+            // Create new project window/project
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", this.parent, user, true, quote);
+
+            projectWindow.Show();
         }
         #endregion
     }
