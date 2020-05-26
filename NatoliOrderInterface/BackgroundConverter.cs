@@ -360,7 +360,7 @@ namespace NatoliOrderInterface
                                     }
                                 }
                             }
-
+                             
                             if (tm2 || toolPrints)
                             {
                                 foreach (OrderDetails od in orderDetails)

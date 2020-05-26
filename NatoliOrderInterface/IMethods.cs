@@ -3039,6 +3039,56 @@ namespace NatoliOrderInterface
                                     {
                                         HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
 
+                                        try
+                                        {
+                                            string regex = @"CUP DEPTH [\d.Mm\s()]*";
+                                            var match = Regex.Match(quoteLineItem.Desc3, regex);
+                                            if (match.Success)
+                                            {
+                                                string cupDepthSTR = match.Value;
+
+                                                int i1 = quote.UnitOfMeasure == 'M' ? cupDepthSTR.IndexOf("(") + 1 : cupDepthSTR.LastIndexOf(" ") + 1;
+                                                int i2 = quote.UnitOfMeasure == 'M' ? cupDepthSTR.IndexOf(")") : cupDepthSTR.Length;
+                                                cupDepthSTR = cupDepthSTR.Substring(i1, i2 - i1);
+                                                if (decimal.TryParse(cupDepthSTR, out decimal cupDepthTemp))
+                                                {
+                                                    if (Math.Round((decimal)hob.CupDepth, 4) != cupDepthTemp)
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has the incorrect CUP DEPTH in the description. It shows \"" + cupDepthTemp + "\" and the Hob List shows \"" + Math.Round((decimal)hob.CupDepth, 4) + "\".");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            WriteToErrorLog("QuoteErrors => Punches and Tips -> Has HobNo in HobList -> Cup Depth Regex", ex.Message, user);
+                                        }
+                                        try
+                                        {
+                                            string regex = @"LAND [\d.Mm\s()]*";
+                                            var match = Regex.Match(quoteLineItem.Desc3, regex);
+                                            if (match.Success)
+                                            {
+                                                string landSTR = match.Value;
+
+                                                int i1 = quote.UnitOfMeasure == 'M' ? landSTR.IndexOf("(") + 1 : landSTR.LastIndexOf(" ") + 1;
+                                                int i2 = quote.UnitOfMeasure == 'M' ? landSTR.IndexOf(")") : landSTR.Length;
+                                                landSTR = landSTR.Substring(i1, i2 - i1);
+                                                if (decimal.TryParse(landSTR, out decimal landTemp))
+                                                {
+                                                    if (Math.Round((decimal)hob.Land, 4) != landTemp)
+                                                    {
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has the incorrect LAND in the description. It shows \"" + landTemp + "\" and the Hob List shows \"" + Math.Round((decimal)hob.Land, 4) + "\".");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            WriteToErrorLog("QuoteErrors => Punches and Tips -> Has HobNo in HobList -> Land Regex", ex.Message, user);
+                                        }
+
+
                                         // Flat Face
                                         if (hob.CupDepth == 0 || hob.CupCode == 1)
                                         {
@@ -3196,6 +3246,23 @@ namespace NatoliOrderInterface
                                                     {
                                                         punchWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1;
                                                         punchLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2;
+                                                        double? punchWidth_M= quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1Mm;
+                                                        double? punchLength_M = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2Mm;
+                                                        try
+                                                        {
+                                                            if (punchLength != null && punchWidth != null && punchWidth_M != null && punchLength_M != null && die.LengthMajorAxis != null && die.LengthMajorAxis != 0)
+                                                            {
+                                                                if (Math.Round((decimal)(die.WidthMinorAxis - punchWidth), 4) != Math.Round((decimal)(die.LengthMajorAxis - punchLength), 4) && Math.Round((decimal)(die.WidthMinorAxisM - (decimal)punchWidth_M), 2) != Math.Round((decimal)(die.LengthMajorAxisM - (decimal)punchLength_M), 2))
+                                                                {
+                                                                    errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip dimension (200) that has clearances that differ from width to length. Please check that your tip sizes are correct.");
+                                                                }
+                                                            }
+                                                        }
+                                                        catch
+                                                        {
+
+                                                        }
+                                                        
                                                     }
                                                     catch
                                                     {

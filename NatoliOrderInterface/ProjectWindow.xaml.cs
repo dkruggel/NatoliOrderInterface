@@ -193,6 +193,11 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
+            if (Notes.Text.Length>1999)
+            {
+                MessageBox.Show("Please limit notes to less than 2000 characters. You have (" + Notes.Text.Length + ") currently", "Reduce Notes", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
             {
                 MessageBox.Show("Please enter a tablet size.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
