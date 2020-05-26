@@ -12,6 +12,10 @@ using System.Windows.Shapes;
 using Microsoft.EntityFrameworkCore;
 using NatoliOrderInterface.Models;
 using System.Linq;
+using NatoliOrderInterface.Models.Projects;
+using LiveCharts;
+using LiveCharts.Wpf;
+using LiveCharts.Definitions.Series;
 
 namespace NatoliOrderInterface
 {
@@ -23,29 +27,87 @@ namespace NatoliOrderInterface
         public ReportingWindow(Window _parent)
         {
             InitializeComponent();
-            using var _ = new NAT02Context();
+            //using var _ = new NAT02Context();
             BeginningDatePicker.SelectedDate = DateTime.Parse("2020-01-01");
             EndDatePicker.SelectedDate = DateTime.Parse("2020-02-01");
+
+            BuildOrdersChart();
+
             //RangePeriodComboBox.SelectedIndex = 0;
             //RangePeriodComboBox.ItemsSource = new List<string>() { "Day(s)", "Week(s)", "Month(s)", "Year(s)" };
-            var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
-                                                                                                               EndDatePicker.SelectedDate.Value);
-            vwQuoteConversion.Load();
-            QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
-            _.Dispose();
+            //var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
+            //                                                                                                   EndDatePicker.SelectedDate.Value);
+            //vwQuoteConversion.Load();
+            //QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
+            //_.Dispose();
 
             //BeginningTextBox.Text = "1";
             //EndTextBox.Text = "0";
         }
 
+        public Func<ChartPoint, string> PointLabel { get; set; }
+
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            using var _ = new NAT02Context();
-            var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
-                                                                                                               EndDatePicker.SelectedDate.Value);
-            vwQuoteConversion.Load();
-            QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
+            //using var _ = new NAT02Context();
+            //var vwQuoteConversion = _.VwQuoteConversion.FromSqlRaw("EXEC dbo.sp_EOI_QuoteConversion {0}, {1}", BeginningDatePicker.SelectedDate.Value,
+            //                                                                                                   EndDatePicker.SelectedDate.Value);
+            //vwQuoteConversion.Load();
+            //QuoteConversionDataGrid_Domestic.ItemsSource = _.VwQuoteConversion.Local.ToObservableCollection();
+            //_.Dispose();
+
+            BuildOrdersChart();
+        }
+
+        private void BuildOrdersChart()
+        {
+            using var _ = new ProjectsContext();
+
+            string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction @StartDate = {0}, @EndDate = {1}";
+
+            string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+
+            List<OrdersReport> ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
+            
+
             _.Dispose();
+
+            SeriesCollection sc = new SeriesCollection();
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders Scanned In",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders Scanned Out",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders To Office",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Tablet Projects",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Tool Projects",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
+            });
+
+            string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+
+            YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+            ProductionChart.Series = sc;
         }
 
         private void QuoteConversionDataGrid_MouseUp(object sender, MouseButtonEventArgs e)

@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="Reporting" Height="500" Width="600" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+        Title="Reporting" Height="1000" Width="1500" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="50">
             <Grid.ColumnDefinitions>
@@ -33,6 +34,20 @@
 
         <Grid>
             <StackPanel Orientation="Vertical">
+
+                <lvc:CartesianChart Name="ProductionChart" Series="{Binding SeriesCollection}" LegendLocation="Bottom" Width="1500" Height="900">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Name="XAxis" Title="Orders/Quotes"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Name="YAxis" Title="Drafter"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
+                    </lvc:CartesianChart.DataTooltip>
+                </lvc:CartesianChart>
+
+
                 <!--<Border BorderBrush="Black" BorderThickness="2,2,2,5">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -227,14 +242,14 @@
                     </Grid>
                 </Border>-->
 
-                <Grid HorizontalAlignment="Stretch" Height="400">
+                <!--<Grid HorizontalAlignment="Stretch" Height="400">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="450"/>
                         <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <DataGrid x:Name="QuoteConversionDataGrid_Domestic" ItemsSource="{Binding}" AlternatingRowBackground="LightBlue" AlternationCount="2" Width="350" Grid.Column="0" MouseUp="QuoteConversionDataGrid_MouseUp" HorizontalAlignment="Left"/>
-                    <!--<DataGrid x:Name="QuoteConversionDataGrid_International" ItemsSource="{Binding}" AlternatingRowBackground="LightBlue" AlternationCount="2" Width="350" Grid.Column="0" MouseUp="QuoteConversionDataGrid_MouseUp" HorizontalAlignment="Left"/>-->
+                    --><!--<DataGrid x:Name="QuoteConversionDataGrid_International" ItemsSource="{Binding}" AlternatingRowBackground="LightBlue" AlternationCount="2" Width="350" Grid.Column="0" MouseUp="QuoteConversionDataGrid_MouseUp" HorizontalAlignment="Left"/>-->
                     <!--<Grid Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -286,8 +301,8 @@
                         <Label Content="3" HorizontalAlignment="Center" Grid.Column="3" VerticalAlignment="Bottom"/>
                         <Label Content="2" HorizontalAlignment="Center" Grid.Column="4" VerticalAlignment="Bottom"/>
                         <Label Content="1" HorizontalAlignment="Center" Grid.Column="5" VerticalAlignment="Bottom"/>
-                    </Grid>-->
-                </Grid>
+                    </Grid>--><!--
+                </Grid>-->
 
             </StackPanel>
         </Grid>

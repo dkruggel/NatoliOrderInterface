@@ -163,7 +163,7 @@ namespace NatoliOrderInterface
             else if (DomainName == "twilliams") { SignatureLeft = 958; SignatureBottom = 20; }
             else if (DomainName == "dsachuk") { SignatureLeft = 958; SignatureBottom = 20; }
             else { SignatureLeft = 0; SignatureBottom = 0; }
-            if (userName.ContainsAny("David Kruggel", "Tyler Williams", "James Willis", "Tiffany Simonpietri", "Barbara Bohling"))
+            if (userName.ContainsAny("David Kruggel", "Tyler Williams", "Mustafa Mulaosmanovic"))
             {
                 ViewReports = true;
             }
