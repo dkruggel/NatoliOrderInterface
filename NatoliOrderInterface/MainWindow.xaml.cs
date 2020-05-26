@@ -828,6 +828,7 @@ namespace NatoliOrderInterface
                     // User = new User("mmulaosmanovic");
                     // User = new User("hwillmuth");
                     // User = new User("kbergerdine");
+                    // User = new User("kmoses");
                 }
                 App.user = User;
             }

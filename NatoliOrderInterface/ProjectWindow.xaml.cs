@@ -101,7 +101,7 @@ namespace NatoliOrderInterface
         private bool timersEnabled = false;
 
 
-
+        // Standard constructor
         public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, bool isCreating)
         {
             InitializeComponent();
@@ -119,6 +119,33 @@ namespace NatoliOrderInterface
             {
                 LoadEngineeringProject();
             }
+            //if (mainWindow.WindowState == WindowState.Maximized)
+            //{
+            //    this.WindowState = WindowState.Maximized;
+            //}
+            timersEnabled = true;
+        }
+
+        // From quote constructor
+        public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, bool isCreating, Quote quote)
+        {
+            InitializeComponent();
+            this.projectNumber = projectNumber;
+            this.projectRevNumber = projectRevNumber;
+            this.user = user ?? new User();
+            mainWindow = parent ?? new MainWindow();
+            WindowSetup();
+            Show();
+            this.quote = quote;
+            if (isCreating)
+            {
+                PopulateBlankWindow();
+            }
+            else
+            {
+                LoadEngineeringProject();
+            }
+            QuoteLink();
             //if (mainWindow.WindowState == WindowState.Maximized)
             //{
             //    this.WindowState = WindowState.Maximized;
@@ -4526,6 +4553,60 @@ namespace NatoliOrderInterface
             _projectsContext.Dispose();
             _nat01Context.Dispose();
         }
+
+
+
+        private void QuoteLink()
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _nat01Context = new NAT01Context();
+            EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
+            QuoteNumber.Text = quote.QuoteNumber.ToString();
+            QuoteRevNumber.Text = quote.QuoteRevNo.ToString();
+            LinkQuoteWindow linkQuoteWindow = new LinkQuoteWindow(this);
+            // Load data from quote 
+            if (linkQuoteWindow.ShowDialog() == true)
+            {
+                switch (linkQuoteWindow.PopulateFromQuote)
+                {
+                    case true:
+                        engineeringProject.QuoteNumber = quote.QuoteNumber.ToString();
+                        engineeringProject.QuoteRevNumber = quote.QuoteRevNo.ToString();
+                        projectLinkedToQuote = !projectLinkedToQuote;
+                        LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                        LinkQuoteButton.ToolTip = "Unlink Quote";
+                        QuoteFolderButton.IsEnabled = true;
+                        FillFromQuote(Convert.ToDouble(quote.QuoteNumber), Convert.ToInt16(quote.QuoteRevNo), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
+                        break;
+                    default:
+                        break;
+                }
+                // Link folders
+                try
+                {
+                    string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
+                    string quoteDirectory = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber.ToString();
+                    string orderDirectory = _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : "";
+                    (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) messageBoxOverloads = IMethods.LinkFolders(projectDirectory, quoteDirectory, orderDirectory);
+                    MessageBox.Show(messageBoxOverloads.Message, messageBoxOverloads.Caption, messageBoxOverloads.Button, messageBoxOverloads.Image, messageBoxOverloads.Result);
+                }
+                catch
+                {
+                    MessageBox.Show("Could not create shortcut." + "\n" + "A problem occured while verifying folders exist and creating the shortcuts.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nothing has been linked together.", "Canceled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            _projectsContext.SaveChanges();
+            _projectsContext.Dispose();
+            _nat01Context.Dispose();
+        }
+
+
+
+
         /// <summary>
         /// Opens the ProjectSpecificationsWindow to check or see what is checked.
         /// </summary>
