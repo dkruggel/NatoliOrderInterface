@@ -3202,7 +3202,7 @@ namespace NatoliOrderInterface
                                                         {
                                                             if (punchLength != null && punchWidth != null && punchWidth_M != null && punchLength_M != null && die.LengthMajorAxis != null && die.LengthMajorAxis != 0)
                                                             {
-                                                                if (Math.Round((decimal)(die.WidthMinorAxis - punchWidth), 4) != Math.Round((decimal)(die.LengthMajorAxis - punchLength), 4) && Math.Round((decimal)(die.WidthMinorAxisM - (decimal)punchWidth_M), 2) != Math.Round((decimal)(die.LengthMajorAxisM - (decimal)punchWidth_M), 2))
+                                                                if (Math.Round((decimal)(die.WidthMinorAxis - punchWidth), 4) != Math.Round((decimal)(die.LengthMajorAxis - punchLength), 4) && Math.Round((decimal)(die.WidthMinorAxisM - (decimal)punchWidth_M), 2) != Math.Round((decimal)(die.LengthMajorAxisM - (decimal)punchLength_M), 2))
                                                                 {
                                                                     errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip dimension (200) that has clearances that differ from width to length. Please check that your tip sizes are correct.");
                                                                 }
