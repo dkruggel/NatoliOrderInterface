@@ -1854,7 +1854,7 @@ namespace NatoliOrderInterface
                         }
 
                         // Carbide not Assigned
-                        if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("491")) && !_nat02Context.PartAllocation.Any(pa => pa.QuoteNumber == quoteNo && pa.QuoteRevNo == Convert.ToInt32(quoteRevNo)))
+                        if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("491")) && !_nat02Context.PartAllocation.Any(pa => pa.QuoteNumber == quoteNo))
                         {
                             errors.Add("Carbide has not been assigned.");
                         }
