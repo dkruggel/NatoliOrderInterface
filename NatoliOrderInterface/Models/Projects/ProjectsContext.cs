@@ -61,8 +61,11 @@ namespace NatoliOrderInterface.Models.Projects
         public virtual DbSet<EngineeringTabletProjects> EngineeringTabletProjects { get; set; }
         public virtual DbSet<EngineeringToolProjects> EngineeringToolProjects { get; set; }
         public virtual DbSet<EngineeringArchivedProjects> EngineeringArchivedProjects { get; set; }
+        public virtual DbSet<OrdersAndProjectsReport> OrdersAndProjectsReport { get; set; }
         public virtual DbSet<OrdersReport> OrdersReport { get; set; }
         public virtual DbSet<ProjectsReport> ProjectsReport { get; set; }
+        public virtual DbSet<TabletProjectsReport> TabletProjectsReport { get; set; }
+        public virtual DbSet<ToolProjectsReport> ToolProjectsReport { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1851,12 +1854,27 @@ namespace NatoliOrderInterface.Models.Projects
                 entity.HasKey(e => new { e.ProjectNumber, e.RevNumber });
             });
 
+            modelBuilder.Entity<OrdersAndProjectsReport>(entity =>
+            {
+                entity.HasKey(e => e.Employee);
+            });
+
             modelBuilder.Entity<OrdersReport>(entity =>
             {
                 entity.HasKey(e => e.Employee);
             });
 
             modelBuilder.Entity<ProjectsReport>(entity =>
+            {
+                entity.HasKey(e => e.Employee);
+            });
+
+            modelBuilder.Entity<TabletProjectsReport>(entity =>
+            {
+                entity.HasKey(e => e.Employee);
+            });
+
+            modelBuilder.Entity<ToolProjectsReport>(entity =>
             {
                 entity.HasKey(e => e.Employee);
             });
