@@ -3101,7 +3101,7 @@ namespace NatoliOrderInterface
                                         try
                                         {
                                             string regex = @"[Dd][Ii][Ee]\s*[Ii][Dd]:?\s+\d+";
-                                            var match = Regex.Match(quote.EngineeringNote1, regex);
+                                            var match = Regex.Match(quote.EngineeringNote1 + " " + quote.EngineeringNote2 + " " + quote.MiscNote, regex);
                                             if (match.Success)
                                             {
                                                 string refDieID = match.Value;
@@ -3119,7 +3119,8 @@ namespace NatoliOrderInterface
                                             }
                                             else
                                             {
-                                                match = Regex.Match(quote.EngineeringNote2, regex);
+                                                regex = @"[Dd][Ii][Ee]\s*#:?\s+\d+";
+                                                match = Regex.Match(quote.EngineeringNote1 + " " + quote.EngineeringNote2 + " " + quote.MiscNote, regex);
                                                 if (match.Success)
                                                 {
                                                     string refDieID = match.Value;
@@ -3135,47 +3136,7 @@ namespace NatoliOrderInterface
                                                         }
                                                     }
                                                 }
-                                                // Change regex to look for die # instead of die id
-                                                else
-                                                {
-                                                    regex = @"[Dd][Ii][Ee]\s*#:?\s+\d+";
-                                                    match = Regex.Match(quote.EngineeringNote1, regex);
-                                                    if (match.Success)
-                                                    {
-                                                        string refDieID = match.Value;
-
-                                                        int i1 = refDieID.LastIndexOf(" ") + 1;
-                                                        int i2 = refDieID.Length;
-                                                        refDieID = refDieID.Substring(i1, i2 - i1);
-                                                        if (int.TryParse(refDieID, out int refDieIDINT) && int.TryParse(hob.DieId, out int dieIDINT))
-                                                        {
-                                                            if (dieIDINT != refDieIDINT)
-                                                            {
-                                                                errors.Add("The reference DIE ID in the engineering notes is \"" + refDieIDINT + "\" and hob list for '" + hob.HobNo + "' shows \"" + dieIDINT + "\" as the DIE ID. Consider changing to \"" + dieIDINT + "\".");
-                                                            }
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        match = Regex.Match(quote.EngineeringNote2, regex);
-                                                        if (match.Success)
-                                                        {
-                                                            string refDieID = match.Value;
-
-                                                            int i1 = refDieID.LastIndexOf(" ") + 1;
-                                                            int i2 = refDieID.Length;
-                                                            refDieID = refDieID.Substring(i1, i2 - i1);
-                                                            if (int.TryParse(refDieID, out int refDieIDINT) && int.TryParse(hob.DieId, out int dieIDINT))
-                                                            {
-                                                                if (dieIDINT != refDieIDINT)
-                                                                {
-                                                                    errors.Add("The reference DIE ID in the engineering notes is \"" + refDieIDINT + "\" and hob list for '" + hob.HobNo + "' shows \"" + dieIDINT + "\" as the DIE ID. Consider changing to \"" + dieIDINT + "\".");
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            } 
                                         }
                                         catch (Exception ex)
                                         {
