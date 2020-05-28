@@ -1098,9 +1098,11 @@ namespace NatoliOrderInterface
                             CarbideTips.IsEnabled = false;
                             MachineNotes.Text = toolProject.MachineNotes;
                             MachineNotes.IsEnabled = false;
-                            if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber))
+                            if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) || _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber && p.TabletChecked == true))
                             {
                                 ToolsTabItem.IsSelected = true;
+                                CurrentProjectType.Text = "TOOLS";
+                                RefreshRoutingButtons();
                             }
                         }
                         else
