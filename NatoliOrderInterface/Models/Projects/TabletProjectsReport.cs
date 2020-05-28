@@ -4,10 +4,9 @@ using System.Text;
 
 namespace NatoliOrderInterface.Models.Projects
 {
-    public partial class ProjectsReport
+    public partial class TabletProjectsReport
     {
         public int TabletProjects { get; set; }
-        public int ToolProjects { get; set; }
         public string Employee { get; set; }
     }
 }

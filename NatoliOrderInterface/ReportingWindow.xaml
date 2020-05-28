@@ -30,6 +30,9 @@
 
         <StackPanel DockPanel.Dock="Left" Width="150">
             <Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25" Style="{StaticResource Button}"/>
+            <CheckBox x:Name="Orders" Content="Orders"/>
+            <CheckBox x:Name="Tablets" Content="Tablet Projects"/>
+            <CheckBox x:Name="Tools" Content="Tool Projects"/>
         </StackPanel>
 
         <Grid>
