@@ -99,6 +99,7 @@ namespace NatoliOrderInterface
         Quote quote = null;
         private bool validData = false;
         private bool timersEnabled = false;
+        private bool saved = false;
 
 
         // Standard constructor
@@ -139,6 +140,7 @@ namespace NatoliOrderInterface
             this.quote = quote;
             if (isCreating)
             {
+                saved = false;
                 PopulateBlankWindow();
             }
             else
@@ -614,6 +616,7 @@ namespace NatoliOrderInterface
         {
             try
             {
+                saved = true;
                 using var _projectsContext = new ProjectsContext();
                 using var _nat01Context = new NAT01Context();
                 CreationBorder.Visibility = Visibility.Hidden;
@@ -1548,7 +1551,6 @@ namespace NatoliOrderInterface
                     _nat01Context.Dispose();
                     if (MessageBox.Show("This project does not exist in the database.\n This window will now close", "Cannot Find Project", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK) == MessageBoxResult.OK)
                     {
-                        Dispose();
                         string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
                         try
                         {
@@ -4344,6 +4346,53 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("ProjectWindow => AllControlsEnabledOrDisabled", ex.Message, user);
             }
         }
+        private void QuoteLink()
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _nat01Context = new NAT01Context();
+            EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
+            QuoteNumber.Text = quote.QuoteNumber.ToString();
+            QuoteRevNumber.Text = quote.QuoteRevNo.ToString();
+            LinkQuoteWindow linkQuoteWindow = new LinkQuoteWindow(this);
+            // Load data from quote 
+            if (linkQuoteWindow.ShowDialog() == true)
+            {
+                switch (linkQuoteWindow.PopulateFromQuote)
+                {
+                    case true:
+                        engineeringProject.QuoteNumber = quote.QuoteNumber.ToString();
+                        engineeringProject.QuoteRevNumber = quote.QuoteRevNo.ToString();
+                        projectLinkedToQuote = !projectLinkedToQuote;
+                        LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
+                        LinkQuoteButton.ToolTip = "Unlink Quote";
+                        QuoteFolderButton.IsEnabled = true;
+                        FillFromQuote(Convert.ToDouble(quote.QuoteNumber), Convert.ToInt16(quote.QuoteRevNo), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
+                        break;
+                    default:
+                        break;
+                }
+                // Link folders
+                try
+                {
+                    string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
+                    string quoteDirectory = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber.ToString();
+                    string orderDirectory = _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : "";
+                    (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) messageBoxOverloads = IMethods.LinkFolders(projectDirectory, quoteDirectory, orderDirectory);
+                    MessageBox.Show(messageBoxOverloads.Message, messageBoxOverloads.Caption, messageBoxOverloads.Button, messageBoxOverloads.Image, messageBoxOverloads.Result);
+                }
+                catch
+                {
+                    MessageBox.Show("Could not create shortcut." + "\n" + "A problem occured while verifying folders exist and creating the shortcuts.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Nothing has been linked together.", "Canceled", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            _projectsContext.SaveChanges();
+            _projectsContext.Dispose();
+            _nat01Context.Dispose();
+        }
 
         #region Events
         private void ProjectWindowXAML_Activated(object sender, EventArgs e)
@@ -4558,59 +4607,39 @@ namespace NatoliOrderInterface
             _projectsContext.Dispose();
             _nat01Context.Dispose();
         }
-
-
-
-        private void QuoteLink()
+        private void DueDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            using var _projectsContext = new ProjectsContext();
-            using var _nat01Context = new NAT01Context();
-            EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
-            QuoteNumber.Text = quote.QuoteNumber.ToString();
-            QuoteRevNumber.Text = quote.QuoteRevNo.ToString();
-            LinkQuoteWindow linkQuoteWindow = new LinkQuoteWindow(this);
-            // Load data from quote 
-            if (linkQuoteWindow.ShowDialog() == true)
-            {
-                switch (linkQuoteWindow.PopulateFromQuote)
-                {
-                    case true:
-                        engineeringProject.QuoteNumber = quote.QuoteNumber.ToString();
-                        engineeringProject.QuoteRevNumber = quote.QuoteRevNo.ToString();
-                        projectLinkedToQuote = !projectLinkedToQuote;
-                        LinkQuoteButton.Tag = Application.Current.Resources["unlinkDrawingImage"] as DrawingImage;
-                        LinkQuoteButton.ToolTip = "Unlink Quote";
-                        QuoteFolderButton.IsEnabled = true;
-                        FillFromQuote(Convert.ToDouble(quote.QuoteNumber), Convert.ToInt16(quote.QuoteRevNo), linkQuoteWindow.TabletProject, linkQuoteWindow.ToolProject);
-                        break;
-                    default:
-                        break;
-                }
-                // Link folders
-                try
-                {
-                    string projectDirectory = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber;
-                    string quoteDirectory = @"\\nsql03\data1\Quotes\" + quote.QuoteNumber.ToString();
-                    string orderDirectory = _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && q.QuoteRevNo == Convert.ToDouble(quote.QuoteRevNo) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : _nat01Context.QuoteHeader.Any(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0) ? @"\\nsql03\data1\WorkOrders\" + _nat01Context.QuoteHeader.First(q => q.QuoteNo == Convert.ToDouble(quote.QuoteNumber) && (double)q.OrderNo > 0).OrderNo.ToString().Remove(6) : "";
-                    (string Message, string Caption, MessageBoxButton Button, MessageBoxImage Image, MessageBoxResult Result) messageBoxOverloads = IMethods.LinkFolders(projectDirectory, quoteDirectory, orderDirectory);
-                    MessageBox.Show(messageBoxOverloads.Message, messageBoxOverloads.Caption, messageBoxOverloads.Button, messageBoxOverloads.Image, messageBoxOverloads.Result);
-                }
-                catch
-                {
-                    MessageBox.Show("Could not create shortcut." + "\n" + "A problem occured while verifying folders exist and creating the shortcuts.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Nothing has been linked together.", "Canceled", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            _projectsContext.SaveChanges();
-            _projectsContext.Dispose();
-            _nat01Context.Dispose();
+            SetProjectWarningText();
         }
-
-
-
+        private void ProjectWindowXAML_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                if (!saved)
+                {
+                    MessageBoxResult result = MessageBox.Show("Are you sure you want to Cancel?" + "\n"
+                        + "Your progress will not be saved.", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+                    if (result != MessageBoxResult.Yes)
+                    {
+                        e.Cancel = true;
+                        
+                    }
+                    else
+                    {
+                        using var projectsContext = new ProjectsContext();
+                        EngineeringProjects project = projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                        projectsContext.EngineeringProjects.Remove(project);
+                        projectsContext.SaveChanges();
+                        projectsContext.Dispose();
+                        Dispose();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow.xaml.cs => ProjectWindowXAML_Closing", ex.Message, user);
+            }
+        }
 
         /// <summary>
         /// Opens the ProjectSpecificationsWindow to check or see what is checked.
@@ -6009,7 +6038,7 @@ namespace NatoliOrderInterface
                 _projectsContext.Dispose();
                 if (MessageBox.Show("Project Saved!\nWould you like to close now?", "Save Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                 {
-                    Dispose();
+                    saved = true;
                     Close();
                 }
             }
@@ -6027,6 +6056,7 @@ namespace NatoliOrderInterface
         {
             try
             {
+                saved = true;
                 // See CreateButton_Click for Revision Actions
                 ProjectNavigation.Visibility = Visibility.Hidden;
                 CreationBorder.Visibility = Visibility.Visible;
@@ -6041,13 +6071,7 @@ namespace NatoliOrderInterface
         }
         private void CancelCreateButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to Cancel?" + "\n"
-                + "Your progress will not be saved.", "Are You Sure?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-            if (result == MessageBoxResult.Yes)
-            {
-                Close();
-            }
-
+            Close();
         }
         #endregion
 
@@ -6458,9 +6482,6 @@ namespace NatoliOrderInterface
             }
             #endregion
         }
-        private void DueDate_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SetProjectWarningText();
-        }
+        
     }
 }

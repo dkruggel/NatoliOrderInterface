@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Name="ProjectWindowXAML" x:Class="NatoliOrderInterface.ProjectWindow"
         mc:Ignorable="d"
-        Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" UseLayoutRounding="True" Activated="ProjectWindowXAML_Activated">
+        Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" UseLayoutRounding="True" Activated="ProjectWindowXAML_Activated" Closing="ProjectWindowXAML_Closing">
     <Window.Resources>
         <System:String x:Key="UnitsText">in</System:String>
     </Window.Resources>
