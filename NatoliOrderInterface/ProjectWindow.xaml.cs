@@ -4037,6 +4037,13 @@ namespace NatoliOrderInterface
                         ArchivedOrInactive.Text = "On Hold";
                         ArchivedOrInactive.Visibility = Visibility.Visible;
                     }
+                    else if (user.Department != "Engineering")
+                    {
+                        StartButton.IsEnabled = true;
+                        FinishButton.IsEnabled = false;
+                        SubmitButton.IsEnabled = false;
+                        CheckButton.IsEnabled = false;
+                    }
                     else
                     {
                         if (CurrentProjectType.Text == "TABLETS")
