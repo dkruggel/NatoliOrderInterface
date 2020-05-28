@@ -1176,7 +1176,7 @@
                                             <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black">
                                                 <TextBlock  Text="KEYS" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
                                             </Border>
-                                            <DockPanel Grid.Row="1">
+                                            <DockPanel Grid.Row="1" Margin="0,2,0,0">
                                                 <TextBlock Text="Key Type:" Style="{StaticResource NormalTextBlock}" VerticalAlignment="Center"/>
                                                 <ComboBox x:Name="KeyType"  Style="{StaticResource ComboBoxAlignsCenter}" Margin="4,-2,0,0" IsEditable="False" HorizontalContentAlignment="Center" SelectedIndex="-1">
                                                     <System:String>Fixed Parallel Key 1 Slot</System:String>
