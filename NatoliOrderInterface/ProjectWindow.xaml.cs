@@ -5803,6 +5803,7 @@ namespace NatoliOrderInterface
                     {
                         try
                         {
+                            saved = true;
                             using var _projectsContext = new ProjectsContext();
                             EngineeringProjects engineeringProject = GetEngineeringProjectFromCurrentForm(true);
                             _projectsContext.Update(engineeringProject);
@@ -5844,6 +5845,7 @@ namespace NatoliOrderInterface
                     }
                     else if (button.Content.ToString() == "Revise")
                     {
+                        saved = true;
                         using var _projectsContext = new ProjectsContext();
                         EngineeringProjects oldEngineeringProject = null;
                         EngineeringArchivedProjects archivedProject = null;
