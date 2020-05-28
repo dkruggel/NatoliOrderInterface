@@ -4659,7 +4659,7 @@ namespace NatoliOrderInterface
         {
             try
             {
-                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Content == "Revise", NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
+                ProjectSpecificationsWindow projectSpecificationsWindow = new ProjectSpecificationsWindow(this, CreateButton.Visibility == Visibility.Visible, NewDrawing, UpdateExistingDrawing, UpdateTextOnDrawing, PerSampleTablet, RefTabletDrawing,
                     PerSampleTool, RefToolDrawing, PerSuppliedPicture, RefNatoliDrawing, RefNonNatoliDrawing, BinLocation);
                 if (projectSpecificationsWindow.ShowDialog() == true)
                 {
