@@ -5009,7 +5009,7 @@ namespace NatoliOrderInterface
                 string _editedText = editedText.ToString().Trim();
                 if (!string.IsNullOrWhiteSpace(_editedText))
                 {
-                    decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
+                    decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : (decimal)25.4;
                     string _editedTextBoxName = editedTextBoxName.ToString();
                     string _upperCupType = upperCupType.Trim();
                     string _upperCupDepth = upperCupDepth.Trim();
