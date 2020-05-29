@@ -3615,132 +3615,146 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         private EngineeringProjects GetEngineeringProjectFromCurrentForm(bool projectWillBeActive)
         {
-            if(!projectWillBeActive || FormCheck())
+            if (!projectWillBeActive)
             {
-                try
+                if (TabletsRequired.IsChecked != true && ToolsRequired.IsChecked != true)
                 {
-
-                    using var _projectsContext = new ProjectsContext();
-
-                    EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
-                    //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
-                    decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
-                    EngineeringProjects engineeringProject = new EngineeringProjects
-                    {
-                        ProjectNumber = projectNumber,
-                        RevNumber = projectRevNumber,
-                        ActiveProject = projectWillBeActive,
-                        QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
-                        QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
-                        RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
-                        RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
-                        RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
-                        RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
-                        RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
-                        CSR = CSR.Text,
-                        ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
-                        CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
-                        CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
-                        ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
-                        ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
-                        ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
-                        EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
-                        EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
-                        EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
-                        UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
-                        Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
-                        Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
-                        MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
-                        DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
-                        DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
-                        Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
-                        Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
-                        UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?)upperCupType : null,
-                        UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
-                        UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
-                        UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
-                        UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
-                        LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
-                        LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
-                        LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
-                        LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
-                        LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
-                        ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
-                        ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
-                        ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
-                        ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
-                        ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
-                        LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
-                        LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
-                        LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
-                        LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
-                        LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
-                        UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
-                        LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
-                        ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
-                        LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
-                        DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
-                        Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
-                        TimeSubmitted = DateTime.UtcNow,
-                        DueDate = DueDate.Text.Length>0 ? (DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue) : DateTime.MaxValue,
-                        Priority = Priority.IsChecked ?? false,
-                        TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
-                        TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
-                        TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
-                        TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
-                        TabletDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletDrawnDateTime) : null,
-                        TabletDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletDrawnBy) : "",
-                        TabletSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletSubmitted) : false,
-                        TabletSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletSubmittedDateTime) : null,
-                        TabletSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletSubmittedBy) : "",
-                        TabletChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletChecked) : false,
-                        TabletCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletCheckedDateTime) : null,
-                        TabletCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletCheckedBy) : "",
-                        ToolStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolStarted) : false,
-                        ToolStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolStartedDateTime) : null,
-                        ToolStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolStartedBy) : "",
-                        ToolDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolDrawn) : false,
-                        ToolDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolDrawnDateTime) : null,
-                        ToolDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolDrawnBy) : "",
-                        ToolSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolSubmitted) : false,
-                        ToolSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolSubmittedDateTime) : null,
-                        ToolSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolSubmittedBy) : "",
-                        ToolChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolChecked) : false,
-                        ToolCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolCheckedDateTime) : null,
-                        ToolCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolCheckedBy) : "",
-                        NewDrawing = NewDrawing,
-                        UpdateExistingDrawing = UpdateExistingDrawing,
-                        UpdateTextOnDrawing = UpdateTextOnDrawing,
-                        PerSampleTablet = PerSampleTablet,
-                        RefTabletDrawing = RefTabletDrawing,
-                        PerSampleTool = PerSampleTool,
-                        RefToolDrawing = RefToolDrawing,
-                        PerSuppliedPicture = PerSuppliedPicture,
-                        RefNatoliDrawing = RefNatoliDrawing,
-                        RefNonNatoliDrawing = RefNonNatoliDrawing,
-                        MultiTipSketch = MultiTipSketch.IsChecked ?? false,
-                        MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
-                        NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
-                        BinLocation = BinLocation,
-                        MultiTipSolid = MultiTipStyle.Text == "SOLID",
-                        MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
-                        OnHold = false,
-                        OnHoldComment = "",
-                        OnHoldDateTime = null,
-                        RevisedBy = projectWillBeActive ? user.GetDWDisplayName() : null,
-                        Changes = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.Changes) : null
-                    };
-                    _projectsContext.Dispose();
-                    return engineeringProject;
-                }
-                catch (Exception ex)
-                {
-                    IMethods.WriteToErrorLog("ProjectWindow => GetEngineeringProjectFromCurrentForm", ex.Message, user);
+                    MessageBox.Show("Please mark for tablet or tools.");
                     return null;
                 }
+                else
+                {
+                    goto SaveProject;
+                }
+            }
+            else if (FormCheck())
+            {
+                goto SaveProject;
             }
             else
             {
+                return null;
+            }
+        SaveProject:
+            try
+            {
+
+                using var _projectsContext = new ProjectsContext();
+
+                EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                //EngineeringArchivedProjects archivedProject = projectWillBeActive && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
+                decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
+                EngineeringProjects engineeringProject = new EngineeringProjects
+                {
+                    ProjectNumber = projectNumber,
+                    RevNumber = projectRevNumber,
+                    ActiveProject = projectWillBeActive,
+                    QuoteNumber = !string.IsNullOrEmpty(QuoteNumber.Text) ? QuoteNumber.Text.Trim() : "",
+                    QuoteRevNumber = !string.IsNullOrEmpty(QuoteRevNumber.Text) ? QuoteRevNumber.Text.Trim() : "",
+                    RefProjectNumber = !string.IsNullOrEmpty(ReferenceProjectNumber.Text) ? ReferenceProjectNumber.Text.Trim() : "",
+                    RefProjectRevNumber = !string.IsNullOrEmpty(ReferenceProjectRevNumber.Text) ? ReferenceProjectRevNumber.Text.Trim() : "",
+                    RefQuoteNumber = !string.IsNullOrEmpty(ReferenceQuoteNumber.Text) ? ReferenceQuoteNumber.Text.Trim() : "",
+                    RefQuoteRevNumber = !string.IsNullOrEmpty(ReferenceQuoteRevNumber.Text) ? ReferenceQuoteRevNumber.Text.Trim() : "",
+                    RefOrderNumber = !string.IsNullOrEmpty(RefOrderNumber.Text) ? RefOrderNumber.Text.Trim() : "",
+                    CSR = CSR.Text,
+                    ReturnToCSR = !string.IsNullOrEmpty(ReturnToCSR.Text) ? ReturnToCSR.Text.Trim() : "",
+                    CustomerNumber = !string.IsNullOrEmpty(CustomerNumber.Text) ? CustomerNumber.Text.Trim() : "",
+                    CustomerName = !string.IsNullOrEmpty(CustomerName.Text) ? CustomerName.Text.Trim() : "",
+                    ShipToNumber = !string.IsNullOrEmpty(ShipToNumber.Text) ? ShipToNumber.Text.Trim() : "",
+                    ShipToLocNumber = !string.IsNullOrEmpty(ShipToLocNumber.Text) ? ShipToLocNumber.Text.Trim() : "",
+                    ShipToName = !string.IsNullOrEmpty(ShipToName.Text) ? ShipToName.Text.Trim() : "",
+                    EndUserNumber = !string.IsNullOrEmpty(EndUserNumber.Text) ? EndUserNumber.Text.Trim() : "",
+                    EndUserLocNumber = !string.IsNullOrEmpty(EndUserLocNumber.Text) ? EndUserLocNumber.Text.Trim() : "",
+                    EndUserName = !string.IsNullOrEmpty(EndUserName.Text) ? EndUserName.Text.Trim() : "",
+                    UnitOfMeasure = !string.IsNullOrEmpty(UnitOfMeasure.Text) ? UnitOfMeasure.Text.Trim() : "",
+                    Product = !string.IsNullOrEmpty(Product.Text) ? Product.Text.Trim() : "",
+                    Attention = !string.IsNullOrEmpty(Attention.Text) ? Attention.Text.Trim() : "",
+                    MachineNumber = !string.IsNullOrEmpty(MachineNumber.Text) ? MachineNumber.Text.Trim() : "",
+                    DieNumber = string.IsNullOrEmpty(DieNumber.Text) ? "      " : DieNumber.Text.Trim().Length < 6 ? new string(' ', 6 - DieNumber.Text.Trim().Length) + DieNumber.Text.Trim() : DieNumber.Text.Trim(),
+                    DieShape = !string.IsNullOrEmpty(DieShape.Text) ? DieShape.Text.Trim() : "",
+                    Width = decimal.TryParse(TabletWidth.Text, out decimal width) ? (decimal?)width * conversion : null,
+                    Length = decimal.TryParse(TabletLength.Text, out decimal length) ? (decimal?)length * conversion : null,
+                    UpperCupType = string.IsNullOrEmpty(UpperCupType.Text) ? null : short.TryParse(UpperCupType.Text.Split('-')[0].Trim(), out short upperCupType) ? (short?)upperCupType : null,
+                    UpperHobNumber = string.IsNullOrEmpty(UpperHobNumber.Text) ? "      " : UpperHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : UpperHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - UpperHobNumber.Text.Trim().Length) + UpperHobNumber.Text.Trim() : UpperHobNumber.Text.Trim(),
+                    UpperHobDescription = !string.IsNullOrEmpty(UpperHobDescription.Text) ? UpperHobDescription.Text.Trim() : "",
+                    UpperCupDepth = decimal.TryParse(UpperCupDepth.Text, out decimal upperCupDepth) ? (decimal?)upperCupDepth * conversion : null,
+                    UpperLand = decimal.TryParse(UpperLand.Text, out decimal upperLand) ? (decimal?)upperLand * conversion : null,
+                    LowerCupType = string.IsNullOrEmpty(LowerCupType.Text) ? null : short.TryParse(LowerCupType.Text.Split('-')[0].Trim(), out short lowerCupType) ? (short?)lowerCupType : null,
+                    LowerHobNumber = string.IsNullOrEmpty(LowerHobNumber.Text) ? "      " : LowerHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LowerHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LowerHobNumber.Text.Trim().Length) + LowerHobNumber.Text.Trim() : LowerHobNumber.Text.Trim(),
+                    LowerHobDescription = !string.IsNullOrEmpty(LowerHobDescription.Text) ? LowerHobDescription.Text.Trim() : "",
+                    LowerCupDepth = decimal.TryParse(LowerCupDepth.Text, out decimal lowerCupDepth) ? (decimal?)lowerCupDepth * conversion : null,
+                    LowerLand = decimal.TryParse(LowerLand.Text, out decimal lowerLand) ? (decimal?)lowerLand * conversion : null,
+                    ShortRejectCupType = string.IsNullOrEmpty(ShortRejectCupType.Text) ? null : short.TryParse(ShortRejectCupType.Text.Split('-')[0].Trim(), out short shortRejectCupType) ? (short?)shortRejectCupType : null,
+                    ShortRejectHobNumber = string.IsNullOrEmpty(ShortRejectHobNumber.Text) ? "      " : ShortRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : ShortRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - ShortRejectHobNumber.Text.Trim().Length) + ShortRejectHobNumber.Text.Trim() : ShortRejectHobNumber.Text.Trim(),
+                    ShortRejectHobDescription = !string.IsNullOrEmpty(ShortRejectHobDescription.Text) ? ShortRejectHobDescription.Text.Trim() : "",
+                    ShortRejectCupDepth = decimal.TryParse(ShortRejectCupDepth.Text, out decimal shortRejectCupDepth) ? (decimal?)shortRejectCupDepth * conversion : null,
+                    ShortRejectLand = decimal.TryParse(ShortRejectLand.Text, out decimal shortRejectLand) ? (decimal?)shortRejectLand * conversion : null,
+                    LongRejectCupType = string.IsNullOrEmpty(LongRejectCupType.Text) ? null : short.TryParse(LongRejectCupType.Text.Split('-')[0].Trim(), out short longRejectCupType) ? (short?)longRejectCupType : null,
+                    LongRejectHobNumber = string.IsNullOrEmpty(LongRejectHobNumber.Text) ? "      " : LongRejectHobNumber.Text.Trim().ToUpper() == "NEW" ? "   NEW" : LongRejectHobNumber.Text.Trim().Length < 6 ? new string('0', 6 - LongRejectHobNumber.Text.Trim().Length) + LongRejectHobNumber.Text.Trim() : LongRejectHobNumber.Text.Trim(),
+                    LongRejectHobDescription = !string.IsNullOrEmpty(LongRejectHobDescription.Text) ? LongRejectHobDescription.Text.Trim() : "",
+                    LongRejectCupDepth = decimal.TryParse(LongRejectCupDepth.Text, out decimal longRejectCupDepth) ? (decimal?)longRejectCupDepth * conversion : null,
+                    LongRejectLand = decimal.TryParse(LongRejectLand.Text, out decimal longRejectLand) ? (decimal?)longRejectLand * conversion : null,
+                    UpperTolerances = !string.IsNullOrEmpty(UpperTolerances.Text) ? UpperTolerances.Text.Trim() : "",
+                    LowerTolerances = !string.IsNullOrEmpty(LowerTolerances.Text) ? LowerTolerances.Text.Trim() : "",
+                    ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
+                    LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
+                    DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
+                    Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
+                    TimeSubmitted = DateTime.UtcNow,
+                    DueDate = DueDate.Text.Length > 0 ? (DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue) : DateTime.MaxValue,
+                    Priority = Priority.IsChecked ?? false,
+                    TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
+                    TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
+                    TabletStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletStartedBy) : "",
+                    TabletDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletDrawn) : false,
+                    TabletDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletDrawnDateTime) : null,
+                    TabletDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletDrawnBy) : "",
+                    TabletSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletSubmitted) : false,
+                    TabletSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletSubmittedDateTime) : null,
+                    TabletSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletSubmittedBy) : "",
+                    TabletChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletChecked) : false,
+                    TabletCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletCheckedDateTime) : null,
+                    TabletCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.TabletCheckedBy) : "",
+                    ToolStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolStarted) : false,
+                    ToolStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolStartedDateTime) : null,
+                    ToolStartedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolStartedBy) : "",
+                    ToolDrawn = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolDrawn) : false,
+                    ToolDrawnDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolDrawnDateTime) : null,
+                    ToolDrawnBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolDrawnBy) : "",
+                    ToolSubmitted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolSubmitted) : false,
+                    ToolSubmittedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolSubmittedDateTime) : null,
+                    ToolSubmittedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolSubmittedBy) : "",
+                    ToolChecked = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.ToolChecked) : false,
+                    ToolCheckedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.ToolCheckedDateTime) : null,
+                    ToolCheckedBy = projectWillBeActive ? (oldEngineeringProject == null ? "" : oldEngineeringProject.ToolCheckedBy) : "",
+                    NewDrawing = NewDrawing,
+                    UpdateExistingDrawing = UpdateExistingDrawing,
+                    UpdateTextOnDrawing = UpdateTextOnDrawing,
+                    PerSampleTablet = PerSampleTablet,
+                    RefTabletDrawing = RefTabletDrawing,
+                    PerSampleTool = PerSampleTool,
+                    RefToolDrawing = RefToolDrawing,
+                    PerSuppliedPicture = PerSuppliedPicture,
+                    RefNatoliDrawing = RefNatoliDrawing,
+                    RefNonNatoliDrawing = RefNonNatoliDrawing,
+                    MultiTipSketch = MultiTipSketch.IsChecked ?? false,
+                    MultiTipSketchID = !string.IsNullOrEmpty(SketchID.Text) ? SketchID.Text.Trim() : "",
+                    NumberOfTips = byte.TryParse(NumberOfTips.Text, out byte numberOfTips) ? numberOfTips : (byte)1,
+                    BinLocation = BinLocation,
+                    MultiTipSolid = MultiTipStyle.Text == "SOLID",
+                    MultiTipAssembled = MultiTipStyle.Text == "ASSEMBLED",
+                    OnHold = false,
+                    OnHoldComment = "",
+                    OnHoldDateTime = null,
+                    RevisedBy = projectWillBeActive ? user.GetDWDisplayName() : null,
+                    Changes = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.Changes) : null
+                };
+                _projectsContext.Dispose();
+                return engineeringProject;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => GetEngineeringProjectFromCurrentForm", ex.Message, user);
                 return null;
             }
 
