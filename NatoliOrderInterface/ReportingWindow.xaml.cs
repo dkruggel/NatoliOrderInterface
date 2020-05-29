@@ -41,157 +41,152 @@ namespace NatoliOrderInterface
 
         private void BuildOrdersChart()
         {
-            if (EndDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate.Value >= EndDatePicker.SelectedDate.Value)
+            using var _ = new ProjectsContext();
+
+            SeriesCollection sc = new SeriesCollection();
+
+            if ((bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
             {
-                ProductionChart.Visibility = Visibility.Hidden;
+                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction @StartDate = {0}, @EndDate = {1}";
+
+                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+
+                List<OrdersAndProjectsReport> ordersReport = _.OrdersAndProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+
+                _.Dispose();
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Orders Scanned In",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
+                });
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Orders Scanned Out",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
+                });
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Orders To Office",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
+                });
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tablet Projects",
+                    Values = new ChartValues<int>(ordersReport.Where(or => or.TabletProjects > 0).Select(or => or.TabletProjects))
+                });
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tool Projects",
+                    Values = new ChartValues<int>(ordersReport.Where(or => or.ToolProjects > 0).Select(or => or.ToolProjects))
+                });
+                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+
+                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            else
+            else if ((bool)Orders.IsChecked && !(bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
             {
-                using var _ = new ProjectsContext();
+                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Orders @StartDate = {0}, @EndDate = {1}";
 
-                SeriesCollection sc = new SeriesCollection();
+                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
 
-                if ((bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+                List<OrdersReport> ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
+
+                _.Dispose();
+
+                sc.Add(new RowSeries
                 {
-                    string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction @StartDate = {0}, @EndDate = {1}";
+                    Title = "Orders Scanned In",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
+                });
 
-                    string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
-
-                    List<OrdersAndProjectsReport> ordersReport = _.OrdersAndProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                    _.Dispose();
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders Scanned In",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders Scanned Out",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders To Office",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tablet Projects",
-                        Values = new ChartValues<int>(ordersReport.Where(or => or.TabletProjects > 0).Select(or => or.TabletProjects))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tool Projects",
-                        Values = new ChartValues<int>(ordersReport.Where(or => or.ToolProjects > 0).Select(or => or.ToolProjects))
-                    });
-                    YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-
-                    string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
-                }
-                else if ((bool)Orders.IsChecked && !(bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
+                sc.Add(new RowSeries
                 {
-                    string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Orders @StartDate = {0}, @EndDate = {1}";
+                    Title = "Orders Scanned Out",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
+                });
 
-                    string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
-
-                    List<OrdersReport> ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                    _.Dispose();
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders Scanned In",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders Scanned Out",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Orders To Office",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
-                    });
-                    YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-
-                    string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
-                }
-                else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+                sc.Add(new RowSeries
                 {
-                    string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Projects @StartDate = {0}, @EndDate = {1}";
+                    Title = "Orders To Office",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
+                });
+                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
 
-                    string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
-
-                    List<ProjectsReport> ordersReport = _.ProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                    _.Dispose();
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tablet Projects",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
-                    });
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tool Projects",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
-                    });
-                    YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-
-                    string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
-                }
-                else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
-                {
-                    string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tablets @StartDate = {0}, @EndDate = {1}";
-
-                    string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
-
-                    List<TabletProjectsReport> ordersReport = _.TabletProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                    _.Dispose();
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tablet Projects",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
-                    });
-                    YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-
-                    string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
-                }
-                else if (!(bool)Orders.IsChecked && !(bool)Tablets.IsChecked && (bool)Tools.IsChecked)
-                {
-                    string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools @StartDate = {0}, @EndDate = {1}";
-
-                    string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
-
-                    List<ToolProjectsReport> ordersReport = _.ToolProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                    _.Dispose();
-
-                    sc.Add(new RowSeries
-                    {
-                        Title = "Tool Projects",
-                        Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
-                    });
-                    YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-
-                    string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
-                }
-
-                ProductionChart.Series = sc;
-                ProductionChart.Visibility = ProductionChart.Series.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
+            else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+            {
+                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Projects @StartDate = {0}, @EndDate = {1}";
+
+                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+
+                List<ProjectsReport> ordersReport = _.ProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+
+                _.Dispose();
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tablet Projects",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
+                });
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tool Projects",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
+                });
+                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+
+                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+            }
+            else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
+            {
+                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tablets @StartDate = {0}, @EndDate = {1}";
+
+                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+
+                List<TabletProjectsReport> ordersReport = _.TabletProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+
+                _.Dispose();
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tablet Projects",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
+                });
+                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+
+                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+            }
+            else if (!(bool)Orders.IsChecked && !(bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+            {
+                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools @StartDate = {0}, @EndDate = {1}";
+
+                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+
+                List<ToolProjectsReport> ordersReport = _.ToolProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+
+                _.Dispose();
+
+                sc.Add(new RowSeries
+                {
+                    Title = "Tool Projects",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
+                });
+                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+
+                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+            }
+
+            ProductionChart.Series = sc;
+            ProductionChart.Visibility = ProductionChart.Series.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+            _.Dispose();
+
         }
 
         private void QuoteConversionDataGrid_MouseUp(object sender, MouseButtonEventArgs e)
@@ -211,7 +206,14 @@ namespace NatoliOrderInterface
 
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            BuildOrdersChart();
+            if (EndDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate.Value >= EndDatePicker.SelectedDate.Value)
+            {
+                ProductionChart.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                BuildOrdersChart();
+            }
         }
     }
 }
