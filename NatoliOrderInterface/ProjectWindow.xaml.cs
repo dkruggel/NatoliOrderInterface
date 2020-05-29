@@ -3615,10 +3615,11 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         private EngineeringProjects GetEngineeringProjectFromCurrentForm(bool projectWillBeActive)
         {
-            if (FormCheck())
+            if(!projectWillBeActive || FormCheck())
             {
                 try
                 {
+
                     using var _projectsContext = new ProjectsContext();
 
                     EngineeringProjects oldEngineeringProject = projectWillBeActive && _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) ? _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) : null;
@@ -3681,7 +3682,7 @@ namespace NatoliOrderInterface
                         DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
                         Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
                         TimeSubmitted = DateTime.UtcNow,
-                        DueDate = DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue,
+                        DueDate = DueDate.Text.Length>0 ? (DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue) : DateTime.MaxValue,
                         Priority = Priority.IsChecked ?? false,
                         TabletStarted = projectWillBeActive ? (oldEngineeringProject == null ? false : oldEngineeringProject.TabletStarted) : false,
                         TabletStartedDateTime = projectWillBeActive ? (oldEngineeringProject == null ? null : oldEngineeringProject.TabletStartedDateTime) : null,
@@ -3742,6 +3743,8 @@ namespace NatoliOrderInterface
             {
                 return null;
             }
+
+
         }
         /// <summary>
         /// Creates a new EngineeringTabletProjects from the information in the form.
