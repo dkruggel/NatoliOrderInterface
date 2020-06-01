@@ -2897,6 +2897,31 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' does not have an FS-12 style head but the machine is of FS-12 type.");
                                             }
                                         }
+                                    
+                                        // Upper and like 20-28 machine head and barrel
+                                        if((machine.MachineTypePrCode=="K20" || machine.MachineTypePrCode == "K25" || machine.MachineTypePrCode == "K28" || machine.MachineTypePrCode == "K30" || machine.MachineTypePrCode == "K38") && quoteLineItem.LineItemType.Contains("U"))
+                                        {
+                                            if(quoteLineItems.Any(qli=>qli.OptionNumbers.Contains("035") && qli.LineItemType.Contains("U")))
+                                            {
+                                                var qlis = quoteLineItems.Where(qli => qli.OptionNumbers.Contains("035") && qli.LineItemType.Contains("U"));
+                                                bool hasProperTolerance = false;
+                                                foreach(QuoteLineItem qli in qlis)
+                                                {
+                                                    if(qli.optionValuesA.Any(o=>o.Number1<.0006))
+                                                    {
+                                                        hasProperTolerance = true;
+                                                    }
+                                                }
+                                                if(!hasProperTolerance)
+                                                {
+                                                    errors.Add("The upper head needs option '035' and value of .0005\" or less.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                errors.Add("The upper head needs option '035' and value of .0005\" or less.");
+                                            }
+                                        }
                                     }
                                 }
                                 catch (Exception ex)
