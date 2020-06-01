@@ -1772,11 +1772,11 @@ namespace NatoliOrderInterface
                 List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
                 List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
 
-                if(quote.Reference.Contains("REWORK",StringComparison.CurrentCultureIgnoreCase) && (quote.RefWO == null || quote.RefWO==0))
+                if (quote.Reference.Contains("REWORK", StringComparison.CurrentCultureIgnoreCase) && (quote.RefWO == null || quote.RefWO == 0))
                 {
                     errors.Add("This rework order does not have a reference work order. Please add one if they are Natoli tools.");
                 }
-                    
+
                 foreach (QuoteDetails line in quoteDetails)
                 {
                     quoteLineItems.Add(new QuoteLineItem(quote, line.LineNumber));
@@ -2126,10 +2126,10 @@ namespace NatoliOrderInterface
                                 }
                             }
 
-                                // Upper, Lower, Reject
-                                if (quoteLineItem.LineItemType == "U" ||
-                                quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
-                                quoteLineItem.LineItemType == "R")
+                            // Upper, Lower, Reject
+                            if (quoteLineItem.LineItemType == "U" ||
+                            quoteLineItem.LineItemType == "L" || quoteLineItem.LineItemType == "LCRP" ||
+                            quoteLineItem.LineItemType == "R")
                             {
                                 try
                                 {
@@ -2235,7 +2235,12 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' needs special tip width (204) of 4.00mm (0.1575\") added IF the groove does not have 4mm standard tip width (check with engineering) because it is a solid multi-tip.");
                                             }
                                         }
+                                        if (quoteLineItem.optionValuesO.Any(o => o.OptionCode == "270" && o.Integer != quoteLineItem.TipQTY))
+                                        {
+                                            errors.Add("'" + quoteLineItem.LineItemType + "' has a hob selected with '" + quoteLineItem.TipQTY + "' tip(s) and option (270) MULTI TIP SOLID with '" + quoteLineItem.optionValuesO.First(o => o.OptionCode == "270").Integer + "' tip(s). Please change number of tips on option (270) or select a different hob for this line item");
+                                        }
                                     }
+
                                     if (!string.IsNullOrWhiteSpace(quoteLineItem.HobNoShapeID) && _nat01Context.HobList.Any(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0)))
                                     {
                                         HobList hob = _nat01Context.HobList.First(h => h.HobNo == quoteLineItem.HobNoShapeID && h.TipQty == (quoteLineItem.TipQTY ?? 1) && h.BoreCircle == (quoteLineItem.BoreCircle ?? 0));
@@ -2808,7 +2813,7 @@ namespace NatoliOrderInterface
                                         if (quoteLineItem.LineItemType == "UHD" || quoteLineItem.LineItemType == "LHD" || quoteLineItem.LineItemType == "RHD")
                                         {
                                             // Special head flat or special head configuration.
-                                            if(ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "008", "020"}, StringComparison.CurrentCulture))
+                                            if (ContainsAny(string.Join(",", quoteLineItem.OptionNumbers), new List<string> { "008", "020" }, StringComparison.CurrentCulture))
                                             {
                                                 // Rotating Head option on holder
                                                 if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("025")))
@@ -2822,8 +2827,8 @@ namespace NatoliOrderInterface
                                                 }
                                             }
                                         }
-                                            
-                                            
+
+
 
 
                                         // Machine is D and NOT EU1-441
@@ -2897,22 +2902,22 @@ namespace NatoliOrderInterface
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' does not have an FS-12 style head but the machine is of FS-12 type.");
                                             }
                                         }
-                                    
+
                                         // Upper and like 20-28 machine head and barrel
-                                        if((machine.MachineTypePrCode=="K20" || machine.MachineTypePrCode == "K25" || machine.MachineTypePrCode == "K28" || machine.MachineTypePrCode == "K30" || machine.MachineTypePrCode == "K38") && quoteLineItem.LineItemType.Contains("U"))
+                                        if ((machine.MachineTypePrCode == "K20" || machine.MachineTypePrCode == "K25" || machine.MachineTypePrCode == "K28" || machine.MachineTypePrCode == "K30" || machine.MachineTypePrCode == "K38") && quoteLineItem.LineItemType.Contains("U"))
                                         {
-                                            if(quoteLineItems.Any(qli=>qli.OptionNumbers.Contains("035") && qli.LineItemType.Contains("U")))
+                                            if (quoteLineItems.Any(qli => qli.OptionNumbers.Contains("035") && qli.LineItemType.Contains("U")))
                                             {
                                                 var qlis = quoteLineItems.Where(qli => qli.OptionNumbers.Contains("035") && qli.LineItemType.Contains("U"));
                                                 bool hasProperTolerance = false;
-                                                foreach(QuoteLineItem qli in qlis)
+                                                foreach (QuoteLineItem qli in qlis)
                                                 {
-                                                    if(qli.optionValuesA.Any(o=>o.Number1<.0006))
+                                                    if (qli.optionValuesA.Any(o => o.Number1 < .0006))
                                                     {
                                                         hasProperTolerance = true;
                                                     }
                                                 }
-                                                if(!hasProperTolerance)
+                                                if (!hasProperTolerance)
                                                 {
                                                     errors.Add("The upper head needs option '035' and value of .0005\" or less.");
                                                 }
@@ -3161,7 +3166,7 @@ namespace NatoliOrderInterface
                                                         }
                                                     }
                                                 }
-                                            } 
+                                            }
                                         }
                                         catch (Exception ex)
                                         {
@@ -3239,7 +3244,7 @@ namespace NatoliOrderInterface
                                                         {
                                                             errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter that is larger than the tablet size.");
                                                         }
-                                                        if(die.LengthMajorAxis != null && die.LengthMajorAxis>0)
+                                                        if (die.LengthMajorAxis != null && die.LengthMajorAxis > 0)
                                                         {
                                                             errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Diameter but the tablet is shaped.");
                                                         }
@@ -3251,7 +3256,7 @@ namespace NatoliOrderInterface
                                                         {
                                                             errors.Add("'" + quoteLineItem.LineItemType + "' has a special tip relief Per Side that seems too large. Perhaps you meant Diameter?");
                                                         }
-                                                        
+
                                                     }
 
                                                 }
@@ -3326,7 +3331,7 @@ namespace NatoliOrderInterface
                                                     {
                                                         punchWidth = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1;
                                                         punchLength = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2;
-                                                        double? punchWidth_M= quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1Mm;
+                                                        double? punchWidth_M = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number1Mm;
                                                         double? punchLength_M = quoteLineItem.optionValuesB.First(qov => qov.OptionCode == "200").Number2Mm;
                                                         try
                                                         {
@@ -3342,7 +3347,7 @@ namespace NatoliOrderInterface
                                                         {
 
                                                         }
-                                                        
+
                                                     }
                                                     catch
                                                     {
@@ -3476,7 +3481,7 @@ namespace NatoliOrderInterface
                                                     // Less than 0 clearance
                                                     if (clearance < 0)
                                                     {
-                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has a width ("+ Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero) + "\") greater than the tablet width ("+ Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) + "\").");
+                                                        errors.Add("'" + quoteLineItem.LineItemType + "' has a width (" + Math.Round((decimal)punchWidth, 4, MidpointRounding.AwayFromZero) + "\") greater than the tablet width (" + Math.Round((decimal)dieWidth, 4, MidpointRounding.AwayFromZero) + "\").");
                                                     }
                                                     else
                                                     {
@@ -3497,7 +3502,7 @@ namespace NatoliOrderInterface
                                                         }
                                                     }
                                                 }
-                                                if(!(die.ShapeId == 1 || die.ShapeId == 18 || die.ShapeId == 93))
+                                                if (!(die.ShapeId == 1 || die.ShapeId == 18 || die.ShapeId == 93))
                                                 {
                                                     clearance = Math.Round((decimal)dieLength, 4, MidpointRounding.AwayFromZero) - Math.Round((decimal)punchLength, 4, MidpointRounding.AwayFromZero);
                                                     if (clearance < (decimal).001)
@@ -3561,9 +3566,9 @@ namespace NatoliOrderInterface
                                                     {
                                                         errors.Add("'L' is bisected. Please check that the key is oriented for proper take-off.");
                                                     }
-                                                    if(_nat01Context.BisectCodes.Any(bc=> bc.ID == hob.BisectCode))
+                                                    if (_nat01Context.BisectCodes.Any(bc => bc.ID == hob.BisectCode))
                                                     {
-                                                        if(_nat01Context.BisectCodes.First(bc => bc.ID == hob.BisectCode).Description.Contains("EMB"))
+                                                        if (_nat01Context.BisectCodes.First(bc => bc.ID == hob.BisectCode).Description.Contains("EMB"))
                                                         {
                                                             if (quoteLineItems.Any(qli => qli.LineItemType == "U"))
                                                             {
