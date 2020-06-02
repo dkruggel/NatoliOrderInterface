@@ -6757,6 +6757,170 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="AllProjectsModule" TargetType="Label" x:Name="AllProjectsModule">
+            <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Grid>
+                            <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="315" Color="Black" Opacity="0.75"/>
+                                </Border.Effect>
+                            </Border>
+                            <Border BorderBrush="White" BorderThickness="1,1,0,0" CornerRadius="3" Background="White">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="3" Direction="135" Color="LightGray" Opacity="0.5"/>
+                                </Border.Effect>
+                            </Border>
+                            <Grid x:Name="DisplayGrid" Background="{StaticResource OffWhite}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                    <TextBlock Text="All Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
+                                    <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
+                                    </StackPanel>
+                                    <TextBlock Text=""/>
+                                </DockPanel>
+                                <Border BorderBrush="{StaticResource Medium}" BorderThickness="0,0,0,3">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="90" Color="LightGray" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <Grid x:Name="HeaderGrid" DockPanel.Dock="Top" HorizontalAlignment="Stretch" Height="26" Background="{StaticResource Light}" Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition SharedSizeGroup="ProjectNumber" Width="70"/>
+                                        <ColumnDefinition SharedSizeGroup="RevNumber" Width="45"/>
+                                        <ColumnDefinition SharedSizeGroup="CSR" Width="85"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition SharedSizeGroup="DueDate" Width="110"/>
+                                        <ColumnDefinition SharedSizeGroup="QuoteNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="Product" Width="200"/>
+                                        <ColumnDefinition SharedSizeGroup="DieNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="DieShape" Width="150"/>
+                                        <ColumnDefinition SharedSizeGroup="UpperHobNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="LowerHobNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="ShortRejectHobNumber" Width="100"/>
+                                        <ColumnDefinition SharedSizeGroup="LongRejectHobNumber" Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ToggleButton Tag="Proj #" Style="{StaticResource HeaderToggleButton}" Grid.Column="0" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Rev" Style="{StaticResource HeaderToggleButton}" Grid.Column="1" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="CSR" Style="{StaticResource HeaderToggleButton}" Grid.Column="2" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="Customer Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="3" Margin="5,0,0,0"/>
+                                    <ToggleButton Tag="End User Name" Style="{StaticResource HeaderToggleButton}" Grid.Column="4" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Due Date" Style="{StaticResource HeaderToggleButton}" Grid.Column="5" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Quote #" Style="{StaticResource HeaderToggleButton}" Grid.Column="6" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Product" Style="{StaticResource HeaderToggleButton}" Grid.Column="7" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Die #" Style="{StaticResource HeaderToggleButton}" Grid.Column="8" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Shape" Style="{StaticResource HeaderToggleButton}" Grid.Column="9" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Upper Hob" Style="{StaticResource HeaderToggleButton}" Grid.Column="10" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="Lower Hob" Style="{StaticResource HeaderToggleButton}" Grid.Column="11" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="SR Hob" Style="{StaticResource HeaderToggleButton}" Grid.Column="12" Margin="0,0,0,0"/>
+                                    <ToggleButton Tag="LR Hob" Style="{StaticResource HeaderToggleButton}" Grid.Column="13" Margin="0,0,0,0"/>
+                                </Grid>
+                                <Border x:Name="TopBorder" Panel.ZIndex="3" Grid.Row="1" BorderBrush="{Binding Background, ElementName=HeaderGrid}" BorderThickness="0,0,0,1" CornerRadius="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="2" Direction="270" Color="Black" Opacity="0.55"/>
+                                    </Border.Effect>
+                                </Border>
+                                <ListBox x:Name="AllTabletProjectsListBox" DockPanel.Dock="Top" Grid.Row="2" Panel.ZIndex="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" BorderThickness="0" Background="Transparent">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <ContentPresenter/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <ToggleButton x:Name="ToggleButton" PreviewMouseDoubleClick="AllProjects_PreviewMouseDoubleClick">
+                                                    <ToggleButton.FontStyle>
+                                                        <Binding Converter="{StaticResource textConverter}"/>
+                                                    </ToggleButton.FontStyle>
+                                                    <ToggleButton.ToolTip>
+                                                        <Binding Converter="{StaticResource toolTipConverter}"/>
+                                                    </ToggleButton.ToolTip>
+                                                    <ToggleButton.Style>
+                                                        <Style TargetType="{x:Type ToggleButton}">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                                        <Grid x:Name="GridRow" Margin="0,0">
+                                                                            <Grid.Background>
+                                                                                <Binding Converter="{StaticResource backgroundConverter}" NotifyOnSourceUpdated="True"/>
+                                                                            </Grid.Background>
+                                                                            <Border x:Name="TopBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,0" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                            <Border x:Name="BottomBorder" BorderBrush="{StaticResource Bright}" BorderThickness="0,0,0,1" CornerRadius="0" IsHitTestVisible="True" Margin="0,0"/>
+                                                                            <Grid Background="Transparent" ShowGridLines="False" Height="28" Margin="6,0">
+                                                                                <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition SharedSizeGroup="ProjectNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="RevNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="CSR"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition Width="*"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DueDate"/>
+                                                                                <ColumnDefinition SharedSizeGroup="QuoteNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="Product"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DieNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="DieShape"/>
+                                                                                <ColumnDefinition SharedSizeGroup="UpperHobNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="LowerHobNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="ShortRejectHobNumber"/>
+                                                                                <ColumnDefinition SharedSizeGroup="LongRejectHobNumber"/>
+                                                                            </Grid.ColumnDefinitions>
+                                                                                <TextBlock x:Name="ProjectNumber" Tag="ProjectNumber" Text="{Binding ProjectNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="0"/>
+                                                                                <TextBlock x:Name="RevNumber" Tag="RevNumber" Text="{Binding RevNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock Tag="CSR" Text="{Binding CSR}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
+                                                                            <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="0,0"/>
+                                                                            <TextBlock Tag="EndUserName" Text="{Binding EndUserName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="0,0"/>
+                                                                            <TextBlock Tag="DueDate" Text="{Binding DueDate, StringFormat='{}{0:MM/dd/yyyy}'}" Style="{StaticResource ModuleTextBlock}" Grid.Column="5" Margin="10,0"/>
+                                                                            <TextBlock Tag="QuoteNumber" Text="{Binding QuoteNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="6" Margin="10,0"/>
+                                                                            <TextBlock Tag="Product" Text="{Binding Product}" Style="{StaticResource ModuleTextBlock}" Grid.Column="7" Margin="10,0"/>
+                                                                            <TextBlock Tag="DieNumber" Text="{Binding DieNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="8" Margin="10,0"/>
+                                                                            <TextBlock Tag="DieShape" Text="{Binding DieShape}" Style="{StaticResource ModuleTextBlock}" Grid.Column="9" Margin="10,0"/>
+                                                                            <TextBlock Tag="UpperHobNumber" Text="{Binding UpperHobNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="10" Margin="10,0"/>
+                                                                            <TextBlock Tag="LowerHobNumber" Text="{Binding LowerHobNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="11" Margin="10,0"/>
+                                                                            <TextBlock Tag="ShortRejectHobNumber" Text="{Binding ShortRejectHobNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="12" Margin="10,0"/>
+                                                                            <TextBlock Tag="LongRejectHobNumber" Text="{Binding LongRejectHobNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="13" Margin="10,0"/>
+                                                                        </Grid>
+                                                                            <Grid.Triggers>
+                                                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                                                    <BeginStoryboard Name="Highlight" Storyboard="{StaticResource listBoxHighlight}"/>
+                                                                                </EventTrigger>
+                                                                                <EventTrigger RoutedEvent="PreviewMouseDown">
+                                                                                    <BeginStoryboard Name="HighlightDown" Storyboard="{StaticResource listBoxHighlight}"/>
+                                                                                </EventTrigger>
+                                                                                <EventTrigger RoutedEvent="MouseLeave">
+                                                                                    <StopStoryboard BeginStoryboardName="Highlight"/>
+                                                                                </EventTrigger>
+                                                                            </Grid.Triggers>
+                                                                        </Grid>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </ToggleButton.Style>
+                                                </ToggleButton>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <!--#endregion-->
         
         <!--#region Project Search-->

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,7 +22,28 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class ProjectSearchWindow : Window, IDisposable
     {
-        private Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> archivedProjectsDict;
+        #region All Projects
+        private ListBox AllProjectsListBox = new ListBox();
+        private List<AllProjectsView> allProjects = new List<AllProjectsView>();
+        private List<AllProjectsView> _allProjects = new List<AllProjectsView>();
+        public List<AllProjectsView> AllProjects
+        {
+            get
+            {
+                return allProjects;
+            }
+            set
+            {
+                if (!allProjects.SequenceEqual(value))
+                {
+                    allProjects = value;
+                    AllProjectsListBox.ItemsSource = null;
+                    AllProjectsListBox.ItemsSource = allProjects;
+                }
+            }
+        }
+        #endregion
+        private Dictionary<AllProjectsView, (string background, string foreground, string fontWeight)> allProjectsDict;
         private readonly Timer timer = new Timer(400);
         private string searchString;
         private string prevSearchString;
@@ -31,426 +53,170 @@ namespace NatoliOrderInterface
             InitializeComponent();
             timer.Elapsed += Timer_Elapsed;
         }
-
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => GetProjectInfo(false)).ContinueWith(t => Dispatcher.Invoke(() => BindProjectInfo()), TaskScheduler.Current);
-        }
+            // Task.Run(() => GetProjectInfo(false)).ContinueWith(t => Dispatcher.Invoke(() => BindProjectInfo()), TaskScheduler.Current);
+            AllProjectsListBox = (VisualTreeHelper.GetChild(MainLabel as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<ListBox>().First();
 
-        private void GetProjectInfo(bool filter, string search = "")
+            Task.Run(() => GetAllProjects()).ContinueWith(t => Dispatcher.BeginInvoke((Action)(() => BindAllProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle));
+
+            AllProjectsListBox.ItemsSource = null;
+            AllProjectsListBox.ItemsSource = allProjects;
+        }
+        private void GetAllProjects()
         {
             try
             {
-                List<EngineeringArchivedProjects> engineeringArchivedProjects = new List<EngineeringArchivedProjects>();
+                using var _context = new ProjectsContext();
+                List<AllProjectsView> allProjectsView = new List<AllProjectsView>();
 
-                string[] searchStringsAnd = search.Split('&');
-                string[] searchStringsOr = search.Split('|');
+                _allProjects = _context.AllProjectsView.FromSqlRaw("SELECT TOP 100 PERCENT * FROM " +
+                                    "(SELECT CAST(ProjectNumber AS INT) AS ProjectNumber, CAST(RevisionNumber AS VARCHAR(10)) AS RevNumber, '' AS QuoteNumber, CSR, ReturnToCSR, CustomerName, EndUser AS EndUserName, Product, " +
+                                    "'' AS DieNumber, Shape AS DieShape, UpperHobNumber, LowerHobNumber, '' AS ShortRejectHobNumber, '' AS LongRejectHobNumber, DueDate " +
+                                    "FROM Projects.dbo.ProjectSpecSheet PSS UNION " +
+                                    "SELECT CAST(ProjectNumber AS INT), RevNumber, QuoteNumber, CSR, ReturnToCSR, CustomerName, EndUserName, Product, " +
+                                    "DieNumber, DieShape, UpperHobNumber, LowerHobNumber, ShortRejectHobNumber, LongRejectHobNumber, DueDate " +
+                                    "FROM Projects.dbo.EngineeringArchivedProjects EAP " +
+                                    "WHERE DueDate <> '9999-12-31' UNION " +
+                                    "SELECT CAST(ProjectNumber AS INT), RevNumber, QuoteNumber, CSR, ReturnToCSR, CustomerName, EndUserName, Product, " +
+                                    "DieNumber, DieShape, UpperHobNumber, LowerHobNumber, ShortRejectHobNumber, LongRejectHobNumber, DueDate " +
+                                    "FROM Projects.dbo.EngineeringProjects EP " +
+                                    "WHERE DueDate <> '9999-12-31') AS AllProjectsView ORDER BY ProjectNumber DESC").ToList();
 
-                if (searchStringsAnd.Length > 1)
-                {
-                    bool x = false;
-                    foreach (string searchPart in searchStringsAnd)
-                    {
-                        if (!x)
-                        {
-                            engineeringArchivedProjects = ProjectSearch(searchPart, 500);
-                            x = !x;
-                        }
-                        else
-                        {
-                            var temp = ProjectSearch(searchPart).Select(p => (p.ProjectNumber, p.RevNumber));
-                            var exist = engineeringArchivedProjects.Select(p => (p.ProjectNumber, p.RevNumber)).Intersect(temp);
-                            engineeringArchivedProjects.RemoveAll(p => !exist.Contains((p.ProjectNumber, p.RevNumber)));
-                        }
-                    }
-                }
-                else if (searchStringsOr.Length > 1)
-                {
-                    bool x = false;
-                    foreach (string searchPart in searchStringsOr)
-                    {
-                        if (!x)
-                        {
-                            engineeringArchivedProjects = ProjectSearch(searchPart, 1500);
-                            x = !x;
-                        }
-                        else
-                        {
-                            // engineeringArchivedProjects = engineeringArchivedProjects.Union(ProjectSearch(searchPart)).ToList();
-                            var temp = ProjectSearch(searchPart);
-                            engineeringArchivedProjects.AddRange(temp);
-                        }
-                    }
-                }
-                else
-                {
-                    if (filter)
-                    {
-                        engineeringArchivedProjects = ProjectSearch(search);
-                    }
-                    else
-                    {
-                        using var _context = new ProjectsContext();
-                        engineeringArchivedProjects = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber))
-                                                                                          .Take(150)
-                                                                                          .ToList();
-                        _context.Dispose();
-                    }
-                }
-
-                archivedProjectsDict = new Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)>();
-
-                foreach (EngineeringArchivedProjects project in engineeringArchivedProjects)
-                {
-                    SolidColorBrush back;
-                    SolidColorBrush fore;
-                    FontWeight weight;
-                    if (project.Priority)
-                    {
-                        fore = new SolidColorBrush(Colors.DarkRed);
-                        weight = FontWeights.ExtraBold;
-                    }
-                    else
-                    {
-                        fore = new SolidColorBrush(Colors.Black);
-                        weight = FontWeights.Normal;
-                    }
-
-                    back = (SolidColorBrush)new BrushConverter().ConvertFrom("#FFFFFFFF");
-
-                    archivedProjectsDict.Add(project, (back.Color.ToString(), fore.Color.ToString(), weight.ToString()));
-                }
-
-                engineeringArchivedProjects.Clear();
+                _context.Dispose();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        private static List<EngineeringArchivedProjects> ProjectSearch(string searchString, int length = 150)
+        public void BindAllProjects()
         {
-            List<EngineeringArchivedProjects> res = new List<EngineeringArchivedProjects>();
-            List<AllProjectsView> res2 = new List<AllProjectsView>();
-            using var _context = new ProjectsContext();
-            
-            if (searchString.Contains(":"))
+            string searchString = SearchBox.Text.ToLower();
+
+            string column;
+            var _filtered = _allProjects;
+            _filtered =
+                    _allProjects.Where(p => p.ProjectNumber.ToString().ToLower().Contains(searchString) ||
+                                            p.RevNumber.ToString().ToLower().Contains(searchString) ||
+                                            (!string.IsNullOrEmpty(p.QuoteNumber) && p.QuoteNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.CSR) && p.CSR.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.ReturnToCSR) && p.ReturnToCSR.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.CustomerName) && p.CustomerName.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.EndUserName) && p.EndUserName.ToLower().Contains(searchString)) ||
+                                            (p.DueDate.ToShortDateString().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.QuoteNumber) && p.QuoteNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.DieNumber) && p.DieNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.DieShape) && p.DieShape.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.UpperHobNumber) && p.UpperHobNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.LowerHobNumber) && p.LowerHobNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.ShortRejectHobNumber) && p.ShortRejectHobNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.LongRejectHobNumber) && p.LongRejectHobNumber.ToLower().Contains(searchString)) ||
+                                            (!string.IsNullOrEmpty(p.Product) && p.Product.ToLower().Contains(searchString)))
+                                      .OrderByDescending(kvp => kvp.ProjectNumber)
+                                      .ToList();
+
+            Grid headerGrid = GetHeaderGridFromListBox(AllProjectsListBox);
+            foreach (ToggleButton tb in headerGrid.Children.OfType<ToggleButton>().Where(tb => !(tb is CheckBox) && tb.IsChecked != null))
             {
-                var column = searchString.Split(':');
-                string colSearch = column[1];
-
-                switch (column[0])
+                if (tb.IsChecked == false)
                 {
-                    case "attention":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.Attention.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "csr":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.CSR.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "customer name":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.CustomerName.ToLower().Contains(colSearch) ||
-                                                                               o.EndUserName.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "end user name":
-                        goto case "customer name";
-                    case "product":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.Product.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "project #":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.ProjectNumber.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "quote #":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.QuoteNumber.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "machine":
-                        res = _context.EngineeringArchivedProjects.Where(o => o.MachineNumber.ToLower().Contains(colSearch))
-                                                                   .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                    case "due date":
-                        if (!colSearch.Contains("/"))
-                        {
-                            res = _context.EngineeringArchivedProjects.Where(o => o.DueDate.Day.ToString().Contains(colSearch) ||
-                                                                                   o.DueDate.Month.ToString().Contains(colSearch) ||
-                                                                                   o.DueDate.Year.ToString().Contains(colSearch))
-                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                       .Take(length)
-                                                                       .ToList();
-                        }
-                        else if (colSearch.Count(x => x == '/') == 1)
-                        {
-                            string[] dateParts = colSearch.Split('/');
-                            res = _context.EngineeringArchivedProjects.Where(o => ((o.DueDate.Month.ToString() == dateParts[0]) && (o.DueDate.Day.ToString() == dateParts[1])) ||
-                                                                                   ((o.DueDate.Day.ToString() == dateParts[0]) && (o.DueDate.Year.ToString() == dateParts[1])))
-                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                       .Take(length)
-                                                                       .ToList();
-                        }
-                        else
-                        {
-                            res = _context.EngineeringArchivedProjects.Where(o => o.DueDate.ToShortDateString().Contains(colSearch))
-                                                                       .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                       .Take(length)
-                                                                       .ToList();
-                        }
-                        break;
-                    default:
-                        res = _context.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                                   .Take(length)
-                                                                   .ToList();
-                        break;
-                }
-            }
-            else
-            {
-                res2 = _context.AllProjectsView.FromSqlRaw("SELECT ProjectNumber, RevisionNumber, CSR, CustomerName, EndUser, DueDate, Product" +
-                                                           "FROM Projects.dbo.ProjectSpecSheet UNION SELECT ProjectNumber, RevNumber, CSR, CustomerName, EndUserName, DueDate, Product" + 
-                                                           "FROM Projects.dbo.EngineeringArchivedProjects").OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim())).Take(length).ToList();
-                res = _context.EngineeringArchivedProjects.Where(o => o.ArchivedBy.ToLower().Contains(searchString) ||
-                                                                       o.Attention.ToLower().Contains(searchString) ||
-                                                                       o.CSR.ToLower().Contains(searchString) ||
-                                                                       o.CustomerName.ToLower().Contains(searchString) ||
-                                                                       //o.CustomerNumber.ToString().Contains(searchString) ||
-                                                                       //o.DieNumber.ToString().Contains(searchString) ||
-                                                                       o.DieShape.Contains(searchString) ||
-                                                                       o.EndUserName.Contains(searchString) ||
-                                                                       o.UpperHobDescription.Contains(searchString) ||
-                                                                       o.LowerHobDescription.Contains(searchString) ||
-                                                                       o.Notes.Contains(searchString) ||
-                                                                       o.Product.Contains(searchString))
-                                                           .OrderByDescending(p => Convert.ToInt32(p.ProjectNumber.Trim()))
-                                                           .Take(length)
-                                                           .ToList();
-            }
-
-            _context.Dispose();
-
-            return res;
-        }
-        private void BindProjectInfo()
-        {
-            ProjectExpanders(archivedProjectsDict);
-        }
-
-        private void ProjectExpanders(Dictionary<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> dict)
-        {
-            try
-            {
-                ProjectsStackPanel.Children.Clear();
-                IEnumerable<(int, int)> projects = ProjectsStackPanel.Children.OfType<Expander>().Select(e => (int.Parse((e.Header as Grid).Children[0].GetValue(ContentProperty).ToString()),
-                                                                                                               int.Parse((e.Header as Grid).Children[1].GetValue(ContentProperty).ToString())));
-
-                IEnumerable<(int, int)> newProjects = dict.Select(kvp => (Convert.ToInt32(kvp.Key.ProjectNumber), Convert.ToInt32(kvp.Key.RevNumber)))
-                                                          .Except(projects.Select(p => (p.Item1, p.Item2)));
-
-                foreach ((int, int) project in newProjects)
-                {
-                    int index = dict.Keys.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).ToList().IndexOf(dict.First(kvp => Convert.ToInt32(kvp.Key.ProjectNumber) == project.Item1).Key);
-                    Expander expander = CreateProjectExpander(dict.First(x => Convert.ToInt32(x.Key.ProjectNumber) == project.Item1));
-                    Dispatcher.Invoke(() => ProjectsStackPanel.Children.Insert(index, expander));
-                }
-
-                List<Expander> removeThese = new List<Expander>();
-                foreach (Expander expander in ProjectsStackPanel.Children.OfType<Expander>())
-                {
-                    string _project = ((Grid)expander.Header).Children[0].GetValue(ContentProperty) as string;
-                    if (!dict.Any(kvp => kvp.Key.ProjectNumber == _project))
+                    switch (tb.Tag.ToString())
                     {
-                        removeThese.Add(expander);
-                        continue;
+                        case "Proj #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.ProjectNumber)
+                                .ToList();
+                            break;
+                        case "CSR":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CSR)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.CustomerName)
+                                .ToList();
+                            break;
+                        case "End User Name":
+                            _filtered = _filtered
+                                .OrderBy(o => o.EndUserName)
+                                .ToList();
+                            break;
+                        case "Due Date":
+                            _filtered = _filtered
+                                .OrderBy(o => o.DueDate)
+                                .ToList();
+                            break;
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderBy(o => o.QuoteNumber)
+                                .ToList();
+                            break;
+                        case "Product":
+                            _filtered = _filtered
+                                .OrderBy(o => o.Product)
+                                .ToList();
+                            break;
+                        default:
+                            break;
                     }
-                    Dispatcher.Invoke(() =>
-                    expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(dict.First(kvp => kvp.Key.ProjectNumber == _project).Value.background)));
                 }
-                foreach (Expander expander1 in removeThese) { ProjectsStackPanel.Children.Remove(expander1); }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private Expander CreateProjectExpander(KeyValuePair<EngineeringArchivedProjects, (string background, string foreground, string fontWeight)> kvp)
-        {
-            Grid grid = new Grid
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-
-            SolidColorBrush foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.foreground));
-            FontWeight fontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(kvp.Value.fontWeight);
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.ProjectNumber, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(45)), CreateLabel(kvp.Key.RevNumber, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(100)), CreateLabel(kvp.Key.CSR, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(300)), CreateLabel(kvp.Key.CustomerName, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(300)), CreateLabel(kvp.Key.EndUserName, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.DueDate.ToShortDateString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.QuoteNumber, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.QuoteRevNumber, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(150)), CreateLabel(kvp.Key.Product, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(150)), CreateLabel(kvp.Key.Attention, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(60)), CreateLabel(kvp.Key.MachineNumber, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.UpperHobNumber.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(250)), CreateLabel(kvp.Key.UpperHobDescription.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.LowerHobNumber.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(250)), CreateLabel(kvp.Key.LowerHobDescription.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.DieNumber.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(kvp.Key.DieShape.ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)(kvp.Key.Width ?? 0), 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(75)), CreateLabel(Decimal.Round((decimal)(kvp.Key.Length ?? 0), 4).ToString(), 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-            AddColumn(grid, CreateColumnDefinition(new GridLength(500)), CreateLabel(kvp.Key.Notes, 0, grid.ColumnDefinitions.Count, fontWeight, foreground, null, 14, true));
-
-            Expander expander = new Expander()
-            {
-                IsExpanded = false,
-                Header = grid,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                BorderBrush = new SolidColorBrush(Colors.Black)
-            };
-
-            expander.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(kvp.Value.background));
-            expander.MouseDoubleClick += ProjectExpander_MouseDoubleClick;
-            //expander.PreviewKeyDown += OrderDataGrid_PreviewKeyDown;
-            //expander.PreviewMouseDown += OrderDataGrid_PreviewMouseDown;
-            //expander.MouseRightButtonUp += OrderDataGrid_MouseRightButtonUp;
-            return expander;
-        }
-
-        private void ProjectExpander_MouseDoubleClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                using var _projectsContext = new ProjectsContext();
-
-                string projectNumber = (((sender as Expander).Header as Grid).Children[0] as Label).Content as string;
-
-                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber))
+                else if (tb.IsChecked == true)
                 {
-                    string revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
-                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
-                    projectWindow.Show();
+                    switch (tb.Tag.ToString())
+                    {
+                        case "Proj #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.ProjectNumber)
+                                .ToList();
+                            break;
+                        case "CSR":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CSR)
+                                .ToList();
+                            break;
+                        case "Customer Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.CustomerName)
+                                .ToList();
+                            break;
+                        case "End User Name":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.EndUserName)
+                                .ToList();
+                            break;
+                        case "Due Date":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.DueDate)
+                                .ToList();
+                            break;
+                        case "Quote #":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.QuoteNumber)
+                                .ToList();
+                            break;
+                        case "Product":
+                            _filtered = _filtered
+                                .OrderByDescending(o => o.Product)
+                                .ToList();
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                else if (_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
-                {
-                    string revNumber = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
-                    ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
-                    projectWindow.Show();
-                }
-                else
-                {
-                    string path = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + @"\"; // + (revNumber != "0" ? "_" + revNumber : "")
-                    if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path);
-                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
-                }
-                //ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, this, User, false);
-                //projectWindow.Show();
-                //projectWindow.Dispose();
-                _projectsContext.Dispose();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            AllProjects = _filtered;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="columnDefinition"></param>
-        /// <param name="label"></param>
-        private static void AddColumn(Grid grid, ColumnDefinition columnDefinition = null, UIElement element = null)
+        private Grid GetHeaderGridFromListBox(ListBox listBox)
         {
-            try
-            {
-                grid.ColumnDefinitions.Add(columnDefinition);
-                if (!(element is null)) { grid.Children.Add(element); };
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            Grid displayGrid = listBox.Parent as Grid;
+            return displayGrid.Children.OfType<Grid>().First(g => g.Name == "HeaderGrid");
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        private ColumnDefinition CreateColumnDefinition(GridLength width)
-        {
-            ColumnDefinition colDef = new ColumnDefinition();
-            try
-            {
-                colDef.Width = width;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return colDef;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        private Label CreateLabel(string content, int row, int column, FontWeight weight, SolidColorBrush textColor = null, FontStyle? fontStyle = null, double fontSize = 12, bool addPadding = false)
-        {
-            Label label = new Label();
-            try
-            {
-                label.Content = content;
-                label.HorizontalAlignment = HorizontalAlignment.Stretch;
-                label.HorizontalContentAlignment = HorizontalAlignment.Left;
-                label.VerticalAlignment = VerticalAlignment.Top;
-                label.VerticalContentAlignment = VerticalAlignment.Center;
-                label.FontSize = fontSize;
-                if (addPadding) { label.Padding = new Thickness(0, 0, 0, 0); }
-                if (!(textColor is null))
-                {
-                    label.Foreground = textColor;
-                }
-                label.FontWeight = weight;
-                label.FontStyle = !(fontStyle is null) ? (FontStyle)fontStyle : FontStyles.Normal;
-                Grid.SetRow(label, row);
-                Grid.SetColumn(label, column);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            return label;
-        }
-
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             timer.Stop();
@@ -474,14 +240,6 @@ namespace NatoliOrderInterface
 
             timer.Start();
         }
-
-        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            Image image = sender as Image;
-            TextBox textBox = (image.Parent as Grid).Children.OfType<TextBox>().First();
-            textBox.Text = "";
-        }
-
         private void SearchBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
@@ -490,16 +248,19 @@ namespace NatoliOrderInterface
                 textBox.Text = "";
             }
         }
-
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (searchString != prevSearchString)
+            Dispatcher.BeginInvoke((Action)(() =>
             {
-                Task.Run(() => GetProjectInfo(true, searchString)).ContinueWith(t => Dispatcher.Invoke(() => BindProjectInfo()), TaskScheduler.Current);
-                prevSearchString = searchString;
-            }
-        }
+                BindAllProjects();
+            }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
 
+            //if (searchString != prevSearchString)
+            //{
+            //    Task.Run(() => GetProjectInfo(true, searchString)).ContinueWith(t => Dispatcher.Invoke(() => BindProjectInfo()), TaskScheduler.Current);
+            //    prevSearchString = searchString;
+            //}
+        }
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -535,13 +296,6 @@ namespace NatoliOrderInterface
             // GC.SuppressFinalize(this);
         }
         #endregion
-
-        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            string text = SearchBox.Text.Contains(':') ? SearchBox.Text.Split(':')[1] : SearchBox.Text ;
-            SearchBox.Text = (sender as Label).Content.ToString() + ':' + text;
-        }
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             timer.Stop();

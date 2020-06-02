@@ -163,6 +163,10 @@ namespace NatoliOrderInterface
                     if ((value as EoiQuotesNotConvertedView).RushYorN == "Y") { return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Red); }
                     return SetLinearGradientBrush(Colors.Transparent, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                 }
+                else if (value is AllProjectsView)
+                {
+                    return backgroundColor;
+                }
                 else if (parameter.ToString() == "NatoliOrderList")
                 {
                     int daysToShip = ((value as NatoliOrderListFinal).ShipDate - DateTime.Now.Date).Days;
