@@ -6,6 +6,129 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="Reporting" Height="1000" Width="1500" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+    <Window.Resources>
+        <Color x:Key="FilledColor" A="255" B="155" R="155" G="155"/>
+            <Color x:Key="UnfilledColor" A="0" B="155" R="155" G="155"/>
+
+        <Style x:Key="BusyAnimationStyle" TargetType="Control">
+            <Setter Property="Background" Value="Transparent"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Control">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="Animation0" BeginTime="00:00:00.0" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse0" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:01.6" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation1" BeginTime="00:00:0.1" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse1" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation2" BeginTime="00:00:0.2" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse2" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation3" BeginTime="00:00:0.3" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse3" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation4" BeginTime="00:00:0.4" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse4" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation5" BeginTime="00:00:0.5" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse5" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation6" BeginTime="00:00:0.6" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse6" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+
+                            <Storyboard x:Key="Animation7" BeginTime="00:00:0.7" RepeatBehavior="Forever">
+                                <ColorAnimationUsingKeyFrames Storyboard.TargetName="ellipse7" Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)">
+                                    <SplineColorKeyFrame KeyTime="00:00:00.0" Value="{StaticResource FilledColor}"/>
+                                    <SplineColorKeyFrame KeyTime="00:00:0.8" Value="{StaticResource UnfilledColor}"/>
+                                </ColorAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsVisible" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation0}" x:Name="Storyboard0" />
+                                    <BeginStoryboard Storyboard="{StaticResource Animation1}" x:Name="Storyboard1"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation2}" x:Name="Storyboard2"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation3}" x:Name="Storyboard3"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation4}" x:Name="Storyboard4"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation5}" x:Name="Storyboard5"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation6}" x:Name="Storyboard6"/>
+                                    <BeginStoryboard Storyboard="{StaticResource Animation7}" x:Name="Storyboard7"/>
+                                </Trigger.EnterActions>
+
+                                <Trigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="Storyboard0"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard1"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard2"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard3"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard4"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard5"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard6"/>
+                                    <StopStoryboard BeginStoryboardName="Storyboard7"/>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Canvas Height="60" Width="60">
+                                    <Canvas.Resources>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Width" Value="15"/>
+                                            <Setter Property="Height" Value="15" />
+                                            <Setter Property="Fill" Value="#009B9B9B" />
+                                        </Style>
+                                    </Canvas.Resources>
+
+                                    <Ellipse x:Name="ellipse0" Canvas.Left="1.75" Canvas.Top="21"/>
+                                    <Ellipse x:Name="ellipse1" Canvas.Top="7" Canvas.Left="6.5"/>
+                                    <Ellipse x:Name="ellipse2" Canvas.Left="20.5" Canvas.Top="0.75"/>
+                                    <Ellipse x:Name="ellipse3" Canvas.Left="34.75" Canvas.Top="6.75"/>
+                                    <Ellipse x:Name="ellipse4" Canvas.Left="40.5" Canvas.Top="20.75" />
+                                    <Ellipse x:Name="ellipse5" Canvas.Left="34.75" Canvas.Top="34.5"/>
+                                    <Ellipse x:Name="ellipse6" Canvas.Left="20.75" Canvas.Top="39.75"/>
+                                    <Ellipse x:Name="ellipse7" Canvas.Top="34.25" Canvas.Left="7" />
+                                    <Ellipse Width="39.5" Height="39.5" Canvas.Left="8.75" Canvas.Top="8" Visibility="Hidden"/>
+                                </Canvas>
+                                <Label Content="{Binding Path=Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top" Height="50">
             <Grid.ColumnDefinitions>
@@ -20,8 +143,8 @@
                 <ColumnDefinition Width="20"/> <!-- Space -->
             </Grid.ColumnDefinitions>
             <Label Content="More to come in the future!" Grid.Column="0" Height="30"/>
-            <DatePicker Name="BeginningDatePicker" Grid.Column="1" Height="25"/>
-            <DatePicker Name="EndDatePicker" Grid.Column="3" Height="25"/>
+            <DatePicker Name="BeginningDatePicker" Grid.Column="1" Height="25" ToolTip="Includes Date" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+            <DatePicker Name="EndDatePicker" Grid.Column="3" Height="25" ToolTip="Excludes Date" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
             <!--<TextBox x:Name="RangeIntTextBox" Grid.Column="5" Height="22"/>
             <ComboBox Name="RangePeriodComboBox" Grid.Column="7" Height="22"/>-->
             <!--<TextBox x:Name="BeginningTextBox" Grid.Column="1" Height="20"/>
@@ -29,26 +152,29 @@
         </Grid>
 
         <StackPanel DockPanel.Dock="Left" Width="150">
-            <Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25" Style="{StaticResource Button}"/>
-            <CheckBox x:Name="Orders" Content="Orders"/>
-            <CheckBox x:Name="Tablets" Content="Tablet Projects"/>
-            <CheckBox x:Name="Tools" Content="Tool Projects"/>
+            <!--<Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25" Style="{StaticResource Button}"/>-->
+            <CheckBox x:Name="Orders" Content="Orders" Click="CheckBox_Click" />
+            <CheckBox x:Name="Tablets" Content="Tablet Projects" Click="CheckBox_Click"/>
+            <CheckBox x:Name="Tools" Content="Tool Projects" Click="CheckBox_Click"/>
         </StackPanel>
 
         <Grid>
             <StackPanel Orientation="Vertical">
-
-                <lvc:CartesianChart Name="ProductionChart" Series="{Binding SeriesCollection}" LegendLocation="Bottom" Width="1500" Height="900">
-                    <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Name="XAxis" Title="Orders/Quotes"></lvc:Axis>
-                    </lvc:CartesianChart.AxisX>
-                    <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Name="YAxis" Title="Drafter"></lvc:Axis>
-                    </lvc:CartesianChart.AxisY>
-                    <lvc:CartesianChart.DataTooltip>
-                        <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
-                    </lvc:CartesianChart.DataTooltip>
-                </lvc:CartesianChart>
+                <Grid>
+                    <Control x:Name="LoadingAnimation" Style="{StaticResource BusyAnimationStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden"/>
+                    <lvc:CartesianChart Name="ProductionChart" Series="{Binding SeriesCollection}" LegendLocation="Bottom" Width="1500" Height="900" Visibility="Hidden">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Name="XAxis" Title="Orders/Quotes"></lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Name="YAxis" Title="Drafter"></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.DataTooltip>
+                            <lvc:DefaultTooltip SelectionMode="SharedYValues"></lvc:DefaultTooltip>
+                        </lvc:CartesianChart.DataTooltip>
+                    </lvc:CartesianChart>
+                </Grid>
+                
 
 
                 <!--<Border BorderBrush="Black" BorderThickness="2,2,2,5">

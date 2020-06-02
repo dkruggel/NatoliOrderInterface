@@ -16,6 +16,8 @@ using NatoliOrderInterface.Models.Projects;
 using LiveCharts;
 using LiveCharts.Wpf;
 using LiveCharts.Definitions.Series;
+using NatoliOrderInterface.Models.NAT01;
+using System.Threading.Tasks;
 
 namespace NatoliOrderInterface
 {
@@ -30,29 +32,31 @@ namespace NatoliOrderInterface
             BeginningDatePicker.SelectedDate = DateTime.Now.AddDays(-14);
             EndDatePicker.SelectedDate = DateTime.Now;
 
-            BuildOrdersChart();
+            BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
         }
 
-        private void UpdateButton_Click(object sender, RoutedEventArgs e)
-        {
-            BuildOrdersChart();
-        }
+        //private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    BuildOrdersChart();
+        //}
 
-        private void BuildOrdersChart()
+        private async void BuildOrdersChart(bool ordersChecked, bool tabletsChecked, bool toolsChecked, DateTime? beginningDateTime, DateTime? endDateTime)
         {
-            using var _ = new ProjectsContext();
 
+            SetLoadingAnimationVisibility(Visibility.Visible);
             SeriesCollection sc = new SeriesCollection();
-
-            if ((bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+            using var _ = new ProjectsContext();
+            if (ordersChecked && tabletsChecked && toolsChecked)
             {
                 string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction @StartDate = {0}, @EndDate = {1}";
 
-                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
 
-                List<OrdersAndProjectsReport> ordersReport = _.OrdersAndProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                _.Dispose();
+                List<OrdersAndProjectsReport> ordersReport = new List<OrdersAndProjectsReport>();
+                await Task.Run((Action)(() =>
+                {
+                    ordersReport = _.OrdersAndProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                }));
 
                 sc.Add(new RowSeries
                 {
@@ -87,15 +91,18 @@ namespace NatoliOrderInterface
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            else if ((bool)Orders.IsChecked && !(bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
+            else if (ordersChecked && !tabletsChecked && !toolsChecked)
             {
                 string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Orders @StartDate = {0}, @EndDate = {1}";
 
-                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
 
-                List<OrdersReport> ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                List<OrdersReport> ordersReport = new List<OrdersReport>();
+                await Task.Run((Action)(() =>
+                {
+                    ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                }));
 
-                _.Dispose();
 
                 sc.Add(new RowSeries
                 {
@@ -118,15 +125,18 @@ namespace NatoliOrderInterface
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+            else if (!ordersChecked && tabletsChecked && toolsChecked)
             {
                 string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Projects @StartDate = {0}, @EndDate = {1}";
 
-                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
 
-                List<ProjectsReport> ordersReport = _.ProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                List<ProjectsReport> ordersReport = new List<ProjectsReport>();
+                await Task.Run((Action)(() =>
+                {
+                    ordersReport = _.ProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                }));
 
-                _.Dispose();
 
                 sc.Add(new RowSeries
                 {
@@ -143,15 +153,18 @@ namespace NatoliOrderInterface
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            else if (!(bool)Orders.IsChecked && (bool)Tablets.IsChecked && !(bool)Tools.IsChecked)
+            else if (!ordersChecked && tabletsChecked && !toolsChecked)
             {
                 string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tablets @StartDate = {0}, @EndDate = {1}";
 
-                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
 
-                List<TabletProjectsReport> ordersReport = _.TabletProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                List<TabletProjectsReport> ordersReport = new List<TabletProjectsReport>();
+                await Task.Run((Action)(() =>
+                {
+                    ordersReport = _.TabletProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                }));
 
-                _.Dispose();
 
                 sc.Add(new RowSeries
                 {
@@ -162,15 +175,17 @@ namespace NatoliOrderInterface
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            else if (!(bool)Orders.IsChecked && !(bool)Tablets.IsChecked && (bool)Tools.IsChecked)
+            else if (!ordersChecked && !tabletsChecked && toolsChecked)
             {
                 string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools @StartDate = {0}, @EndDate = {1}";
 
-                string[] dates = new string[] { BeginningDatePicker.SelectedDate.Value.ToShortDateString(), EndDatePicker.SelectedDate.Value.ToShortDateString() };
+                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
 
-                List<ToolProjectsReport> ordersReport = _.ToolProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-
-                _.Dispose();
+                List<ToolProjectsReport> ordersReport = new List<ToolProjectsReport>();
+                await Task.Run((Action)(() =>
+                {
+                    ordersReport = _.ToolProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
+                }));
 
                 sc.Add(new RowSeries
                 {
@@ -181,10 +196,22 @@ namespace NatoliOrderInterface
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
-            
-            ProductionChart.Series = sc;
+            _.Dispose();
+            SetLoadingAnimationVisibility(Visibility.Hidden);
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                ProductionChart.Series = sc;
+                ProductionChart.Visibility = ProductionChart.Series.Count > 0 ? Visibility.Visible : Visibility.Hidden;
+            }));
         }
 
+        private async void SetLoadingAnimationVisibility(Visibility visibility)
+        {
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                LoadingAnimation.Visibility = visibility;
+            }));
+        }
         private void QuoteConversionDataGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             string csr = ((sender as DataGrid).SelectedCells[0].Item as VwQuoteConversion).Rep;
@@ -194,6 +221,22 @@ namespace NatoliOrderInterface
             _.Dispose();
             // CreateLineGraph(csr, pct);
             // CreateBarGraph(csr);
+        }
+        private void CheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+        }
+
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (EndDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate.Value >= EndDatePicker.SelectedDate.Value)
+            {
+                ProductionChart.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+            }
         }
     }
 }
