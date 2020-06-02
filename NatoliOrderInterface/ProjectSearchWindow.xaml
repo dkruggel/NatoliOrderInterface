@@ -22,57 +22,6 @@
             </Menu>-->
             <TextBox x:Name="SearchBox" Grid.Column="0" Margin="2" TextChanged="SearchBox_TextChanged" HorizontalAlignment="Center" VerticalContentAlignment="Center" PreviewKeyUp="SearchBox_PreviewKeyUp" Width="500" Height="25"/>
         </Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <DockPanel>
-                <Border x:Name="HeaderBorder" BorderBrush="Black" BorderThickness="0,1" DockPanel.Dock="Top">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="45"/>
-                            <ColumnDefinition Width="100"/>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="250"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="250"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition Width="500"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Project #" HorizontalAlignment="Left" Grid.Column="1" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Rev #" HorizontalAlignment="Left" Grid.Column="2"/>
-                        <Label Content="CSR" HorizontalAlignment="Left" Grid.Column="3" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Customer Name" HorizontalAlignment="Left" Grid.Column="4" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="End User Name" HorizontalAlignment="Left" Grid.Column="5" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Due Date" HorizontalAlignment="Left" Grid.Column="6" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Quote #" HorizontalAlignment="Left" Grid.Column="7" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Quote Rev" HorizontalAlignment="Left" Grid.Column="8"/>
-                        <Label Content="Product" HorizontalAlignment="Left" Grid.Column="9" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Attention" HorizontalAlignment="Left" Grid.Column="10" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Machine" HorizontalAlignment="Left" Grid.Column="11" MouseDoubleClick="Label_MouseDoubleClick"/>
-                        <Label Content="Upper Hob" HorizontalAlignment="Left" Grid.Column="12"/>
-                        <Label Content="Upper Hob Description" HorizontalAlignment="Left" Grid.Column="13"/>
-                        <Label Content="Lower Hob" HorizontalAlignment="Left" Grid.Column="14"/>
-                        <Label Content="Lower Hob Description" HorizontalAlignment="Left" Grid.Column="15"/>
-                        <Label Content="Die Number" HorizontalAlignment="Left" Grid.Column="16"/>
-                        <Label Content="Die Shape" HorizontalAlignment="Left" Grid.Column="17"/>
-                        <Label Content="Minor Axis" HorizontalAlignment="Left" Grid.Column="18"/>
-                        <Label Content="Major Axis" HorizontalAlignment="Left" Grid.Column="19"/>
-                        <Label Content="Notes" HorizontalAlignment="Left" Grid.Column="20"/>
-                    </Grid>
-                </Border>
-                <StackPanel x:Name="ProjectsStackPanel" DockPanel.Dock="Top"/>
-            </DockPanel>
-        </ScrollViewer>
+        <Label x:Name="MainLabel" Style="{StaticResource AllProjectsModule}"/>
     </DockPanel>
 </Window>

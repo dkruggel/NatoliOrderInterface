@@ -1367,7 +1367,7 @@ namespace NatoliOrderInterface
                 else
                 {
                     // Is it from a checkbox (meaning it already toggled the checkmark)
-                    if (fromCheckBox == false)
+                    if (fromCheckBox == false && !(checkBox is null))
                     {
                         // Toggle the checkmark
                         checkBox.IsChecked = !checkBox.IsChecked;
@@ -1382,8 +1382,15 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("App.caml.cs => Double_Click_Timer_Elapsed", ex.Message, user);
             }
         }
+        private void AllProjects_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock projectTB = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children[0] as TextBlock;
+            TextBlock revTB = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children[1] as TextBlock;
+
+            OpenProject(projectTB.Text, revTB.Text);
+        }
         #region Open Documents
-        private void OpenProject(string projectNumber)
+        private void OpenProject(string projectNumber, string revNumber = null)
         {
             try
             {
@@ -1391,13 +1398,13 @@ namespace NatoliOrderInterface
 
                 if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber))
                 {
-                    string revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber;
+                    if (revNumber is null) { revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber; }
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
                 else if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
                 {
-                    string revNumber = _projectsContext.EngineeringArchivedProjects.Where(p => p.ProjectNumber == projectNumber).Max(p => p.RevNumber);
+                    if (revNumber is null) { revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber; }
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
@@ -3446,10 +3453,9 @@ namespace NatoliOrderInterface
             }
         }
 
-        #endregion
 
         #endregion
 
-        
+        #endregion
     }
 }
