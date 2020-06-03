@@ -880,7 +880,6 @@ namespace NatoliOrderInterface
             updateTimer.Enabled = true;
         }
 
-        
 
         private void ChangeZoom(decimal? zoom = null)
         {
