@@ -4170,7 +4170,7 @@ namespace NatoliOrderInterface
                     PutOnHoldButton.IsEnabled = false;
                     CancelButton.IsEnabled = false;
                 }
-                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()) || _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()))
+                if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()) || _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == (int.Parse(projectRevNumber) + 1).ToString()) || _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber && p.OnHold))
                 {
                     ReviseButton.IsEnabled = false;
                 }
@@ -5778,8 +5778,14 @@ namespace NatoliOrderInterface
         {
             if (PutOnHoldButton.Content.ToString() != "Put On Hold")
             {
-                IMethods.TakeProjectOffHold(projectNumber, projectRevNumber);
-                if(ArchivedOrInactive.Text == "Take Off Hold")
+                MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to take project " + projectNumber + " off hold?", "Take Project Off Hold?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+                if (messageBoxResult == MessageBoxResult.Yes)
+                {
+                    IMethods.TakeProjectOffHold(projectNumber, projectRevNumber);
+                }
+                
+                if(ArchivedOrInactive.Text == "On Hold")
                 {
                     ArchivedOrInactive.Text = "";
                     ArchivedOrInactive.Visibility = Visibility.Collapsed;
@@ -5789,6 +5795,7 @@ namespace NatoliOrderInterface
             else
             {
                 OnHoldCommentWindow onHoldCommentWindow = new OnHoldCommentWindow(CurrentProjectType.Text, Convert.ToInt32(projectNumber), Convert.ToInt32(projectRevNumber), mainWindow, user, true, this);
+                onHoldCommentWindow.Owner = this;
                 onHoldCommentWindow.ShowDialog();
 
             }
