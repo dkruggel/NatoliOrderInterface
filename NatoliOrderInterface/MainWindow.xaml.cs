@@ -182,12 +182,18 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!ordersBeingEntered.SequenceEqual(value))
+                try
                 {
-                    ordersBeingEntered = value;
-                    OrdersBeingEnteredListBox.ItemsSource = null;
-                    OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
+                    ((Grid)((Grid)OrdersBeingEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!ordersBeingEntered.SequenceEqual(value))
+                    {
+                        ordersBeingEntered = value;
+                        OrdersBeingEnteredListBox.ItemsSource = null;
+                        OrdersBeingEnteredListBox.ItemsSource = ordersBeingEntered;
+                    }
                 }
+                catch
+                { }
             }
         }
         #endregion
@@ -203,12 +209,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!ordersInTheOffice.SequenceEqual(value))
+                try
                 {
-                    ordersInTheOffice = value;
-                    OrdersInTheOfficeListBox.ItemsSource = null;
-                    OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
+                    ((Grid)((Grid)OrdersInTheOfficeListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!ordersInTheOffice.SequenceEqual(value))
+                    {
+                        ordersInTheOffice = value;
+                        OrdersInTheOfficeListBox.ItemsSource = null;
+                        OrdersInTheOfficeListBox.ItemsSource = ordersInTheOffice;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -224,12 +235,18 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!ordersEntered.SequenceEqual(value)) //value.Except(ordersEntered).Count() > 0 || ordersEntered.Except(value).Count() > 0)
+                try
                 {
-                    ordersEntered = value;
-                    OrdersEnteredListBox.ItemsSource = null;
-                    OrdersEnteredListBox.ItemsSource = ordersEntered;
+                    ((Grid)((Grid)OrdersEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!ordersEntered.SequenceEqual(value)) //value.Except(ordersEntered).Count() > 0 || ordersEntered.Except(value).Count() > 0)
+                    {
+                        ordersEntered = value;
+                        OrdersEnteredListBox.ItemsSource = null;
+                        OrdersEnteredListBox.ItemsSource = ordersEntered;
+                    }
                 }
+                catch
+                { }
             }
         }
         #endregion
@@ -245,12 +262,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!ordersInEng.SequenceEqual(value))
+                try
                 {
-                    ordersInEng = value;
-                    OrdersInEngListBox.ItemsSource = null;
-                    OrdersInEngListBox.ItemsSource = ordersInEng;
+                    ((Grid)((Grid)OrdersInEngListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!ordersInEng.SequenceEqual(value))
+                    {
+                        ordersInEng = value;
+                        OrdersInEngListBox.ItemsSource = null;
+                        OrdersInEngListBox.ItemsSource = ordersInEng;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -268,6 +290,7 @@ namespace NatoliOrderInterface
             {
                 try
                 {
+                    ((Grid)((Grid)OrdersReadyToPrintListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
                     List<bool> incBack = new List<bool>();
                     List<bool> outBack = new List<bool>();
                     // Check if data differs
@@ -330,6 +353,7 @@ namespace NatoliOrderInterface
             {
                 try
                 {
+                    ((Grid)((Grid)OrdersPrintedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
                     List<bool> incBack = new List<bool>();
                     List<bool> outBack = new List<bool>();
 
@@ -393,12 +417,18 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!quotesNotConverted.SequenceEqual(value))
+                try
                 {
-                    quotesNotConverted = value;
-                    QuotesNotConvertedListBox.ItemsSource = null;
-                    QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
+                    ((Grid)((Grid)QuotesNotConvertedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!quotesNotConverted.SequenceEqual(value))
+                    {
+                        quotesNotConverted = value;
+                        QuotesNotConvertedListBox.ItemsSource = null;
+                        QuotesNotConvertedListBox.ItemsSource = quotesNotConverted;
+                    }
                 }
+                catch
+                { }
             }
         }
         #endregion
@@ -414,12 +444,18 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!quotesToConvert.SequenceEqual(value))
+                try
                 {
-                    quotesToConvert = value;
-                    QuotesToConvertListBox.ItemsSource = null;
-                    QuotesToConvertListBox.ItemsSource = quotesToConvert;
+                    ((Grid)((Grid)QuotesToConvertListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!quotesToConvert.SequenceEqual(value))
+                    {
+                        quotesToConvert = value;
+                        QuotesToConvertListBox.ItemsSource = null;
+                        QuotesToConvertListBox.ItemsSource = quotesToConvert;
+                    }
                 }
+                catch
+                { }
             }
         }
         #endregion
@@ -435,12 +471,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!allTabletProjects.SequenceEqual(value))
+                try
                 {
-                    allTabletProjects = value;
-                    AllTabletProjectsListBox.ItemsSource = null;
-                    AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                    ((Grid)((Grid)AllTabletProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!allTabletProjects.SequenceEqual(value))
+                    {
+                        allTabletProjects = value;
+                        AllTabletProjectsListBox.ItemsSource = null;
+                        AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -456,12 +497,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!allToolProjects.SequenceEqual(value))
+                try
                 {
-                    allToolProjects = value;
-                    AllToolProjectsListBox.ItemsSource = null;
-                    AllToolProjectsListBox.ItemsSource = allToolProjects;
+                    ((Grid)((Grid)AllToolProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!allToolProjects.SequenceEqual(value))
+                    {
+                        allToolProjects = value;
+                        AllToolProjectsListBox.ItemsSource = null;
+                        AllToolProjectsListBox.ItemsSource = allToolProjects;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -477,12 +523,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!driveWorksQueue.SequenceEqual(value))
+                try
                 {
-                    driveWorksQueue = value;
-                    DriveWorksQueueListBox.ItemsSource = null;
-                    DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
+                    ((Grid)((Grid)DriveWorksQueueListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!driveWorksQueue.SequenceEqual(value))
+                    {
+                        driveWorksQueue = value;
+                        DriveWorksQueueListBox.ItemsSource = null;
+                        DriveWorksQueueListBox.ItemsSource = driveWorksQueue;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -498,12 +549,17 @@ namespace NatoliOrderInterface
             }
             set
             {
-                if (!natoliOrderList.SequenceEqual(value))
+                try
                 {
-                    natoliOrderList = value;
-                    NatoliOrderListListBox.ItemsSource = null;
-                    NatoliOrderListListBox.ItemsSource = natoliOrderList;
+                    ((Grid)((Grid)NatoliOrderListListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    if (!natoliOrderList.SequenceEqual(value))
+                    {
+                        natoliOrderList = value;
+                        NatoliOrderListListBox.ItemsSource = null;
+                        NatoliOrderListListBox.ItemsSource = natoliOrderList;
+                    }
                 }
+                catch { }
             }
         }
         #endregion
@@ -602,174 +658,205 @@ namespace NatoliOrderInterface
         }
         public async void MainRefresh(string module = "")
         {
-            if (string.IsNullOrEmpty(module))
+            try
             {
-                List<Task> taskList = new List<Task>();
-                foreach (string mod in User.VisiblePanels)
+                if (string.IsNullOrEmpty(module))
                 {
-                    switch (mod)
+                    List<Task> taskList = new List<Task>();
+                    foreach (string mod in User.VisiblePanels)
+                    {
+                        switch (mod)
+                        {
+                            case "BeingEntered":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersBeingEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetBeingEntered());
+                                    Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "InTheOffice":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersInTheOfficeListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetInTheOffice());
+                                    Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "QuotesNotConverted":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)QuotesNotConvertedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetQuotesNotConverted());
+                                    Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "EnteredUnscanned":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetEnteredUnscanned());
+                                    Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "InEngineering":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersInEngListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetInEngineering());
+                                    Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "QuotesToConvert":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)QuotesToConvertListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetQuotesToConvert());
+                                    Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "ReadyToPrint":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersReadyToPrintListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetReadyToPrint());
+                                    Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "PrintedInEngineering":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersPrintedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetPrintedInEngineering());
+                                    Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "AllTabletProjects":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)AllTabletProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetAllTabletProjects());
+                                    Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "AllToolProjects":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)AllToolProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetAllToolProjects());
+                                    Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "DriveWorksQueue":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)DriveWorksQueueListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetDriveWorksQueue());
+                                    Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            case "NatoliOrderList":
+                                taskList.Add(Task.Run(async () =>
+                                {
+                                    await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)NatoliOrderListListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                                    await Task.Run(() => GetNatoliOrderList());
+                                    Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                                }));
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    //await Task.WhenAll(taskList.ToArray());
+                    //Dispatcher.BeginInvoke((Action)(() =>
+                    //{
+                    //    RefreshButton.ApplyTemplate();
+                    //    var template = RefreshButton.Template;
+                    //    var image = (Image)template.FindName("Image", RefreshButton);
+                    //    System.Windows.Media.Animation.BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as System.Windows.Media.Animation.BeginStoryboard;
+                    //    Storyboard sb = beginStoryboard.Storyboard;
+                    //    if (sb.RepeatBehavior == RepeatBehavior.Forever)
+                    //    {
+                    //        DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
+                    //        doubleAnimation.From = null;
+                    //        sb.RepeatBehavior = new RepeatBehavior(1.0);
+                    //        sb.BeginTime = sb.GetCurrentTime(image);
+                    //        sb.Begin(image, false);
+                    //    }
+                    //}),System.Windows.Threading.DispatcherPriority.Normal);
+                }
+                else
+                {
+                    switch (module)
                     {
                         case "BeingEntered":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetBeingEntered());
-                                Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersBeingEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetBeingEntered());
+                            Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "InTheOffice":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetInTheOffice());
-                                Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersInTheOfficeListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetInTheOffice());
+                            Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "QuotesNotConverted":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetQuotesNotConverted());
-                                Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)QuotesNotConvertedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetQuotesNotConverted());
+                            Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "EnteredUnscanned":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetEnteredUnscanned());
-                                Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersEnteredListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetEnteredUnscanned());
+                            Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "InEngineering":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetInEngineering());
-                                Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersInEngListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetInEngineering());
+                            Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "QuotesToConvert":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetQuotesToConvert());
-                                Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)QuotesToConvertListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetQuotesToConvert());
+                            Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "ReadyToPrint":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetReadyToPrint());
-                                Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersReadyToPrintListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetReadyToPrint());
+                            Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "PrintedInEngineering":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetPrintedInEngineering());
-                                Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)OrdersPrintedListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetPrintedInEngineering());
+                            Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "AllTabletProjects":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetAllTabletProjects());
-                                Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)AllTabletProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetAllTabletProjects());
+                            Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "AllToolProjects":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetAllToolProjects());
-                                Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)AllToolProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetAllToolProjects());
+                            Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "DriveWorksQueue":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetDriveWorksQueue());
-                                Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)DriveWorksQueueListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetDriveWorksQueue());
+                            Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         case "NatoliOrderList":
-                            taskList.Add(Task.Run(async () =>
-                            {
-                                await Task.Run(() => GetNatoliOrderList());
-                                Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                            }));
+                            await Dispatcher.BeginInvoke((Action)(() => ((Grid)((Grid)NatoliOrderListListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Visible), System.Windows.Threading.DispatcherPriority.Normal);
+                            await Task.Run(() => GetNatoliOrderList());
+                            Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                             break;
                         default:
                             break;
                     }
                 }
-                //await Task.WhenAll(taskList.ToArray());
-                //Dispatcher.BeginInvoke((Action)(() =>
-                //{
-                //    RefreshButton.ApplyTemplate();
-                //    var template = RefreshButton.Template;
-                //    var image = (Image)template.FindName("Image", RefreshButton);
-                //    System.Windows.Media.Animation.BeginStoryboard beginStoryboard = Application.Current.Resources["RotateIt"] as System.Windows.Media.Animation.BeginStoryboard;
-                //    Storyboard sb = beginStoryboard.Storyboard;
-                //    if (sb.RepeatBehavior == RepeatBehavior.Forever)
-                //    {
-                //        DoubleAnimation doubleAnimation = sb.Children.OfType<DoubleAnimation>().First() as DoubleAnimation;
-                //        doubleAnimation.From = null;
-                //        sb.RepeatBehavior = new RepeatBehavior(1.0);
-                //        sb.BeginTime = sb.GetCurrentTime(image);
-                //        sb.Begin(image, false);
-                //    }
-                //}),System.Windows.Threading.DispatcherPriority.Normal);
             }
-            else
+            catch (Exception ex)
             {
-                switch (module)
-                {
-                    case "BeingEntered":
-                        await Task.Run(() => GetBeingEntered());
-                        Dispatcher.BeginInvoke((Action)(() => BindBeingEntered()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "InTheOffice":
-                        await Task.Run(() => GetInTheOffice());
-                        Dispatcher.BeginInvoke((Action)(() => BindInTheOffice()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "QuotesNotConverted":
-                        await Task.Run(() => GetQuotesNotConverted());
-                        Dispatcher.BeginInvoke((Action)(() => BindQuotesNotConverted()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "EnteredUnscanned":
-                        await Task.Run(() => GetEnteredUnscanned());
-                        Dispatcher.BeginInvoke((Action)(() => BindEnteredUnscanned()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "InEngineering":
-                        await Task.Run(() => GetInEngineering());
-                        Dispatcher.BeginInvoke((Action)(() => BindInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "QuotesToConvert":
-                        await Task.Run(() => GetQuotesToConvert());
-                        Dispatcher.BeginInvoke((Action)(() => BindQuotesToConvert()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "ReadyToPrint":
-                        await Task.Run(() => GetReadyToPrint());
-                        Dispatcher.BeginInvoke((Action)(() => BindReadyToPrint()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "PrintedInEngineering":
-                        await Task.Run(() => GetPrintedInEngineering());
-                        Dispatcher.BeginInvoke((Action)(() => BindPrintedInEngineering()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "AllTabletProjects":
-                        await Task.Run(() => GetAllTabletProjects());
-                        Dispatcher.BeginInvoke((Action)(() => BindAllTabletProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "AllToolProjects":
-                        await Task.Run(() => GetAllToolProjects());
-                        Dispatcher.BeginInvoke((Action)(() => BindAllToolProjects()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "DriveWorksQueue":
-                        await Task.Run(() => GetDriveWorksQueue());
-                        Dispatcher.BeginInvoke((Action)(() => BindDriveWorksQueue()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    case "NatoliOrderList":
-                        await Task.Run(() => GetNatoliOrderList());
-                        Dispatcher.BeginInvoke((Action)(() => BindNatoliOrderList()), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                        break;
-                    default:
-                        break;
-                }
+                IMethods.WriteToErrorLog("MainWindow.xaml.cs => MainRefresh", ex.Message, User);
             }
             ResetTimers(new List<Timer> { mainTimer, quoteTimer, NatoliOrderListTimer });
         }
