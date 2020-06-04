@@ -1779,26 +1779,29 @@ namespace NatoliOrderInterface
                     {
                         QuoteDetails quoteDetail = quoteDetailOptionsDictionary.First(kvp => !string.IsNullOrEmpty(kvp.Key.DetailTypeId) && (kvp.Key.DetailTypeId.Trim() == "D" || kvp.Key.DetailTypeId.Trim() == "DS")).Key;
                         string dieNumber = quoteDetail.HobNoShapeId;
-                        DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == dieNumber.Trim());
-                        // Use Note2 from Die List if present
-                        if (!string.IsNullOrWhiteSpace(die.Note2))
-                        {
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == dieNumber.Trim()).Note2.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                        }
-                        // Use the shape ID description
-                        else
-                        {
-                            short shapeID = (short)die.ShapeId;
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
-                        }
-                        float width = (float)die.WidthMinorAxis;
-                        float length = (float)die.LengthMajorAxis;
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
+                        if(_nat01Context.DieList.Any(d => d.DieId.Trim() == dieNumber.Trim()))
+                        { 
+                            DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == dieNumber.Trim());
+                            // Use Note2 from Die List if present
+                            if (!string.IsNullOrWhiteSpace(die.Note2))
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.DieList.First(d => d.DieId.Trim() == dieNumber.Trim()).Note2.Trim()));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                            }
+                            // Use the shape ID description
+                            else
+                            {
+                                short shapeID = (short)die.ShapeId;
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShape.Text = _nat01Context.ShapeFields.First(s => s.ShapeID == shapeID).ShapeDescription.Trim()));
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieShapePlaceHolder.Visibility = Visibility.Collapsed));
+                            }
+                            float width = (float)die.WidthMinorAxis;
+                            float length = (float)die.LengthMajorAxis;
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletWidth.Text = width.ToString("F4", CultureInfo.InvariantCulture)));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => TabletLength.Text = length == 0 ? "" : length.ToString("F4", CultureInfo.InvariantCulture)));
 
-                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = dieNumber));
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => DieNumber.Text = dieNumber));
+                        }
                     }
                     else if (quoteDetailOptionsDictionary.Any(kvp =>
                      !string.IsNullOrEmpty(kvp.Key.DetailTypeId) &&
