@@ -45,7 +45,7 @@ namespace NatoliOrderInterface
             this.Left = parent.Left;
             this.engineeringProject = engineeringProject;
             this.projectWindow = projectWindow;
-            this.Show();
+            //this.Show();
         }
 
         #region Functions
@@ -53,10 +53,12 @@ namespace NatoliOrderInterface
         {
             try
             {
+                using var _nat02Context = new NAT02Context();
                 if (!engineeringProject)
                 {
                     using var _projectsContext = new ProjectsContext();
                     using var _driveworksContext = new DriveWorksContext();
+                    
 
                     if (_projectsContext.HoldStatus.Any(p => p.ProjectNumber == projectNumber && p.RevisionNumber == revisionNumber))
                     {
@@ -87,22 +89,73 @@ namespace NatoliOrderInterface
                     spec.StateName = "On Hold - " + projectType;
                     _driveworksContext.Specifications.Update(spec);
 
+                    var name = IMethods.GetDisplayNameFromDWPrincipalID(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber.ToString() == projectNumber && p.RevisionNumber.ToString() == revisionNumber).Csr).Split(' ');
+                    EoiNotificationsActive eoiNotificationsActive = new EoiNotificationsActive()
+                    {
+                        Type = "Project",
+                        Number = projectNumber,
+                        Message = "Project has been put on hold.",
+                        User = (name[0].Substring(0, 1) + name[1]).ToLower(),
+                        Timestamp = DateTime.Now
+                    };
+                    _nat02Context.EoiNotificationsActive.Add(eoiNotificationsActive);
+                    if (!string.IsNullOrEmpty(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber.ToString() == projectNumber && p.RevisionNumber.ToString() == revisionNumber).ReturnToCsr))
+                    {
+                        name = IMethods.GetDisplayNameFromDWPrincipalID(_projectsContext.ProjectSpecSheet.First(p => p.ProjectNumber.ToString() == projectNumber && p.RevisionNumber.ToString() == revisionNumber).ReturnToCsr).Split(' ');
+                        EoiNotificationsActive eoiNotificationsActive1 = new EoiNotificationsActive()
+                        {
+                            Type = "Project",
+                            Number = projectNumber,
+                            Message = "Project has been put on hold.",
+                            User = (name[0].Substring(0, 1) + name[1]).ToLower(),
+                            Timestamp = DateTime.Now
+
+                        };
+                        _nat02Context.EoiNotificationsActive.Add(eoiNotificationsActive1);
+                    }
+
+
                     _projectsContext.SaveChanges();
                     _driveworksContext.SaveChanges();
+                    _nat02Context.SaveChanges();
                     _projectsContext.Dispose();
                     _driveworksContext.Dispose();
+                    _nat02Context.Dispose();
                     parent.BoolValue = true;
                 }
                 else
                 {
                     using var _projectsContext = new ProjectsContext();
-                    using var _driveworksContext = new DriveWorksContext();
 
                     EngineeringProjects eProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber.ToString() && p.RevNumber == revisionNumber.ToString());
                     eProject.OnHold = true;
                     eProject.OnHoldComment = CommentBox.Text;
                     eProject.OnHoldDateTime = DateTime.UtcNow;
                     eProject.OnHoldUser = User.GetUserName() ?? Environment.UserName.ToLower();
+                    var name = IMethods.GetDisplayNameFromDWPrincipalID(eProject.CSR).Split(' ');
+                    EoiNotificationsActive eoiNotificationsActive = new EoiNotificationsActive()
+                    {
+                        Type = "Project",
+                        Number = projectNumber,
+                        Message = "Project has been put on hold.",
+                        User = (name[0].Substring(0,1)+name[1]).ToLower(),
+                        Timestamp = DateTime.Now
+                    };
+                    _nat02Context.EoiNotificationsActive.Add(eoiNotificationsActive);
+                    if(!string.IsNullOrEmpty(eProject.ReturnToCSR) && eProject.ReturnToCSR.Length>0)
+                    {
+                        name = IMethods.GetDisplayNameFromDWPrincipalID(eProject.ReturnToCSR).Split(' ');
+                        EoiNotificationsActive eoiNotificationsActive1 = new EoiNotificationsActive()
+                        {
+                            Type = "Project",
+                            Number = projectNumber,
+                            Message = "Project has been put on hold.",
+                            User = (name[0].Substring(0, 1) + name[1]).ToLower(),
+                            Timestamp = DateTime.Now
+                        };
+                        _nat02Context.EoiNotificationsActive.Add(eoiNotificationsActive1);
+                    }
+
 
                     //string _name = projectNumber + (Convert.ToInt32(revisionNumber) > 0 ? "_" + revisionNumber : "");
                     //Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
@@ -110,9 +163,9 @@ namespace NatoliOrderInterface
                     //_driveworksContext.Specifications.Update(spec);
 
                     _projectsContext.SaveChanges();
-                    _driveworksContext.SaveChanges();
+                    _nat02Context.SaveChanges();
                     _projectsContext.Dispose();
-                    _driveworksContext.Dispose();
+                    _nat02Context.Dispose();
                     if (projectWindow != null)
                     {
                         projectWindow.PutOnHoldButton.Content = "Take Off Hold";
@@ -167,7 +220,10 @@ namespace NatoliOrderInterface
                 if (CommentBox.Text.Length > 0)
                 {
                     SetOnHold();
-                    Dispatcher.Invoke(() => projectWindow.PutOnHoldButton.Content = "Take Off Hold");
+                    if (projectWindow != null)
+                    {
+                        Dispatcher.Invoke(() => projectWindow.PutOnHoldButton.Content = "Take Off Hold");
+                    }
                     Close();
                 }
                 else

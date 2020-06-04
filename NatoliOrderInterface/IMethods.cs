@@ -1283,10 +1283,10 @@ namespace NatoliOrderInterface
                 {
                     case "Greg":
                         _driveworksContext.Dispose();
-                        return "intlcs1@natoli.com";
+                        return "Greg Lyle";
                     case "Nick":
                         _driveworksContext.Dispose();
-                        return "intlcs3@natoli.com";
+                        return "Nick Tarte";
                     default:
                         if (_driveworksContext.SecurityUsers.Any(su => su.PrincipalId.Trim() == dWfirstName.Trim()))
                         {

@@ -3094,7 +3094,8 @@ namespace NatoliOrderInterface
                         Left = this.MainWindow.Left,
                         Top = this.MainWindow.Top
                     };
-                    onHoldCommentWindow.Show();
+                    onHoldCommentWindow.Owner = this.MainWindow as MainWindow;
+                    onHoldCommentWindow.ShowDialog();
                 }
             }
             catch (Exception ex)
@@ -3122,7 +3123,8 @@ namespace NatoliOrderInterface
                         Left = this.MainWindow.Left,
                         Top = this.MainWindow.Top
                     };
-                    onHoldCommentWindow.Show();
+                    onHoldCommentWindow.Owner = this.MainWindow as MainWindow;
+                    onHoldCommentWindow.ShowDialog();
                 }
             }
             catch (Exception ex)
@@ -3149,7 +3151,12 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                     {
-                        IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to take project " + _projectNumber + " off hold?", "Take Project Off Hold?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+                        if (messageBoxResult ==  MessageBoxResult.Yes)
+                        {
+                            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                        }
                     }
                     else
                     {
@@ -3209,7 +3216,12 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == _projectNumber.ToString() && p.RevNumber == _revNumber.ToString()))
                     {
-                        IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                        MessageBoxResult messageBoxResult = MessageBox.Show("Are you sure you want to take project " + _projectNumber + " off hold?", "Take Project Off Hold?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+                        if (messageBoxResult == MessageBoxResult.Yes)
+                        {
+                            IMethods.TakeProjectOffHold(_projectNumber.ToString(), _revNumber.ToString());
+                        }
                     }
                     else
                     {
