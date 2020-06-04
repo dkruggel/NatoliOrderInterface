@@ -1419,7 +1419,8 @@ namespace NatoliOrderInterface
                     string s = grid.Name.ToString().Remove(0, 8);
                     short sequence = Convert.ToInt16(s.Remove(s.IndexOf("_")));
                     s = s.Substring(s.IndexOf("_") + 1);
-                    string customerID = s.Remove(s.IndexOf("_"));
+                    string customerID = s.Remove(s.LastIndexOf("_"));
+                    customerID = customerID.Contains('_') ? customerID.Replace('_', '-') : customerID;
                     bool? applies = null;
                     foreach (RadioButton radioButton in grid.Children.OfType<RadioButton>())
                     {
