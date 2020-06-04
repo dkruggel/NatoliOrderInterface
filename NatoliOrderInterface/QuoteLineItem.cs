@@ -429,5 +429,9 @@ namespace NatoliOrderInterface
             optionValuesT = nat01context.QuoteOptionValueTDecText.Where(q => q.QuoteNo == quoteNo && q.RevNo == revNo && q.QuoteDetailType.Trim() == lineType).ToList();
 
         }
+        public bool IsKeyed()
+        {
+            return this.Options.ContainsKey(130) || this.Options.ContainsKey(131) || this.Options.ContainsKey(132) || this.Options.ContainsKey(133) || this.Options.ContainsKey(140) || this.Options.ContainsKey(141);
+        }
     }
 }

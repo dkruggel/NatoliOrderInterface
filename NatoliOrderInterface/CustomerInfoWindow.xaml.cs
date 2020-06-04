@@ -50,7 +50,6 @@ namespace NatoliOrderInterface
 
             Title = CustomerName;
         }
-
         private void FillQuoteList()
         {
             using var _ = new NAT01Context();
@@ -79,7 +78,6 @@ namespace NatoliOrderInterface
                 // QuoteDockPanel.Children.Add(contentControl);
             }
         }
-
         private void FillOrderList()
         {
             using var _ = new NAT01Context();
@@ -118,7 +116,6 @@ namespace NatoliOrderInterface
                 OrderDockPanel.Children.Add(contentControl);
             }
         }
-
         private void FillProjectList()
         {
             using var _ = new ProjectsContext();
@@ -348,7 +345,6 @@ namespace NatoliOrderInterface
                 ProjectDockPanel.Children.Add(contentControl);
             }
         }
-
         private void OpenQuote_Click(object sender, MouseButtonEventArgs e)
         {
             using var nat01context = new NAT01Context();
@@ -396,7 +392,6 @@ namespace NatoliOrderInterface
             nat01context.Dispose();
             Cursor = Cursors.Arrow;
         }
-
         private void OpenOrder_Click(object sender, MouseButtonEventArgs e)
         {
             using var _context = new NAT02Context();
@@ -459,7 +454,6 @@ namespace NatoliOrderInterface
             _nat01context.Dispose();
             Cursor = Cursors.Arrow;
         }
-
         private void OpenProject_Click(object sender, MouseButtonEventArgs e)
         {
             Image image = sender as Image;
