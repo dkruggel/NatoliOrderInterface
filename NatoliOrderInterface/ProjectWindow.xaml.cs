@@ -190,14 +190,14 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please mark Priority for this rush.", "Rush Needs Priority", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            if (string.IsNullOrWhiteSpace(Notes.Text))
+            if (Notes.GetString().Length<=2)
             {
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            if (Notes.Text.Length>1999)
+            if (Notes.GetString().Length > 1999)
             {
-                MessageBox.Show("Please limit notes to less than 2000 characters. You have (" + Notes.Text.Length + ") currently", "Reduce Notes", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please limit notes to less than 2000 characters. You have (" + Notes.GetString().Length + ") currently", "Reduce Notes", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
@@ -761,8 +761,43 @@ namespace NatoliOrderInterface
                         Priority.IsChecked = engineeringProject.Priority;
                         Priority.IsEnabled = false;
 
-                        Notes.Text = engineeringProject.Notes;
-                        Notes.IsEnabled = false;
+                        List<string> notes = new List<string>();
+                        List<SolidColorBrush> solidColorBrushes = new List<SolidColorBrush>
+                            {
+                                Application.Current.Resources["Dark"] as SolidColorBrush,
+                                Application.Current.Resources["Medium"] as SolidColorBrush,
+                                Application.Current.Resources["Bright"] as SolidColorBrush
+                            };
+                        if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber))
+                        {
+
+                            notes = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == projectNumber).OrderBy(eap => Convert.ToInt32(eap.RevNumber)).Select(eap => eap.Notes).ToList();
+                        }
+
+                        notes.Add(_projectsContext.EngineeringProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == projectRevNumber).Notes);
+                        int i = 0;
+                        foreach (string note in notes)
+                        {
+                            string oldText = Notes.GetString();
+                            oldText = oldText[0..^2];
+                            if (note != oldText && note.Contains(oldText))
+                            {
+                                int x = note.IndexOf(oldText);
+                                int y = oldText.Length;
+                                var appending = note.Remove(note.IndexOf(oldText), oldText.Length);
+                                Notes.AppendText(appending, solidColorBrushes[i]);
+                            }
+                            else
+                            {
+                                Notes.ReplaceText(note, solidColorBrushes[0]);
+                                i = 0;
+                            }
+                            i++;
+                            i = i == 3 ? 0 : i;
+                        }
+                        
+                        //Notes.Document = engineeringProject.Notes;
+                        Notes.IsReadOnly = true;
                         DieNumber.Text = engineeringProject.DieNumber;
                         DieNumber.IsEnabled = false;
                         DieShape.Text = engineeringProject.DieShape;
@@ -1234,8 +1269,39 @@ namespace NatoliOrderInterface
                         Priority.IsChecked = engineeringProject.Priority;
                         Priority.IsEnabled = false;
 
-                        Notes.Text = engineeringProject.Notes;
-                        Notes.IsEnabled = false;
+                        if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == projectNumber))
+                        {
+                            List<SolidColorBrush> solidColorBrushes = new List<SolidColorBrush>
+                            {
+                                Application.Current.Resources["Dark"] as SolidColorBrush,
+                                Application.Current.Resources["Medium"] as SolidColorBrush,
+                                Application.Current.Resources["Bright"] as SolidColorBrush
+                            };
+                            //var d = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == projectNumber && Convert.ToInt32(eap.RevNumber) <= Convert.ToInt32(projectRevNumber)).ToList();
+                            List<string> notes = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == projectNumber && Convert.ToInt32(eap.RevNumber) <= Convert.ToInt32(projectRevNumber)).OrderBy(eap => Convert.ToInt32(eap.RevNumber)).Select(eap => eap.Notes).ToList();
+                            int i = 0;
+                            foreach (string note in notes)
+                            {
+                                string oldText = Notes.GetString();
+                                oldText = oldText[0..^2];
+                                if (note != oldText && note.Contains(oldText))
+                                {
+                                    int x = note.IndexOf(oldText);
+                                    int y = oldText.Length;
+                                    var appending = note.Remove(note.IndexOf(oldText),oldText.Length);
+                                    Notes.AppendText(appending, solidColorBrushes[i]);
+                                }
+                                else
+                                {
+                                    Notes.ReplaceText(note, solidColorBrushes[0]);
+                                    i = 0;
+                                }
+                                i++;
+                                i = i == 3 ? 0 : i;
+                            }
+                        }
+                        //Notes.Text = engineeringProject.Notes;
+                        Notes.IsReadOnly = true;
                         DieNumber.Text = engineeringProject.DieNumber;
                         DieNumber.IsEnabled = false;
                         DieShape.Text = engineeringProject.DieShape;
@@ -1667,7 +1733,8 @@ namespace NatoliOrderInterface
                 }
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Product.Text = string.IsNullOrEmpty(quoteHeader.ProductName) ? "" : quoteHeader.ProductName.Trim()));
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Attention.Text = string.IsNullOrEmpty(quoteHeader.ContactPerson) ? "" : quoteHeader.ContactPerson.Trim()));
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Notes.Text = (quoteHeader.EngineeringNote1 ?? "").Trim() + "\n" + (quoteHeader.EngineeringNote2 ?? "").Trim() + "\n" + (quoteHeader.MiscNote ?? "").Trim()));
+
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => Notes.ReplaceText((quoteHeader.EngineeringNote1 ?? "").Trim() + "\n" + (quoteHeader.EngineeringNote2 ?? "").Trim() + "\n" + (quoteHeader.MiscNote ?? "").Trim(), Application.Current.Resources["Dark"] as SolidColorBrush)));
                 if (quoteHeader.OrderNo != null && quoteHeader.OrderNo > 0)
                 {
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => RefOrderNumber.Text = quoteHeader.OrderNo.ToString().Remove(6)));
@@ -3699,7 +3766,8 @@ namespace NatoliOrderInterface
                     ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
                     LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
                     DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
-                    Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
+                    Notes = Notes.GetString(),
+                    //Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
                     TimeSubmitted = DateTime.UtcNow,
                     DueDate = DueDate.Text.Length > 0 ? (DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue) : DateTime.MaxValue,
                     Priority = Priority.IsChecked ?? false,
@@ -3754,7 +3822,9 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
+                
                 IMethods.WriteToErrorLog("ProjectWindow => GetEngineeringProjectFromCurrentForm", ex.Message, user);
+                MessageBox.Show("There was an error processing this form.\r\n" + ex.Message);
                 return null;
             }
 
@@ -4221,7 +4291,7 @@ namespace NatoliOrderInterface
                 DueDate.IsEditable = false;
                 DueDate.IsEnabled = isEnabled;
                 Priority.IsEnabled = isEnabled;
-                Notes.IsEnabled = isEnabled;
+                Notes.IsReadOnly = !isEnabled;
                 DieNumber.IsEnabled = isEnabled;
                 DieShape.IsEnabled = isEnabled;
                 TabletWidth.IsEnabled = isEnabled;
@@ -5870,6 +5940,8 @@ namespace NatoliOrderInterface
                         catch (Exception ex)
                         {
                             IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click() - Create", ex.Message, user);
+                            MessageBox.Show("There was an error processing this form.\r\n" + ex.Message);
+                            return;
                         }
                         Dispose();
                         Close();
@@ -6025,6 +6097,7 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("ProjectWindow => CreateButton_Click", ex.Message, user);
+                MessageBox.Show("There was an error processing this form.\r\n" + ex.Message);
             }
         }
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -6079,6 +6152,7 @@ namespace NatoliOrderInterface
             }
             catch (Exception ex)
             {
+                MessageBox.Show("There was an error processing this form.\r\n" + ex.Message);
                 IMethods.WriteToErrorLog("ProjectWindow => SaveButton_Click", ex.Message, user);
             }
         }
