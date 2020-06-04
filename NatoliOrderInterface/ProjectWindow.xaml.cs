@@ -7065,7 +7065,7 @@ namespace NatoliOrderInterface
             {
                 ListBox listBox = sender as ListBox;
                 Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
-                string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
+                string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
                 System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
             }
             catch (Exception ex)
@@ -7081,7 +7081,7 @@ namespace NatoliOrderInterface
                 {
                     ListBox listBox = sender as ListBox;
                     Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
-                    string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
+                    string fullFilePath = "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"";
                     File.Delete(fullFilePath);
                 }
                 ProjectFiles = GetProjectFiles(projectNumber);
