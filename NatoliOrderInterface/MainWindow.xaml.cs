@@ -966,8 +966,6 @@ namespace NatoliOrderInterface
             updateTimer.Interval += (60 * (60 * (1000))); // 1 hour
             updateTimer.Enabled = true;
         }
-
-
         private void ChangeZoom(decimal? zoom = null)
         {
             try

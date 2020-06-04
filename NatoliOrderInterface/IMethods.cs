@@ -1928,6 +1928,23 @@ namespace NatoliOrderInterface
                                     }
                                 }
                             }
+
+                            // Upper and lower are round, have bisects and both are not keyed
+                            if (quoteLineItems.Any(qli => qli.LineItemType == "U") && quoteLineItems.Any(qli => qli.LineItemType == "L"))
+                            {
+                                QuoteLineItem upper = quoteLineItems.First(qli => qli.LineItemType == "U");
+                                QuoteLineItem lower = quoteLineItems.First(qli => qli.LineItemType == "L");
+                                HobList upperHob = _nat01Context.HobList.First(hl => hl.HobNo == upper.HobNoShapeID.Trim());
+                                HobList lowerHob = _nat01Context.HobList.First(hl => hl.HobNo == lower.HobNoShapeID.Trim());
+                                DieList dieInfo = _nat01Context.DieList.First(dl => dl.DieId == upperHob.DieId);
+                                if (int.Parse(upperHob.BisectCode) > 99 && int.Parse(lowerHob.BisectCode) > 99 && dieInfo.ShapeId == 1)
+                                {
+                                    if (!(upper.IsKeyed() && lower.IsKeyed()))
+                                    {
+                                        errors.Add("Upper and Lower punches are bisected and both are not keyed. Please verify with customer or past history that this is correct.");
+                                    }
+                                }
+                            }
                         }
 
                     }
