@@ -3412,6 +3412,7 @@
             <Setter Property="Padding" Value="1"/>
             <Setter Property="AllowDrop" Value="true"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Block.LineHeight" Value="20px"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
 
             <Setter Property="Template">
