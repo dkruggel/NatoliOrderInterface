@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         x:Name="Quote_Info_Window"
         Title="QuoteInfoWindow" Height="800" Width="855" MinWidth="855" ContentRendered="Quote_Info_Window_ContentRendered_Async" Loaded="Quote_Info_Window_Loaded" UseLayoutRounding="True" Background="{StaticResource Background.Gradient}">
+    
     <Grid x:Name="MasterGrid" SizeChanged="MasterGrid_SizeChanged" HorizontalAlignment="Center">
         <TabControl x:Name="tabControl" SelectionChanged="TabControl_SelectionChanged" Width="{Binding ActualWidth ,ElementName=Quote_Info_Window}">
             <TabItem Style="{StaticResource NormalTabItem}" x:Name="QuoteTabItem" Header="Quote" Height="22">
