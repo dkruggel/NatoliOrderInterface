@@ -794,24 +794,31 @@ namespace NatoliOrderInterface
 
                         notes.Add(_projectsContext.EngineeringProjects.First(eap => eap.ProjectNumber == projectNumber && eap.RevNumber == projectRevNumber).Notes);
                         int i = 0;
-                        foreach (string note in notes)
+                        try
                         {
-                            string oldText = Notes.GetString();
-                            oldText = oldText[0..^2];
-                            if (note != oldText && note.Contains(oldText))
+                            foreach (string note in notes)
                             {
-                                int x = note.IndexOf(oldText);
-                                int y = oldText.Length;
-                                var appending = note.Remove(note.IndexOf(oldText), oldText.Length);
-                                Notes.AppendText(appending, solidColorBrushes[i]);
+                                string oldText = Notes.GetString();
+                                oldText = oldText.Length > 1 ? oldText[0..^2] : oldText;
+                                if (note != oldText && note.Contains(oldText))
+                                {
+                                    int x = note.IndexOf(oldText);
+                                    int y = oldText.Length;
+                                    var appending = note.Remove(note.IndexOf(oldText), oldText.Length);
+                                    Notes.AppendText(appending, solidColorBrushes[i]);
+                                }
+                                else
+                                {
+                                    Notes.ReplaceText(note, solidColorBrushes[0]);
+                                    i = 0;
+                                }
+                                i++;
+                                i = i == 3 ? 0 : i;
                             }
-                            else
-                            {
-                                Notes.ReplaceText(note, solidColorBrushes[0]);
-                                i = 0;
-                            }
-                            i++;
-                            i = i == 3 ? 0 : i;
+                        }
+                        catch (Exception ex)
+                        {
+                            IMethods.WriteToErrorLog("ProjectWindow => Note population - LoadEngineeringProject", ex.Message, user);
                         }
                         
                         //Notes.Document = engineeringProject.Notes;
@@ -1298,24 +1305,31 @@ namespace NatoliOrderInterface
                             //var d = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == projectNumber && Convert.ToInt32(eap.RevNumber) <= Convert.ToInt32(projectRevNumber)).ToList();
                             List<string> notes = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == projectNumber && Convert.ToInt32(eap.RevNumber) <= Convert.ToInt32(projectRevNumber)).OrderBy(eap => Convert.ToInt32(eap.RevNumber)).Select(eap => eap.Notes).ToList();
                             int i = 0;
-                            foreach (string note in notes)
+                            try
                             {
-                                string oldText = Notes.GetString();
-                                oldText = oldText[0..^2];
-                                if (note != oldText && note.Contains(oldText))
+                                foreach (string note in notes)
                                 {
-                                    int x = note.IndexOf(oldText);
-                                    int y = oldText.Length;
-                                    var appending = note.Remove(note.IndexOf(oldText),oldText.Length);
-                                    Notes.AppendText(appending, solidColorBrushes[i]);
+                                    string oldText = Notes.GetString();
+                                    oldText = oldText.Length > 1 ? oldText[0..^2] : oldText;
+                                    if (note != oldText && note.Contains(oldText))
+                                    {
+                                        int x = note.IndexOf(oldText);
+                                        int y = oldText.Length;
+                                        var appending = note.Remove(note.IndexOf(oldText), oldText.Length);
+                                        Notes.AppendText(appending, solidColorBrushes[i]);
+                                    }
+                                    else
+                                    {
+                                        Notes.ReplaceText(note, solidColorBrushes[0]);
+                                        i = 0;
+                                    }
+                                    i++;
+                                    i = i == 3 ? 0 : i;
                                 }
-                                else
-                                {
-                                    Notes.ReplaceText(note, solidColorBrushes[0]);
-                                    i = 0;
-                                }
-                                i++;
-                                i = i == 3 ? 0 : i;
+                            }
+                            catch (Exception ex)
+                            {
+                                IMethods.WriteToErrorLog("ProjectWindow => Note population - LoadEngineeringProject", ex.Message, user);
                             }
                         }
                         //Notes.Text = engineeringProject.Notes;
