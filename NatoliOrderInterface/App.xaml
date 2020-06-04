@@ -6489,6 +6489,7 @@
                                         <Button x:Name="ProjectNextStepButton" Style="{StaticResource ProjectNextStepButton}" Margin="2,0" HorizontalAlignment="Right" Click="NextStepProject_Click"/>
                                         <Button x:Name="ProjectCompleteButton" Style="{StaticResource ProjectCompleteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompleteProject_Click"/>
                                         <Button x:Name="ProjectCancelButton" Style="{StaticResource ProjectCancelButton}" Margin="2,0" HorizontalAlignment="Right" Click="CancelProject_Click"/>
+                                        <Button x:Name="CopyProjectButton" Style="{StaticResource ProjectCopyButton}" Click="CopyProject_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
