@@ -387,6 +387,13 @@
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
+        <DrawingImage x:Key="duplicateDrawingImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                    <GeometryDrawing Brush="#FF000000" Geometry="F1 M24,24z M0,0z M8,7L8,5.50100238C8,4.1202905,9.11928813,3.00100238,10.5,3.00100238L16.4720225,3.00100238C16.6047688,2.99258291,16.7429463,3.03684187,16.8535534,3.14744899L19.8535534,6.14744899C19.9641605,6.25805611,20.0084195,6.39623363,20,6.52897986L20,14.5010024C20,15.8817143,18.8807119,17.0010024,17.5,17.0010024L16,17.0010024 16,18.5C16,19.8807119,14.8807119,21,13.5,21L6.5,21C5.11928813,21,4,19.8807119,4,18.5L4,9.5C4,8.11928813,5.11928813,7,6.5,7L8,7z M8,8L6.5,8C5.67157288,8,5,8.67157288,5,9.5L5,18.5C5,19.3284271,5.67157288,20,6.5,20L13.5,20C14.3284271,20,15,19.3284271,15,18.5L15,17.0010024 12.5,17.0010024C12.2238576,17.0010024 12,16.7771448 12,16.5010024 12,16.22486 12.2238576,16.0010024 12.5,16.0010024L17.5,16.0010024C18.3284271,16.0010024,19,15.3294295,19,14.5010024L19,7.00100238 16.5,7.00100238C16.2238576,7.00100238,16,6.77714475,16,6.50100238L16,4.00100238 10.5,4.00100238C9.67157288,4.00100238,9,4.67257525,9,5.50100238L9,10.5000237C9,10.7761595,8.77614767,11.0000118,8.50001183,11.0000118L8.5,11.0000118C8.22385571,11.0000053,8,10.7761443,8,10.5L8,8z M17,6.00100238L18.2928932,6.00100238 17,4.70810916 17,6.00100238z M13.2928932,10L11.5,10C11.2238576,10 11,9.77614237 11,9.5 11,9.22385763 11.2238576,9 11.5,9L14.5,9C14.7761424,9,15,9.22385763,15,9.5L15,12.5C15,12.7761424 14.7761424,13 14.5,13 14.2238576,13 14,12.7761424 14,12.5L14,10.7071068 8.85355339,15.8535534C8.65829124,16.0488155 8.34170876,16.0488155 8.14644661,15.8535534 7.95118446,15.6582912 7.95118446,15.3417088 8.14644661,15.1464466L13.2928932,10z" />
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <!--#endregion-->
 
         <DrawingImage x:Key="greenplusadditioniconDrawingImage">
@@ -3055,6 +3062,34 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Image Source="{DynamicResource close_circleDrawingImage}" Cursor="Hand" Visibility="Visible">
+                            <Image.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <Trigger Property="Image.IsMouseOver" Value="True">
+                                            <Setter Property="Image.Opacity" Value="1"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                        <Trigger Property="Image.IsMouseOver" Value="False">
+                                            <Setter Property="Image.Opacity" Value="0.4"/>
+                                            <Setter Property="Image.Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ProjectCopyButton" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Setter Property="ToolTip" Value="Copy Project"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="{DynamicResource duplicateDrawingImage}" Cursor="Hand" Visibility="Visible">
                             <Image.Style>
                                 <Style>
                                     <Style.Triggers>
@@ -6199,13 +6234,14 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="All Tablet Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="ProjectPreviousStepButton" Style="{StaticResource ProjectPreviousStepButton}" Margin="2,0" HorizontalAlignment="Right" Click="PreviousStepProject_Click"/>
-                                        <Button x:Name="ProjectOnHoldButton" Style="{StaticResource ProjectOnHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OnHoldProject_Click"/>
-                                        <Button x:Name="ProjectOffHoldButton" Style="{StaticResource ProjectOffHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OffHoldProject_Click"/>
-                                        <Button x:Name="ProjectNextStepButton" Style="{StaticResource ProjectNextStepButton}" Margin="2,0" HorizontalAlignment="Right" Click="NextStepProject_Click"/>
-                                        <Button x:Name="ProjectCompleteButton" Style="{StaticResource ProjectCompleteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompleteProject_Click"/>
-                                        <Button x:Name="ProjectCancelButton" Style="{StaticResource ProjectCancelButton}" Margin="2,0" HorizontalAlignment="Right" Click="CancelProject_Click"/>
-                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
+                                        <Button x:Name="ProjectPreviousStepButton" Style="{StaticResource ProjectPreviousStepButton}" Click="PreviousStepProject_Click"/>
+                                        <Button x:Name="ProjectOnHoldButton" Style="{StaticResource ProjectOnHoldButton}" Click="OnHoldProject_Click"/>
+                                        <Button x:Name="ProjectOffHoldButton" Style="{StaticResource ProjectOffHoldButton}" Click="OffHoldProject_Click"/>
+                                        <Button x:Name="ProjectNextStepButton" Style="{StaticResource ProjectNextStepButton}" Click="NextStepProject_Click"/>
+                                        <Button x:Name="ProjectCompleteButton" Style="{StaticResource ProjectCompleteButton}" Click="CompleteProject_Click"/>
+                                        <Button x:Name="ProjectCancelButton" Style="{StaticResource ProjectCancelButton}" Click="CancelProject_Click"/>
+                                        <Button x:Name="CopyProjectButton" Style="{StaticResource ProjectCopyButton}" Click="CopyProject_Click"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
                                     </StackPanel>

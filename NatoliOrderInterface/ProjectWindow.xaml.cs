@@ -155,6 +155,24 @@ namespace NatoliOrderInterface
             timersEnabled = true;
         }
 
+        // Copied constructor
+        public ProjectWindow(string projectNumber, string projectRevNumber, MainWindow parent, User user, string copiedProjectNumber, string copiedProjectRevNumber)
+        {
+            InitializeComponent();
+            this.projectNumber = projectNumber;
+            this.projectRevNumber = projectRevNumber;
+            this.user = user ?? new User();
+            mainWindow = parent ?? new MainWindow();
+            WindowSetup();
+            Show();
+            LoadCopiedProject(copiedProjectNumber, copiedProjectRevNumber);
+            //if (mainWindow.WindowState == WindowState.Maximized)
+            //{
+            //    this.WindowState = WindowState.Maximized;
+            //}
+            timersEnabled = true;
+        }
+
         /// <summary>
         /// Checks the form for possible errors.
         /// Will throw MessageBoxes when it finds an error.
@@ -1594,6 +1612,574 @@ namespace NatoliOrderInterface
             catch (Exception ex)
             {
                 IMethods.WriteToErrorLog("ProjectWindow => LoadEngineeringProject", ex.Message, user);
+            }
+        }
+        private void LoadCopiedProject(string project, string projectRev)
+        {
+            try
+            {
+                using var _projectsContext = new ProjectsContext();
+                using var _nat01Context = new NAT01Context();
+
+                // Get copied project object
+                EngineeringProjects engineeringProjectCopied = null;
+                EngineeringArchivedProjects engineeringArchiveProjectCopied = null;
+                if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == project && ep.RevNumber == projectRev))
+                {
+                    engineeringProjectCopied = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == project && ep.RevNumber == projectRev);
+                }
+                else if (_projectsContext.EngineeringArchivedProjects.Any(ep => ep.ProjectNumber == project && ep.RevNumber == projectRev))
+                {
+                    engineeringArchiveProjectCopied = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == project && ep.RevNumber == projectRev);
+                }
+                else
+                {
+                    _projectsContext.Dispose();
+                    _nat01Context.Dispose();
+                    return;
+                }
+
+                if (!Directory.Exists(projectsDirectory + projectNumber + "\\"))
+                {
+                    Directory.CreateDirectory(projectsDirectory + projectNumber + "\\");
+                }
+                ProjectNavigation.Visibility = Visibility.Hidden;
+                CreationBorder.Visibility = Visibility.Visible;
+                ArchivedOrInactive.Visibility = Visibility.Collapsed;
+                EngineeringProjects engineeringProject = IMethods.GetBlankEngineeringProject(user, projectNumber, projectRevNumber);
+                StartButton.IsEnabled = false;
+                FinishButton.IsEnabled = false;
+                SubmitButton.IsEnabled = false;
+                CheckButton.IsEnabled = false;
+                PutOnHoldButton.IsEnabled = false;
+                CancelButton.IsEnabled = false;
+                QuoteFolderButton.IsEnabled = false;
+                ReturnToCSR.ItemsSource = null;
+                ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
+                CSR.Text = user.GetDWPrincipalId();
+                UnitOfMeasure.SelectedItem = engineeringProject.UnitOfMeasure;
+                decimal conversion = (string)Resources["UnitsText"] == "in" ? 1 : 1 / (decimal)25.4;
+
+                // Set fields from copied project
+                if (!(engineeringProjectCopied is null))
+                {
+                    NewDrawing = engineeringProjectCopied.NewDrawing;
+                    UpdateExistingDrawing = engineeringProjectCopied.UpdateExistingDrawing;
+                    UpdateTextOnDrawing = engineeringProjectCopied.UpdateTextOnDrawing;
+                    PerSampleTablet = engineeringProjectCopied.PerSampleTablet;
+                    RefTabletDrawing = engineeringProjectCopied.RefTabletDrawing;
+                    PerSampleTool = engineeringProjectCopied.PerSampleTool;
+                    RefToolDrawing = engineeringProjectCopied.RefToolDrawing;
+                    PerSuppliedPicture = engineeringProjectCopied.PerSuppliedPicture;
+                    RefNatoliDrawing = engineeringProjectCopied.RefNatoliDrawing;
+                    RefNonNatoliDrawing = engineeringProjectCopied.RefNonNatoliDrawing;
+                    BinLocation = engineeringProjectCopied.BinLocation;
+                    
+
+                    RefOrderNumber.Text = engineeringProjectCopied.RefOrderNumber;
+                    UnitOfMeasure.Text = engineeringProjectCopied.UnitOfMeasure;
+                    CustomerNumber.Text = engineeringProjectCopied.CustomerNumber;
+                    CustomerName.Text = engineeringProjectCopied.CustomerName;
+                    ShipToNumber.Text = engineeringProjectCopied.ShipToNumber;
+                    ShipToLocNumber.Text = engineeringProjectCopied.ShipToLocNumber;
+                    ShipToName.Text = engineeringProjectCopied.ShipToName;
+                    EndUserNumber.Text = engineeringProjectCopied.EndUserNumber;
+                    EndUserLocNumber.Text = engineeringProjectCopied.EndUserLocNumber;
+                    EndUserName.Text = engineeringProjectCopied.EndUserName;
+                    // Product.Text = engineeringProjectCopied.Product;
+                    Attention.Text = engineeringProjectCopied.Attention;
+                    MachineNumber.Text = engineeringProjectCopied.MachineNumber;
+                    if (!string.IsNullOrWhiteSpace(engineeringProjectCopied.MachineNumber) && Int16.TryParse(engineeringProjectCopied.MachineNumber, out short _machineNo))
+                    {
+                        if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                        {
+                            string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
+                            string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od == null ? "" : ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od * conversion).ToString();
+                            string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol == null ? "" : ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol * conversion).ToString();
+                            MachineDescription.Text = description;
+                            DieOD.Text = od;
+                            DieODPlaceholder.Visibility = Visibility.Collapsed;
+                            DieOL.Text = ol;
+                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                        }
+                    }
+
+                    // Notes.Text = engineeringProjectCopied.Notes;
+                    // DieNumber.Text = engineeringProjectCopied.DieNumber;
+                    // DieShape.Text = engineeringProjectCopied.DieShape;
+                    // TabletWidth.Text = engineeringProjectCopied.Width == null ? "" : (engineeringProjectCopied.Width * conversion).ToString().TrimEnd('0');
+                    // TabletLength.Text = engineeringProjectCopied.Length == null ? "" : (engineeringProjectCopied.Length * conversion).ToString().TrimEnd('0');
+                    DieTolerances.Text = engineeringProjectCopied.DieTolerances;
+                    // UpperCupType.Text = engineeringProjectCopied.UpperCupType == null ? "" : engineeringProjectCopied.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProjectCopied.UpperCupType).Description.Trim();
+                    // UpperHobNumber.Text = engineeringProjectCopied.UpperHobNumber.Trim();
+                    // UpperCupDepth.Text = engineeringProjectCopied.UpperCupDepth == null ? "" : (engineeringProjectCopied.UpperCupDepth * conversion).ToString().TrimEnd('0');
+                    // UpperLand.Text = engineeringProjectCopied.UpperLand == null ? "" : (engineeringProjectCopied.UpperLand * conversion).ToString().TrimEnd('0');
+                    // UpperHobDescription.Text = engineeringProjectCopied.UpperHobDescription;
+                    if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    UpperTolerances.Text = engineeringProjectCopied.UpperTolerances;
+                    // LowerCupType.Text = engineeringProjectCopied.LowerCupType == null ? "" : engineeringProjectCopied.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProjectCopied.LowerCupType).Description.Trim();
+                    // LowerHobNumber.Text = engineeringProjectCopied.LowerHobNumber.Trim();
+                    // LowerCupDepth.Text = engineeringProjectCopied.LowerCupDepth == null ? "" : (engineeringProjectCopied.LowerCupDepth * conversion).ToString().TrimEnd('0');
+                    // LowerLand.Text = engineeringProjectCopied.LowerLand == null ? "" : (engineeringProjectCopied.LowerLand * conversion).ToString().TrimEnd('0');
+                    // LowerHobDescription.Text = engineeringProjectCopied.LowerHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    LowerTolerances.Text = engineeringProjectCopied.LowerTolerances;
+                    // ShortRejectCupType.Text = engineeringProjectCopied.ShortRejectCupType == null ? "" : engineeringProjectCopied.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProjectCopied.ShortRejectCupType).Description.Trim();
+                    // ShortRejectHobNumber.Text = engineeringProjectCopied.ShortRejectHobNumber.Trim();
+                    // ShortRejectCupDepth.Text = engineeringProjectCopied.ShortRejectCupDepth == null ? "" : (engineeringProjectCopied.ShortRejectCupDepth * conversion).ToString().TrimEnd('0');
+                    // ShortRejectLand.Text = engineeringProjectCopied.ShortRejectLand == null ? "" : (engineeringProjectCopied.ShortRejectLand * conversion).ToString().TrimEnd('0');
+                    // ShortRejectHobDescription.Text = engineeringProjectCopied.ShortRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    ShortRejectTolerances.Text = engineeringProjectCopied.ShortRejectTolerances;
+                    // LongRejectCupType.Text = engineeringProjectCopied.LongRejectCupType == null ? "" : engineeringProjectCopied.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringProjectCopied.LongRejectCupType).Description.Trim();
+                    // LongRejectHobNumber.Text = engineeringProjectCopied.LongRejectHobNumber.Trim();
+                    // LongRejectCupDepth.Text = engineeringProjectCopied.LongRejectCupDepth == null ? "" : (engineeringProjectCopied.LongRejectCupDepth * conversion).ToString().TrimEnd('0');
+                    // LongRejectLand.Text = engineeringProjectCopied.LongRejectLand == null ? "" : (engineeringProjectCopied.LongRejectLand * conversion).ToString().TrimEnd('0');
+                    // LongRejectHobDescription.Text = engineeringProjectCopied.LongRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    LongRejectTolerances.Text = engineeringProjectCopied.LongRejectTolerances;
+
+                    MultiTipSketch.IsChecked = engineeringProjectCopied.MultiTipSketch;
+                    // SketchID.Text = engineeringProjectCopied.MultiTipSketchID;
+                    if (engineeringProjectCopied.MultiTipSolid == true)
+                    {
+                        MultiTipStyle.Text = "SOLID";
+                    }
+                    if (engineeringProjectCopied.MultiTipAssembled == true)
+                    {
+                        MultiTipStyle.Text = "ASSEMBLED";
+                    }
+
+                    EngineeringTabletProjects tabletProject = null;
+                    EngineeringToolProjects toolProject = null;
+                    // For tablets?
+                    if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == project && p.RevNumber == projectRev))
+                    {
+                        tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == project && p.RevNumber == projectRev);
+                        TabletsRequired.IsChecked = true;
+                        UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
+                        LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
+                        ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
+                        LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
+                        Density.Text = tabletProject.Density.ToString();
+                        DensityUnits.SelectedItem = tabletProject.DensityUnits;
+                        Mass.Text = tabletProject.Mass.ToString();
+                        MassUnits.SelectedItem = tabletProject.MassUnits;
+                        // Volume.Text = tabletProject.Volume.ToString();
+                        // VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
+                        // TargetThickness.Text = tabletProject.TargetThickness.ToString();
+                        // TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
+                        FilmCoat.IsChecked = tabletProject.FilmCoated;
+                        PrePick.IsChecked = tabletProject.PrePick;
+                        PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
+                        PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
+                        Taper.IsChecked = tabletProject.Taper;
+                        TaperAmount.Text = tabletProject.TaperAmount.ToString();
+                        TaperUnits.SelectedItem = tabletProject.TaperUnits;
+                    }
+                    else
+                    {
+                        TabletsRequired.IsChecked = false;
+                    }
+                    // For Tools?
+                    if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == project && p.RevNumber == projectRev))
+                    {
+                        toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == project && p.RevNumber == projectRev);
+                        CoreRod = toolProject.LowerCoreRod;
+                        CoreRodSteelID = toolProject.LowerCoreRodSteelID;
+                        CoreRodKey = toolProject.LowerCoreRodKey;
+                        CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
+                        CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
+                        CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
+                        CoreRodPunch = toolProject.LowerCoreRodPunch;
+                        CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
+                        CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
+
+                        ToolsRequired.IsChecked = true;
+                        UpperPunch.IsChecked = toolProject.UpperPunch;
+                        UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
+                        UpperAssembly.IsChecked = toolProject.UpperAssembly;
+                        UpperCap.IsChecked = toolProject.UpperCap;
+                        UpperCapSteelID.Text = toolProject.UpperCapSteelID;
+                        UpperHolder.IsChecked = toolProject.UpperHolder;
+                        UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
+                        UpperHead.IsChecked = toolProject.UpperHead;
+                        UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
+                        UpperTip.IsChecked = toolProject.UpperTip;
+                        UpperTipSteelID.Text = toolProject.UpperTipSteelID;
+                        LowerPunch.IsChecked = toolProject.LowerPunch;
+                        LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
+                        LowerAssembly.IsChecked = toolProject.LowerAssembly;
+                        LowerCap.IsChecked = toolProject.LowerCap;
+                        LowerCapSteelID.Text = toolProject.LowerCapSteelID;
+                        LowerHolder.IsChecked = toolProject.LowerHolder;
+                        LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
+                        LowerHead.IsChecked = toolProject.LowerHead;
+                        LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
+                        LowerTip.IsChecked = toolProject.LowerTip;
+                        LowerTipSteelID.Text = toolProject.LowerTipSteelID;
+                        ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
+                        ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
+                        ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
+                        ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
+                        ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
+                        ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
+                        ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
+                        ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
+                        ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
+                        ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
+                        ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
+                        LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
+                        LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
+                        LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
+                        LongRejectCap.IsChecked = toolProject.LongRejectCap;
+                        LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
+                        LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
+                        LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
+                        LongRejectHead.IsChecked = toolProject.LongRejectHead;
+                        LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
+                        LongRejectTip.IsChecked = toolProject.LongRejectTip;
+                        LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
+                        Alignment.IsChecked = toolProject.Alignment;
+                        AlignmentSteelID.Text = toolProject.AlignmentSteelID;
+                        Key.IsChecked = toolProject.Key;
+                        KeySteelID.Text = toolProject.KeySteelID;
+                        Misc.IsChecked = toolProject.Misc;
+                        MiscSteelID.Text = toolProject.MiscSteelID;
+                        NumberOfTips.Text = engineeringProjectCopied.NumberOfTips < 2 ? "" : engineeringProjectCopied.NumberOfTips.ToString();
+                        Die.IsChecked = toolProject.Die;
+                        DieSteelID.Text = toolProject.DieSteelID;
+                        DieAssembly.IsChecked = toolProject.DieAssembly;
+                        DieComponent.IsChecked = toolProject.DieComponent;
+                        DieComponentSteelID.Text = toolProject.DieComponentSteelID;
+                        DieHolder.IsChecked = toolProject.DieHolder;
+                        DieHolderSteelID.Text = toolProject.DieHolderSteelID;
+                        DieInsert.IsChecked = toolProject.DieInsert;
+                        DieInsertSteelID.Text = toolProject.DieInsertSteelID;
+                        DiePlate.IsChecked = toolProject.DiePlate;
+                        DiePlateSteelID.Text = toolProject.DiePlateSteelID;
+                        DieSegment.IsChecked = toolProject.DieSegment;
+                        DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
+                        KeyType.Text = toolProject.KeyType;
+                        KeyAngle.Text = toolProject.KeyAngle.ToString();
+                        KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
+                        UpperKeyed.IsChecked = toolProject.UpperKeyed;
+                        LowerKeyed.IsChecked = toolProject.LowerKeyed;
+                        ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
+                        LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
+                        UpperGrooveType.Text = toolProject.UpperGrooveType;
+                        LowerGrooveType.Text = toolProject.LowerGrooveType;
+                        UpperGroove.IsChecked = toolProject.UpperGroove;
+                        LowerGroove.IsChecked = toolProject.LowerGroove;
+                        ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
+                        LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
+                        HeadType.Text = toolProject.HeadType;
+                        CarbideTips.IsChecked = toolProject.CarbideTips;
+                        MachineNotes.Text = toolProject.MachineNotes;
+                        if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) || _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber && p.TabletChecked == true))
+                        {
+                            ToolsTabItem.IsSelected = true;
+                            CurrentProjectType.Text = "TOOLS";
+                            RefreshRoutingButtons();
+                        }
+                    }
+                    else
+                    {
+                        ToolsRequired.IsChecked = false;
+                    }
+                }
+                else if (!(engineeringArchiveProjectCopied is null))
+                {
+                    NewDrawing = engineeringArchiveProjectCopied.NewDrawing;
+                    UpdateExistingDrawing = engineeringArchiveProjectCopied.UpdateExistingDrawing;
+                    UpdateTextOnDrawing = engineeringArchiveProjectCopied.UpdateTextOnDrawing;
+                    PerSampleTablet = engineeringArchiveProjectCopied.PerSampleTablet;
+                    RefTabletDrawing = engineeringArchiveProjectCopied.RefTabletDrawing;
+                    PerSampleTool = engineeringArchiveProjectCopied.PerSampleTool;
+                    RefToolDrawing = engineeringArchiveProjectCopied.RefToolDrawing;
+                    PerSuppliedPicture = engineeringArchiveProjectCopied.PerSuppliedPicture;
+                    RefNatoliDrawing = engineeringArchiveProjectCopied.RefNatoliDrawing;
+                    RefNonNatoliDrawing = engineeringArchiveProjectCopied.RefNonNatoliDrawing;
+                    BinLocation = engineeringArchiveProjectCopied.BinLocation;
+
+
+                    RefOrderNumber.Text = engineeringArchiveProjectCopied.RefOrderNumber;
+                    UnitOfMeasure.Text = engineeringArchiveProjectCopied.UnitOfMeasure;
+                    CustomerNumber.Text = engineeringArchiveProjectCopied.CustomerNumber;
+                    CustomerName.Text = engineeringArchiveProjectCopied.CustomerName;
+                    ShipToNumber.Text = engineeringArchiveProjectCopied.ShipToNumber;
+                    ShipToLocNumber.Text = engineeringArchiveProjectCopied.ShipToLocNumber;
+                    ShipToName.Text = engineeringArchiveProjectCopied.ShipToName;
+                    EndUserNumber.Text = engineeringArchiveProjectCopied.EndUserNumber;
+                    EndUserLocNumber.Text = engineeringArchiveProjectCopied.EndUserLocNumber;
+                    EndUserName.Text = engineeringArchiveProjectCopied.EndUserName;
+                    // Product.Text = engineeringArchiveProjectCopied.Product;
+                    Attention.Text = engineeringArchiveProjectCopied.Attention;
+                    MachineNumber.Text = engineeringArchiveProjectCopied.MachineNumber;
+                    if (!string.IsNullOrWhiteSpace(engineeringArchiveProjectCopied.MachineNumber) && Int16.TryParse(engineeringArchiveProjectCopied.MachineNumber, out short _machineNo))
+                    {
+                        if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
+                        {
+                            string description = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Description.Trim();
+                            string od = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od == null ? "" : ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Od * conversion).ToString();
+                            string ol = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol == null ? "" : ((decimal)_nat01Context.MachineList.First(m => m.MachineNo == _machineNo).Ol * conversion).ToString();
+                            MachineDescription.Text = description;
+                            DieOD.Text = od;
+                            DieODPlaceholder.Visibility = Visibility.Collapsed;
+                            DieOL.Text = ol;
+                            DieOLPlaceholder.Visibility = Visibility.Collapsed;
+                        }
+                    }
+
+                    // Notes.Text = engineeringArchiveProjectCopied.Notes;
+                    // DieNumber.Text = engineeringArchiveProjectCopied.DieNumber;
+                    // DieShape.Text = engineeringArchiveProjectCopied.DieShape;
+                    // TabletWidth.Text = engineeringArchiveProjectCopied.Width == null ? "" : (engineeringArchiveProjectCopied.Width * conversion).ToString().TrimEnd('0');
+                    // TabletLength.Text = engineeringArchiveProjectCopied.Length == null ? "" : (engineeringArchiveProjectCopied.Length * conversion).ToString().TrimEnd('0');
+                    DieTolerances.Text = engineeringArchiveProjectCopied.DieTolerances;
+                    // UpperCupType.Text = engineeringArchiveProjectCopied.UpperCupType == null ? "" : engineeringArchiveProjectCopied.UpperCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringArchiveProjectCopied.UpperCupType).Description.Trim();
+                    // UpperHobNumber.Text = engineeringArchiveProjectCopied.UpperHobNumber.Trim();
+                    // UpperCupDepth.Text = engineeringArchiveProjectCopied.UpperCupDepth == null ? "" : (engineeringArchiveProjectCopied.UpperCupDepth * conversion).ToString().TrimEnd('0');
+                    // UpperLand.Text = engineeringArchiveProjectCopied.UpperLand == null ? "" : (engineeringArchiveProjectCopied.UpperLand * conversion).ToString().TrimEnd('0');
+                    // UpperHobDescription.Text = engineeringArchiveProjectCopied.UpperHobDescription;
+                    if (!string.IsNullOrWhiteSpace(UpperHobDescription.Text.ToString()) && UpperHobDescription.Text.ToString().Length > 0)
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        UpperHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    UpperTolerances.Text = engineeringArchiveProjectCopied.UpperTolerances;
+                    // LowerCupType.Text = engineeringArchiveProjectCopied.LowerCupType == null ? "" : engineeringArchiveProjectCopied.LowerCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringArchiveProjectCopied.LowerCupType).Description.Trim();
+                    // LowerHobNumber.Text = engineeringArchiveProjectCopied.LowerHobNumber.Trim();
+                    // LowerCupDepth.Text = engineeringArchiveProjectCopied.LowerCupDepth == null ? "" : (engineeringArchiveProjectCopied.LowerCupDepth * conversion).ToString().TrimEnd('0');
+                    // LowerLand.Text = engineeringArchiveProjectCopied.LowerLand == null ? "" : (engineeringArchiveProjectCopied.LowerLand * conversion).ToString().TrimEnd('0');
+                    // LowerHobDescription.Text = engineeringArchiveProjectCopied.LowerHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LowerHobDescription.Text.ToString()) && LowerHobDescription.Text.ToString().Length > 0)
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LowerHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    LowerTolerances.Text = engineeringArchiveProjectCopied.LowerTolerances;
+                    // ShortRejectCupType.Text = engineeringArchiveProjectCopied.ShortRejectCupType == null ? "" : engineeringArchiveProjectCopied.ShortRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringArchiveProjectCopied.ShortRejectCupType).Description.Trim();
+                    // ShortRejectHobNumber.Text = engineeringArchiveProjectCopied.ShortRejectHobNumber.Trim();
+                    // ShortRejectCupDepth.Text = engineeringArchiveProjectCopied.ShortRejectCupDepth == null ? "" : (engineeringArchiveProjectCopied.ShortRejectCupDepth * conversion).ToString().TrimEnd('0');
+                    // ShortRejectLand.Text = engineeringArchiveProjectCopied.ShortRejectLand == null ? "" : (engineeringArchiveProjectCopied.ShortRejectLand * conversion).ToString().TrimEnd('0');
+                    // ShortRejectHobDescription.Text = engineeringArchiveProjectCopied.ShortRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(ShortRejectHobDescription.Text.ToString()) && ShortRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        ShortRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    ShortRejectTolerances.Text = engineeringArchiveProjectCopied.ShortRejectTolerances;
+                    // LongRejectCupType.Text = engineeringArchiveProjectCopied.LongRejectCupType == null ? "" : engineeringArchiveProjectCopied.LongRejectCupType + " - " + _nat01Context.CupConfig.First(c => c.CupID == engineeringArchiveProjectCopied.LongRejectCupType).Description.Trim();
+                    // LongRejectHobNumber.Text = engineeringArchiveProjectCopied.LongRejectHobNumber.Trim();
+                    // LongRejectCupDepth.Text = engineeringArchiveProjectCopied.LongRejectCupDepth == null ? "" : (engineeringArchiveProjectCopied.LongRejectCupDepth * conversion).ToString().TrimEnd('0');
+                    // LongRejectLand.Text = engineeringArchiveProjectCopied.LongRejectLand == null ? "" : (engineeringArchiveProjectCopied.LongRejectLand * conversion).ToString().TrimEnd('0');
+                    // LongRejectHobDescription.Text = engineeringArchiveProjectCopied.LongRejectHobDescription;
+                    if (!string.IsNullOrWhiteSpace(LongRejectHobDescription.Text.ToString()) && LongRejectHobDescription.Text.ToString().Length > 0)
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        LongRejectHobDescriptionPlaceHolder.Visibility = Visibility.Visible;
+                    }
+                    LongRejectTolerances.Text = engineeringArchiveProjectCopied.LongRejectTolerances;
+
+                    MultiTipSketch.IsChecked = engineeringArchiveProjectCopied.MultiTipSketch;
+                    // SketchID.Text = engineeringArchiveProjectCopied.MultiTipSketchID;
+                    if (engineeringArchiveProjectCopied.MultiTipSolid == true)
+                    {
+                        MultiTipStyle.Text = "SOLID";
+                    }
+                    if (engineeringArchiveProjectCopied.MultiTipAssembled == true)
+                    {
+                        MultiTipStyle.Text = "ASSEMBLED";
+                    }
+
+                    EngineeringTabletProjects tabletProject = null;
+                    EngineeringToolProjects toolProject = null;
+                    // For tablets?
+                    if (_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == project && p.RevNumber == projectRev))
+                    {
+                        tabletProject = _projectsContext.EngineeringTabletProjects.First(p => p.ProjectNumber == project && p.RevNumber == projectRev);
+                        TabletsRequired.IsChecked = true;
+                        UpperTabletDrawing.IsChecked = tabletProject.UpperRequired;
+                        LowerTabletDrawing.IsChecked = tabletProject.LowerRequired;
+                        ShortRejectTabletDrawing.IsChecked = tabletProject.ShortRejectRequired;
+                        LongRejectTabletDrawing.IsChecked = tabletProject.LongRejectRequired;
+                        Density.Text = tabletProject.Density.ToString();
+                        DensityUnits.SelectedItem = tabletProject.DensityUnits;
+                        Mass.Text = tabletProject.Mass.ToString();
+                        MassUnits.SelectedItem = tabletProject.MassUnits;
+                        // Volume.Text = tabletProject.Volume.ToString();
+                        // VolumeUnits.SelectedItem = tabletProject.VolumeUnits;
+                        // TargetThickness.Text = tabletProject.TargetThickness.ToString();
+                        // TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
+                        FilmCoat.IsChecked = tabletProject.FilmCoated;
+                        PrePick.IsChecked = tabletProject.PrePick;
+                        PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
+                        PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
+                        Taper.IsChecked = tabletProject.Taper;
+                        TaperAmount.Text = tabletProject.TaperAmount.ToString();
+                        TaperUnits.SelectedItem = tabletProject.TaperUnits;
+                    }
+                    else
+                    {
+                        TabletsRequired.IsChecked = false;
+                    }
+                    // For Tools?
+                    if (_projectsContext.EngineeringToolProjects.Any(p => p.ProjectNumber == project && p.RevNumber == projectRev))
+                    {
+                        toolProject = _projectsContext.EngineeringToolProjects.First(p => p.ProjectNumber == project && p.RevNumber == projectRev);
+                        CoreRod = toolProject.LowerCoreRod;
+                        CoreRodSteelID = toolProject.LowerCoreRodSteelID;
+                        CoreRodKey = toolProject.LowerCoreRodKey;
+                        CoreRodKeySteelID = toolProject.LowerCoreRodKeySteelID;
+                        CoreRodKeyCollar = toolProject.LowerCoreRodKeyCollar;
+                        CoreRodKeyCollarSteelID = toolProject.LowerCoreRodKeyCollarSteelID;
+                        CoreRodPunch = toolProject.LowerCoreRodPunch;
+                        CoreRodPunchSteelID = toolProject.LowerCoreRodPunchSteelID;
+                        CoreRodButton.IsEnabled = toolProject.LowerCoreRod || toolProject.LowerCoreRodKey || toolProject.LowerCoreRodKeyCollar || toolProject.LowerCoreRodPunch;
+
+                        ToolsRequired.IsChecked = true;
+                        UpperPunch.IsChecked = toolProject.UpperPunch;
+                        UpperPunchSteelID.Text = toolProject.UpperPunchSteelID;
+                        UpperAssembly.IsChecked = toolProject.UpperAssembly;
+                        UpperCap.IsChecked = toolProject.UpperCap;
+                        UpperCapSteelID.Text = toolProject.UpperCapSteelID;
+                        UpperHolder.IsChecked = toolProject.UpperHolder;
+                        UpperHolderSteelID.Text = toolProject.UpperHolderSteelID;
+                        UpperHead.IsChecked = toolProject.UpperHead;
+                        UpperHeadSteelID.Text = toolProject.UpperHeadSteelID;
+                        UpperTip.IsChecked = toolProject.UpperTip;
+                        UpperTipSteelID.Text = toolProject.UpperTipSteelID;
+                        LowerPunch.IsChecked = toolProject.LowerPunch;
+                        LowerPunchSteelID.Text = toolProject.LowerPunchSteelID;
+                        LowerAssembly.IsChecked = toolProject.LowerAssembly;
+                        LowerCap.IsChecked = toolProject.LowerCap;
+                        LowerCapSteelID.Text = toolProject.LowerCapSteelID;
+                        LowerHolder.IsChecked = toolProject.LowerHolder;
+                        LowerHolderSteelID.Text = toolProject.LowerHolderSteelID;
+                        LowerHead.IsChecked = toolProject.LowerHead;
+                        LowerHeadSteelID.Text = toolProject.LowerHeadSteelID;
+                        LowerTip.IsChecked = toolProject.LowerTip;
+                        LowerTipSteelID.Text = toolProject.LowerTipSteelID;
+                        ShortRejectPunch.IsChecked = toolProject.ShortRejectPunch;
+                        ShortRejectPunchSteelID.Text = toolProject.ShortRejectPunchSteelID;
+                        ShortRejectAssembly.IsChecked = toolProject.ShortRejectAssembly;
+                        ShortRejectCap.IsChecked = toolProject.ShortRejectCap;
+                        ShortRejectCapSteelID.Text = toolProject.ShortRejectCapSteelID;
+                        ShortRejectHolder.IsChecked = toolProject.ShortRejectHolder;
+                        ShortRejectHolderSteelID.Text = toolProject.ShortRejectHolderSteelID;
+                        ShortRejectHead.IsChecked = toolProject.ShortRejectHead;
+                        ShortRejectHeadSteelID.Text = toolProject.ShortRejectHeadSteelID;
+                        ShortRejectTip.IsChecked = toolProject.ShortRejectTip;
+                        ShortRejectTipSteelID.Text = toolProject.ShortRejectTipSteelID;
+                        LongRejectPunch.IsChecked = toolProject.LongRejectPunch;
+                        LongRejectPunchSteelID.Text = toolProject.LongRejectPunchSteelID;
+                        LongRejectAssembly.IsChecked = toolProject.LongRejectAssembly;
+                        LongRejectCap.IsChecked = toolProject.LongRejectCap;
+                        LongRejectCapSteelID.Text = toolProject.LongRejectCapSteelID;
+                        LongRejectHolder.IsChecked = toolProject.LongRejectHolder;
+                        LongRejectHolderSteelID.Text = toolProject.LongRejectHolderSteelID;
+                        LongRejectHead.IsChecked = toolProject.LongRejectHead;
+                        LongRejectHeadSteelID.Text = toolProject.LongRejectHeadSteelID;
+                        LongRejectTip.IsChecked = toolProject.LongRejectTip;
+                        LongRejectTipSteelID.Text = toolProject.LongRejectTipSteelID;
+                        Alignment.IsChecked = toolProject.Alignment;
+                        AlignmentSteelID.Text = toolProject.AlignmentSteelID;
+                        Key.IsChecked = toolProject.Key;
+                        KeySteelID.Text = toolProject.KeySteelID;
+                        Misc.IsChecked = toolProject.Misc;
+                        MiscSteelID.Text = toolProject.MiscSteelID;
+                        NumberOfTips.Text = engineeringArchiveProjectCopied.NumberOfTips < 2 ? "" : engineeringArchiveProjectCopied.NumberOfTips.ToString();
+                        Die.IsChecked = toolProject.Die;
+                        DieSteelID.Text = toolProject.DieSteelID;
+                        DieAssembly.IsChecked = toolProject.DieAssembly;
+                        DieComponent.IsChecked = toolProject.DieComponent;
+                        DieComponentSteelID.Text = toolProject.DieComponentSteelID;
+                        DieHolder.IsChecked = toolProject.DieHolder;
+                        DieHolderSteelID.Text = toolProject.DieHolderSteelID;
+                        DieInsert.IsChecked = toolProject.DieInsert;
+                        DieInsertSteelID.Text = toolProject.DieInsertSteelID;
+                        DiePlate.IsChecked = toolProject.DiePlate;
+                        DiePlateSteelID.Text = toolProject.DiePlateSteelID;
+                        DieSegment.IsChecked = toolProject.DieSegment;
+                        DieSegmentSteelID.Text = toolProject.DieSegmentSteelID;
+                        KeyType.Text = toolProject.KeyType;
+                        KeyAngle.Text = toolProject.KeyAngle.ToString();
+                        KeyOrientation.Text = toolProject.KeyIsClockWise == true ? "CW" : toolProject.KeyIsClockWise == false ? "CCW" : "";
+                        UpperKeyed.IsChecked = toolProject.UpperKeyed;
+                        LowerKeyed.IsChecked = toolProject.LowerKeyed;
+                        ShortRejectKeyed.IsChecked = toolProject.ShortRejectKeyed;
+                        LongRejectKeyed.IsChecked = toolProject.LongRejectKeyed;
+                        UpperGrooveType.Text = toolProject.UpperGrooveType;
+                        LowerGrooveType.Text = toolProject.LowerGrooveType;
+                        UpperGroove.IsChecked = toolProject.UpperGroove;
+                        LowerGroove.IsChecked = toolProject.LowerGroove;
+                        ShortRejectGroove.IsChecked = toolProject.ShortRejectGroove;
+                        LongRejectGroove.IsChecked = toolProject.LongRejectGroove;
+                        HeadType.Text = toolProject.HeadType;
+                        CarbideTips.IsChecked = toolProject.CarbideTips;
+                        MachineNotes.Text = toolProject.MachineNotes;
+                        if (!_projectsContext.EngineeringTabletProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber) || _projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber && p.TabletChecked == true))
+                        {
+                            ToolsTabItem.IsSelected = true;
+                            CurrentProjectType.Text = "TOOLS";
+                            RefreshRoutingButtons();
+                        }
+                    }
+                    else
+                    {
+                        ToolsRequired.IsChecked = false;
+                    }
+                }
+
+
+                _projectsContext.Add(engineeringProject);
+                _projectsContext.SaveChanges();
+                _projectsContext.Dispose();
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => PopulateBlankWindow", ex.Message, user);
             }
         }
         /// <summary>

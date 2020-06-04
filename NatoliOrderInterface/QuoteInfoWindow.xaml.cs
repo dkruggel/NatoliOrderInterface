@@ -189,7 +189,8 @@ namespace NatoliOrderInterface
                     IMethods.WriteToErrorLog("QuoteInfoWindow constructor - Adding quote line items", ex.Message, user);
                 }
             }
-            Show();
+            //Show();
+            //Focus();
         }
 
         /// <summary>

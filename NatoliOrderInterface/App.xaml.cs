@@ -565,6 +565,7 @@ namespace NatoliOrderInterface
                     Button projectCompleteButton = buttons.Single(b => b.Name == "ProjectCompleteButton");
                     Button projectCancelButton = buttons.Single(b => b.Name == "ProjectCancelButton");
                     Button projectOpenButton = buttons.Single(b => b.Name == "WindowButton");
+                    Button projectCopyButton = buttons.Single(b => b.Name == "CopyProjectButton");
 
                     
                     projectOnHoldButton.Visibility = Visibility.Visible;
@@ -573,6 +574,7 @@ namespace NatoliOrderInterface
                     projectCompleteButton.Visibility = Visibility.Visible;
                     projectCancelButton.Visibility = Visibility.Visible;
                     projectOpenButton.Visibility = Visibility.Visible;
+                    projectCopyButton.Visibility = Visibility.Visible;
 
                     
                     projectOnHoldButton.IsEnabled = false;
@@ -580,6 +582,7 @@ namespace NatoliOrderInterface
                     projectNextStepButton.IsEnabled = false;
                     projectCompleteButton.IsEnabled = false;
                     projectCancelButton.IsEnabled = false;
+                    projectCopyButton.IsEnabled = false;
 
                     
                     // Get previous and next steps to reset tooltip of back and forward buttons
@@ -710,6 +713,12 @@ namespace NatoliOrderInterface
 
                     // Check to see if user can complete project
                     projectCompleteButton.IsEnabled = CanUserCompleteProject(user);
+
+                    // Check to see if user can copy project
+                    if (selectedProjects.Count == 1)
+                    {
+                        projectCopyButton.IsEnabled = CanUserCopyProject(user);
+                    }
 
                     // Cancel: Enabled, "Cancel Project"
                     projectCancelButton.IsEnabled = projectCompleteButton.Visibility != Visibility.Visible;
@@ -1145,6 +1154,21 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("App.caml.cs => CanUserCompleteProject", ex.Message, user);
             }
             return true;
+        }
+        private bool CanUserCopyProject(User user)
+        {
+            try
+            {
+                if (int.Parse(selectedProjects[0].Item1) > 110000 && (user.Department.ToLower().Contains("customer service") || user.EmployeeCode == "E4408" || user.EmployeeCode == "E4754"))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("App.caml.cs => CanUserCopyProject", ex.Message, user);
+            }
+            return false;
         }
         private void RemoveEventHandlers(Control el)
         {
@@ -2318,6 +2342,13 @@ namespace NatoliOrderInterface
                 (Window.GetWindow(sender as DependencyObject) as MainWindow).MainRefresh(currModule);
             }
         }
+        private void CopyProject_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedProjects.Count == 1)
+            {
+                CopyProject(selectedProjects[0]);
+            }
+        }
         private void SendBackTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
         {
             for (int i = 0; i < validProjects.Count; i++)
@@ -3464,7 +3495,23 @@ namespace NatoliOrderInterface
                 _driveworksContext.Dispose();
             }
         }
+        private void CopyProject((string, string, CheckBox, string, string) project)
+        {
+            // Select max project number
+            using var projectsContext = new ProjectsContext();
+            int engProjMax = projectsContext.EngineeringProjects.Any() ? Convert.ToInt32(projectsContext.EngineeringProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1 : 0;
+            int engProjArchMax = Convert.ToInt32(projectsContext.EngineeringArchivedProjects.OrderByDescending(p => Convert.ToInt32(p.ProjectNumber)).First().ProjectNumber) + 1;
+            string projectNumber = engProjArchMax > engProjMax ? engProjArchMax.ToString() : engProjMax.ToString();
 
+
+            // Dispose of project context
+            projectsContext.Dispose();
+
+            // Create new project window/project
+            ProjectWindow projectWindow = new ProjectWindow(projectNumber, "0", MainWindow as MainWindow, user, project.Item1, project.Item2);
+
+            projectWindow.Show();
+        }
 
         #endregion
 

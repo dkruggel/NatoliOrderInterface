@@ -2114,6 +2114,7 @@ namespace NatoliOrderInterface
                         Top = Top
                     };
                     quoteInfoWindow.Show();
+                    quoteInfoWindow.Focus();
                 }
                 mainTimer.Stop();
             }
@@ -2180,7 +2181,7 @@ namespace NatoliOrderInterface
         {
             TextBox textBox = (TextBox)sender;
 
-            textBox.CaptureMouse();
+            //textBox.CaptureMouse();
         }
         private void QuoterevNoSearchTextBlock_GotMouseCapture(object sender, RoutedEventArgs e)
         {
