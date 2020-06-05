@@ -69,6 +69,8 @@ namespace NatoliOrderInterface
         private bool fromCheckBox = false;
         private bool fromCheckBox2 = false;
         private string docNumber;
+        private DockPanel movingDockPanel = null;
+        private bool dockPanelMoving = false;
         #endregion
 
         public static void GetConnectionString()
@@ -307,38 +309,59 @@ namespace NatoliOrderInterface
         }
         private void DockPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Window parent = Window.GetWindow((sender as DockPanel));
-            GetAncestorWithoutName(sender as DependencyObject, typeof(Label));
-            Label label = grid as Label;
-            grid = null;
-
-            DragAndDrop dragAndDrop = new DragAndDrop(user, label.Parent as Grid);
-
-            //parent.Cursor = Cursors.Hand;
+            movingDockPanel = sender as DockPanel;
+            dockPanelMoving = false;
         }
-        private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
+        private void DockPanel_MouseMove(object sender, MouseEventArgs e)
         {
-            var name = ((sender as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
-
-            int oldIndex = user.VisiblePanels.IndexOf(name);
-
-            Window parent = Window.GetWindow((sender as DockPanel));
-            
-            Win32Point w32Mouse = new Win32Point();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (movingDockPanel == sender as DockPanel && e.LeftButton == MouseButtonState.Pressed)
             {
-                GetCursorPos(ref w32Mouse);
+                movingDockPanel = null;
+                Window parent = Window.GetWindow((sender as DockPanel));
+                GetAncestorWithoutName(sender as DependencyObject, typeof(Label));
+                Label label = grid as Label;
+                grid = null;
+
+                DragAndDrop dragAndDrop = new DragAndDrop(user, label.Parent as Grid);
+
+                //parent.Cursor = Cursors.Hand;
+                dockPanelMoving = true;
             }
             else
             {
-                // How to do on Linux and OSX?
+                movingDockPanel = null;
+                dockPanelMoving = false;
             }
-
-            if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
+        }
+        private void DockPanel_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            movingDockPanel = null;
+            if (dockPanelMoving)
             {
-                (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
-                SaveSettings();
+                var name = ((sender as DockPanel).Parent as Grid).Children.OfType<ListBox>().First().Name[0..^7];
+
+                int oldIndex = user.VisiblePanels.IndexOf(name);
+
+                Window parent = Window.GetWindow((sender as DockPanel));
+
+                Win32Point w32Mouse = new Win32Point();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    GetCursorPos(ref w32Mouse);
+                }
+                else
+                {
+                    // How to do on Linux and OSX?
+                }
+
+                if (w32Mouse.X < parent.Left || w32Mouse.X > (parent.Left + parent.Width) || w32Mouse.Y < parent.Top || w32Mouse.Y > (parent.Top + parent.Height))
+                {
+                    (Application.Current.MainWindow as MainWindow).MainWrapPanel.Children.RemoveAt(oldIndex);
+                    SaveSettings();
+                }
             }
+            dockPanelMoving = false;
+            //Window.GetWindow((sender as DockPanel)).Cursor = Cursors.Arrow;
         }
         private void SaveSettings()
         {

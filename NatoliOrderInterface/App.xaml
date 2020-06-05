@@ -4702,7 +4702,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="SubmitQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
@@ -4891,7 +4891,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Ready To Be Converted" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="RecallQuoteButton" Style="{StaticResource RecallQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="RecallQuote_Click"/>
@@ -5091,7 +5091,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Being Entered" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
@@ -5291,7 +5291,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders In The Office" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderStartButton" Style="{StaticResource OrderStartButton}" Margin="2,0" HorizontalAlignment="Right" Click="StartWorkOrder_Click"/>
@@ -5490,7 +5490,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Not Started In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
@@ -5682,7 +5682,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Being Processed In Engineering" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
@@ -5883,7 +5883,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Ready To Be Printed" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
@@ -6078,7 +6078,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Orders Printed And Ready For Production" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="OrderToOfficeButton" Style="{StaticResource OrderToOfficeButton}" Margin="2,0" HorizontalAlignment="Right" Click="SendToOfficeMenuItem_Click"/>
@@ -6273,7 +6273,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="All Tablet Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ProjectPreviousStepButton" Style="{StaticResource ProjectPreviousStepButton}" Click="PreviousStepProject_Click"/>
@@ -6481,7 +6481,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="All Tool Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ProjectOnHoldButton" Style="{StaticResource ProjectOnHoldButton}" Margin="2,0" HorizontalAlignment="Right" Click="OnHoldProject_Click"/>
@@ -6681,7 +6681,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <!--<Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>-->
@@ -6826,7 +6826,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Natoli Order List" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ExportButton" Style="{StaticResource ExportButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Export To Excel" Click="ExportButton_Click" Visibility="Visible"/>
@@ -6995,7 +6995,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="All Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
@@ -7162,7 +7162,7 @@
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
+                                <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
