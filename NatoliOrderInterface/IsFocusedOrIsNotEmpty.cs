@@ -6,6 +6,16 @@ using System.Windows;
 using System.Windows.Data;
 using System.Linq;
 
+    /* Use This for implementation
+     * <TextBlock.Visibility>
+     *      <MultiBinding Converter="{StaticResource isFocusedOrIsNotEmptyConverter}" ConverterParameter="t2c_f2v">
+     *              <Binding ElementName="SearchTextBox" Path="IsFocused"/>
+     *              <Binding ElementName="SearchTextBox" Path="Text"/>
+     *      </MultiBinding>
+     *</TextBlock.Visibility>
+     */
+
+
 namespace NatoliOrderInterface
 {
     public class IsFocusedOrIsNotEmpty : IMultiValueConverter

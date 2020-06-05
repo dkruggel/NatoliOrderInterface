@@ -208,14 +208,14 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please mark Priority for this rush.", "Rush Needs Priority", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            if (Notes.GetString().Length<=2)
+            if (Notes.GetText().Length<=2)
             {
                 MessageBox.Show("Please enter notes for this project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            if (Notes.GetString().Length > 1999)
+            if (Notes.GetText().Length > 1999)
             {
-                MessageBox.Show("Please limit notes to less than 2000 characters. You have (" + Notes.GetString().Length + ") currently", "Reduce Notes", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Please limit notes to less than 2000 characters. You have (" + Notes.GetText().Length + ") currently", "Reduce Notes", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
@@ -798,9 +798,9 @@ namespace NatoliOrderInterface
                         {
                             foreach (string note in notes)
                             {
-                                string oldText = Notes.GetString();
-                                oldText = oldText.Length > 1 ? oldText[0..^2] : oldText;
-                                if (note != oldText && note.Contains(oldText))
+                                string oldText = Notes.GetText();
+                                oldText = oldText.TrimEnd('\r', '\n');
+                                if (!string.IsNullOrEmpty(oldText) && !string.IsNullOrWhiteSpace(oldText) && note.TrimEnd('\r', '\n') != oldText && note.Contains(oldText))
                                 {
                                     int x = note.IndexOf(oldText);
                                     int y = oldText.Length;
@@ -1309,9 +1309,9 @@ namespace NatoliOrderInterface
                             {
                                 foreach (string note in notes)
                                 {
-                                    string oldText = Notes.GetString();
-                                    oldText = oldText.Length > 1 ? oldText[0..^2] : oldText;
-                                    if (note != oldText && note.Contains(oldText))
+                                    string oldText = Notes.GetText();
+                                    oldText = oldText.TrimEnd('\r', '\n');
+                                    if (!string.IsNullOrEmpty(oldText) && !string.IsNullOrWhiteSpace(oldText) && note.TrimEnd('\r', '\n') != oldText && note.Contains(oldText))
                                     {
                                         int x = note.IndexOf(oldText);
                                         int y = oldText.Length;
@@ -4369,7 +4369,7 @@ namespace NatoliOrderInterface
                     ShortRejectTolerances = !string.IsNullOrEmpty(ShortRejectTolerances.Text) ? ShortRejectTolerances.Text.Trim() : "",
                     LongRejectTolerances = !string.IsNullOrEmpty(LongRejectTolerances.Text) ? LongRejectTolerances.Text.Trim() : "",
                     DieTolerances = !string.IsNullOrEmpty(DieTolerances.Text) ? DieTolerances.Text.Trim() : "",
-                    Notes = Notes.GetString(),
+                    Notes = Notes.GetText().TrimEnd('\r','\n'),
                     //Notes = !string.IsNullOrEmpty(Notes.Text) ? Notes.Text.Trim() : "",
                     TimeSubmitted = DateTime.UtcNow,
                     DueDate = DueDate.Text.Length > 0 ? (DateTime.TryParse(DueDate.Text.Remove(0, DueDate.Text.IndexOf('|') + 2), out DateTime dateTime) ? dateTime : DateTime.MaxValue) : DateTime.MaxValue,
