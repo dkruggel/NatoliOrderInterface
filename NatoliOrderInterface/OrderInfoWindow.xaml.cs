@@ -1394,6 +1394,7 @@ namespace NatoliOrderInterface
         {
             try
             {
+                e.Handled = true;
                 string tempFile;
                 string[] filePathArray = (string[])(e.Data.GetData(DataFormats.FileDrop));
                 List<string> filePaths = filePathArray.ToList();
@@ -2436,7 +2437,7 @@ namespace NatoliOrderInterface
                 {
                     ListBox listBox = sender as ListBox;
                     Tuple<string, string, string> file = orderFiles[listBox.SelectedIndex];
-                    string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
+                    string fullFilePath = file.Item2 + "\\" + file.Item1 + file.Item3;
                     File.Delete(fullFilePath);
                 }
                 OrderFiles = GetOrderFiles(orderNumber.ToString());
@@ -2447,6 +2448,111 @@ namespace NatoliOrderInterface
             }
         }
 
-        
+        private void AttachFilesBorder_DragEnter(object sender, DragEventArgs e)
+        {
+
+            string filename;
+            validData = GetFilename(out filename, e);
+            if (validData)
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+
+        }
+
+        private void AttachFilesBorder_DragLeave(object sender, DragEventArgs e)
+        {
+            //Mouse.OverrideCursor = null;
+        }
+
+        private void AttachFilesBorder_DragOver(object sender, DragEventArgs e)
+        {
+        }
+
+        private void AttachFilesBorder_Drop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                e.Handled = true;
+                string filename;
+                string nameOfFile = "someFile";
+                validData = GetFilename(out filename, e);
+                string path = @"L:\WorkOrders\" + workOrder.OrderNumber + @"\";
+                if (filename == ".msg")
+                {
+                    Microsoft.Office.Interop.Outlook.Application OL = new Microsoft.Office.Interop.Outlook.Application();
+                    for (int i = 1; i <= OL.ActiveExplorer().Selection.Count; i++)
+                    {
+                        Object temp = OL.ActiveExplorer().Selection[i];
+                        if (temp is Microsoft.Office.Interop.Outlook.MailItem)
+                        {
+                            Microsoft.Office.Interop.Outlook.MailItem mailitem = (temp as Microsoft.Office.Interop.Outlook.MailItem);
+                            string[] subjectArray = mailitem.Headers("Subject");
+                            if (subjectArray.Length == 1)
+                            {
+                                nameOfFile = subjectArray[0];
+                            }
+                            else
+                            {
+                                while (System.IO.File.Exists(path + nameOfFile + ".msg"))
+                                {
+                                    InputBox dialog = new InputBox("Enter name of file:", "File Name", this);
+                                    dialog.ShowDialog();
+                                    nameOfFile = dialog.ReturnString.Length > 0 ? dialog.ReturnString : nameOfFile;
+                                }
+                            }
+                            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()) + "'";
+                            foreach (char c in invalid)
+                            {
+                                nameOfFile = nameOfFile.Replace(c.ToString(), "");
+                            }
+                            string newFileName = nameOfFile;
+                            foreach (char c in nameOfFile)
+                            {
+                                if (!char.IsLetterOrDigit(c) || c == '-')
+                                {
+                                    newFileName = nameOfFile.Replace(c.ToString(), "_");
+                                }
+                            }
+                            mailitem.SaveAs(path + newFileName + ".msg");
+                            //MessageBox.Show(this, "Successful drop.");
+                        }
+                    }
+                }
+                else
+                {
+                    string fp = path + nameOfFile + (System.IO.Path.GetExtension(filename).ToLower().StartsWith(".xl") ? ".xlsx" : System.IO.Path.GetExtension(filename));
+                    string newFileName = Path.GetFileNameWithoutExtension(filename);
+
+                    string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()) + "'";
+                    foreach (char c in invalid)
+                    {
+                        newFileName = newFileName.Replace(c.ToString(), "");
+                    }
+                    string _newFileName = newFileName;
+                    foreach (char c in newFileName)
+                    {
+                        if (!char.IsLetterOrDigit(c) || c == '-')
+                        {
+                            _newFileName = newFileName.Replace(c.ToString(), "_");
+                        }
+                    }
+                    fp = path + Path.GetFileName(_newFileName) + Path.GetExtension(filename).ToLower();
+                    System.IO.File.Copy(filename, fp);
+                    if (filename.Contains(@"\Local\Temp")) { File.Delete(filename); }
+                    //MessageBox.Show(this, "Successful drop.");
+                }
+                OrderFiles = GetOrderFiles(orderNumber.ToString());
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow.xaml.cs => AttachFilesBorder_Drop()", ex.Message, user);
+            }
+        }
+
     }
 }

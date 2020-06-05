@@ -33,8 +33,13 @@
                                 <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="150" CanUserResize="False" CanUserReorder="False" CanUserSort="False"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <TextBlock DockPanel.Dock="Top" Text="Files" Style="{StaticResource BoldTextBlock}" HorizontalAlignment="Center"/>
-                        <ListBox DockPanel.Dock="Top" x:Name="FilesListBox" Style="{DynamicResource FilePicker}" MaxHeight="150" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single" Margin="0,0,0,15"/>
+
+                        <Border DockPanel.Dock="Top" BorderThickness="0,0,0,0" BorderBrush="Black" x:Name="AttachFilesBorder" AllowDrop="True" DragEnter="AttachFilesBorder_DragEnter" DragLeave="AttachFilesBorder_DragLeave" DragOver="AttachFilesBorder_DragOver" Drop="AttachFilesBorder_Drop" Margin="0,0,0,15">
+                            <DockPanel VerticalAlignment="Center">
+                                <TextBlock DockPanel.Dock="Top" Text="Files" Style="{StaticResource BoldTextBlock}" HorizontalAlignment="Center"/>
+                                <ListBox DockPanel.Dock="Top" x:Name="FilesListBox" Style="{DynamicResource FilePicker}" MaxHeight="150" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single"/>
+                            </DockPanel>
+                        </Border>
                         <Button DockPanel.Dock="Top" x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="30" Click="OpenWOFolderButton_Click" Margin="0,0,0,15" />
                         <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="30" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,15" />
                         <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="30" Margin="0,0,0,15" Click="OpenTabletFolder_Click" />
