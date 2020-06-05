@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
         x:Name="Order_Info_Window"
-        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyDown="Order_Info_Window_PreviewKeyDown" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True">
+        Title="OrderInfoWindow" Height="800" Width="1240" MinWidth="960" Closed="Window_Closed" Loaded="Order_Info_Window_Loaded" SizeChanged="Order_Info_Window_SizeChanged" Closing="Order_Info_Window_Closing"  PreviewKeyDown="Order_Info_Window_PreviewKeyDown" DragDrop.Drop="OrderPanel_Drop" DragDrop.DragEnter="OrderPanel_DragEnter" AllowDrop="True" UseLayoutRounding="True" ContentRendered="Order_Info_Window_ContentRendered">
     <Grid x:Name="OrderGrid" Margin="0,0,0,0">
         <TextBlock x:Name="OrderStatus" Text="" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" Opacity=".25" FontSize="120" FontWeight="SemiBold">
             <TextBlock.RenderTransform>
@@ -17,14 +17,14 @@
             <ScrollViewer DockPanel.Dock="Top" x:Name="Scroller" VerticalScrollBarVisibility="Auto"  Background="Transparent">
                 <DockPanel x:Name="OrderDockPanel2" LastChildFill="False" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
                     <DockPanel DockPanel.Dock="Left" x:Name="ButtonPanel" Width="170" Margin="10,0,10,0"  LastChildFill="False">
-                        <Button DockPanel.Dock="Top" x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="35" Margin="0,15,0,20" Click="StartOrderButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="SendToOfficeButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="FinishOrderButton" Style="{StaticResource Button}" Content="Finish Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="FinishOrderButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="NotFinishedButton" Style="{StaticResource Button}" Content="Not Finished" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="NotFinishedButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="PrintOrderButton" Style="{StaticResource Button}" Content="Print Order" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="PrintOrderButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="DoNotProcessOrderButton" Style="{StaticResource Button}" Content="Do Not Process" IsEnabled="False" Height="35" Margin="0,0,0,20" Click="DoNotProcessOrderButton_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" IsEnabled="True" Height="35" Margin="0,0,0,20" Click="CancelButton_Click" />
-                        <DataGrid DockPanel.Dock="Top" x:Name="LineItemsDataGrid" SelectionChanged="LineItemsDataGrid_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,20" CanUserResizeRows="False" SelectionUnit="FullRow" ClipToBounds="True" MouseDoubleClick="LineItemsDataGrid_MouseDoubleClick" MouseUp="LineItemsDataGrid_MouseUp" SelectionMode="Single" >
+                        <Button DockPanel.Dock="Top" x:Name="StartOrderButton" Style="{StaticResource Button}" Content="Start Order" IsEnabled="False" Height="30" Margin="0,15,0,15" Click="StartOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="SendToOfficeButton" Style="{StaticResource Button}" Content="Send To Office" IsEnabled="False" Height="30" Margin="0,0,0,15" Click="SendToOfficeButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="FinishOrderButton" Style="{StaticResource Button}" Content="Finish Order" IsEnabled="False" Height="30" Margin="0,0,0,15" Click="FinishOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="NotFinishedButton" Style="{StaticResource Button}" Content="Not Finished" IsEnabled="False" Height="30" Margin="0,0,0,15" Click="NotFinishedButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="PrintOrderButton" Style="{StaticResource Button}" Content="Print Order" IsEnabled="False" Height="30" Margin="0,0,0,15" Click="PrintOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="DoNotProcessOrderButton" Style="{StaticResource Button}" Content="Do Not Process" IsEnabled="False" Height="30" Margin="0,0,0,15" Click="DoNotProcessOrderButton_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="CancelButton" Style="{StaticResource Button}" Content="Cancel" IsEnabled="True" Height="30" Margin="0,0,0,15" Click="CancelButton_Click" />
+                        <DataGrid DockPanel.Dock="Top" x:Name="LineItemsDataGrid" SelectionChanged="LineItemsDataGrid_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,15" CanUserResizeRows="False" SelectionUnit="FullRow" ClipToBounds="True" MouseDoubleClick="LineItemsDataGrid_MouseDoubleClick" MouseUp="LineItemsDataGrid_MouseUp" SelectionMode="Single" >
                             <DataGrid.VerticalGridLinesBrush>
                                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkDarkColorKey}}"/>
                             </DataGrid.VerticalGridLinesBrush>
@@ -33,11 +33,13 @@
                                 <DataGridTextColumn Binding="{Binding Description}" Header="Description" Width="150" CanUserResize="False" CanUserReorder="False" CanUserSort="False"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Button DockPanel.Dock="Top" x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="35" Click="OpenWOFolderButton_Click" Margin="0,0,0,20" />
-                        <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="35" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,20" />
-                        <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="35" Margin="0,0,0,20" Click="OpenTabletFolder_Click" />
-                        <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="35" Margin="0,0,0,20" Click="OpenBarcodeLocation_Click"/>
-                        <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="35" Margin="0,0,0,20" Click="NewCustomerNote_Click"/>
+                        <TextBlock DockPanel.Dock="Top" Text="Files" Style="{StaticResource BoldTextBlock}" HorizontalAlignment="Center"/>
+                        <ListBox DockPanel.Dock="Top" x:Name="FilesListBox" Style="{DynamicResource FilePicker}" MaxHeight="150" MouseDoubleClick="file_MouseDoubleClick" PreviewKeyUp="file_PreviewKeyUp" SelectionMode="Single" Margin="0,0,0,15"/>
+                        <Button DockPanel.Dock="Top" x:Name="OpenWOFolderButton" Style="{StaticResource Button}" Content="WO Folder" Height="30" Click="OpenWOFolderButton_Click" Margin="0,0,0,15" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenCustomerMachineFolder" Style="{StaticResource Button}" Content="Cust. Mach. Folder" Height="30" Click="OpenCustomerMachineFolder_Click" Margin="0,0,0,15" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenTabletFolder" Style="{StaticResource Button}" Content="Tablet Folder" Height="30" Margin="0,0,0,15" Click="OpenTabletFolder_Click" />
+                        <Button DockPanel.Dock="Top" x:Name="OpenBarcodeLocation" Style="{StaticResource Button}" Content="Barcode Location" Height="30" Margin="0,0,0,15" Click="OpenBarcodeLocation_Click"/>
+                        <Button DockPanel.Dock="Top" x:Name="NewCustomerNote" Style="{StaticResource Button}" Content="Customer Note" Height="30" Margin="0,0,0,15" Click="NewCustomerNote_Click"/>
                     </DockPanel>
                     <DockPanel DockPanel.Dock="Left" x:Name="OrderPanel" >
                         <Grid DockPanel.Dock="Top" x:Name="OrderHeaderGrid" Height="330" Margin="0,0,10,0" >

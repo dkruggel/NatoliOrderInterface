@@ -11,7 +11,6 @@ using System.Diagnostics;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.NAT01;
 using Microsoft.EntityFrameworkCore;
-using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Forms;
@@ -26,6 +25,7 @@ using System.Windows.Navigation;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Interop;
+using System.IO;
 
 namespace NatoliOrderInterface
 {
@@ -61,7 +61,19 @@ namespace NatoliOrderInterface
         private bool doNotProc = false;
         private bool validData;
         private List<OrderLineItem> orderLineItems = new List<OrderLineItem>();
-        
+
+        private List<Tuple<string, string, string>> orderFiles = new List<Tuple<string, string, string>>();
+        public List<Tuple<string, string, string>> OrderFiles
+        {
+            get { return orderFiles; }
+            set
+            {
+                orderFiles = value;
+                FilesListBox.ItemsSource = null;
+                FilesListBox.ItemsSource = orderFiles;
+            }
+        }
+
 
         public OrderInfoWindow()
         {
@@ -1351,6 +1363,15 @@ namespace NatoliOrderInterface
                 this.Focus(); 
                 ButtonRefresh(); 
             });
+            
+        }
+        private async void Order_Info_Window_ContentRendered(object sender, EventArgs e)
+        {
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                OrderFiles = GetOrderFiles(orderNumber.ToString());
+            }
+            ));
         }
         private void Order_Info_Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -2364,5 +2385,68 @@ namespace NatoliOrderInterface
 
         #endregion
 
+
+        private List<Tuple<string, string, string>> GetOrderFiles(string projectNumber)
+        {
+            try
+            {
+                string rootDir = @"L:\WorkOrders\" + workOrder.OrderNumber + @"\";
+                if (!Directory.Exists(rootDir))
+                {
+                    Directory.CreateDirectory(rootDir);
+                }
+                string[] filePaths = Directory.GetFiles(rootDir, "*.*", SearchOption.AllDirectories);
+                List<Tuple<string, string, string>> files = new List<Tuple<string, string, string>>();
+                foreach (string file in filePaths)
+                {
+                    string directory = Path.GetDirectoryName(file);
+                    string fileName = Path.GetFileNameWithoutExtension(file);
+                    string ext = Path.GetExtension(file);
+                    files.Add(new Tuple<string, string, string>(fileName, directory, ext));
+                }
+                return files;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("ProjectWindow => GetProjectFiles", ex.Message, user);
+            }
+            return new List<Tuple<string, string, string>>();
+        }
+
+        private void file_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                ListBox listBox = sender as ListBox;
+                Tuple<string, string, string> file = orderFiles[listBox.SelectedIndex];
+                string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
+                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            }
+        }
+
+        private void file_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            try
+            {
+                if (e.Key == System.Windows.Input.Key.Delete)
+                {
+                    ListBox listBox = sender as ListBox;
+                    Tuple<string, string, string> file = orderFiles[listBox.SelectedIndex];
+                    string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
+                    File.Delete(fullFilePath);
+                }
+                OrderFiles = GetOrderFiles(orderNumber.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not delete the file. See error below." + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            }
+        }
+
+        
     }
 }
