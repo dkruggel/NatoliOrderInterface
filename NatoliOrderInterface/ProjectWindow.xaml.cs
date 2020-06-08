@@ -7131,9 +7131,16 @@ namespace NatoliOrderInterface
             try
             {
                 ListBox listBox = sender as ListBox;
-                Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
-                string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
-                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+                if (listBox.IsMouseCaptured)
+                {
+                    Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
+                    string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+                }
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return;
             }
             catch (Exception ex)
             {

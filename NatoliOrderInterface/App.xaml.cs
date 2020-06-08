@@ -2386,6 +2386,7 @@ namespace NatoliOrderInterface
             {
                 CopyProject(selectedProjects[0]);
             }
+            selectedProjects.Clear();
         }
         private void SendBackTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
         {
