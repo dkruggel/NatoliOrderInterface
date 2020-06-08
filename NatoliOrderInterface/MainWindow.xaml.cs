@@ -1052,7 +1052,7 @@ namespace NatoliOrderInterface
                     }
                 }
 
-                User.ModuleRows = (short)height;
+                User.ModuleRows = Math.Max((short)height, (short)4);
             }
             catch (Exception ex)
             {
@@ -1208,7 +1208,7 @@ namespace NatoliOrderInterface
                 eoiSettings.Left = (short?)Left;
                 eoiSettings.FilterActiveProjects = _filterProjects;
                 eoiSettings.Zoom = User.Zoom;
-                eoiSettings.ModuleRows = User.ModuleRows;
+                eoiSettings.ModuleRows = Math.Max(User.ModuleRows, (short)4);
                 context.EoiSettings.Update(eoiSettings);
                 context.SaveChanges();
             }
