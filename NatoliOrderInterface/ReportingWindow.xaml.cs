@@ -189,8 +189,13 @@ namespace NatoliOrderInterface
 
                 sc.Add(new RowSeries
                 {
-                    Title = "Tool Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
+                    Title = "Tool Projects Drawn",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsDrawn))
+                });
+                sc.Add(new RowSeries
+                {
+                    Title = "Tool Projects Checked",
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsChecked))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
 

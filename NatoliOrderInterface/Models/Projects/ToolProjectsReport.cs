@@ -6,7 +6,8 @@ namespace NatoliOrderInterface.Models.Projects
 {
     public partial class ToolProjectsReport
     {
-        public int ToolProjects { get; set; }
+        public int ToolProjectsDrawn { get; set; }
+        public int ToolProjectsChecked { get; set; }
         public string Employee { get; set; }
     }
 }
