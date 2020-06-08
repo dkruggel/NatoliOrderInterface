@@ -52,6 +52,7 @@ namespace NatoliOrderInterface
         {
             InitializeComponent();
             timer.Elapsed += Timer_Elapsed;
+            this.WindowState = WindowState.Maximized;
         }
         private void CloseMenuItem_Click(object sender, RoutedEventArgs e)
         {
