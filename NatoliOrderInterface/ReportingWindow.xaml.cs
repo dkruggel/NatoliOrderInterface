@@ -79,13 +79,13 @@ namespace NatoliOrderInterface
                 sc.Add(new RowSeries
                 {
                     Title = "Tablet Projects",
-                    Values = new ChartValues<int>(ordersReport.Where(or => or.TabletProjects > 0).Select(or => or.TabletProjects))
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
                 });
 
                 sc.Add(new RowSeries
                 {
                     Title = "Tool Projects",
-                    Values = new ChartValues<int>(ordersReport.Where(or => or.ToolProjects > 0).Select(or => or.ToolProjects))
+                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
 
