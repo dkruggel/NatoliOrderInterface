@@ -5325,6 +5325,7 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
+                        MultiTipSketchViewer.Source = null;
                         using var projectsContext = new ProjectsContext();
                         EngineeringProjects project = projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                         projectsContext.EngineeringProjects.Remove(project);
