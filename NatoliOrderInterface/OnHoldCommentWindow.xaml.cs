@@ -18,6 +18,7 @@ using NatoliOrderInterface.Models.DriveWorks;
 using System.Threading;
 using System.Collections.ObjectModel;
 using NatoliOrderInterface.Models.Projects;
+using System.IO;
 
 namespace NatoliOrderInterface
 {
@@ -171,6 +172,32 @@ namespace NatoliOrderInterface
                         projectWindow.PutOnHoldButton.Content = "Take Off Hold";
                     }
                     
+                }
+                string path = @"R:\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\" ;
+                if (File.Exists(path + "On_Hold_Comment.txt"))
+                {
+                    int i = 1;
+                    while (File.Exists(path + "On_Hold_Comment_" + i + ".txt"))
+                    {
+                        i++;
+                    }
+                    path = path + "On_Hold_Comment_" + i + ".txt";
+                }
+
+                try
+                {
+                    // Create a file to write to.
+                    using (StreamWriter sw = File.CreateText(path))
+                    {
+                        sw.Write("Comment: " + Environment.NewLine +
+                            CommentBox.Text + Environment.NewLine + Environment.NewLine +
+                            "Time: " + Convert.ToString(DateTime.Now) + Environment.NewLine +
+                            "User: " + User.GetUserName());
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
                 }
             }
             catch (Exception ex)
