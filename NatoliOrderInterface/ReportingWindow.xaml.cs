@@ -32,6 +32,10 @@ namespace NatoliOrderInterface
             BeginningDatePicker.SelectedDate = DateTime.Now.AddDays(-14);
             EndDatePicker.SelectedDate = DateTime.Now;
 
+            if (Environment.UserName != "dkruggel")
+            {
+                Quotes.Visibility = Visibility.Hidden;
+            }
             BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
         }
 
@@ -171,9 +175,9 @@ namespace NatoliOrderInterface
                     Title = "Tablet Projects",
                     Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
                 });
-                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+                YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
 
-                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+                string[] Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToArray();
             }
             else if (!ordersChecked && !tabletsChecked && toolsChecked)
             {
@@ -197,9 +201,9 @@ namespace NatoliOrderInterface
                     Title = "Tool Projects Checked",
                     Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsChecked))
                 });
-                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+                YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
 
-                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+                string[] Labels = ordersReport.Select(or => or.Employee + ':' + or.AverageHours.ToString()).ToArray();
             }
             _.Dispose();
             SetLoadingAnimationVisibility(Visibility.Hidden);
@@ -209,7 +213,59 @@ namespace NatoliOrderInterface
                 ProductionChart.Visibility = ProductionChart.Series.Count > 0 ? Visibility.Visible : Visibility.Hidden;
             }));
         }
+        private async void BuildCSCharts(DateTime? beginningDateTime, DateTime? endDateTime)
+        {
+            SetLoadingAnimationVisibility(Visibility.Visible);
+            string[] reps = { "Alex Heimberger", "Miral Bouzitoun", "Gregory Lyle", "Humberto Zamora", "Nick Tarte" };
+            for (int i = 0; i < reps.Length; i++)
+            {
+                SeriesCollection sc = new SeriesCollection();
+                PieChart pieChart = new PieChart()
+                {
+                    LegendLocation = LegendLocation.Top,
+                    Hoverable = true,
+                    Width = 250,
+                    Height = 250
+                };
+                using var _ = new NAT02Context();
 
+                string csReportQuery = "EXECUTE NAT02.dbo.sp_EOI_QuoteConversionByCSR @CSR = {0}, @Beginning = {1}, @End = {2}, @Rep = ''";
+
+                string[] p = new string[] { reps[i], beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
+
+                List<VwQuoteConversion> qc = new List<VwQuoteConversion>();
+                await Task.Run((Action)(() =>
+                {
+                    qc = _.VwQuoteConversion.FromSqlRaw(csReportQuery, p).ToList();
+                }));
+
+                sc.Add(new PieSeries
+                {
+                    Title = "Converted",
+                    Values = new ChartValues<int>(qc.Select(q => (int)q.Converted))
+                });
+
+                sc.Add(new PieSeries
+                {
+                    Title = "Not Converted",
+                    Values = new ChartValues<int>(qc.Select(q => (int)q.NotConverted))
+                });
+
+                await Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    pieChart.Series = sc;
+                    StackPanel _sp = new StackPanel()
+                    {
+                        Orientation = Orientation.Vertical
+                    };
+                    _sp.Children.Add(new Label() { Content = reps[i] });
+                    _sp.Children.Add(pieChart);
+                    ChartStack.Children.Add(_sp);
+                }));
+            }
+            SetLoadingAnimationVisibility(Visibility.Hidden);
+            ChartStack.Visibility = Visibility.Visible;
+        }
         private async void SetLoadingAnimationVisibility(Visibility visibility)
         {
             await Dispatcher.BeginInvoke((Action)(() =>
@@ -229,7 +285,15 @@ namespace NatoliOrderInterface
         }
         private void CheckBox_Click(object sender, RoutedEventArgs e)
         {
-            BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+            ChartStack.Children.Clear();
+            if ((bool)Orders.IsChecked || (bool)Tablets.IsChecked || (bool)Tools.IsChecked)
+            {
+                BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+            }
+            else if ((bool)Quotes.IsChecked)
+            {
+                BuildCSCharts(BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+            }
         }
 
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -240,7 +304,13 @@ namespace NatoliOrderInterface
             }
             else
             {
+                ChartStack.Children.Clear();
                 BuildOrdersChart((bool)Orders.IsChecked, (bool)Tablets.IsChecked, (bool)Tools.IsChecked, BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+                if ((bool)Quotes.IsChecked)
+                {
+                    ChartStack.Children.Clear();
+                    BuildCSCharts(BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
+                }
             }
         }
     }

@@ -1026,8 +1026,6 @@ namespace NatoliOrderInterface.Models
             {
                 entity.ToView("vw_QuoteConversion");
 
-                entity.Property(e => e.NotConverted).HasColumnName("Not Converted");
-
                 entity.HasKey(e => e.Rep);
             });
 

@@ -8,6 +8,7 @@ namespace NatoliOrderInterface.Models.Projects
     {
         public int ToolProjectsDrawn { get; set; }
         public int ToolProjectsChecked { get; set; }
+        public decimal AverageHours { get; set; }
         public string Employee { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace NatoliOrderInterface.Models
         public int? Converted { get; set; }
         public int? NotConverted { get; set; }
         public int? Total { get; set; }
-        public string Rate { get; set; }
+        // public string Rate { get; set; }
     }
 }

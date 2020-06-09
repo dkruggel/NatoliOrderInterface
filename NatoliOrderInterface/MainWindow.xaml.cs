@@ -1336,12 +1336,14 @@ namespace NatoliOrderInterface
             if (e.Key == Key.Left)
             {
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
+                // Fix 655 to be width of current module width + margin / 2
                 ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos - 655);
             }
             else if (e.Key == Key.Right)
             {
 
                 double currPos = ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).HorizontalOffset;
+                // Fix 655 to be width of current module width + margin / 2
                 ((MainWrapPanel.Parent as Border).Parent as ScrollViewer).ScrollToHorizontalOffset(currPos + 655);
             }
             else if (e.Key == Key.Enter && ZoomTextBox.IsFocused)
@@ -1351,6 +1353,10 @@ namespace NatoliOrderInterface
             else if (e.Key == Key.Enter && ModuleHeightTextBox.IsFocused)
             {
                 ChangeModuleRows("");
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.R)
+            {
+                Reports_Click(this, new RoutedEventArgs());
             }
         }
         private void ModuleHeightTextBox_MouseWheel(object sender, MouseWheelEventArgs e)

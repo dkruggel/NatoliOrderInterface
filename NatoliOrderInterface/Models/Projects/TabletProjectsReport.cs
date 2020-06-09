@@ -7,6 +7,7 @@ namespace NatoliOrderInterface.Models.Projects
     public partial class TabletProjectsReport
     {
         public int TabletProjects { get; set; }
+        public decimal AverageHours { get; set; }
         public string Employee { get; set; }
     }
 }
