@@ -51,8 +51,8 @@ namespace NatoliOrderInterface
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
                 string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
-                string custName = a.Type == "Project" ? _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == a.Number).EndUserName :
-                                                        ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                string custName = a.Type == "Project" ? _projectsContext.EngineeringProjects.FirstOrDefault(ep => ep.ProjectNumber == a.Number).EndUserName :
+                                                        ___.Rm00101.SingleOrDefault(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
                 notifications.Add((a.Id, a.Number, custName, a.Message, true, a.Type));
                 __.Dispose();
                 ___.Dispose();
@@ -64,8 +64,8 @@ namespace NatoliOrderInterface
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
                 string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
-                string custName = v.Type == "Project" ? _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == v.Number).EndUserName :
-                                                        ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                string custName = v.Type == "Project" ? _projectsContext.EngineeringProjects.FirstOrDefault(ep => ep.ProjectNumber == v.Number).EndUserName :
+                                                        ___.Rm00101.SingleOrDefault(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
                 notifications.Add((v.NotificationId, v.Number, custName, v.Message, false, v.Type));
                 __.Dispose();
                 ___.Dispose();
