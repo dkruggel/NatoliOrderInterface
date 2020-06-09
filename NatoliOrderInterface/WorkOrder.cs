@@ -788,8 +788,8 @@ namespace NatoliOrderInterface
                 shipDate = (DateTime)orderHeader.RequestedShipDate;
             }
             shipped = orderHeader.ShippedYn == "Y" ? true : (orderHeader.ShippedYn == "N" ? false : (bool?)null);
-            onHold = orderHeader.OnHold == "Y" ? true : (orderHeader.OnHold == "N" ? false : (bool?)null);
-            cancelled = orderHeader.PostedtoGpasyn == "C" || orderHeader.RestrictShipmentDesc.Contains("CANCEL") ? true : false;
+            onHold = orderHeader.OnHold == "Y" || (orderHeader.RestrictShipment=="Y" && orderHeader.RestrictShipmentDesc=="ON HOLD") ? true : (orderHeader.OnHold == "N" ? false : (bool?)null);
+            cancelled = orderHeader.PostedtoGpasyn == "C" || (orderHeader.RestrictShipment == "Y" && orderHeader.RestrictShipmentDesc.Contains("CANCEL")) ? true : false;
             shipToCustomerName = string.IsNullOrEmpty(orderHeader.ShiptoName) ? "" : orderHeader.ShiptoName.Trim();
             this.endUserName = string.IsNullOrEmpty(endUserName) ? "" : endUserName.Trim();
             referenceOrder = orderHeader.RefWo;
