@@ -2319,7 +2319,7 @@ namespace NatoliOrderInterface
                                         errors.Add("No die groove on 'D'");
                                     }
                                     // Too Many Die Grooves
-                                    if (!quoteLineItem.OptionNumbers.Contains("435") && quoteLineItem.OptionNumbers.Count(o => ContainsAny(o, new List<string> { "430", "431", "432", "433", "434", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture)) > 1)
+                                    if (!quoteLineItem.OptionNumbers.Contains("435") && quoteLineItem.OptionNumbers.Count(o => ContainsAny(o, new List<string> { "430", "431", "432", "433", "435", "436", "437", "438", "439" }, StringComparison.CurrentCulture)) > 1)
                                     {
                                         errors.Add("'D' has too many die grooves.");
                                     }
