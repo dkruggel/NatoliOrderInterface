@@ -51,8 +51,37 @@ namespace NatoliOrderInterface
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
                 string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
-                string custName = a.Type == "Project" ? _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == a.Number).EndUserName :
-                                                        ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                string custName = "";
+                if (a.Type == "Project")
+                {
+                    if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == a.Number))
+                    {
+                        string endUserName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == a.Number).EndUserName;
+                        string customerName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == a.Number).CustomerName;
+                        string shipToName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == a.Number).ShipToName;
+                        custName =
+                            !string.IsNullOrEmpty(endUserName) && !string.IsNullOrWhiteSpace(endUserName) ? endUserName :
+                            !string.IsNullOrEmpty(customerName) && !string.IsNullOrWhiteSpace(customerName) ? customerName :
+                            !string.IsNullOrEmpty(shipToName) && !string.IsNullOrWhiteSpace(shipToName) ? shipToName : "";
+                    }
+                    else if(_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == a.Number))
+                    {
+                        string rev = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == a.Number).Max(p => p.RevNumber);
+
+                        string endUserName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == a.Number && eap.RevNumber == rev).EndUserName;
+                        string customerName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == a.Number && eap.RevNumber == rev).CustomerName;
+                        string shipToName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == a.Number && eap.RevNumber == rev).ShipToName;
+                        custName =
+                            !string.IsNullOrEmpty(endUserName) && !string.IsNullOrWhiteSpace(endUserName) ? endUserName :
+                            !string.IsNullOrEmpty(customerName) && !string.IsNullOrWhiteSpace(customerName) ? customerName :
+                            !string.IsNullOrEmpty(shipToName) && !string.IsNullOrWhiteSpace(shipToName) ? shipToName : "";
+                    }
+                }
+                else
+                {
+                    custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                }
+
                 notifications.Add((a.Id, a.Number, custName, a.Message, true, a.Type));
                 __.Dispose();
                 ___.Dispose();
@@ -64,8 +93,36 @@ namespace NatoliOrderInterface
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
                 string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
-                string custName = v.Type == "Project" ? _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == v.Number).EndUserName :
-                                                        ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                string custName = "";
+                if (v.Type == "Project")
+                {
+                    if (_projectsContext.EngineeringProjects.Any(ep => ep.ProjectNumber == v.Number))
+                    {
+                        string endUserName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == v.Number).EndUserName;
+                        string customerName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == v.Number).CustomerName;
+                        string shipToName = _projectsContext.EngineeringProjects.First(ep => ep.ProjectNumber == v.Number).ShipToName;
+                        custName =
+                            !string.IsNullOrEmpty(endUserName) && !string.IsNullOrWhiteSpace(endUserName) ? endUserName :
+                            !string.IsNullOrEmpty(customerName) && !string.IsNullOrWhiteSpace(customerName) ? customerName :
+                            !string.IsNullOrEmpty(shipToName) && !string.IsNullOrWhiteSpace(shipToName) ? shipToName : "";
+                    }
+                    else if (_projectsContext.EngineeringArchivedProjects.Any(eap => eap.ProjectNumber == v.Number))
+                    {
+                        string rev = _projectsContext.EngineeringArchivedProjects.Where(eap => eap.ProjectNumber == v.Number).Max(p => p.RevNumber);
+
+                        string endUserName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == v.Number && eap.RevNumber == rev).EndUserName;
+                        string customerName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == v.Number && eap.RevNumber == rev).CustomerName;
+                        string shipToName = _projectsContext.EngineeringArchivedProjects.First(eap => eap.ProjectNumber == v.Number && eap.RevNumber == rev).ShipToName;
+                        custName =
+                            !string.IsNullOrEmpty(endUserName) && !string.IsNullOrWhiteSpace(endUserName) ? endUserName :
+                            !string.IsNullOrEmpty(customerName) && !string.IsNullOrWhiteSpace(customerName) ? customerName :
+                            !string.IsNullOrEmpty(shipToName) && !string.IsNullOrWhiteSpace(shipToName) ? shipToName : "";
+                    }
+                }
+                else
+                {
+                    custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
+                }
                 notifications.Add((v.NotificationId, v.Number, custName, v.Message, false, v.Type));
                 __.Dispose();
                 ___.Dispose();
@@ -194,37 +251,43 @@ namespace NatoliOrderInterface
 
             if (_.EoiNotificationsActive.Count(n => n.Number == orderNumber) > 0)
             {
-                EoiNotificationsActive active = _.EoiNotificationsActive.Single(n => n.Number == orderNumber);
+                List<EoiNotificationsActive> actives = _.EoiNotificationsActive.Where(n => n.Number == orderNumber).ToList();
 
-                EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                foreach (EoiNotificationsActive active in actives)
                 {
-                    NotificationId = active.Id,
-                    Number = active.Number,
-                    Type = active.Type,
-                    Message = active.Message,
-                    User = active.User,
-                    Timestamp = DateTime.Now
-                };
+                    EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                    {
+                        NotificationId = active.Id,
+                        Number = active.Number,
+                        Type = active.Type,
+                        Message = active.Message,
+                        User = active.User,
+                        Timestamp = DateTime.Now
+                    };
 
-                _.EoiNotificationsActive.Remove(active);
-                _.EoiNotificationsArchived.Add(archived);
+                    _.EoiNotificationsActive.Remove(active);
+                    _.EoiNotificationsArchived.Add(archived);
+                }
             }
             else if (_.EoiNotificationsViewed.Count(n => n.Number == orderNumber) > 0)
             {
-                EoiNotificationsViewed viewed = _.EoiNotificationsViewed.Single(n => n.Number == orderNumber);
+                List<EoiNotificationsViewed> vieweds = _.EoiNotificationsViewed.Where(n => n.Number == orderNumber).ToList();
 
-                EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                foreach (EoiNotificationsViewed viewed in vieweds)
                 {
-                    NotificationId = viewed.NotificationId,
-                    Number = viewed.Number,
-                    Type = viewed.Type,
-                    Message = viewed.Message,
-                    User = viewed.User,
-                    Timestamp = DateTime.Now
-                };
+                    EoiNotificationsArchived archived = new EoiNotificationsArchived()
+                    {
+                        NotificationId = viewed.NotificationId,
+                        Number = viewed.Number,
+                        Type = viewed.Type,
+                        Message = viewed.Message,
+                        User = viewed.User,
+                        Timestamp = DateTime.Now
+                    };
 
-                _.EoiNotificationsViewed.Remove(viewed);
-                _.EoiNotificationsArchived.Add(archived);
+                    _.EoiNotificationsViewed.Remove(viewed);
+                    _.EoiNotificationsArchived.Add(archived);
+                }
             }
 
             _.SaveChanges();
