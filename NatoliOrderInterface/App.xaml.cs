@@ -1281,6 +1281,7 @@ namespace NatoliOrderInterface
                 {
                     // Document number to open if doubleclicked
                     docNumber = "P" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "ProjectNumber").Text;
+                    docNumber += "-" + (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "RevNumber").Text;
                 }
                 else
                 {
@@ -1394,7 +1395,18 @@ namespace NatoliOrderInterface
                         // Open Quote, Order, or Project folder
                         if (docNumber[0] == 'P')
                         {
-                            OpenProject(docNumber[1..]);
+                            string revNumber = null;
+                            if(docNumber.Contains('-'))
+                            {
+                                docNumber = docNumber[1..];
+                                revNumber = docNumber.Substring(docNumber.IndexOf('-')+1);
+                                docNumber = docNumber.Substring(0, docNumber.IndexOf('-'));
+                            }
+                            else
+                            {
+                                docNumber = docNumber[1..];
+                            }
+                            OpenProject(docNumber,revNumber);
                         }
                         else if (docNumber[0] == 'Q')
                         {
@@ -1445,13 +1457,16 @@ namespace NatoliOrderInterface
 
                 if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == projectNumber))
                 {
-                    if (revNumber is null) { revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber; }
+                    if (revNumber is null) 
+                    { 
+                        revNumber = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber).RevNumber; 
+                    }
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
-                else if(_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber))
+                else if( (revNumber is null &&_projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber)) || (revNumber != null && _projectsContext.EngineeringArchivedProjects.Any(p => p.ProjectNumber == projectNumber && p.RevNumber == revNumber)))
                 {
-                    if (revNumber is null) { revNumber = _projectsContext.EngineeringArchivedProjects.First(p => p.ProjectNumber == projectNumber).RevNumber; }
+                    if (revNumber is null) { revNumber = _projectsContext.EngineeringArchivedProjects.Where(p => p.ProjectNumber == projectNumber).Max(p=>p.RevNumber); }
                     ProjectWindow projectWindow = new ProjectWindow(projectNumber, revNumber, (Application.Current.MainWindow as MainWindow), (Application.Current.MainWindow as MainWindow).User, false);
                     projectWindow.Show();
                 }
@@ -1587,7 +1602,7 @@ namespace NatoliOrderInterface
         }
         private void OpenProjectButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenProject(selectedProjects.Last().Item1);
+            OpenProject(selectedProjects.Last().Item1, selectedProjects.Last().Item2);
         }
         private void OpenOrderButton_Click(object sender, RoutedEventArgs e)
         {
@@ -2371,6 +2386,7 @@ namespace NatoliOrderInterface
             {
                 CopyProject(selectedProjects[0]);
             }
+            selectedProjects.Clear();
         }
         private void SendBackTabletProject(List<(string, string, CheckBox, string, string)> validProjects)
         {

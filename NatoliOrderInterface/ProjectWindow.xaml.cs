@@ -918,6 +918,36 @@ namespace NatoliOrderInterface
                         MultiTipSketch.IsEnabled = false;
                         SketchID.Text = engineeringProject.MultiTipSketchID;
                         SketchID.IsEnabled = false;
+                        if (SketchID.Text.Length>0)
+                        {
+                            using var _nat02Context = new NAT02Context();
+                            MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == Convert.ToInt32(SketchID.Text));
+                            string ID = multiTipSketchInformation.ID.ToString();
+                            string dieNumber = multiTipSketchInformation.DieNumber.ToString();
+                            string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
+                            string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
+                            string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
+                            if (multiTipSketchInformation.Length != null)
+                            {
+                                string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
+                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                if (System.IO.File.Exists(path))
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                }
+                            }
+                            else
+                            {
+                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                if (System.IO.File.Exists(path))
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                }
+                            }
+                            _nat02Context.Dispose();
+                        }
                         if (engineeringProject.MultiTipSolid == true)
                         {
                             MultiTipStyle.Text = "SOLID";
@@ -1397,6 +1427,36 @@ namespace NatoliOrderInterface
                         MultiTipSketch.IsEnabled = false;
                         SketchID.Text = engineeringProject.MultiTipSketchID;
                         SketchID.IsEnabled = false;
+                        if (SketchID.Text.Length > 0)
+                        {
+                            using var _nat02Context = new NAT02Context();
+                            MultiTipSketchInformation multiTipSketchInformation = _nat02Context.MultiTipSketchInformation.First(s => s.ID == Convert.ToInt32(SketchID.Text));
+                            string ID = multiTipSketchInformation.ID.ToString();
+                            string dieNumber = multiTipSketchInformation.DieNumber.ToString();
+                            string width = ((decimal)multiTipSketchInformation.Width).ToString("F4", CultureInfo.InvariantCulture);
+                            string type = multiTipSketchInformation.AssembledOrSolid == 'S' ? "SOLID" : multiTipSketchInformation.AssembledOrSolid == 'S' ? "ASSEMBLED" : "NEITHER_ASSEMBLED_OR_SOLID";
+                            string tipQTY = multiTipSketchInformation.TotalNumberOfTips.ToString();
+                            if (multiTipSketchInformation.Length != null)
+                            {
+                                string length = ((double)multiTipSketchInformation.Length).ToString("F4", CultureInfo.InvariantCulture);
+                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + " X " + length + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                if (System.IO.File.Exists(path))
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                }
+                            }
+                            else
+                            {
+                                string path = @"R:\tools\MULTI-TIP SKETCHES\" + width + "\\" + dieNumber + "\\" + type + "\\" + tipQTY + "-TIP " + type + "\\" + ID + "\\" + "MULTI TIP SKETCH " + ID + ".pdf";
+                                if (System.IO.File.Exists(path))
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewerBorder.Visibility = Visibility.Visible));
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = new Uri(path, UriKind.Absolute)));
+                                }
+                            }
+                            _nat02Context.Dispose();
+                        }
                         if (engineeringProject.MultiTipSolid == true)
                         {
                             MultiTipStyle.Text = "SOLID";
@@ -5325,6 +5385,8 @@ namespace NatoliOrderInterface
                     }
                     else
                     {
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => MultiTipSketchViewer.Source = null));
+                        MultiTipSketchViewer.Dispose();
                         using var projectsContext = new ProjectsContext();
                         EngineeringProjects project = projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
                         projectsContext.EngineeringProjects.Remove(project);
@@ -7069,9 +7131,16 @@ namespace NatoliOrderInterface
             try
             {
                 ListBox listBox = sender as ListBox;
-                Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
-                string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
-                System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+                if (listBox.IsMouseCaptured)
+                {
+                    Tuple<string, string, string> file = projectFiles[listBox.SelectedIndex];
+                    string fullFilePath = "\"" + "\"" + file.Item2 + "\\" + file.Item1 + file.Item3 + "\"" + "\"";
+                    System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", fullFilePath);
+                }
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return;
             }
             catch (Exception ex)
             {
