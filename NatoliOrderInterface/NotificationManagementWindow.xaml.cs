@@ -160,7 +160,8 @@ namespace NatoliOrderInterface
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     TextAlignment = TextAlignment.Center,
-                    Opacity = .5
+                    Opacity = .5,
+                    Cursor = Cursors.Arrow
                 };
                 NotificationWindowGrid.Children.Add(textBlock);
             }
