@@ -129,23 +129,40 @@ namespace NatoliOrderInterface
                 _projectsContext.Dispose();
             }
 
-            notifications.OrderBy(n => n.Item1);
-
-            foreach ((int, string, string, string, bool, string) notification in notifications)
+            if (notifications.Count > 0)
             {
-                ContentControl contentControl = new ContentControl()
+                notifications.OrderBy(n => n.Item1);
+
+                foreach ((int, string, string, string, bool, string) notification in notifications)
                 {
-                    Style = notification.Item5 ? FindResource("ActiveNotificationGrid") as Style :
-                                                 FindResource("InactiveNotificationGrid") as Style
+                    ContentControl contentControl = new ContentControl()
+                    {
+                        Style = notification.Item5 ? FindResource("ActiveNotificationGrid") as Style :
+                                                     FindResource("InactiveNotificationGrid") as Style
+                    };
+
+                    contentControl.ApplyTemplate();
+                    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = notification.Item2;
+                    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = notification.Item3;
+                    (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "NotificationMessageTextBlock").Text =
+                        notification.Item4.Replace("Document", notification.Item6);
+
+                    NM_DockPanel.Children.Add(contentControl);
+                }
+            }
+            else
+            {
+                TextBlock textBlock = new TextBlock
+                {
+                    Text = "No new notifications."+Environment.NewLine+"Check back later.",
+                    Style = Application.Current.Resources["BoldTextBlock"] as Style,
+                    FontSize = 20,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextAlignment = TextAlignment.Center,
+                    Opacity = .5
                 };
-
-                contentControl.ApplyTemplate();
-                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "OrderNumberTextBlock").Text = notification.Item2;
-                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "CustomerNameTextBlock").Text = notification.Item3;
-                (VisualTreeHelper.GetChild(contentControl as DependencyObject, 0) as Grid).Children.OfType<Grid>().First().Children.OfType<TextBlock>().Single(tb => tb.Name == "NotificationMessageTextBlock").Text =
-                    notification.Item4.Replace("Document", notification.Item6);
-
-                NM_DockPanel.Children.Add(contentControl);
+                NotificationWindowGrid.Children.Add(textBlock);
             }
 
             //List<EoiAllOrdersView> orders = _.EoiAllOrdersView.OrderBy(o => o.OrderNumber).ToList();

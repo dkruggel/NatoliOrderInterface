@@ -364,7 +364,7 @@
         </Style>
     </Window.Resources>
 
-    <Grid  Background="{StaticResource Background.Gradient}" >
+    <Grid x:Name="NotificationWindowGrid"  Background="{StaticResource Background.Gradient}" >
         <ScrollViewer x:Name="NM_ScrollViewer" Grid.Row="1" Margin="0,5,0,0" VerticalScrollBarVisibility="Hidden">
             <DockPanel x:Name="NM_DockPanel" HorizontalAlignment="Stretch" LastChildFill="False">
                 <!--<ContentControl Style="{StaticResource OrderGrid}"/>-->
