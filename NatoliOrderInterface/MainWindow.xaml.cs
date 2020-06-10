@@ -1416,13 +1416,65 @@ namespace NatoliOrderInterface
             projectSearch.Click += ProjectSearch_Click;
             fileMenu.Items.Add(projectSearch);
 
-            MenuItem forceRefresh = new MenuItem
+            MenuItem europeanStyleTolerances = new MenuItem
             {
-                Header = "Force Refresh",
-                ToolTip = "Bypass the refresh timer."
+                Header = "Euro Tolerances",
+                ToolTip = "European Style Tolerances App"
             };
-            forceRefresh.Click += ForceRefresh_Click;
-            fileMenu.Items.Add(forceRefresh);
+            europeanStyleTolerances.Click += EuropeanStyleTolerances_Click;
+            fileMenu.Items.Add(europeanStyleTolerances);
+
+            MenuItem bendingStress = new MenuItem
+            {
+                Header = "Bending Stress",
+                ToolTip = "Bending Stress and Carbide Tip Force App"
+            };
+            bendingStress.Click += BendingStress_Click;
+            if (User.Department == "Engineering")
+            {
+                fileMenu.Items.Add(bendingStress);
+            }
+
+            MenuItem natoliTabletGeneration = new MenuItem
+            {
+                Header = "Natoli Tablet Generation",
+                ToolTip = "Natoli Tablet Generation"
+            };
+            natoliTabletGeneration.Click += NatoliTabletGeneration_Click;
+            if (User.Department == "Engineering")
+            {
+                fileMenu.Items.Add(natoliTabletGeneration);
+            }
+
+            MenuItem natoliTabletUpdate = new MenuItem
+            {
+                Header = "Natoli Tablet Update",
+                ToolTip = "Natoli Tablet Update"
+            };
+            natoliTabletUpdate.Click += NatoliTabletUpdate_Click;
+            if (User.Department == "Engineering")
+            {
+                fileMenu.Items.Add(natoliTabletUpdate);
+            }
+
+            MenuItem update2019 = new MenuItem
+            {
+                Header = "Update-2019",
+                ToolTip = "Mustafa's Tablet Update"
+            };
+            update2019.Click += Update2019_Click;
+            if (User.Department == "Engineering")
+            {
+                fileMenu.Items.Add(update2019);
+            }
+
+            //MenuItem forceRefresh = new MenuItem
+            //{
+            //    Header = "Force Refresh",
+            //    ToolTip = "Bypass the refresh timer."
+            //};
+            //forceRefresh.Click += ForceRefresh_Click;
+            //fileMenu.Items.Add(forceRefresh);
 
             //MenuItem editLayout = new MenuItem
             //{
@@ -1807,6 +1859,78 @@ namespace NatoliOrderInterface
             };
             #endregion
         }
+
+        private void Update2019_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = "\"" + @"L:\DRAW\Mustafa\VB\Update_2019\Update_2019.application" + "\"";
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("Main Window => Update2019_Click", ex.Message, User);
+            }
+        }
+
+        private void NatoliTabletUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = "\"" + @"\\nshare\VB_Apps\NatoliTabletUpdate\NatoliTabletUpdate.application" + "\"";
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("Main Window => NatoliTabletUpdate_Click", ex.Message, User);
+            }
+        }
+
+        private void NatoliTabletGeneration_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = "\"" + @"\\nshare\VB_Apps\NatoliTabletGeneration\NatoliTabletGeneration.application" + "\"";
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("Main Window => NatoliTabletGeneration_Click", ex.Message, User);
+            }
+        }
+
+        private void BendingStress_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = "\"" + @"W:\work\DK\Bending Stress\Bending Stress.application" + "\"";
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("Main Window => BendingStress_Click", ex.Message, User);
+            }
+        }
+
+        private void EuropeanStyleTolerances_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string path = "\"" + @"R:\EuropeanStyleTolerances\EuropeanStyleTolerances.application" + "\"";
+                Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", path);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                IMethods.WriteToErrorLog("Main Window => EuropeanStyleTolerances_Click", ex.Message, User);
+            }
+
+        }
+
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {
             try
