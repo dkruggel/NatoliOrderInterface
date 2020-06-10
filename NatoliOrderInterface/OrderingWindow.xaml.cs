@@ -51,7 +51,7 @@ namespace NatoliOrderInterface
         /// <param name="user"></param>
         /// <param name="orderInfoWindow"></param>
         /// <param name="workOrder"></param>
-        public OrderingWindow(List<string> filePaths, User user, OrderInfoWindow orderInfoWindow, WorkOrder workOrder)
+        public OrderingWindow(List<string> filePaths, User user, OrderInfoWindow orderInfoWindow, WorkOrder workOrder, bool altKeyPressed = false)
         {
             this.workOrder = workOrder;
 
@@ -65,17 +65,20 @@ namespace NatoliOrderInterface
             {
                 int metric = 0;
                 string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
+                int lineItemNumber = filesDict.Count == 0 ? 100 : filesDict.Keys.Max() + 1;
 
-                if (lineItemName.Contains("_M"))
+                if (!altKeyPressed)
                 {
-                    lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
-                    metric++;
+                    if (lineItemName.Contains("_M"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
+                        metric++;
+                    }
+                    if (lineItemName.Contains("_"))
+                    {
+                        lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
+                    }
                 }
-                if (lineItemName.Contains("_"))
-                {
-                    lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
-                }
-                int lineItemNumber = Math.Max(99, filesDict.Count == 0 ? 0 : filesDict.Keys.Max()) + 1;
                 if (workOrder.lineItems.Any(l => IMethods.lineItemTypeToDescription[l.Value].Contains(' ') ?
                 IMethods.lineItemTypeToDescription[l.Value].Remove(IMethods.lineItemTypeToDescription[l.Value].IndexOf(' ')) == lineItemName :
                 IMethods.lineItemTypeToDescription[l.Value] == lineItemName))

@@ -1405,8 +1405,9 @@ namespace NatoliOrderInterface
                     MessageBox.Show("This folder does not match the Work Order Number.\n" + "Nothing was done with the .pdf(s).", "Wrong WO#", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     return;
                 }
-                bool hasUnknownLineItemName = e.KeyStates.ToString() == "AltKey" || woFolderName == "WorkOrdersToPrint";
-
+                bool altKeyPressed = e.KeyStates.ToString() == "AltKey";
+                bool hasUnknownLineItemName = altKeyPressed || woFolderName == "WorkOrdersToPrint";
+                
                 // Check to see if there is an unknown file name
                 foreach (string file in filePaths)
                 {
@@ -1424,12 +1425,13 @@ namespace NatoliOrderInterface
                     IMethods.lineItemTypeToDescription[l.Value] == lineItemName))
                     {
                         hasUnknownLineItemName = true;
+                        break;
                     }
                 }
                 // Open window to set order
                 if (hasUnknownLineItemName)
                 {
-                    OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, user, this, workOrder);
+                    OrderingWindow pDFOrderingWindow = new OrderingWindow(filePaths, user, this, workOrder, altKeyPressed);
                 }
                 else
                 {
