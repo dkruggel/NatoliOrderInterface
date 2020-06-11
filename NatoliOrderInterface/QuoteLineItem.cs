@@ -431,7 +431,7 @@ namespace NatoliOrderInterface
         }
         public bool IsKeyed()
         {
-            return this.Options.ContainsKey(130) || this.Options.ContainsKey(131) || this.Options.ContainsKey(132) || this.Options.ContainsKey(133) || this.Options.ContainsKey(140) || this.Options.ContainsKey(141);
+            return this.OptionNumbers.Contains("130") || this.OptionNumbers.Contains("131") || this.OptionNumbers.Contains("132") || this.OptionNumbers.Contains("133") || this.OptionNumbers.Contains("140") || this.OptionNumbers.Contains("141");
         }
     }
 }
