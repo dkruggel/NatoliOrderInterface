@@ -6324,7 +6324,7 @@
                                         <Button x:Name="ProjectCompleteButton" Style="{StaticResource ProjectCompleteButton}" Click="CompleteProject_Click"/>
                                         <Button x:Name="ProjectCancelButton" Style="{StaticResource ProjectCancelButton}" Click="CancelProject_Click"/>
                                         <Button x:Name="CopyProjectButton" Style="{StaticResource ProjectCopyButton}" Click="CopyProject_Click"/>
-                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" ToolTip="Open Project" Click="OpenProjectButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
                                     </StackPanel>
@@ -6531,7 +6531,7 @@
                                         <Button x:Name="ProjectCompleteButton" Style="{StaticResource ProjectCompleteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompleteProject_Click"/>
                                         <Button x:Name="ProjectCancelButton" Style="{StaticResource ProjectCancelButton}" Margin="2,0" HorizontalAlignment="Right" Click="CancelProject_Click"/>
                                         <Button x:Name="CopyProjectButton" Style="{StaticResource ProjectCopyButton}" Click="CopyProject_Click"/>
-                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project" Click="OpenProjectButton_Click"/>
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
                                     </StackPanel>
@@ -6725,7 +6725,7 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="DriveWorks Queue" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <!--<Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>-->
+                                        <!--<Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project" Click="OpenProjectButton_Click"/>-->
                                         <Button x:Name="ExpandButton" Style="{StaticResource ExpandButton}" Click="ExpandModule_Click"/>
                                         <Button x:Name="CollapseButton" Style="{StaticResource CollapseButton}" Visibility="Visible" Click="CollapseModule_Click"/>
                                     </StackPanel>
@@ -7039,7 +7039,7 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="All Projects" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" DockPanel.Dock="Right">
-                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project Folder" Click="OpenProjectButton_Click"/>
+                                        <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Project" Click="OpenProjectButton_Click"/>
                                     </StackPanel>
                                     <TextBlock Text=""/>
                                 </DockPanel>
