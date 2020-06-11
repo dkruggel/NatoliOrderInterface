@@ -92,6 +92,8 @@ namespace NatoliOrderInterface
                     Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+                YAxis.FontSize = 25;
+                YAxis.Foreground = new SolidColorBrush(Colors.Black);
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
@@ -126,6 +128,8 @@ namespace NatoliOrderInterface
                     Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+                YAxis.FontSize = 25;
+                YAxis.Foreground = new SolidColorBrush(Colors.Black);
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
@@ -154,6 +158,8 @@ namespace NatoliOrderInterface
                     Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+                YAxis.FontSize = 25;
+                YAxis.Foreground = new SolidColorBrush(Colors.Black);
 
                 string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
             }
@@ -176,6 +182,8 @@ namespace NatoliOrderInterface
                     Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
+                YAxis.FontSize = 25;
+                YAxis.Foreground = new SolidColorBrush(Colors.Black);
 
                 string[] Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToArray();
             }
@@ -202,6 +210,8 @@ namespace NatoliOrderInterface
                     Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsChecked))
                 });
                 YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
+                YAxis.FontSize = 25;
+                YAxis.Foreground = new SolidColorBrush(Colors.Black);
 
                 string[] Labels = ordersReport.Select(or => or.Employee + ':' + or.AverageHours.ToString()).ToArray();
             }
