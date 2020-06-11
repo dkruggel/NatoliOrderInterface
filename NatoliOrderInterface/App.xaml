@@ -5174,7 +5174,14 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
+                                                                            </TextBlock>
                                                     <TextBlock Tag="QuoteNumber" Text="{Binding QuoteNo}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2"/>
                                                     <TextBlock Tag="QuoteRev" Text="{Binding Rev}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3"/>
                                                     <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" TextWrapping="NoWrap"/>
@@ -5377,7 +5384,14 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
+                                                                            </TextBlock>
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                                             <TextBlock Tag="DaysInArea" Text="{Binding DaysInDept, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
@@ -5571,7 +5585,14 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
+                                                                            </TextBlock>
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                     <Grid Grid.Column="4">
@@ -5768,6 +5789,12 @@
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
                                                                             <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
                                                                             </TextBlock>
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap">
                                                                             </TextBlock>
@@ -5967,7 +5994,14 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
+                                                                            </TextBlock>
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                                             <TextBlock Tag="Employee" Text="{Binding EmployeeName}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>
@@ -6162,7 +6196,14 @@
                                                                                     </MultiBinding>
                                                                                 </CheckBox.IsChecked>
                                                                             </CheckBox>
-                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1"/>
+                                                                            <TextBlock x:Name="OrderNumber" Tag="OrderNumber" Text="{Binding OrderNumber, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="1">
+                                                                                <TextBlock.TextDecorations>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.TextDecorations>
+                                                                                <TextBlock.FontWeight>
+                                                                                    <Binding Converter="{StaticResource textConverter}"/>
+                                                                                </TextBlock.FontWeight>
+                                                                            </TextBlock>
                                                                             <TextBlock Tag="CustomerName" Text="{Binding CustomerName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="2" TextWrapping="NoWrap"/>
                                                                             <TextBlock Tag="DaysToShip" Text="{Binding NumDaysToShip, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="3" Margin="10,0"/>
                                                         <TextBlock Tag="Employee" Text="{Binding EmployeeName, NotifyOnSourceUpdated=True}" Style="{StaticResource ModuleTextBlock}" Grid.Column="4" Margin="10,0"/>

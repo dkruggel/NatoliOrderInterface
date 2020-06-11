@@ -37,6 +37,8 @@ namespace NatoliOrderInterface.Models
         public string HobNumbers { get; set; }
         public string DetailTypes { get; set; }
         public string UnitOfMeasure { get; set; }
+        public bool Rework { get; set; }
+        public bool Evaluate { get; set; }
 
         public bool Equals(EoiAllOrdersView other)
         {
@@ -68,9 +70,11 @@ namespace NatoliOrderInterface.Models
                    this.HobNumbers == other.HobNumbers &&
                    this.DetailTypes == other.DetailTypes &&
                    this.UnitOfMeasure == other.UnitOfMeasure;
+                   this.Rework = other.Rework;
+                   this.Evaluate = other.Evaluate;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiAllOrdersView);
-        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist, Generated, Generating, HobNumbers, DetailTypes, UnitOfMeasure).GetHashCode();
+        public override int GetHashCode() => (OrderNumber, QuoteNumber, QuoteRev, CustomerName, NumDaysToShip, RushYorN, PaidRushFee, ProcessState, TransitionName, DoNotProcess, DaysInDept, EmployeeName, BeingChecked, MarkedForChecking, Csr, CheckedBy, Tm2, Tablet, Tool, VariablesExist, Generated, Generating, HobNumbers, DetailTypes, UnitOfMeasure, Rework, Evaluate).GetHashCode();
     }
 }

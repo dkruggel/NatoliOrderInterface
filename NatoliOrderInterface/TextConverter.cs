@@ -48,9 +48,43 @@ namespace NatoliOrderInterface
                         return FontWeights.Normal;
                     }
                 }
+                else if(value is EoiAllOrdersView)
+                {
+                    EoiAllOrdersView eoiAllOrdersView = value as EoiAllOrdersView;
+                    if (eoiAllOrdersView.Evaluate || eoiAllOrdersView.Rework)
+                    {
+                        return FontWeights.SemiBold;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
                 else
                 { 
                     return FontWeights.Normal; 
+                }
+            }
+            else if(targetType == typeof(TextDecorationCollection))
+            {
+                if (value is EoiAllOrdersView)
+                {
+                    EoiAllOrdersView eoiAllOrdersView = value as EoiAllOrdersView;
+                    if (eoiAllOrdersView.Evaluate || eoiAllOrdersView.Rework)
+                    {
+                        TextDecorationCollection textDecorations = new TextDecorationCollection();
+                        //textDecorations.Add(TextDecorations.Baseline);
+                        textDecorations.Add(TextDecorations.Underline);
+                        return textDecorations;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
                 }
             }
             else
