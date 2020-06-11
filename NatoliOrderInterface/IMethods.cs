@@ -2824,6 +2824,11 @@ namespace NatoliOrderInterface
                                             {
                                                 errors.Add("'" + quoteLineItem.LineItemType + "' is missing a head type option.");
                                             }
+                                            // More than one Head option
+                                            if (quoteLineItem.OptionNumbers.Count(o=> (new List<string> { "001", "002", "003", "004", "005", "006", "007", "008", "009", "011", "012", "013", "014", "015", "016", "017", "018", "019", "022", "024", "025" }).Contains(o)) >1 )
+                                            {
+                                                errors.Add("'" + quoteLineItem.LineItemType + "' has more than one head option.");
+                                            }
                                         }
 
                                         // Rotating Head

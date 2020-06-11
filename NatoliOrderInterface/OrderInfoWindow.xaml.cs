@@ -2090,6 +2090,7 @@ namespace NatoliOrderInterface
                     Left = Left,
                     Top = Top
                 };
+                quoteInfoWindow.Show();
             }
             catch (Exception ex)
             {
