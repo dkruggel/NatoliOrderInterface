@@ -156,7 +156,7 @@ namespace NatoliOrderInterface.Models.NAT01
 
                 modelBuilder.Entity<HobList>(entity =>
                 {
-                    entity.HasNoKey();
+                    entity.HasKey(e => new { e.HobNo, e.TipQty, e.BoreCircle });
 
                     entity.HasIndex(e => e.Nnumber)
                         .HasName("ByNNumber");

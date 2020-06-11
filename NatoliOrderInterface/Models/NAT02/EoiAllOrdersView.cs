@@ -69,9 +69,9 @@ namespace NatoliOrderInterface.Models
                    this.Generating == other.Generating &&
                    this.HobNumbers == other.HobNumbers &&
                    this.DetailTypes == other.DetailTypes &&
-                   this.UnitOfMeasure == other.UnitOfMeasure;
-                   this.Rework = other.Rework;
-                   this.Evaluate = other.Evaluate;
+                   this.UnitOfMeasure == other.UnitOfMeasure &&
+                   this.Rework == other.Rework &&
+                   this.Evaluate == other.Evaluate;
         }
 
         public override bool Equals(object obj) => Equals(obj as EoiAllOrdersView);
