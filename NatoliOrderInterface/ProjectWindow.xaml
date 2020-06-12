@@ -9,6 +9,13 @@
         Title="" Height="1070" Width="1200" Background="{StaticResource BackgroundBrush}" Closed="ProjectWindowXAML_Closed" UseLayoutRounding="True" Activated="ProjectWindowXAML_Activated" Closing="ProjectWindowXAML_Closing">
     <Window.Resources>
         <System:String x:Key="UnitsText">in</System:String>
+
+        <Storyboard x:Key="ColorFade">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush">
+                <DiscreteObjectKeyFrame KeyTime="0" Value="#43eb34"/>
+                <DiscreteObjectKeyFrame KeyTime="0:0:5" Value="Black"/>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="False">
         <Grid>
@@ -401,7 +408,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Border BorderBrush="Black" Grid.Column="0" BorderThickness="0,0,1,0">
+                        <Border x:Name="DieBorder" BorderBrush="Black" Grid.Column="0" BorderThickness="0,0,1,0">
                             <StackPanel Margin="4,0" Grid.Column="0" VerticalAlignment="Top">
                                 <TextBlock Text="DIE" Margin="0,0,0,4" Style="{StaticResource BoldTextBlock}"/>
                                 <Border BorderBrush="Black" BorderThickness="0,1,0,0" Margin="0,-4,0,0">
