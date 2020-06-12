@@ -91,6 +91,7 @@ namespace NatoliOrderInterface
                         bool submitted = project.Complete == 4;
                         bool drawn = project.Complete == 3;
                         bool started = project.Complete == 2;
+                        bool sentBack = System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.ProjectNumber + "\\NEED_TO_FIX.txt");
                         if (inactive)
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.BlanchedAlmond, Colors.Transparent, Colors.Transparent, Colors.Red); }
@@ -105,6 +106,11 @@ namespace NatoliOrderInterface
                         {
                             if (priority) { return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.Red); }
                             return SetLinearGradientBrushTablets(Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow, Colors.GreenYellow);
+                        }
+                        if (sentBack)
+                        {
+                            if (priority) { return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Red); }
+                            return SetLinearGradientBrushTablets(Colors.Orange, Colors.Transparent, Colors.Transparent, Colors.Transparent);
                         }
                         if (submitted)
                         {
