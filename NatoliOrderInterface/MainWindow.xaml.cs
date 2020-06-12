@@ -631,6 +631,8 @@ namespace NatoliOrderInterface
                     {
                         //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
                         //notificationManagementWindow.Show();
+                        CalendarWindow calendar = new CalendarWindow();
+                        calendar.Show();
                     }
                 }
             }
