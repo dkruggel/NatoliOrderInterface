@@ -4183,7 +4183,14 @@
             </Setter>
         </Style>
         <!--#endregion-->
-        
+
+        <BeginStoryboard x:Key="ColorFade">
+            <Storyboard>
+                <ColorAnimation Duration="0:0:0" To="#43eb34" Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" FillBehavior="Stop"/>
+                <ColorAnimation Duration="0:0:5" To="Black" Storyboard.TargetProperty="(TextBox.BorderBrush).(SolidColorBrush.Color)" FillBehavior="Stop"/>
+            </Storyboard>
+        </BeginStoryboard>
+
         <!--#region Module Grids -->
         <Storyboard x:Key="listBoxHighlight">
             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorder" Storyboard.TargetProperty="BorderBrush">

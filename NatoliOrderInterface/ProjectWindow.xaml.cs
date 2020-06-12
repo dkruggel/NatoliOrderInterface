@@ -1,4 +1,5 @@
 ﻿using DK.WshRuntime;
+using Microsoft.Win32;
 using NatoliOrderInterface.Models;
 using NatoliOrderInterface.Models.DriveWorks;
 using NatoliOrderInterface.Models.NAT01;
@@ -21,6 +22,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Navigation;
 
 namespace NatoliOrderInterface
@@ -5852,6 +5854,7 @@ namespace NatoliOrderInterface
                             if (_nat01Context.DieList.Any(d => !string.IsNullOrWhiteSpace(d.DieId) && d.DieId.Trim() == _editedText))
                             {
                                 DieList die = _nat01Context.DieList.First(d => d.DieId.Trim() == _editedText);
+                                LightUpBorder(DieNumber);
                                 // Use Note2 from Die List if present
                                 if (!string.IsNullOrWhiteSpace(die.Note2))
                                 {
@@ -5879,9 +5882,10 @@ namespace NatoliOrderInterface
                             break;
                         case "UpperHobNumber":
                             // It is a hob number that exists
-                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0')))
                             {
-                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0'));
+                                LightUpBorder(DieNumber);
                                 string note1 = hob.Note1.Trim();
                                 string note2 = hob.Note2.Trim();
                                 string note3 = hob.Note3.Trim();
@@ -5973,9 +5977,10 @@ namespace NatoliOrderInterface
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => UpperHobDescriptionPlaceHolder.Visibility = UpperHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
                             break;
                         case "LowerHobNumber":
-                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0')))
                             {
-                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0'));
+                                LightUpBorder(DieNumber);
                                 string note1 = hob.Note1.Trim();
                                 string note2 = hob.Note2.Trim();
                                 string note3 = hob.Note3.Trim();
@@ -6062,9 +6067,10 @@ namespace NatoliOrderInterface
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => LowerHobDescriptionPlaceHolder.Visibility = LowerHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
                             break;
                         case "ShortRejectHobNumber":
-                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText))
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0')))
                             {
-                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0'));
+                                LightUpBorder(DieNumber);
                                 string note1 = hob.Note1.Trim();
                                 string note2 = hob.Note2.Trim();
                                 string note3 = hob.Note3.Trim();
@@ -6151,9 +6157,10 @@ namespace NatoliOrderInterface
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() => ShortRejectHobDescriptionPlaceHolder.Visibility = ShortRejectHobDescription.Text.Length == 0 ? Visibility.Visible : Visibility.Hidden));
                             break;
                         case "LongRejectHobNumber":
-                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText))
+                            if (_nat01Context.HobList.Any(h => !string.IsNullOrWhiteSpace(h.HobNo) && (!string.IsNullOrWhiteSpace(h.Note1) || !string.IsNullOrWhiteSpace(h.Note2) || !string.IsNullOrWhiteSpace(h.Note3)) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0')))
                             {
-                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText);
+                                HobList hob = _nat01Context.HobList.First(h => !string.IsNullOrWhiteSpace(h.HobNo) && h.HobNo.Trim() == _editedText.Trim().PadLeft(6, '0'));
+                                LightUpBorder(DieNumber);
                                 string note1 = hob.Note1.Trim();
                                 string note2 = hob.Note2.Trim();
                                 string note3 = hob.Note3.Trim();
@@ -6431,6 +6438,28 @@ namespace NatoliOrderInterface
                     editedTextBoxName = textBox.Name.ToString();
                     EditedTimer.Start();
                 }
+            }
+        }
+        private void LightUpBorder(TextBox textBox)
+        {
+            try
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    ColorAnimation colorAnimation = new ColorAnimation()
+                    {
+                        BeginTime = new TimeSpan(0, 0, 0),
+                        Duration = new Duration(new TimeSpan(0, 0, 3)),
+                        To = (textBox.BorderBrush as SolidColorBrush).Color
+                    };
+
+                    textBox.BorderBrush = new SolidColorBrush(Color.FromRgb(67, 235, 52));
+                    textBox.BorderBrush.BeginAnimation(SolidColorBrush.ColorProperty, colorAnimation);
+                }));
+            }
+            catch (Exception ex)
+            {
+
             }
         }
         #endregion
