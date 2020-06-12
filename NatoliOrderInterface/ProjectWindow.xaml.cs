@@ -5759,22 +5759,22 @@ namespace NatoliOrderInterface
         {
             try
             {
-                List<string> hobNumbers = new List<string>();
+                Dictionary<int,string> hobNumbers = new Dictionary<int, string>();
                 if (int.TryParse(UpperHobNumber.Text, out int upperHobNumber) && upperHobNumber > 0)
                 {
-                    hobNumbers.Add(upperHobNumber.ToString());
+                    hobNumbers.Add(0,upperHobNumber.ToString());
                 }
                 if (int.TryParse(LowerHobNumber.Text, out int lowerHobNumber) && lowerHobNumber > 0)
                 {
-                    hobNumbers.Add(lowerHobNumber.ToString());
+                    hobNumbers.Add(1,lowerHobNumber.ToString());
                 }
                 if (int.TryParse(ShortRejectHobNumber.Text, out int shortRejectHobNumber) && shortRejectHobNumber > 0)
                 {
-                    hobNumbers.Add(shortRejectHobNumber.ToString());
+                    hobNumbers.Add(2,shortRejectHobNumber.ToString());
                 }
                 if (int.TryParse(LongRejectHobNumber.Text, out int longRejectHobNumber) && longRejectHobNumber > 0)
                 {
-                    hobNumbers.Add(longRejectHobNumber.ToString());
+                    hobNumbers.Add(3,longRejectHobNumber.ToString());
                 }
                 if (hobNumbers.Count > 0)
                 {

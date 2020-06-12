@@ -624,15 +624,15 @@ namespace NatoliOrderInterface
                         //ProjectWindow projectWindow = new ProjectWindow("110012", "4", this, User, false);
                         //IMethods.SendProjectCompletedEmailToCSRAsync(new List<string> { "Tyler" }, "103267", "0", new User("twilliams"));
                         //(List<string> errantFolders, List<Tuple<string, string>> renamedFolders) = FolderCheck.CustomerFolderCheck();
-                        CalendarWindow calendar = new CalendarWindow();
-                        calendar.Show();
+                        //CalendarWindow calendar = new CalendarWindow();
+                        //calendar.Show();
                     }
                     else if (User.EmployeeCode == "E4408")
                     {
                         //NotificationManagementWindow notificationManagementWindow = new NotificationManagementWindow(User, this);
                         //notificationManagementWindow.Show();
-                        CalendarWindow calendar = new CalendarWindow();
-                        calendar.Show();
+                        //CalendarWindow calendar = new CalendarWindow();
+                        //calendar.Show();
                     }
                 }
             }
@@ -1385,13 +1385,20 @@ namespace NatoliOrderInterface
                 Height = MainMenu.Height
             };
 
-            MenuItem updateApp = new MenuItem
-            {
-                Header = "Update App",
-                ToolTip = "Updates the app to the most current version (if available)."
-            };
-            updateApp.Click += UpdateApp_Click;
+            //MenuItem updateApp = new MenuItem
+            //{
+            //    Header = "Update App",
+            //    ToolTip = "Updates the app to the most current version (if available)."
+            //};
+            //updateApp.Click += UpdateApp_Click;
 
+            MenuItem calendar = new MenuItem
+            {
+                Header = "Calendar",
+                ToolTip = "Calendar for events and Vacation"
+            };
+            calendar.Click += Calendar_Click;
+            fileMenu.Items.Add(calendar);
 
             MenuItem customerNote = new MenuItem
             {
@@ -1515,13 +1522,13 @@ namespace NatoliOrderInterface
             //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
             fileMenu.Items.Add(filterProjects);
 
-            MenuItem printDrawings = new MenuItem
-            {
-                Header = "Print Drawings",
-                ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
-            };
-            printDrawings.Click += PrintDrawings_Click;
-            if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
+            //MenuItem printDrawings = new MenuItem
+            //{
+            //    Header = "Print Drawings",
+            //    ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
+            //};
+            //printDrawings.Click += PrintDrawings_Click;
+            //if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
             #endregion
@@ -1863,6 +1870,20 @@ namespace NatoliOrderInterface
                 Header = "Start"
             };
             #endregion
+        }
+
+        private void Calendar_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CalendarWindow calendarWindow = new CalendarWindow(User);
+                calendarWindow.Show();
+                calendarWindow.WindowState = WindowState.Maximized;
+            }
+            catch (Exception ex)
+            {
+                IMethods.WriteToErrorLog("Calendar_Click", ex.Message, User);
+            }
         }
 
         private void Update2019_Click(object sender, RoutedEventArgs e)
