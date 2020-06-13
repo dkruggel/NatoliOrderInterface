@@ -2151,7 +2151,7 @@ namespace NatoliOrderInterface
                 }
                 else if (currModule == "AllToolProjects")
                 {
-                    // CompleteToolProject(validProjects);
+                    SendBackToolProject(validProjects);
                 }
                 else
                 {
@@ -2424,7 +2424,7 @@ namespace NatoliOrderInterface
 
                     if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
                     {
-                        IMethods.StartProject(project.Item1, project.Item2, "TABLETS", user);
+                        IMethods.SendBackProject(project.Item1, project.Item2, "TABLETS", user);
                     }
                     else
                     {
@@ -2456,6 +2456,75 @@ namespace NatoliOrderInterface
                 {
                     // MessageBox.Show(ex.Message);
                     IMethods.WriteToErrorLog("SendBackTabletProject", ex.Message, user);
+                }
+            }
+        }
+        private void SendBackToolProject(List<(string, string, CheckBox, string, string)> validProjects)
+        {
+            for (int i = 0; i < validProjects.Count; i++)
+            {
+                (string, string, CheckBox, string, string) project = validProjects[i];
+                try
+                {
+                    // Check to see if the project is in the correct module
+                    if (project.Item4 != "AllToolProjects")
+                    {
+                        continue;
+                    }
+
+                    // Add a note to the drafter
+                    System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.Item1 + "\\NEED_TO_FIX.txt");
+                    streamWriter.Close();
+                    System.Diagnostics.Process.Start("notepad.exe", @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + project.Item1 + "\\NEED_TO_FIX.txt");
+
+                    // Uncheck project expander
+                    project.Item3.IsChecked = false;
+                    (VisualTreeHelper.GetParent((project.Item3.Parent as Grid).Parent as Grid) as ToggleButton).IsChecked = false;
+
+                    using var _projectsContext = new ProjectsContext();
+                    using var _driveworksContext = new DriveWorksContext();
+
+                    // Get project revision number
+                    // int? _revNo = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == _projectNumber).First().RevisionNumber;
+                    string _csr = _projectsContext.ProjectSpecSheet.Where(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2)).First().Csr;
+
+                    // Remove from Submitted
+                    // Remove from Drawn
+
+                    if (_projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == project.Item1 && p.RevNumber == project.Item2))
+                    {
+                        IMethods.SendBackProject(project.Item1, project.Item2, "TOOLS", user);
+                    }
+                    else
+                    {
+                        ToolSubmittedBy toolSubmittedBy = _projectsContext.ToolSubmittedBy.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        _projectsContext.ToolSubmittedBy.Remove(toolSubmittedBy);
+
+                        ToolDrawnBy toolDrawnBy = _projectsContext.ToolDrawnBy.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        _projectsContext.ToolDrawnBy.Remove(toolDrawnBy);
+
+                        ProjectSpecSheet projectSpecSheet = _projectsContext.ProjectSpecSheet.Single(p => p.ProjectNumber == int.Parse(project.Item1) && p.RevisionNumber == int.Parse(project.Item2));
+                        projectSpecSheet.ToolDrawnBy = "";
+                        projectSpecSheet.ToolSubmittedBy = "";
+                        _projectsContext.ProjectSpecSheet.Update(projectSpecSheet);
+
+                        // Drive specification transition name to "Started - Tools"
+                        // Auto archive project specification
+                        string _name = project.Item1 + (int.Parse(project.Item2) > 0 ? "_" + project.Item2 : "");
+                        Specifications spec = _driveworksContext.Specifications.Where(s => s.Name == _name).First();
+                        spec.StateName = "Started - Tools";
+                        _driveworksContext.Specifications.Update(spec);
+                    }
+
+                    _projectsContext.SaveChanges();
+                    _driveworksContext.SaveChanges();
+                    _projectsContext.Dispose();
+                    _driveworksContext.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    // MessageBox.Show(ex.Message);
+                    IMethods.WriteToErrorLog("SendBackToolProject", ex.Message, user);
                 }
             }
         }

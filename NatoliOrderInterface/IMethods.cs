@@ -926,6 +926,51 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
+        /// Sends back an EngineeringProject based on input projectType "TABLETS" or "TOOLS".
+        /// </summary>
+        /// <param name="projectNumber"></param>
+        /// <param name="projectRevNumber"></param>
+        /// <param name="user"></param>
+        public static void SendBackProject(string projectNumber, string projectRevNumber, string projectType, User user)
+        {
+            using var _projectsContext = new ProjectsContext();
+            using var _driveworksContext = new DriveWorksContext();
+
+            try
+            {
+                if (projectType == "TABLETS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.TabletSubmitted = false;
+                    engineeringProject.TabletSubmittedDateTime = null;
+                    engineeringProject.TabletSubmittedBy = "";
+                    engineeringProject.TabletDrawn = false;
+                    engineeringProject.TabletDrawnDateTime = null;
+                    engineeringProject.TabletDrawnBy = "";
+
+                    _projectsContext.SaveChanges();
+                }
+                else if (projectType == "TOOLS")
+                {
+                    EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+                    engineeringProject.ToolSubmitted = false;
+                    engineeringProject.ToolSubmittedDateTime = null;
+                    engineeringProject.ToolSubmittedBy = "";
+                    engineeringProject.ToolDrawn = false;
+                    engineeringProject.ToolDrawnDateTime = null;
+                    engineeringProject.ToolDrawnBy = "";
+
+                    _projectsContext.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            _projectsContext.Dispose();
+            _driveworksContext.Dispose();
+        }
+        /// <summary>
         /// Takes List<string> of Driveworks.SecurityUsers.PrincipalId's for to, cc, and bcc
         /// </summary>
         /// <param name="to"></param>
