@@ -75,9 +75,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Calendar\**" />
     <Compile Remove="NatoliOrderInterface_Package\**" />
+    <EmbeddedResource Remove="Calendar\**" />
     <EmbeddedResource Remove="NatoliOrderInterface_Package\**" />
+    <None Remove="Calendar\**" />
     <None Remove="NatoliOrderInterface_Package\**" />
+    <Page Remove="Calendar\**" />
     <Page Remove="NatoliOrderInterface_Package\**" />
   </ItemGroup>
 
@@ -240,6 +244,8 @@
     <None Remove="Fonts\VarelaRound-Regular.ttf" />
     <None Remove="greenplusadditionicon.png" />
     <None Remove="magnifying_glass.png" />
+    <None Remove="move_next.png" />
+    <None Remove="move_prev.png" />
     <None Remove="NATOLI_ANIMATION.gif" />
     <None Remove="Natoli_Logo.gif" />
     <None Remove="Natoli_Logo_Color.png" />
@@ -287,6 +293,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="NatoliOrderInterfaceCalendar.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -494,6 +503,8 @@
       <IsWinMDFile>true</IsWinMDFile>
       <Private>false</Private>
     </Reference>
+    <Resource Include="Jarloo.Calendar\Images\move_next.png" />
+    <Resource Include="Jarloo.Calendar\Images\move_prev.png" />
     <Resource Include="NATOLI_ANIMATION.gif" />
     <Resource Include="Natoli_Logo.gif" />
     <Resource Include="Natoli_Logo_Color.png" />

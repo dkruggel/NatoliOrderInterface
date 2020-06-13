@@ -80,7 +80,7 @@ namespace NatoliOrderInterface
         }
 
         private string projectNumber = "";
-        private List<string> hobNumbers = new List<string>();
+        private Dictionary<int,string> hobNumbers = new Dictionary<int, string>();
 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -102,7 +102,7 @@ namespace NatoliOrderInterface
         /// </summary>
         /// <param name="hobNumbers"></param>
         /// <param name="window"></param>
-        public TabletDrawings(List<string> hobNumbers, Window window, string projectNumber ="", string projectRevNumber="0")
+        public TabletDrawings(Dictionary<int,string> hobNumbers, Window window, string projectNumber ="", string projectRevNumber="0")
         {
             InitializeComponent();
             IntPtr hwnd = new WindowInteropHelper(window).Handle;
@@ -123,17 +123,16 @@ namespace NatoliOrderInterface
         /// </summary>
         private void FillTabletDrawingsData()
         {
-            int i = 0;
-            foreach (string hobNumberString in hobNumbers)
+            foreach (KeyValuePair<int,string> hobnumberKVP in hobNumbers)
             {
-                if (int.TryParse(hobNumberString, out int hobNumber))
+                if (int.TryParse(hobnumberKVP.Value, out int hobNumber))
                 {
                     string folderPrefix = IMethods.GetEDrawingsFolderPrefix(hobNumber);
                     string folderLocation = eDrawDirectory + folderPrefix + @"-E-DRAWINGS\";
                     IEnumerable<string> files = Directory.EnumerateFiles(eDrawDirectory + folderPrefix + @"-E-DRAWINGS\", hobNumber.ToString() + "*", new EnumerationOptions { RecurseSubdirectories = false, MatchType = MatchType.Simple, MatchCasing = MatchCasing.CaseInsensitive });
                     if (files.Any())
                     {
-                        switch (i)
+                        switch (hobnumberKVP.Key)
                         {
                             case 0:
                                 List<Tuple<string, string, string>> upperTabletDrawings = new List<Tuple<string, string, string>>();
@@ -184,7 +183,6 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
-                i++;
             }
         }
         private void SetDragDropEvents()
