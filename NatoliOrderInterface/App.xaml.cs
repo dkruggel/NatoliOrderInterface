@@ -575,13 +575,7 @@ namespace NatoliOrderInterface
                 else if (project)
                 {
 
-                    Button projectPreviousStepButton = new Button();
-                    if (type != "AllToolProjects")
-                    {
-                        projectPreviousStepButton = buttons.Single(b => b.Name == "ProjectPreviousStepButton");
-                        projectPreviousStepButton.Visibility = Visibility.Visible;
-                        projectPreviousStepButton.IsEnabled = false;
-                    }
+                    Button projectPreviousStepButton = buttons.Single(b => b.Name == "ProjectPreviousStepButton");
                     Button projectOnHoldButton = buttons.Single(b => b.Name == "ProjectOnHoldButton");
                     Button projectOffHoldButton = buttons.Single(b => b.Name == "ProjectOffHoldButton");
                     Button projectNextStepButton = buttons.Single(b => b.Name == "ProjectNextStepButton");
@@ -590,7 +584,8 @@ namespace NatoliOrderInterface
                     Button projectOpenButton = buttons.Single(b => b.Name == "WindowButton");
                     Button projectCopyButton = buttons.Single(b => b.Name == "CopyProjectButton");
 
-                    
+
+                    projectPreviousStepButton.Visibility = Visibility.Visible;
                     projectOnHoldButton.Visibility = Visibility.Visible;
                     projectOffHoldButton.Visibility = Visibility.Visible;
                     projectNextStepButton.Visibility = Visibility.Visible;
@@ -599,7 +594,8 @@ namespace NatoliOrderInterface
                     projectOpenButton.Visibility = Visibility.Visible;
                     projectCopyButton.Visibility = Visibility.Visible;
 
-                    
+
+                    projectPreviousStepButton.IsEnabled = false;
                     projectOnHoldButton.IsEnabled = false;
                     projectOffHoldButton.IsEnabled = false;
                     projectNextStepButton.IsEnabled = false;
