@@ -131,5 +131,15 @@ namespace NatoliOrderInterface
         {
             MoveCalendarToToday();
         }
+
+        private void RecurringEventButton_Click(object sender, RoutedEventArgs e)
+        {
+            RecurringEventWindow recurringEventWindow = new RecurringEventWindow(user)
+            {
+                Owner = this as Window
+            };
+            recurringEventWindow.ShowDialog();
+
+    }
     }
 }

@@ -1,0 +1,47 @@
+﻿<Window x:Class="NatoliOrderInterface.RecurringEventWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="RecurringEventWindow" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterOwner">
+    <DockPanel>
+        <DockPanel LastChildFill="False" Margin="5" DockPanel.Dock="Top" HorizontalAlignment="Right">
+            <TextBlock Text="Start Date: " Style="{StaticResource NormalTextBlock}"/>
+            <DatePicker x:Name="StartDateDatePicker" IsTodayHighlighted="True" SelectedDateChanged="StartDate_SelectedDateChanged"/>
+        </DockPanel>
+        <DockPanel LastChildFill="False" Margin="5" DockPanel.Dock="Top" HorizontalAlignment="Right">
+            <TextBlock Text="End Date: " Style="{StaticResource NormalTextBlock}"/>
+            <DatePicker x:Name="EndDateDatePicker" IsTodayHighlighted="True" SelectedDateChanged="EndDate_SelectedDateChanged"/>
+        </DockPanel>
+        <DockPanel LastChildFill="False" Margin="5" DockPanel.Dock="Top" HorizontalAlignment="Center">
+            <TextBlock Text="Occurs Every: " Style="{StaticResource NormalTextBlock}"/>
+            <ComboBox x:Name="PeriodComboBox" Style="{StaticResource ComboBoxAlignsCenter}" SelectedValue="1" SelectionChanged="Period_SelectionChanged" Width="50" Margin="5,0" IsEditable="False">
+                <ComboBoxItem Content="1"/>
+                <ComboBoxItem Content="2"/>
+                <ComboBoxItem Content="3"/>
+                <ComboBoxItem Content="4"/>
+                <ComboBoxItem Content="5"/>
+                <ComboBoxItem Content="6"/>
+                <ComboBoxItem Content="7"/>
+                <ComboBoxItem Content="8"/>
+                <ComboBoxItem Content="9"/>
+                <ComboBoxItem Content="10"/>
+                <ComboBoxItem Content="11"/>
+                <ComboBoxItem Content="12"/>
+            </ComboBox>
+            <ComboBox x:Name="PeriodUnitsComboBox" Style="{StaticResource ComboBoxAlignsLeft}" SelectedValue="Week(s)" SelectionChanged="PeriodUnits_SelectionChanged" Width="60" Margin="5,0" IsEditable="False">
+                <ComboBoxItem Content="Day(s)"/>
+                <ComboBoxItem Content="Week(s)"/>
+                <ComboBoxItem Content="Month(s)"/>
+                <ComboBoxItem Content="Year(s)"/>
+            </ComboBox>
+        </DockPanel>
+        <TextBox x:Name="NotesTextBox" DockPanel.Dock="Top" AcceptsReturn="True" AcceptsTab="True" Margin="5" Style="{StaticResource NormalTextBox}" TextChanged="Notes_TextChanged" Height="150" Width="275"/>
+        <DockPanel LastChildFill="False" Margin="5" DockPanel.Dock="Top" HorizontalAlignment="Right">
+            <Button x:Name="AddButton" Style="{StaticResource Button}" Height="24" Content="Add" Click="AddButton_Click"/>
+            <Button x:Name="CancelButton" Style="{StaticResource Button}" Height="24" Content="Cancel" Click="CancelButton_Click"/>
+        </DockPanel>
+    </DockPanel>
+</Window>
