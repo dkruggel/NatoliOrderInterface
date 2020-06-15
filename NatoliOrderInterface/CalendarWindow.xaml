@@ -112,13 +112,24 @@
     </Window.Background>
     <Grid>
         <DockPanel LastChildFill="True">
-            
             <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,5">
-                <ComboBox DockPanel.Dock="Left" x:Name="cboMonth" Margin="5,0" Height="34" VerticalAlignment="Top" Width="152" FontSize="18.667" DisplayMemberPath="{Binding}" />
+                <ComboBox DockPanel.Dock="Left" x:Name="cboMonth" Margin="5,0" Height="34" VerticalAlignment="Top" Width="152" FontSize="18.667" DisplayMemberPath="{Binding}"/>
                 <ComboBox DockPanel.Dock="Left" x:Name="cboYear" Margin="0,0,5,0" Height="34" Width="87" FontSize="18.667" DisplayMemberPath="{Binding}" />
                 <DockPanel DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" LastChildFill="False">
-                    <Image x:Name="PreviousMonth" Source="\Jarloo.Calendar\Images\move_prev.png" Cursor="Hand" Margin="0,0,5,0" PreviewMouseDown="PreviousMonth_PreviewMouseDown"/>
-                    <Image x:Name="NextMonth" Source="\Jarloo.Calendar\Images\move_next.png" Cursor="Hand" Margin="5,0" PreviewMouseDown="NextMonth_PreviewMouseDown" />
+                    <Button x:Name="TodayButton" Content="Today" Style="{StaticResource Button}" Click="TodayButton_Click" Height="24" Margin="10,0"/>
+                    <Image x:Name="PreviousMonth" Source="\Jarloo.Calendar\Images\move_prev.png" Cursor="Hand" Margin="0,0,5,0" PreviewMouseDown="PreviousMonth_PreviewMouseDown">
+                        <Image.Effect>
+                            <DropShadowEffect Color="Black" ShadowDepth="3" Direction="300" Opacity=".3" BlurRadius="2" />
+                        </Image.Effect>
+                    </Image>
+                    <Image x:Name="NextMonth" Source="\Jarloo.Calendar\Images\move_next.png" Cursor="Hand" Margin="5,0" PreviewMouseDown="NextMonth_PreviewMouseDown">
+                        <Image.Effect>
+                            <DropShadowEffect Color="Black" ShadowDepth="3" Direction="300" Opacity=".3" BlurRadius="2" />
+                        </Image.Effect>
+                    </Image>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Right">
+                    <Button x:Name="RecurringEventButton" Content="Add Recurring Event" Style="{StaticResource Button}" Margin="10,0" Click="RecurringEventButton_Click"/>
                 </DockPanel>
             </DockPanel>
             <Jarloo:Calendar x:Name="Calendar" DayChanged="Calendar_DayChanged" Margin="0,20,0,0" DockPanel.Dock="Top"/>

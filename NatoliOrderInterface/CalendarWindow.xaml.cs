@@ -15,18 +15,19 @@ using NatoliOrderInterface.Models;
 
 namespace NatoliOrderInterface
 {
-    
+
+
     /// <summary>
     /// Interaction logic for CalendarWindow.xaml
     /// </summary>
     public partial class CalendarWindow : Window
     {
         User user = null;
+        List<string> months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
         public CalendarWindow(User user)
         {
             InitializeComponent();
             this.user = user;
-            List<string> months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
             cboMonth.ItemsSource = months;
 
             for (int i = -50; i < 50; i++)
@@ -34,8 +35,7 @@ namespace NatoliOrderInterface
                 cboYear.Items.Add(DateTime.Today.AddYears(i).Year);
             }
 
-            cboMonth.SelectedItem = months.FirstOrDefault(w => w == DateTime.Today.ToString("MMMM"));
-            cboYear.SelectedItem = DateTime.Today.Year;
+            MoveCalendarToToday();
 
             cboMonth.SelectionChanged += (o, e) => RefreshCalendar();
             cboYear.SelectionChanged += (o, e) => RefreshCalendar();
@@ -57,6 +57,11 @@ namespace NatoliOrderInterface
             Calendar.BuildCalendar(targetDate);
         }
 
+        private void MoveCalendarToToday()
+        {
+            cboMonth.SelectedItem = months.FirstOrDefault(w => w == DateTime.Today.ToString("MMMM"));
+            cboYear.SelectedItem = DateTime.Today.Year;
+        }
         private void Calendar_DayChanged(object sender, Jarloo.Calendar.DayChangedEventArgs e)
         {
             DateTime d = e.Day.Date;
@@ -102,7 +107,7 @@ namespace NatoliOrderInterface
                     _nat02Context.Dispose();
                 }
             }
-            
+
         }
 
         private void PreviousMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -110,6 +115,11 @@ namespace NatoliOrderInterface
             if (cboMonth.SelectedIndex > 0)
             {
                 cboMonth.SelectedIndex--;
+            }
+            else
+            {
+                cboMonth.SelectedIndex = 12;
+                cboYear.SelectedIndex--;
             }
 
         }
@@ -120,6 +130,26 @@ namespace NatoliOrderInterface
             {
                 cboMonth.SelectedIndex++;
             }
+            else
+            {
+                cboMonth.SelectedIndex = 0;
+                cboYear.SelectedIndex++;
+            }
+        }
+
+        private void TodayButton_Click(object sender, RoutedEventArgs e)
+        {
+            MoveCalendarToToday();
+        }
+
+        private void RecurringEventButton_Click(object sender, RoutedEventArgs e)
+        {
+            RecurringEventWindow recurringEventWindow = new RecurringEventWindow(user)
+            {
+                Owner = this as Window
+            };
+            recurringEventWindow.ShowDialog();
+            RefreshCalendar();
         }
     }
 }

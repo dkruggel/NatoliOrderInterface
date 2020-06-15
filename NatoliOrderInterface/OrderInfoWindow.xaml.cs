@@ -239,7 +239,11 @@ namespace NatoliOrderInterface
             Reference.Content = workOrder.Reference;
             OrderHobStatus.Content = workOrder.HobRequired;
             EndUserNumber.Content = workOrder.UserNumber;
-            ProductName.Content = workOrder.ProductName;
+            ProductName.Content = string.IsNullOrEmpty(workOrder.ProductName) ? "" : workOrder.ProductName.Trim();
+            if(ProductName.Content.ToString().Length == 0)
+            {
+                ProductName.Visibility = Visibility.Hidden;
+            }
             Project.Content = workOrder.ProjectNumber == 0 ? "N/A" : workOrder.ProjectNumber.ToString();
             Project.IsEnabled = workOrder.ProjectNumber != 0;
             if (workOrder.RushYOrN != "Y" && workOrder.PaidRushFee != "Y")
@@ -2564,5 +2568,16 @@ namespace NatoliOrderInterface
             }
         }
 
+        private void ProductName_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(ProductName.Content.ToString());
+            }
+            catch
+            {
+
+            }
+        }
     }
 }

@@ -144,7 +144,10 @@
                             <Label x:Name="OrderHobStatus" Content="Y***" Grid.Row="9" VerticalContentAlignment="Center" Grid.Column="25" HorizontalContentAlignment="Right" Margin="0"/>
                             <Label x:Name="Reference" Content="0.3120 x 0.5000 OVAL SHAPE****" Grid.Row="9" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
                             <Label x:Name="EndUserNumber" Content="End User Number: ***" Grid.Row="4" VerticalContentAlignment="Center" Grid.Column="2" Grid.ColumnSpan="4" Margin="0" FontWeight="Bold" FontSize="11"/>
-                            <Label x:Name="ProductName" Content="PRODUCT****" Grid.Row="8" VerticalContentAlignment="Center" Grid.ColumnSpan="17" Padding="5,0" Margin="0"/>
+                            <DockPanel  Grid.Row="8" Grid.ColumnSpan="17"  Margin="0" LastChildFill="False">
+                                <Label x:Name="ProductName" Content="PRODUCT****" VerticalContentAlignment="Center"  Padding="5,0"  Cursor="Hand" ToolTip="Click to copy product name." PreviewMouseDown="ProductName_PreviewMouseDown"/>
+                            </DockPanel>
+                            
 
                             <Button x:Name="QuoteButton" Style="{StaticResource Button}" Content="Quote#: 178342" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Grid.RowSpan="2" Height="24" Grid.ColumnSpan="6" Margin="0,0,0,0" Click="QuoteButton_Click"/>
                             <Label x:Name="RushLabel" Content="+RUSH+" Grid.Column="19" Grid.ColumnSpan="7" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" FontSize="36" FontWeight="Bold" Grid.RowSpan="2" Margin="0" Grid.Row="4"/>
