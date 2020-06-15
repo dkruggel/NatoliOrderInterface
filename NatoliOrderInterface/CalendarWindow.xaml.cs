@@ -24,10 +24,12 @@ namespace NatoliOrderInterface
     {
         User user = null;
         List<string> months = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        DateTime? timeEnteredCalendar = null;
         public CalendarWindow(User user)
         {
             InitializeComponent();
             this.user = user;
+            this.timeEnteredCalendar = DateTime.Now;
             cboMonth.ItemsSource = months;
 
             for (int i = -50; i < 50; i++)
@@ -55,6 +57,7 @@ namespace NatoliOrderInterface
             DateTime targetDate = new DateTime(year, month, 1);
 
             Calendar.BuildCalendar(targetDate);
+            timeEnteredCalendar = DateTime.Now;
         }
 
         private void MoveCalendarToToday()
@@ -70,13 +73,23 @@ namespace NatoliOrderInterface
             // Delete from table
             if (string.IsNullOrEmpty(e.Day.Notes) || string.IsNullOrWhiteSpace(e.Day.Notes))
             {
-                // Exists And Remove
+                // Exists
                 if (_nat02Context.EoiCalendar.Any(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day))
                 {
-                    EoiCalendar eoiCalendar = _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day);
-                    _nat02Context.EoiCalendar.Remove(eoiCalendar);
-                    _nat02Context.SaveChanges();
-                    _nat02Context.Dispose();
+                    if(_nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).ActionDateTime < timeEnteredCalendar || _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).DomainName == user.DomainName)
+                    {
+                        // Remove
+                        EoiCalendar eoiCalendar = _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day);
+                        _nat02Context.EoiCalendar.Remove(eoiCalendar);
+                        _nat02Context.SaveChanges();
+                        _nat02Context.Dispose();
+                    }
+                    else
+                    {
+                        MessageBox.Show("There appears to have been a change made by '" + _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).DomainName + "' to this date before you deleted the note. Please re-open the calendar to load the information.", "Prevoiusly changed", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _nat02Context.Dispose();
+                    }
+                    
                 }
             }
             // Insert or Update
@@ -85,11 +98,19 @@ namespace NatoliOrderInterface
                 // Exists
                 if (_nat02Context.EoiCalendar.Any(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day))
                 {
-                    EoiCalendar eoiCalendar = _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day);
-                    eoiCalendar.Notes = e.Day.Notes;
-                    eoiCalendar.DomainName = user.DomainName;
-                    _nat02Context.SaveChanges();
-                    _nat02Context.Dispose();
+                    if (_nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).ActionDateTime < timeEnteredCalendar || _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).DomainName == user.DomainName)
+                    {
+                        EoiCalendar eoiCalendar = _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day);
+                        eoiCalendar.Notes = e.Day.Notes;
+                        eoiCalendar.DomainName = user.DomainName;
+                        _nat02Context.SaveChanges();
+                        _nat02Context.Dispose();
+                    }
+                    else
+                    {
+                        MessageBox.Show("There appears to have been a change made by '" + _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).DomainName + "' to this date before you altered the note. Please re-open the calendar to load the information.", "Prevoiusly changed", MessageBoxButton.OK, MessageBoxImage.Information);
+                        _nat02Context.Dispose();
+                    }
                 }
                 // New
                 else
@@ -110,21 +131,7 @@ namespace NatoliOrderInterface
 
         }
 
-        private void PreviousMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (cboMonth.SelectedIndex > 0)
-            {
-                cboMonth.SelectedIndex--;
-            }
-            else
-            {
-                cboMonth.SelectedIndex = 12;
-                cboYear.SelectedIndex--;
-            }
-
-        }
-
-        private void NextMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void NextMonth()
         {
             if (cboMonth.SelectedIndex < 12)
             {
@@ -135,6 +142,27 @@ namespace NatoliOrderInterface
                 cboMonth.SelectedIndex = 0;
                 cboYear.SelectedIndex++;
             }
+        }
+        private void PreviousMonth()
+        {
+            if (cboMonth.SelectedIndex > 0)
+            {
+                cboMonth.SelectedIndex--;
+            }
+            else
+            {
+                cboMonth.SelectedIndex = 12;
+                cboYear.SelectedIndex--;
+            }
+        }
+        private void PreviousMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            PreviousMonth();
+        }
+
+        private void NextMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NextMonth();
         }
 
         private void TodayButton_Click(object sender, RoutedEventArgs e)
@@ -150,6 +178,25 @@ namespace NatoliOrderInterface
             };
             recurringEventWindow.ShowDialog();
             RefreshCalendar();
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            int change = e.Delta / 120;
+            if (e.Delta > 1)
+            {
+                for (int i = 0; i < change; i++)
+                {
+                    PreviousMonth();
+                }
+            }
+            else
+            {
+                for(int i = 0; i < -change; i++)
+                {
+                    NextMonth();
+                }
+            }
         }
     }
 }
