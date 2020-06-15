@@ -58,6 +58,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<QuotePercentage> QuotePercentage { get; set; }
         public virtual DbSet<EoiAllOrdersView> EoiAllOrdersView { get; set; }
         public virtual DbSet<EoiCustomerNotes> EoiCustomerNotes { get; set; }
+        public virtual DbSet<EoiCalendar>  EoiCalendar { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1039,6 +1040,12 @@ namespace NatoliOrderInterface.Models
                 entity.HasKey(e => new { e.ID });
 
                 entity.ToTable("EOI_CustomerNotes");
+            });
+            modelBuilder.Entity<EoiCalendar>(entity =>
+            {
+                entity.HasKey(e => new { e.Year, e.Month, e.Day });
+
+                entity.ToTable("Eoi_Calendar");
             });
 
             OnModelCreatingPartial(modelBuilder);

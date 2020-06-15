@@ -679,6 +679,10 @@ namespace NatoliOrderInterface
                 ChangeModuleRows("", User.ModuleRows);
                 //MainMenu.Background = SystemParameters.WindowGlassBrush; // Sets it to be the same color as the accent color in Windows
                 InitializingMenuItem.Visibility = Visibility.Collapsed;
+                while (User == null)
+                {
+                    System.Threading.Thread.Sleep(10);
+                }
                 InitializeTimers(User);
 
                 if (isDebugMode)

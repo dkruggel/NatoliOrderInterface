@@ -11,6 +11,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using NatoliOrderInterface.Models;
+using System.Linq;
 
 namespace Jarloo.Calendar
 {
@@ -60,6 +62,12 @@ namespace Jarloo.Calendar
             for (int box = 1; box <= 42; box++)
             {
                 Day day = new Day {Date = d, Enabled = true, IsTargetMonth = targetDate.Month == d.Month};
+                using var _nat02Context = new NAT02Context();
+                if(_nat02Context.EoiCalendar.Any(c =>  c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day))
+                {
+                    day.Notes = _nat02Context.EoiCalendar.First(c => c.Year == (short)d.Year && c.Month == (byte)d.Month && c.Day == (byte)d.Day).Notes;
+                }
+                _nat02Context.Dispose();
                 day.PropertyChanged += Day_Changed;
                 day.IsToday = d == DateTime.Today; 
                 Days.Add(day);
