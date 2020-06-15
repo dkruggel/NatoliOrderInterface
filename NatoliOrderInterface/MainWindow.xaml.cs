@@ -474,11 +474,43 @@ namespace NatoliOrderInterface
                 try
                 {
                     ((Grid)((Grid)AllTabletProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    List<bool> incBack = new List<bool>();
+                    List<bool> outBack = new List<bool>();
+                    // Check if data differs
                     if (!allTabletProjects.SequenceEqual(value))
                     {
                         allTabletProjects = value;
                         AllTabletProjectsListBox.ItemsSource = null;
                         AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                    }
+                    // Check if need to fix changed
+                    else
+                    {
+                        // Get current bg colors bool
+                        var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(AllTabletProjectsListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                        foreach (UIElement el in kid)
+                        {
+                            ListBoxItem listBoxItem = el as ListBoxItem;
+                            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
+                            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
+                            ToggleButton myToggleButton = (ToggleButton)myDataTemplate.FindName("ToggleButton", myContentPresenter);
+                            myToggleButton.ApplyTemplate();
+                            Color firstColor = ((VisualTreeHelper.GetChild(myToggleButton, 0) as Grid).Background as LinearGradientBrush).GradientStops[0].Color;
+                            incBack.Add(firstColor == Colors.Orange);
+                        }
+
+                        // Get future bg colors bool
+                        foreach (EoiAllTabletProjectsView tabletProject in value)
+                        {
+                            outBack.Add(System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + tabletProject.ProjectNumber + "\\NEED_TO_FIX.txt"));
+                        }
+                        if (!incBack.SequenceEqual(outBack))
+                        {
+                            allTabletProjects = value;
+                            AllTabletProjectsListBox.ItemsSource = null;
+                            AllTabletProjectsListBox.ItemsSource = allTabletProjects;
+                        }
                     }
                 }
                 catch { }
@@ -500,11 +532,43 @@ namespace NatoliOrderInterface
                 try
                 {
                     ((Grid)((Grid)AllToolProjectsListBox.Parent).Parent).Children.OfType<Control>().First().Visibility = Visibility.Collapsed;
+                    List<bool> incBack = new List<bool>();
+                    List<bool> outBack = new List<bool>();
+                    // Check if data differs
                     if (!allToolProjects.SequenceEqual(value))
                     {
                         allToolProjects = value;
                         AllToolProjectsListBox.ItemsSource = null;
                         AllToolProjectsListBox.ItemsSource = allToolProjects;
+                    }
+                    // Check if need to fix changed
+                    else
+                    {
+                        // Get current bg colors bool
+                        var kid = (VisualTreeHelper.GetChild(((
+                               VisualTreeHelper.GetChild(AllToolProjectsListBox, 0) as Border).Child as ScrollViewer).Content as ItemsPresenter, 0) as VirtualizingStackPanel).Children;
+                        foreach (UIElement el in kid)
+                        {
+                            ListBoxItem listBoxItem = el as ListBoxItem;
+                            ContentPresenter myContentPresenter = FindVisualChild<ContentPresenter>(listBoxItem);
+                            DataTemplate myDataTemplate = myContentPresenter.ContentTemplate;
+                            ToggleButton myToggleButton = (ToggleButton)myDataTemplate.FindName("ToggleButton", myContentPresenter);
+                            myToggleButton.ApplyTemplate();
+                            Color firstColor = ((VisualTreeHelper.GetChild(myToggleButton, 0) as Grid).Background as LinearGradientBrush).GradientStops[0].Color;
+                            incBack.Add(firstColor == Colors.Orange);
+                        }
+
+                        // Get future bg colors bool
+                        foreach (EoiAllToolProjectsView toolProject in value)
+                        {
+                            outBack.Add(System.IO.File.Exists(@"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + toolProject.ProjectNumber + "\\NEED_TO_FIX.txt"));
+                        }
+                        if (!incBack.SequenceEqual(outBack))
+                        {
+                            allToolProjects = value;
+                            AllToolProjectsListBox.ItemsSource = null;
+                            AllToolProjectsListBox.ItemsSource = allToolProjects;
+                        }
                     }
                 }
                 catch { }

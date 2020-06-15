@@ -23,11 +23,12 @@ namespace NatoliOrderInterface.Models
         public string HoldStatus { get; set; }
         public string ReturnToCsr { get; set; }
         public bool MultiTipSketch { get; set; }
-
         public bool Equals(EoiAllToolProjectsView other)
         {
             if (other is null)
                 return false;
+
+
 
             return this.ProjectNumber == other.ProjectNumber &&
                    this.RevisionNumber == other.RevisionNumber &&
