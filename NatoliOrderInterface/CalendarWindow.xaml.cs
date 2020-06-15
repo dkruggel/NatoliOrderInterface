@@ -16,7 +16,7 @@ using NatoliOrderInterface.Models;
 namespace NatoliOrderInterface
 {
 
-    
+
     /// <summary>
     /// Interaction logic for CalendarWindow.xaml
     /// </summary>
@@ -107,7 +107,7 @@ namespace NatoliOrderInterface
                     _nat02Context.Dispose();
                 }
             }
-            
+
         }
 
         private void PreviousMonth_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -139,7 +139,7 @@ namespace NatoliOrderInterface
                 Owner = this as Window
             };
             recurringEventWindow.ShowDialog();
-
-    }
+            RefreshCalendar();
+        }
     }
 }
