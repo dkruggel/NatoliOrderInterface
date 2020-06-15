@@ -1590,12 +1590,13 @@ namespace NatoliOrderInterface
             //if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { fileMenu.Items.Add(filterProjects); }
             fileMenu.Items.Add(filterProjects);
 
-            //MenuItem printDrawings = new MenuItem
-            //{
-            //    Header = "Print Drawings",
-            //    ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
-            //};
-            //printDrawings.Click += PrintDrawings_Click;
+            MenuItem printDrawings = new MenuItem
+            {
+                Header = "Print Drawings",
+                ToolTip = "Prints pdfs from your Desktop\\WorkOrdersToPrint."
+            };
+            printDrawings.Click += PrintDrawings_Click;
+            if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(printDrawings); }
             //if (User.Department == "Engineering" && !User.GetUserName().StartsWith("Phyllis")) { fileMenu.Items.Add(printDrawings); }
             //if (User.EmployeeCode == "E4408") { fileMenu.Items.Add(updateApp); }
             MainMenu.Items.Add(fileMenu);
