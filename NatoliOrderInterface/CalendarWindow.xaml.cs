@@ -116,6 +116,11 @@ namespace NatoliOrderInterface
             {
                 cboMonth.SelectedIndex--;
             }
+            else
+            {
+                cboMonth.SelectedIndex = 12;
+                cboYear.SelectedIndex--;
+            }
 
         }
 
@@ -124,6 +129,11 @@ namespace NatoliOrderInterface
             if (cboMonth.SelectedIndex < 12)
             {
                 cboMonth.SelectedIndex++;
+            }
+            else
+            {
+                cboMonth.SelectedIndex = 0;
+                cboYear.SelectedIndex++;
             }
         }
 
