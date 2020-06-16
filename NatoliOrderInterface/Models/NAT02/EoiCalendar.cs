@@ -11,5 +11,6 @@ namespace NatoliOrderInterface.Models
         public Byte Day { get; set; }
         public string Notes { get; set; }
         public string DomainName { get; set; }
+        public DateTime? ActionDateTime { get; set; }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NatoliOrderInterface"
         mc:Ignorable="d"
-        Title="Calendar" Height="450" Width="800" Foreground="White">
+        Title="Calendar" Height="450" Width="800" Foreground="White" MouseWheel="Window_MouseWheel">
     <Window.Resources>
         <Converters:DateConverter x:Key="DateConverter"></Converters:DateConverter>
         <Converters:DayBorderColorConverter x:Key="DayBorderColorConverter"></Converters:DayBorderColorConverter>
@@ -14,7 +14,6 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Jarloo:Calendar}">
-
                         <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
@@ -84,7 +83,7 @@
                                                             </TextBlock>
                                                         </StackPanel>
 
-                                                        <TextBox IsEnabled="{Binding IsEnabled}" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}" Foreground="White" />
+                                                        <TextBox IsEnabled="{Binding Enabled}" Text="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{x:Null}" Foreground="White"/>
                                                     </DockPanel>
                                                 </Border>
                                             </Border>
@@ -117,12 +116,12 @@
                 <ComboBox DockPanel.Dock="Left" x:Name="cboYear" Margin="0,0,5,0" Height="34" Width="87" FontSize="18.667" DisplayMemberPath="{Binding}" />
                 <DockPanel DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" LastChildFill="False">
                     <Button x:Name="TodayButton" Content="Today" Style="{StaticResource Button}" Click="TodayButton_Click" Height="24" Margin="10,0"/>
-                    <Image x:Name="PreviousMonth" Source="\Jarloo.Calendar\Images\move_prev.png" Cursor="Hand" Margin="0,0,5,0" PreviewMouseDown="PreviousMonth_PreviewMouseDown">
+                    <Image x:Name="PreviousMonthImage" Source="\Jarloo.Calendar\Images\move_prev.png" Cursor="Hand" Margin="0,0,5,0" PreviewMouseDown="PreviousMonth_PreviewMouseDown">
                         <Image.Effect>
                             <DropShadowEffect Color="Black" ShadowDepth="3" Direction="300" Opacity=".3" BlurRadius="2" />
                         </Image.Effect>
                     </Image>
-                    <Image x:Name="NextMonth" Source="\Jarloo.Calendar\Images\move_next.png" Cursor="Hand" Margin="5,0" PreviewMouseDown="NextMonth_PreviewMouseDown">
+                    <Image x:Name="NextMonthImage" Source="\Jarloo.Calendar\Images\move_next.png" Cursor="Hand" Margin="5,0" PreviewMouseDown="NextMonth_PreviewMouseDown">
                         <Image.Effect>
                             <DropShadowEffect Color="Black" ShadowDepth="3" Direction="300" Opacity=".3" BlurRadius="2" />
                         </Image.Effect>

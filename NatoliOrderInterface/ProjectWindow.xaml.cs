@@ -205,7 +205,15 @@ namespace NatoliOrderInterface
                 MessageBox.Show("Please enter a due date for the project.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false; ;
             }
-            if((CreateButton.Content=="Create" || user.Department != "Engineering") && (Priority.IsChecked == false && (DueDate.Text.StartsWith('0') || (DueDate.Text.StartsWith('1') && DateTime.Now.TimeOfDay>new TimeSpan(14,0,0)))))
+            if ((CreateButton.Content == "Create" || user.Department != "Engineering") && 
+                Priority.IsChecked == false && 
+                ((DueDate.Text.StartsWith('0') || 
+                    (DueDate.Text.StartsWith('1') && DateTime.Now.TimeOfDay > new TimeSpan(14, 0, 0))) || 
+                (DueDate.Text.StartsWith('2') && DateTime.Now.DayOfWeek == DayOfWeek.Saturday) || 
+                    (ToolsRequired.IsChecked == true && TabletsRequired.IsChecked == true && 
+                    (DueDate.Text.StartsWith('1') || 
+                    (DueDate.Text.StartsWith('2') && DateTime.Now.TimeOfDay > new TimeSpan(14, 0, 0)))))
+                )
             {
                 MessageBox.Show("Please mark Priority for this rush.", "Rush Needs Priority", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;

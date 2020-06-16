@@ -67,13 +67,14 @@ namespace NatoliOrderInterface
                 string lineItemName = System.IO.Path.GetFileNameWithoutExtension(file);
                 int lineItemNumber = filesDict.Count == 0 ? 100 : filesDict.Keys.Max() + 1;
 
-                if (!altKeyPressed)
-                {
+                
                     if (lineItemName.Contains("_M"))
                     {
                         lineItemName = lineItemName.Remove(lineItemName.IndexOf("_M"), 2);
                         metric++;
                     }
+                if (!altKeyPressed)
+                {
                     if (lineItemName.Contains("_"))
                     {
                         lineItemName = lineItemName.Remove(lineItemName.IndexOf("_"));
