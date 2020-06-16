@@ -4685,6 +4685,8 @@
                                 <DockPanel x:Name="TitleDockPanel" LastChildFill="True" DockPanel.Dock="Top" Height="30" Grid.Row="0" MouseMove="DockPanel_MouseMove" MouseDown="DockPanel_MouseDown" MouseUp="DockPanel_MouseUp">
                                     <TextBlock Text="Quotes Not Converted To An Order" DockPanel.Dock="Left" Style="{StaticResource ModuleTextBlock}" FontSize="20" VerticalAlignment="Top"/>
                                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                                        <TextBlock Text="Number of days shown:" Margin="0,6,0,0"/>
+                                        <TextBox x:Name="DaysShownTextBox" HorizontalAlignment="Right" Margin="2,5" Width="30" LostFocus="DaysShownTextBox_LostFocus" PreviewKeyDown="DaysShownTextBox_PreviewKeyDown"/>
                                         <Button x:Name="SubmitQuoteButton" Style="{StaticResource SubmitQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="SubmitQuote_Click"/>
                                         <Button x:Name="FollowUpButton" Style="{StaticResource FollowUpQuoteButton}" Margin="2,0" HorizontalAlignment="Right" Click="CompletedQuoteCheck_Click"/>
                                         <Button x:Name="WindowButton" Style="{StaticResource WindowButton}" Margin="2,0" HorizontalAlignment="Right" ToolTip="Open Quote" Click="OpenQuoteButton_Click"/>
