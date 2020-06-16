@@ -938,10 +938,17 @@ namespace NatoliOrderInterface
         /// <param name="timers"></param>
         private void ResetTimers(List<Timer> timers)
         {
-            foreach (Timer timer in timers)
+            try
             {
-                timer.Stop();
-                timer.Start();
+                foreach (Timer timer in timers)
+                {
+                    timer.Stop();
+                    timer.Start();
+                }
+            }
+            catch
+            {
+
             }
             
         }
