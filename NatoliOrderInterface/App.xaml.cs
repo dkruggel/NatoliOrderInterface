@@ -394,9 +394,7 @@ namespace NatoliOrderInterface
                 using var stream = new System.IO.StreamWriter(filePath, false);
 
                 // Quote Number, Rev Number, Customer Name, Quote Date
-                // Get info from currently filtered list in QuotesNotConverted
-                var expanders = ((((sender as Button).Parent as Grid).Parent as DockPanel).Children.OfType<ScrollViewer>().First().Content as StackPanel).Children;
-
+                
                 // Write headers
                 stream.Write("Sales Rep ID,Quote Number,Rev Number,Customer Name,Quote Date\n");
 
@@ -3620,5 +3618,33 @@ namespace NatoliOrderInterface
         #endregion
 
         #endregion
+
+        private void DaysShownTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                DaysShownCommitChange(sender as TextBox);
+            }
+        }
+        private void DaysShownTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            DaysShownCommitChange(sender as TextBox);
+        }
+        private void DaysShownCommitChange(TextBox textBox)
+        {
+            short numDays;
+            bool converted = short.TryParse(textBox.Text, out numDays);
+            if (converted)
+            {
+                using var _ = new NAT02Context();
+                EoiSettings eoiSettings = _.EoiSettings.SingleOrDefault(s => s.DomainName == user.DomainName);
+                eoiSettings.QuoteDays = numDays;
+                user.QuoteDays = numDays;
+                _.EoiSettings.Update(eoiSettings);
+                _.SaveChanges();
+                _.Dispose();
+                (MainWindow as MainWindow).MainRefresh("QuotesNotConverted");
+            }
+        }
     }
 }
