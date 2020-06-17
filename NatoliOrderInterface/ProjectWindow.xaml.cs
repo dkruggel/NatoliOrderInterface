@@ -6645,8 +6645,8 @@ namespace NatoliOrderInterface
                             MessageBox.Show("There was an error processing this form.\r\n" + ex.Message);
                             return;
                         }
-                        (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects");
-                        (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects");
+                        if (user.VisiblePanels.Contains("AllTabletProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects"); } 
+                        if (user.VisiblePanels.Contains("AllToolProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects"); }
                         Dispose();
                         Close();
                     }
@@ -6780,8 +6780,8 @@ namespace NatoliOrderInterface
                         _projectsContext.Dispose();
                         if (MessageBox.Show("Project Revised!\nWould you like to close now?", "Revise Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                         {
-                            (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects");
-                            (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects");
+                            if (user.VisiblePanels.Contains("AllTabletProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects"); }
+                            if (user.VisiblePanels.Contains("AllToolProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects"); }
                             Dispose();
                             Close();
                         }
@@ -6852,8 +6852,8 @@ namespace NatoliOrderInterface
                 if (MessageBox.Show("Project Saved!\nWould you like to close now?", "Save Successful", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) == MessageBoxResult.Yes)
                 {
                     saved = true;
-                    (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects");
-                    (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects");
+                    if (user.VisiblePanels.Contains("AllTabletProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllTabletProjects"); }
+                    if (user.VisiblePanels.Contains("AllToolProjects")) { (Application.Current.MainWindow as MainWindow).MainRefresh("AllToolProjects"); }
                     Close();
                 }
             }
