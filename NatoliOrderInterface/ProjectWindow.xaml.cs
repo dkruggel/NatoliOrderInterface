@@ -568,6 +568,7 @@ namespace NatoliOrderInterface
             LongRejectCupType.ItemsSource = null;
             LongRejectCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
             ProjectFiles = GetProjectFiles(projectNumber);
+            EngineeringCommentButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Hidden;
         }
 
         private List<Tuple<string, string, string>> GetProjectFiles(string projectNumber)
@@ -5795,6 +5796,17 @@ namespace NatoliOrderInterface
             }
 
         }
+        private void EngineeringCommentButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if comment file exists
+            string commentPath = projectsDirectory + projectNumber + "\\EngineeringComments.txt";
+            FileStream comment = new FileStream(commentPath, FileMode.OpenOrCreate);
+
+            System.Diagnostics.Process.Start("notepad.exe", commentPath);
+
+            // Dispose of object
+            comment.Dispose();
+        }
 
         #region TextBox Changes And Timer
         /// <summary>
@@ -6471,7 +6483,6 @@ namespace NatoliOrderInterface
             }
         }
         #endregion
-
 
         #region Project Routing
         /// <summary>
@@ -7305,6 +7316,5 @@ namespace NatoliOrderInterface
             }
             #endregion
         }
-        
     }
 }
