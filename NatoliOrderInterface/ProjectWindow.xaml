@@ -57,6 +57,9 @@
                         <TextBlock Text="By:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
                         <TextBlock x:Name="RevisedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
                     </DockPanel>
+                    <DockPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Button x:Name="EngineeringCommentButton" Content="Add Engineering Comment" Style="{StaticResource Button}" Click="EngineeringCommentButton_Click"/>
+                    </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,4,0">
                         <TextBlock Text="Unit Of Measure:" FontSize="12" VerticalAlignment="Center" Style="{StaticResource BoldTextBlock}"/>
                         <ComboBox x:Name="UnitOfMeasure" Style="{StaticResource ComboBoxAlignsCenter}" IsEditable="False" Width="60" VerticalAlignment="Center" Margin="4,0,0,0" BorderThickness="0" Background="Transparent" Padding="6,1,5,1">
