@@ -149,12 +149,15 @@ namespace NatoliOrderInterface
         {
             SeriesCollection sc = new SeriesCollection();
             string toolProjectsReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_ToolProject_Start_End @StartDate = {0}, @EndDate = {1}";
+            string toolProjectsCheckedReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools_Checked @StartDate = {0}, @EndDate = {1}";
             string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
             List<ToolProjectsReportStartEnd> toolProjectsReport = new List<ToolProjectsReportStartEnd>();
+            List<ToolProjectsCheckedReport> toolProjectsCheckedReports = new List<ToolProjectsCheckedReport>();
             using var _ = new ProjectsContext();
             await Task.Run((Action)(() =>
             {
                 toolProjectsReport = _.ToolProjectsReportStartEnd.FromSqlRaw(toolProjectsReportQuery, dates).ToList();
+                toolProjectsCheckedReports = _.ToolProjectsCheckedReport.FromSqlRaw(toolProjectsCheckedReportQuery, dates).ToList();
             }));
             _.Dispose();
             List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
@@ -172,13 +175,37 @@ namespace NatoliOrderInterface
                 decimal hours = intervals.Count > 0 ? Convert.ToDecimal(totalTime.TotalSeconds / 3600) / Convert.ToDecimal(draftersProjects.Count(p => p.Minutes > 1)) : -1;
                 drafters.Add((drafter, hours, totalProjects));
             }
-            drafters = drafters.OrderBy(d => d.Projects).ToList();
+            List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)> draftersFinal = new List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)>();
+            List<string> ds = new List<string>();
+            ds.AddRange(drafters.Select(d => d.Drafter));
+            ds.AddRange(toolProjectsCheckedReports.Select(d => d.ToolCheckedBy));
+            ds = ds.Distinct().ToList();
+            foreach(string d in ds)
+            {
+                (string Drafter, decimal Hours, int Projects) _drafter = (d,-1,0);
+                ToolProjectsCheckedReport _toolProjectsCheckedReport = new ToolProjectsCheckedReport { Projects = 0, ToolCheckedBy = d };
+                if (drafters.Any(drafter => drafter.Drafter == d))
+                {
+                    _drafter = drafters.First(drafter => drafter.Drafter == d);
+                }
+                if (toolProjectsCheckedReports.Any(drafter => drafter.ToolCheckedBy == d))
+                {
+                    _toolProjectsCheckedReport = toolProjectsCheckedReports.First(drafter => drafter.ToolCheckedBy == d);
+                }
+                draftersFinal.Add((d, _drafter.Hours, _drafter.Projects, _toolProjectsCheckedReport.Projects));
+            }
+            draftersFinal = draftersFinal.OrderBy(d => d.ProjectsDrawn).ToList();
             sc.Add(new RowSeries
             {
-                Title = "Tool Projects",
-                Values = new ChartValues<int>(drafters.Select(or => or.Projects))
+                Title = "Tool Projects Drawn",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsDrawn))
             });
-            YAxis.Labels = drafters.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
+            sc.Add(new RowSeries
+            {
+                Title = "Tool Projects Checked",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsChecked))
+            });
+            YAxis.Labels = draftersFinal.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
             YAxis.FontSize = 25;
             YAxis.Foreground = new SolidColorBrush(Colors.Black);
             return sc;

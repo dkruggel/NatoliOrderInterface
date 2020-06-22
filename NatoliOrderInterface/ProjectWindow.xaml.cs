@@ -693,7 +693,7 @@ namespace NatoliOrderInterface
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
-
+                        LinkQuoteButton.IsEnabled = false;
 
                         NewDrawing = engineeringProject.NewDrawing;
                         UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
@@ -1217,7 +1217,7 @@ namespace NatoliOrderInterface
                         EngineeringArchivedProjects engineeringProject = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
                         RefreshRoutingButtons();
-
+                        
                         CreationBorder.Visibility = Visibility.Hidden;
                         ProjectNavigation.Visibility = Visibility.Visible;
 
@@ -1241,6 +1241,7 @@ namespace NatoliOrderInterface
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
+                        LinkQuoteButton.IsEnabled = false;
 
 
                         NewDrawing = engineeringProject.NewDrawing;
@@ -1805,6 +1806,7 @@ namespace NatoliOrderInterface
                 PutOnHoldButton.IsEnabled = false;
                 CancelButton.IsEnabled = false;
                 QuoteFolderButton.IsEnabled = false;
+                LinkQuoteButton.IsEnabled = false;
                 ReturnToCSR.ItemsSource = null;
                 ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
                 CSR.Text = user.GetDWPrincipalId();
@@ -4941,6 +4943,7 @@ namespace NatoliOrderInterface
                 ReturnToCSR.IsEnabled = isEnabled;
                 QuoteNumber.IsEnabled = isEnabled;
                 QuoteRevNumber.IsEnabled = isEnabled;
+                LinkQuoteButton.IsEnabled = isEnabled;
                 RefOrderNumber.IsEnabled = isEnabled;
                 UnitOfMeasure.IsEnabled = isEnabled;
                 ReferenceQuoteNumber.IsEnabled = isEnabled;
