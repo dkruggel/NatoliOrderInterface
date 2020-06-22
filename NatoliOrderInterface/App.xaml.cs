@@ -1395,6 +1395,12 @@ namespace NatoliOrderInterface
                                 docNumber = docNumber[1..];
                                 revNumber = docNumber.Substring(docNumber.IndexOf('-')+1);
                                 docNumber = docNumber.Substring(0, docNumber.IndexOf('-'));
+                                using var projectsContext = new ProjectsContext();
+                                if(projectsContext.EngineeringProjects.Any(p=>p.ProjectNumber == docNumber && p.RevNumber != revNumber))
+                                {
+                                    revNumber = projectsContext.EngineeringProjects.First(p => p.ProjectNumber == docNumber).RevNumber;
+                                }
+                                projectsContext.Dispose();
                             }
                             else
                             {
@@ -1440,7 +1446,17 @@ namespace NatoliOrderInterface
             TextBlock projectTB = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children[0] as TextBlock;
             TextBlock revTB = (VisualTreeHelper.GetChild(sender as ToggleButton, 0) as Grid).Children.OfType<Grid>().First().Children[1] as TextBlock;
 
-            OpenProject(projectTB.Text, revTB.Text);
+            
+            using var projectsContext = new ProjectsContext();
+            if (projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == docNumber && p.RevNumber != revTB.Text))
+            {
+                OpenProject(projectTB.Text, projectsContext.EngineeringProjects.First(p => p.ProjectNumber == docNumber).RevNumber);
+            }
+            else
+            {
+                OpenProject(projectTB.Text, revTB.Text);
+            }
+            projectsContext.Dispose();
         }
         #region Open Documents
         private void OpenProject(string projectNumber, string revNumber = null)
@@ -1596,7 +1612,16 @@ namespace NatoliOrderInterface
         }
         private void OpenProjectButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenProject(selectedProjects.Last().Item1, selectedProjects.Last().Item2);
+            using var projectsContext = new ProjectsContext();
+            if (projectsContext.EngineeringProjects.Any(p => p.ProjectNumber == docNumber && p.RevNumber != selectedProjects.Last().Item2))
+            {
+                OpenProject(selectedProjects.Last().Item1, projectsContext.EngineeringProjects.First(p => p.ProjectNumber == docNumber).RevNumber);
+            }
+            else
+            {
+                OpenProject(selectedProjects.Last().Item1, selectedProjects.Last().Item2);
+            }
+            projectsContext.Dispose();
         }
         private void OpenOrderButton_Click(object sender, RoutedEventArgs e)
         {
