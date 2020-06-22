@@ -65,185 +65,172 @@ namespace NatoliOrderInterface
         //{
         //    BuildOrdersChart();
         //}
-
         private async void BuildOrdersChart(bool ordersChecked, bool tabletsChecked, bool toolsChecked, DateTime? beginningDateTime, DateTime? endDateTime)
         {
-
-            SetLoadingAnimationVisibility(Visibility.Visible);
+            
             SeriesCollection sc = new SeriesCollection();
-            using var _ = new ProjectsContext();
-            if (ordersChecked && tabletsChecked && toolsChecked)
+            if (ordersChecked)
             {
-                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction @StartDate = {0}, @EndDate = {1}";
-
-                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
-
-                List<OrdersAndProjectsReport> ordersReport = new List<OrdersAndProjectsReport>();
-                await Task.Run((Action)(() =>
-                {
-                    ordersReport = _.OrdersAndProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-                }));
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders Scanned In",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders Scanned Out",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders To Office",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tablet Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tool Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
-                });
-                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-                YAxis.FontSize = 25;
-                YAxis.Foreground = new SolidColorBrush(Colors.Black);
-
-                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+                SetLoadingAnimationVisibility(Visibility.Visible);
+                sc = await BuildOrdersChart(beginningDateTime, endDateTime);
             }
-            else if (ordersChecked && !tabletsChecked && !toolsChecked)
+            else if (tabletsChecked)
             {
-                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Orders @StartDate = {0}, @EndDate = {1}";
-
-                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
-
-                List<OrdersReport> ordersReport = new List<OrdersReport>();
-                await Task.Run((Action)(() =>
-                {
-                    ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
-                }));
-
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders Scanned In",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders Scanned Out",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Orders To Office",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
-                });
-                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-                YAxis.FontSize = 25;
-                YAxis.Foreground = new SolidColorBrush(Colors.Black);
-
-                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+                SetLoadingAnimationVisibility(Visibility.Visible);
+                sc = await BuildTabletsChart(beginningDateTime, endDateTime);
             }
-            else if (!ordersChecked && tabletsChecked && toolsChecked)
+            else if(toolsChecked)
             {
-                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Projects @StartDate = {0}, @EndDate = {1}";
-
-                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
-
-                List<ProjectsReport> ordersReport = new List<ProjectsReport>();
-                await Task.Run((Action)(() =>
-                {
-                    ordersReport = _.ProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-                }));
-
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tablet Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
-                });
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tool Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjects))
-                });
-                YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
-                YAxis.FontSize = 25;
-                YAxis.Foreground = new SolidColorBrush(Colors.Black);
-
-                string[] Labels = ordersReport.Select(or => or.Employee).ToArray();
+                SetLoadingAnimationVisibility(Visibility.Visible);
+                sc = await BuildToolsChart(beginningDateTime, endDateTime);
             }
-            else if (!ordersChecked && tabletsChecked && !toolsChecked)
-            {
-                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tablets @StartDate = {0}, @EndDate = {1}";
-
-                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
-
-                List<TabletProjectsReport> ordersReport = new List<TabletProjectsReport>();
-                await Task.Run((Action)(() =>
-                {
-                    ordersReport = _.TabletProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-                }));
-
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tablet Projects",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.TabletProjects))
-                });
-                YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
-                YAxis.FontSize = 25;
-                YAxis.Foreground = new SolidColorBrush(Colors.Black);
-
-                string[] Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToArray();
-            }
-            else if (!ordersChecked && !tabletsChecked && toolsChecked)
-            {
-                string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools @StartDate = {0}, @EndDate = {1}";
-
-                string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
-
-                List<ToolProjectsReport> ordersReport = new List<ToolProjectsReport>();
-                await Task.Run((Action)(() =>
-                {
-                    ordersReport = _.ToolProjectsReport.FromSqlRaw(orderReportQuery, dates).ToList();
-                }));
-
-                sc.Add(new RowSeries
-                {
-                    Title = "Tool Projects Drawn",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsDrawn))
-                });
-                sc.Add(new RowSeries
-                {
-                    Title = "Tool Projects Checked",
-                    Values = new ChartValues<int>(ordersReport.Select(or => or.ToolProjectsChecked))
-                });
-                YAxis.Labels = ordersReport.Select(or => or.Employee.Trim() + ':' + or.AverageHours.ToString()).ToList();
-                YAxis.FontSize = 25;
-                YAxis.Foreground = new SolidColorBrush(Colors.Black);
-
-                string[] Labels = ordersReport.Select(or => or.Employee + ':' + or.AverageHours.ToString()).ToArray();
-            }
-            _.Dispose();
             SetLoadingAnimationVisibility(Visibility.Hidden);
             await Dispatcher.BeginInvoke((Action)(() =>
             {
                 ProductionChart.Series = sc;
                 ProductionChart.Visibility = ProductionChart.Series.Count > 0 ? Visibility.Visible : Visibility.Hidden;
             }));
+        }
+        private async Task<SeriesCollection> BuildOrdersChart(DateTime? beginningDateTime, DateTime? endDateTime)
+        {
+            SeriesCollection sc = new SeriesCollection();
+            string orderReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Orders @StartDate = {0}, @EndDate = {1}";
+
+            string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
+
+            List<OrdersReport> ordersReport = new List<OrdersReport>();
+            using var _ = new ProjectsContext();
+            await Task.Run((Action)(() =>
+            {
+                ordersReport = _.OrdersReport.FromSqlRaw(orderReportQuery, dates).ToList();
+            }));
+            _.Dispose();
+
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders Scanned In",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersIn))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders Scanned Out",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersOut))
+            });
+
+            sc.Add(new RowSeries
+            {
+                Title = "Orders To Office",
+                Values = new ChartValues<int>(ordersReport.Select(or => or.OrdersToOffice))
+            });
+            YAxis.Labels = ordersReport.Select(or => or.Employee).ToList();
+            YAxis.FontSize = 25;
+            YAxis.Foreground = new SolidColorBrush(Colors.Black);
+            return sc;
+        }
+        private async Task<SeriesCollection> BuildTabletsChart( DateTime? beginningDateTime, DateTime? endDateTime)
+        {
+            SeriesCollection sc = new SeriesCollection();
+            using var _ = new ProjectsContext();
+            string tabletProjectsReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_TabletProject_Start_End @StartDate = {0}, @EndDate = {1}";
+            string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
+            List<TabletProjectsReportStartEnd> tabletProjectsReport = new List<TabletProjectsReportStartEnd>();
+            await Task.Run((Action)(() =>
+            {
+                tabletProjectsReport = _.TabletProjectsReportStartEnd.FromSqlRaw(tabletProjectsReportQuery, dates).ToList();
+            }));
+            _.Dispose();
+            List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
+            foreach (string drafter in tabletProjectsReport.Select(o => o.Drafter).Distinct())
+            {
+                List<TabletProjectsReportStartEnd> draftersProjects = tabletProjectsReport.Where(o => o.Drafter == drafter).ToList();
+                List<Interval> intervals = new List<Interval>();
+                foreach (TabletProjectsReportStartEnd project in draftersProjects.Where(p => p.Minutes > 1))
+                {
+                    intervals.Add(Interval.CreateInterval(project.TabletStartedDateTime, project.TabletDrawnDateTime));
+                }
+                intervals = Interval.MergeOverlappingIntervals(intervals.AsEnumerable()).ToList();
+                TimeSpan totalTime = Interval.GetTimeSpanOfIntervals(intervals.AsEnumerable());
+                int totalProjects = draftersProjects.Count;
+                decimal hours = intervals.Count > 0 ? Convert.ToDecimal(totalTime.TotalSeconds / 3600) / Convert.ToDecimal(draftersProjects.Count(p => p.Minutes > 1)) : -1;
+                drafters.Add((drafter, hours, totalProjects));
+            }
+            drafters = drafters.OrderBy(d => d.Projects).ToList();
+            sc.Add(new RowSeries
+            {
+                Title = "Tablet Projects",
+                Values = new ChartValues<int>(drafters.Select(or => or.Projects))
+            });
+            YAxis.Labels = drafters.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
+            YAxis.FontSize = 25;
+            YAxis.Foreground = new SolidColorBrush(Colors.Black);
+            return sc;
+        }
+        private async Task<SeriesCollection> BuildToolsChart(DateTime? beginningDateTime, DateTime? endDateTime)
+        {
+            SeriesCollection sc = new SeriesCollection();
+            string toolProjectsReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_ToolProject_Start_End @StartDate = {0}, @EndDate = {1}";
+            string toolProjectsCheckedReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tools_Checked @StartDate = {0}, @EndDate = {1}";
+            string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
+            List<ToolProjectsReportStartEnd> toolProjectsReport = new List<ToolProjectsReportStartEnd>();
+            List<ToolProjectsCheckedReport> toolProjectsCheckedReports = new List<ToolProjectsCheckedReport>();
+            using var _ = new ProjectsContext();
+            await Task.Run((Action)(() =>
+            {
+                toolProjectsReport = _.ToolProjectsReportStartEnd.FromSqlRaw(toolProjectsReportQuery, dates).ToList();
+                toolProjectsCheckedReports = _.ToolProjectsCheckedReport.FromSqlRaw(toolProjectsCheckedReportQuery, dates).ToList();
+            }));
+            _.Dispose();
+            List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
+            foreach (string drafter in toolProjectsReport.Select(o => o.Drafter).Distinct())
+            {
+                List<ToolProjectsReportStartEnd> draftersProjects = toolProjectsReport.Where(o => o.Drafter == drafter).ToList();
+                List<Interval> intervals = new List<Interval>();
+                foreach (ToolProjectsReportStartEnd project in draftersProjects.Where(p => p.Minutes > 1))
+                {
+                    intervals.Add(Interval.CreateInterval(project.ToolStartedDateTime, project.ToolDrawnDateTime));
+                }
+                intervals = Interval.MergeOverlappingIntervals(intervals.AsEnumerable()).ToList();
+                TimeSpan totalTime = Interval.GetTimeSpanOfIntervals(intervals.AsEnumerable());
+                int totalProjects = draftersProjects.Count;
+                decimal hours = intervals.Count > 0 ? Convert.ToDecimal(totalTime.TotalSeconds / 3600) / Convert.ToDecimal(draftersProjects.Count(p => p.Minutes > 1)) : -1;
+                drafters.Add((drafter, hours, totalProjects));
+            }
+            List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)> draftersFinal = new List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)>();
+            List<string> ds = new List<string>();
+            ds.AddRange(drafters.Select(d => d.Drafter));
+            ds.AddRange(toolProjectsCheckedReports.Select(d => d.ToolCheckedBy));
+            ds = ds.Distinct().ToList();
+            foreach(string d in ds)
+            {
+                (string Drafter, decimal Hours, int Projects) _drafter = (d,-1,0);
+                ToolProjectsCheckedReport _toolProjectsCheckedReport = new ToolProjectsCheckedReport { Projects = 0, ToolCheckedBy = d };
+                if (drafters.Any(drafter => drafter.Drafter == d))
+                {
+                    _drafter = drafters.First(drafter => drafter.Drafter == d);
+                }
+                if (toolProjectsCheckedReports.Any(drafter => drafter.ToolCheckedBy == d))
+                {
+                    _toolProjectsCheckedReport = toolProjectsCheckedReports.First(drafter => drafter.ToolCheckedBy == d);
+                }
+                draftersFinal.Add((d, _drafter.Hours, _drafter.Projects, _toolProjectsCheckedReport.Projects));
+            }
+            draftersFinal = draftersFinal.OrderBy(d => d.ProjectsDrawn).ToList();
+            sc.Add(new RowSeries
+            {
+                Title = "Tool Projects Drawn",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsDrawn))
+            });
+            sc.Add(new RowSeries
+            {
+                Title = "Tool Projects Checked",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsChecked))
+            });
+            YAxis.Labels = draftersFinal.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
+            YAxis.FontSize = 25;
+            YAxis.Foreground = new SolidColorBrush(Colors.Black);
+            return sc;
         }
         private async void BuildCSCharts(DateTime? beginningDateTime, DateTime? endDateTime)
         {

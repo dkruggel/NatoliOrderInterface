@@ -30,10 +30,10 @@
 
         <StackPanel DockPanel.Dock="Left" Width="150">
             <!--<Button x:Name="UpdateButton" Click="UpdateButton_Click" Content="Update" Width="75" Height="25" Style="{StaticResource Button}"/>-->
-            <CheckBox x:Name="Orders" Content="Orders" Click="CheckBox_Click" />
-            <CheckBox x:Name="Tablets" Content="Tablet Projects" Click="CheckBox_Click"/>
-            <CheckBox x:Name="Tools" Content="Tool Projects" Click="CheckBox_Click"/>
-            <CheckBox x:Name="Quotes" Content="QuoteConversion" Click="CheckBox_Click"/>
+            <RadioButton x:Name="Orders" Content="Orders" Click="CheckBox_Click" GroupName="ReportType" />
+            <RadioButton x:Name="Tablets" Content="Tablet Projects" Click="CheckBox_Click" GroupName="ReportType"/>
+            <RadioButton x:Name="Tools" Content="Tool Projects" Click="CheckBox_Click" GroupName="ReportType"/>
+            <RadioButton x:Name="Quotes" Content="QuoteConversion" Click="CheckBox_Click" GroupName="ReportType"/>
         </StackPanel>
 
         <Grid>

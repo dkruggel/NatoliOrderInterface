@@ -693,7 +693,7 @@ namespace NatoliOrderInterface
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
-
+                        LinkQuoteButton.IsEnabled = false;
 
                         NewDrawing = engineeringProject.NewDrawing;
                         UpdateExistingDrawing = engineeringProject.UpdateExistingDrawing;
@@ -1217,7 +1217,7 @@ namespace NatoliOrderInterface
                         EngineeringArchivedProjects engineeringProject = _projectsContext.EngineeringArchivedProjects.First(ep => ep.ProjectNumber == projectNumber && ep.RevNumber == projectRevNumber);
 
                         RefreshRoutingButtons();
-
+                        
                         CreationBorder.Visibility = Visibility.Hidden;
                         ProjectNavigation.Visibility = Visibility.Visible;
 
@@ -1241,6 +1241,7 @@ namespace NatoliOrderInterface
                             QuoteFolderButton.IsEnabled = false;
                             quote = null;
                         }
+                        LinkQuoteButton.IsEnabled = false;
 
 
                         NewDrawing = engineeringProject.NewDrawing;
@@ -1805,6 +1806,7 @@ namespace NatoliOrderInterface
                 PutOnHoldButton.IsEnabled = false;
                 CancelButton.IsEnabled = false;
                 QuoteFolderButton.IsEnabled = false;
+                LinkQuoteButton.IsEnabled = false;
                 ReturnToCSR.ItemsSource = null;
                 ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
                 CSR.Text = user.GetDWPrincipalId();
@@ -4577,7 +4579,7 @@ namespace NatoliOrderInterface
                     DiePlateSteelID = !string.IsNullOrEmpty(DiePlateSteelID.Text) ? DiePlateSteelID.Text.Trim() : "",
                     HeadType = !string.IsNullOrEmpty(HeadType.Text) ? HeadType.Text.Trim() : "",
                     Key = Key.IsChecked ?? false,
-                    KeySteelID = !string.IsNullOrEmpty(KeySteelID.Text) ? KeySteelID.Text.Trim() : "",
+                    KeySteelID = !string.IsNullOrEmpty(KeySteelID.Text) ? (KeySteelID.Text.Trim().Length > 3 ? "NA" : KeySteelID.Text.Trim()) : "",
                     KeyAngle = decimal.TryParse(KeyAngle.Text, out decimal keyAngle) ? (decimal?)keyAngle : null,
                     KeyType = !string.IsNullOrEmpty(KeyType.Text) ? KeyType.Text.Trim() : "",
                     KeyIsClockWise = string.IsNullOrEmpty(KeyOrientation.Text) ? (bool?)null : KeyOrientation.Text == "CW",
@@ -4634,7 +4636,7 @@ namespace NatoliOrderInterface
                     UpperGroove = UpperGroove.IsChecked ?? false,
                     UpperKeyed = UpperKeyed.IsChecked ?? false,
                     Misc = Misc.IsChecked ?? false,
-                    MiscSteelID = !string.IsNullOrEmpty(MiscSteelID.Text) ? MiscSteelID.Text.Trim() : "",
+                    MiscSteelID = !string.IsNullOrEmpty(MiscSteelID.Text) ? (MiscSteelID.Text.Trim().Length>3 ? "NA" : MiscSteelID.Text.Trim()) : "",
                     LowerCoreRod = CoreRod,
                     LowerCoreRodSteelID = CoreRodSteelID,
                     LowerCoreRodKey = CoreRodKey,
@@ -4941,6 +4943,7 @@ namespace NatoliOrderInterface
                 ReturnToCSR.IsEnabled = isEnabled;
                 QuoteNumber.IsEnabled = isEnabled;
                 QuoteRevNumber.IsEnabled = isEnabled;
+                LinkQuoteButton.IsEnabled = isEnabled;
                 RefOrderNumber.IsEnabled = isEnabled;
                 UnitOfMeasure.IsEnabled = isEnabled;
                 ReferenceQuoteNumber.IsEnabled = isEnabled;
