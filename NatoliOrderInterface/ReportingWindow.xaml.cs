@@ -18,6 +18,8 @@ using LiveCharts.Wpf;
 using LiveCharts.Definitions.Series;
 using NatoliOrderInterface.Models.NAT01;
 using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace NatoliOrderInterface
 {
@@ -26,9 +28,29 @@ namespace NatoliOrderInterface
     /// </summary>
     public partial class ReportingWindow : Window
     {
-        public ReportingWindow(Window _parent)
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        public struct Rect
+        {
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
+        }
+        private readonly MainWindow parent;
+
+        public ReportingWindow(MainWindow _parent)
         {
             InitializeComponent();
+            parent = _parent ?? new MainWindow();
+            IntPtr hwnd = new WindowInteropHelper(parent).Handle;
+            Rect windowRect = new Rect();
+            GetWindowRect(hwnd, ref windowRect);
+            Top = windowRect.Top + 8;
+            Left = windowRect.Left + 8;
+            Width = parent.Width;
+            Height = parent.Height;
             BeginningDatePicker.SelectedDate = DateTime.Now.AddDays(-14);
             EndDatePicker.SelectedDate = DateTime.Now;
 
