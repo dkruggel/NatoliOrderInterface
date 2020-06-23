@@ -107,16 +107,19 @@ namespace NatoliOrderInterface
             YAxis.Foreground = new SolidColorBrush(Colors.Black);
             return sc;
         }
-        private async Task<SeriesCollection> BuildTabletsChart( DateTime? beginningDateTime, DateTime? endDateTime)
+        private async Task<SeriesCollection> BuildTabletsChart(DateTime? beginningDateTime, DateTime? endDateTime)
         {
             SeriesCollection sc = new SeriesCollection();
-            using var _ = new ProjectsContext();
             string tabletProjectsReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_TabletProject_Start_End @StartDate = {0}, @EndDate = {1}";
+            string tabletProjectsCheckedReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_Tablets_Checked @StartDate = {0}, @EndDate = {1}";
             string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
             List<TabletProjectsReportStartEnd> tabletProjectsReport = new List<TabletProjectsReportStartEnd>();
+            List<TabletProjectsCheckedReport> tabletProjectsCheckedReports = new List<TabletProjectsCheckedReport>();
+            using var _ = new ProjectsContext();
             await Task.Run((Action)(() =>
             {
                 tabletProjectsReport = _.TabletProjectsReportStartEnd.FromSqlRaw(tabletProjectsReportQuery, dates).ToList();
+                tabletProjectsCheckedReports = _.TabletProjectsCheckedReport.FromSqlRaw(tabletProjectsCheckedReportQuery, dates).ToList();
             }));
             _.Dispose();
             List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
@@ -134,16 +137,75 @@ namespace NatoliOrderInterface
                 decimal hours = intervals.Count > 0 ? Convert.ToDecimal(totalTime.TotalSeconds / 3600) / Convert.ToDecimal(draftersProjects.Count(p => p.Minutes > 1)) : -1;
                 drafters.Add((drafter, hours, totalProjects));
             }
-            drafters = drafters.OrderBy(d => d.Projects).ToList();
+            List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)> draftersFinal = new List<(string Drafter, decimal Hours, int ProjectsDrawn, int ProjectsChecked)>();
+            List<string> ds = new List<string>();
+            ds.AddRange(drafters.Select(d => d.Drafter));
+            ds.AddRange(tabletProjectsCheckedReports.Select(d => d.TabletCheckedBy));
+            ds = ds.Distinct().ToList();
+            foreach (string d in ds)
+            {
+                (string Drafter, decimal Hours, int Projects) _drafter = (d, -1, 0);
+                TabletProjectsCheckedReport _tabletProjectsCheckedReport = new TabletProjectsCheckedReport { Projects = 0, TabletCheckedBy = d };
+                if (drafters.Any(drafter => drafter.Drafter == d))
+                {
+                    _drafter = drafters.First(drafter => drafter.Drafter == d);
+                }
+                if (tabletProjectsCheckedReports.Any(drafter => drafter.TabletCheckedBy == d))
+                {
+                    _tabletProjectsCheckedReport = tabletProjectsCheckedReports.First(drafter => drafter.TabletCheckedBy == d);
+                }
+                draftersFinal.Add((d, _drafter.Hours, _drafter.Projects, _tabletProjectsCheckedReport.Projects));
+            }
+            draftersFinal = draftersFinal.Where(d=>d.Drafter!="Mustafa").OrderBy(d => d.ProjectsDrawn).ToList();
             sc.Add(new RowSeries
             {
-                Title = "Tablet Projects",
-                Values = new ChartValues<int>(drafters.Select(or => or.Projects))
+                Title = "Tablet Projects Drawn",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsDrawn))
             });
-            YAxis.Labels = drafters.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
+            sc.Add(new RowSeries
+            {
+                Title = "Tablet Projects Checked",
+                Values = new ChartValues<int>(draftersFinal.Select(or => or.ProjectsChecked))
+            });
+            YAxis.Labels = draftersFinal.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
             YAxis.FontSize = 25;
             YAxis.Foreground = new SolidColorBrush(Colors.Black);
             return sc;
+            //SeriesCollection sc = new SeriesCollection();
+            //using var _ = new ProjectsContext();
+            //string tabletProjectsReportQuery = "EXECUTE NAT02.dbo.sp_EOI_EngineeringProduction_TabletProject_Start_End @StartDate = {0}, @EndDate = {1}";
+            //string[] dates = new string[] { beginningDateTime.Value.ToShortDateString(), endDateTime.Value.ToShortDateString() };
+            //List<TabletProjectsReportStartEnd> tabletProjectsReport = new List<TabletProjectsReportStartEnd>();
+            //await Task.Run((Action)(() =>
+            //{
+            //    tabletProjectsReport = _.TabletProjectsReportStartEnd.FromSqlRaw(tabletProjectsReportQuery, dates).ToList();
+            //}));
+            //_.Dispose();
+            //List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
+            //foreach (string drafter in tabletProjectsReport.Select(o => o.Drafter).Distinct())
+            //{
+            //    List<TabletProjectsReportStartEnd> draftersProjects = tabletProjectsReport.Where(o => o.Drafter == drafter).ToList();
+            //    List<Interval> intervals = new List<Interval>();
+            //    foreach (TabletProjectsReportStartEnd project in draftersProjects.Where(p => p.Minutes > 1))
+            //    {
+            //        intervals.Add(Interval.CreateInterval(project.TabletStartedDateTime, project.TabletDrawnDateTime));
+            //    }
+            //    intervals = Interval.MergeOverlappingIntervals(intervals.AsEnumerable()).ToList();
+            //    TimeSpan totalTime = Interval.GetTimeSpanOfIntervals(intervals.AsEnumerable());
+            //    int totalProjects = draftersProjects.Count;
+            //    decimal hours = intervals.Count > 0 ? Convert.ToDecimal(totalTime.TotalSeconds / 3600) / Convert.ToDecimal(draftersProjects.Count(p => p.Minutes > 1)) : -1;
+            //    drafters.Add((drafter, hours, totalProjects));
+            //}
+            //drafters = drafters.OrderBy(d => d.Projects).ToList();
+            //sc.Add(new RowSeries
+            //{
+            //    Title = "Tablet Projects",
+            //    Values = new ChartValues<int>(drafters.Select(or => or.Projects))
+            //});
+            //YAxis.Labels = drafters.Select(or => or.Drafter + ": " + Math.Round(or.Hours, 2)).ToList();
+            //YAxis.FontSize = 25;
+            //YAxis.Foreground = new SolidColorBrush(Colors.Black);
+            //return sc;
         }
         private async Task<SeriesCollection> BuildToolsChart(DateTime? beginningDateTime, DateTime? endDateTime)
         {

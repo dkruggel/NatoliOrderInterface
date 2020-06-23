@@ -1817,7 +1817,7 @@ namespace NatoliOrderInterface
                 List<QuoteDetails> quoteDetails = quote.Nat01Context.QuoteDetails.Where(l => (int)l.QuoteNo == Convert.ToInt32(quoteNo) && l.Revision == Convert.ToInt16(quoteRevNo)).OrderBy(q => q.LineNumber).ToList();
                 List<QuoteLineItem> quoteLineItems = new List<QuoteLineItem>();
 
-                if (quote.Reference.Contains("REWORK", StringComparison.CurrentCultureIgnoreCase) && (quote.RefWO == null || quote.RefWO == 0))
+                if (!string.IsNullOrEmpty(quote.Reference) && quote.Reference.Contains("REWORK", StringComparison.CurrentCultureIgnoreCase) && (quote.RefWO == null || quote.RefWO == 0))
                 {
                     errors.Add("This rework order does not have a reference work order. Please add one if they are Natoli tools.");
                 }

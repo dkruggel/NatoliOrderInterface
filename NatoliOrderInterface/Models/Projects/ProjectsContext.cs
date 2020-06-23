@@ -69,7 +69,7 @@ namespace NatoliOrderInterface.Models.Projects
         public virtual DbSet<ToolProjectsReport> ToolProjectsReport { get; set; }
         public virtual DbSet<ToolProjectsReportStartEnd> ToolProjectsReportStartEnd { get; set; }
         public virtual DbSet<ToolProjectsCheckedReport> ToolProjectsCheckedReport { get; set; }
-
+        public virtual DbSet<TabletProjectsCheckedReport> TabletProjectsCheckedReport { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -1892,6 +1892,10 @@ namespace NatoliOrderInterface.Models.Projects
             modelBuilder.Entity<ToolProjectsCheckedReport>(entity =>
             {
                 entity.HasKey(e => e.ToolCheckedBy);
+            });
+            modelBuilder.Entity<TabletProjectsCheckedReport>(entity =>
+            {
+                entity.HasKey(e => e.TabletCheckedBy);
             });
 
             OnModelCreatingPartial(modelBuilder);
