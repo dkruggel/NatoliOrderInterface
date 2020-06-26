@@ -231,12 +231,17 @@ namespace NatoliOrderInterface
             if (string.IsNullOrWhiteSpace(TabletWidth.Text))
             {
                 MessageBox.Show("Please enter a tablet size.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false; ;
+                return false;
             }
             if (!string.IsNullOrWhiteSpace(TabletWidth.Text) && !DieShape.Text.Trim().ToUpper().Contains("DIAMETER") && !DieShape.Text.Trim().ToUpper().Contains("ROUND") && string.IsNullOrWhiteSpace(TabletLength.Text))
             {
                 MessageBox.Show("Please enter a tablet length or indicate Die Shape as Diameter.", "Need Info", MessageBoxButton.OK, MessageBoxImage.Information);
-                return false; ;
+                return false;
+            }
+            if (System.IO.Directory.GetFiles(projectsDirectory + projectNumber).Where(f => !f.EndsWith(".lnk")).Count() == 0)
+            {
+                MessageBox.Show("You may have forgotten to attach supporting documents.", "Need Supporting Docs", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
             }
             if (isTabletProject)
             {
@@ -1806,7 +1811,7 @@ namespace NatoliOrderInterface
                 PutOnHoldButton.IsEnabled = false;
                 CancelButton.IsEnabled = false;
                 QuoteFolderButton.IsEnabled = false;
-                LinkQuoteButton.IsEnabled = false;
+                LinkQuoteButton.IsEnabled = true;
                 ReturnToCSR.ItemsSource = null;
                 ReturnToCSR.ItemsSource = IMethods.GetDWCSRs();
                 CSR.Text = user.GetDWPrincipalId();

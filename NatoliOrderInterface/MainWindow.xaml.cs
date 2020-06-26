@@ -3275,7 +3275,7 @@ namespace NatoliOrderInterface
                 bool toolPrints = System.Convert.ToBoolean(order.Tool);
                 List<string> hobNumbers = null;
                 hobNumbers = !string.IsNullOrEmpty(order.HobNumbers) && !string.IsNullOrEmpty(order.HobNumbers) ? order.HobNumbers.Split(",").ToList() : null;
-                if (tm2 || tabletPrints)
+                if ((tm2 || tabletPrints) && !(hobNumbers is null))
                 {
                     foreach (string hobNumber in hobNumbers)
                     {
