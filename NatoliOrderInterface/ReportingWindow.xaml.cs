@@ -312,6 +312,10 @@ namespace NatoliOrderInterface
             SetLoadingAnimationVisibility(Visibility.Hidden);
             ChartStack.Visibility = Visibility.Visible;
         }
+        /// <summary>
+        /// Sets the visibility of the spinning circles loading animation.
+        /// </summary>
+        /// <param name="visibility"></param>
         private async void SetLoadingAnimationVisibility(Visibility visibility)
         {
             await Dispatcher.BeginInvoke((Action)(() =>
@@ -341,7 +345,6 @@ namespace NatoliOrderInterface
                 BuildCSCharts(BeginningDatePicker.SelectedDate, EndDatePicker.SelectedDate);
             }
         }
-
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             if (EndDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate == null || BeginningDatePicker.SelectedDate.Value >= EndDatePicker.SelectedDate.Value)
