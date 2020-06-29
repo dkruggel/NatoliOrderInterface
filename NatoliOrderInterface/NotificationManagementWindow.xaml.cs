@@ -50,7 +50,7 @@ namespace NatoliOrderInterface
                 using var __ = new NAT01Context();
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
-                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
+                string acctNo = "";
                 string custName = "";
                 if (a.Type == "Project")
                 {
@@ -79,6 +79,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
+                    acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(a.Number)).UserAcctNo;
                     custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
                 }
 
@@ -92,7 +93,7 @@ namespace NatoliOrderInterface
                 using var __ = new NAT01Context();
                 using var ___ = new NECContext();
                 using var _projectsContext = new ProjectsContext();
-                string acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
+                string acctNo = "";
                 string custName = "";
                 if (v.Type == "Project")
                 {
@@ -121,6 +122,7 @@ namespace NatoliOrderInterface
                 }
                 else
                 {
+                    acctNo = __.OrderHeader.Single(o => o.OrderNo / 100 == double.Parse(v.Number)).UserAcctNo;
                     custName = ___.Rm00101.Single(r => r.Custnmbr.Trim() == acctNo.Trim()).Custname;
                 }
                 notifications.Add((v.NotificationId, v.Number, custName, v.Message, false, v.Type));
