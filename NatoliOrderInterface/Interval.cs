@@ -82,8 +82,12 @@ namespace NatoliOrderInterface
         /// <returns></returns>
         public static IEnumerable<Interval> MergeOverlappingIntervals(IEnumerable<Interval> intervals)
         {
-            if(intervals.Count()<2)
+            if (intervals.Count() < 2)
             {
+                if (intervals.Count() == 1)
+                {
+                    yield return intervals.First();
+                }
                 yield break;
             }
             intervals = RemoveSundayFromIntervals(intervals);

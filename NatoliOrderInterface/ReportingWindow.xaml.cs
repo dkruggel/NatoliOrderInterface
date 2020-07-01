@@ -212,6 +212,10 @@ namespace NatoliOrderInterface
             List<(string Drafter, decimal Hours, int Projects)> drafters = new List<(string Drafter, decimal Hours, int Projects)>();
             foreach (string drafter in toolProjectsReport.Select(o => o.Drafter).Distinct())
             {
+                if (drafter == "Tyler")
+                {
+
+                }
                 List<ToolProjectsReportStartEnd> draftersProjects = toolProjectsReport.Where(o => o.Drafter == drafter).ToList();
                 List<Interval> intervals = new List<Interval>();
                 foreach (ToolProjectsReportStartEnd project in draftersProjects.Where(p => p.Minutes > 1))
