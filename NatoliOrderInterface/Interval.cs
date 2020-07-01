@@ -90,25 +90,28 @@ namespace NatoliOrderInterface
                 }
                 yield break;
             }
-            intervals = RemoveSundayFromIntervals(intervals);
-            intervals = intervals.OrderBy(interval => interval.Start);
-            Interval accumulator = intervals.First();
-            intervals = intervals.Skip(1);
-
-            foreach (var interval in intervals)
+            else
             {
-                if (interval.Start <= accumulator.End)
-                {
-                    accumulator = Combine(accumulator, interval);
-                }
-                else
-                {
-                    yield return accumulator;
-                    accumulator = interval;
-                }
-            }
+                intervals = RemoveSundayFromIntervals(intervals);
+                intervals = intervals.OrderBy(interval => interval.Start);
+                Interval accumulator = intervals.First();
+                intervals = intervals.Skip(1);
 
-            yield return accumulator;
+                foreach (var interval in intervals)
+                {
+                    if (interval.Start <= accumulator.End)
+                    {
+                        accumulator = Combine(accumulator, interval);
+                    }
+                    else
+                    {
+                        yield return accumulator;
+                        accumulator = interval;
+                    }
+                }
+
+                yield return accumulator;
+            }
         }
         /// <summary>
         /// Combines two intervals where the "start" Interval is before the "end" Interval.
