@@ -13,6 +13,7 @@ namespace NatoliOrderInterface.Models.Projects
         public bool ShortRejectRequired { get; set; }
         public bool LongRejectRequired { get; set; }
         public bool? FilmCoated { get; set; }
+        public string FilmCoatType { get; set; }
         public bool PrePick { get; set; }
         public decimal? PrePickAmount { get; set; }
         public string PrePickUnits { get; set; }

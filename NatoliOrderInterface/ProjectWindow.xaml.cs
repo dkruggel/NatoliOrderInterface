@@ -1008,6 +1008,8 @@ namespace NatoliOrderInterface
                             TargetThicknessUnits.IsEnabled = false;
                             FilmCoat.IsChecked = tabletProject.FilmCoated;
                             FilmCoat.IsEnabled = false;
+                            FilmCoatStyle.SelectedItem = tabletProject.FilmCoatType;
+                            FilmCoatStyle.IsEnabled = false;
                             PrePick.IsChecked = tabletProject.PrePick;
                             PrePick.IsEnabled = false;
                             PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
@@ -1518,6 +1520,8 @@ namespace NatoliOrderInterface
                             TargetThicknessUnits.IsEnabled = false;
                             FilmCoat.IsChecked = tabletProject.FilmCoated;
                             FilmCoat.IsEnabled = false;
+                            FilmCoatStyle.SelectedItem = tabletProject.FilmCoatType;
+                            FilmCoatStyle.IsEnabled = false;
                             PrePick.IsChecked = tabletProject.PrePick;
                             PrePick.IsEnabled = false;
                             PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
@@ -1956,6 +1960,7 @@ namespace NatoliOrderInterface
                         // TargetThickness.Text = tabletProject.TargetThickness.ToString();
                         // TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
                         FilmCoat.IsChecked = tabletProject.FilmCoated;
+                        FilmCoatStyle.SelectedItem = tabletProject.FilmCoatType;
                         PrePick.IsChecked = tabletProject.PrePick;
                         PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
                         PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
@@ -2211,6 +2216,7 @@ namespace NatoliOrderInterface
                         // TargetThickness.Text = tabletProject.TargetThickness.ToString();
                         // TargetThicknessUnits.SelectedItem = tabletProject.TargetThicknessUnits;
                         FilmCoat.IsChecked = tabletProject.FilmCoated;
+                        FilmCoatStyle.SelectedItem = tabletProject.FilmCoatType;
                         PrePick.IsChecked = tabletProject.PrePick;
                         PrePickAmount.Text = tabletProject.PrePickAmount.ToString();
                         PrePickUnits.SelectedItem = tabletProject.PrePickUnits;
@@ -4527,6 +4533,7 @@ namespace NatoliOrderInterface
                     Density = decimal.TryParse(Density.Text, out decimal density) ? (decimal?)density : null,
                     DensityUnits = !string.IsNullOrEmpty(DensityUnits.Text) ? DensityUnits.Text.Trim() : "",
                     FilmCoated = FilmCoat.IsChecked ?? false,
+                    FilmCoatType = !string.IsNullOrEmpty(FilmCoatStyle.Text) ? FilmCoatStyle.Text.Trim() : "",
                     LongRejectRequired = LongRejectTabletDrawing.IsChecked ?? false,
                     LowerRequired = LowerTabletDrawing.IsChecked ?? false,
                     Mass = decimal.TryParse(Mass.Text, out decimal mass) ? (decimal?)mass : null,
@@ -5020,6 +5027,7 @@ namespace NatoliOrderInterface
                 TargetThickness.IsEnabled = isEnabled;
                 TargetThicknessUnits.IsEnabled = isEnabled;
                 FilmCoat.IsEnabled = isEnabled;
+                FilmCoatStyle.IsEnabled = isEnabled;
                 PrePick.IsEnabled = isEnabled;
                 PrePickAmount.IsEnabled = isEnabled;
                 PrePickUnits.IsEnabled = isEnabled;
