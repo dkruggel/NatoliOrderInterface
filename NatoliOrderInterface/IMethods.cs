@@ -1843,10 +1843,24 @@ namespace NatoliOrderInterface
                             {
                                 errors.Add("Machine " + quoteLineItems.First(ql => ql.MachineNo != null && ql.MachineNo > 0).MachineNo + " not setup for " + quote.UserAcctNo + " - " + quote.UserLocNo + ".");
                             }
+
                             // Tablet is Too Large for press
                             if (_nat01Context.MachineList.Any(m => m.MachineNo == _machineNo))
                             {
                                 MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == _machineNo);
+                                // TDP-3
+                                if (machine.MachineNo == 2196 && quoteLineItems.Any(qli => qli.LineItemType != "D" && qli.LineItemType != "DS" && qli.LineItemType != "DA" && qli.LineItemType != "DC" &&
+                                                                  qli.LineItemType != "DI" && qli.LineItemType != "DP" && qli.LineItemType != "A" &&
+                                                                  (!string.IsNullOrWhiteSpace(qli.HobNoShapeID) &&
+                                                                  _nat01Context.HobList.Any(h => h.HobNo == qli.HobNoShapeID && h.TipQty == (qli.TipQTY ?? 1) && h.BoreCircle == (qli.BoreCircle ?? 0)) &&
+                                                                  _nat01Context.DieList.Any(d => !string.IsNullOrEmpty(d.DieId) && d.DieId.Trim() ==
+                                                                                                 _nat01Context.HobList.First(h => h.HobNo == qli.HobNoShapeID &&
+                                                                                                                                  h.TipQty == (qli.TipQTY ?? 1) &&
+                                                                                                                                  h.BoreCircle == (qli.BoreCircle ?? 0)).DieId.Trim() &&
+                                                                                                                                  (d.LengthMajorAxis > .5906 || d.WidthMinorAxis > .4724)))))
+                                {
+                                    errors.Add("Tablet is too large for press.");
+                                }
                                 // Is B Machine
                                 if ((machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) != @"3/4 x 5-3/4" && (machine.MachineTypePrCode.Trim() == "B" || machine.MachineTypePrCode.Trim() == "BB" || machine.MachineTypePrCode.Trim() == "BBS" ||
                                                    ((machine.MachineTypePrCode.Trim() == "ZZZ" || machine.MachineTypePrCode.Trim() == "DRY") && (machine.UpperSize.Trim() ?? machine.LowerSize.Trim()) == @"1 x 5-3/4"))
