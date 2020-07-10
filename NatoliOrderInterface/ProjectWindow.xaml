@@ -32,8 +32,8 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <Border Grid.ColumnSpan="3" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-                    <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" Grid.RowSpan="3" BorderBrush="Black" BorderThickness="2,0,2,2">
+                    <Border Grid.ColumnSpan="3" Grid.RowSpan="4" BorderBrush="Black" BorderThickness="0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                    <Border x:Name="LinkedToQuoteBorder" Grid.Column="1" Grid.RowSpan="4" BorderBrush="Black" BorderThickness="2,0,2,2">
                         <DockPanel VerticalAlignment="Stretch" LastChildFill="False" HorizontalAlignment="Center" Margin="2,6">
                             <TextBlock x:Name="Quote_WO_Label"  Text="Quote#:" Width="43" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                             <TextBox Style="{StaticResource TextBox}" x:Name="QuoteNumber" Text="" Width="48" VerticalAlignment="Center"/>
@@ -51,11 +51,17 @@
                         <TextBlock Text="Created:" Style="{StaticResource BoldTextBlock}" Margin="10,0,0,0"/>
                         <TextBlock x:Name="EnteredDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
                     </DockPanel>
+                    <DockPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
+                        <TextBlock Text="Tablet Started By:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
+                        <TextBlock x:Name="TabletStartedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock Text="Tablet Drawn By:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
+                        <TextBlock x:Name="TabletDrawnBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                    </DockPanel>
                     <DockPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6,0,0,12">
                         <TextBlock Text="Rev'd:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
                         <TextBlock x:Name="RevisionDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
                         <TextBlock Text="By:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
-                        <TextBlock x:Name="RevisedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock x:Name="RevisedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>                        
                     </DockPanel>
                     <DockPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <Button x:Name="EngineeringCommentButton" Content="Add Engineering Comment" Style="{StaticResource Button}" Click="EngineeringCommentButton_Click"/>
@@ -72,7 +78,13 @@
                         <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>
                         <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceQuoteRevNumber" Text="" Width="20" VerticalAlignment="Center" Margin="0,0,0,0"/>
                     </DockPanel>
-                    <DockPanel Grid.Row="3" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,4,0">
+                    <DockPanel Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
+                        <TextBlock Text="Tool Started By:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>
+                        <TextBlock x:Name="ToolStartedBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock Text="Tool Drawn By:" Style="{StaticResource BoldTextBlock}" Margin="20,0,0,0"/>
+                        <TextBlock x:Name="ToolDrawnBy" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                    </DockPanel>
+                    <DockPanel Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,4,0">
                         <TextBlock Text="Ref. Project#:" VerticalAlignment="Top" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
                         <TextBox Style="{StaticResource TextBox}" x:Name="ReferenceProjectNumber" Text="" Width="48" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalContentAlignment="Right"/>
                         <TextBlock Text="-" Width="5" VerticalAlignment="Center" Style="{StaticResource NormalTextBlock}"/>

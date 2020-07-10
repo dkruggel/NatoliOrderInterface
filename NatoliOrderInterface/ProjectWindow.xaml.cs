@@ -733,6 +733,15 @@ namespace NatoliOrderInterface
                         }
                         RevisionDate.IsEnabled = false;
 
+                        TabletStartedBy.Text = engineeringProject.TabletStartedBy;
+                        TabletStartedBy.IsEnabled = false;
+                        TabletDrawnBy.Text = engineeringProject.TabletDrawnBy;
+                        TabletDrawnBy.IsEnabled = false;
+                        ToolStartedBy.Text = engineeringProject.ToolStartedBy;
+                        ToolStartedBy.IsEnabled = false;
+                        ToolDrawnBy.Text = engineeringProject.ToolDrawnBy;
+                        ToolDrawnBy.IsEnabled = false;
+
                         QuoteNumber.Text = engineeringProject.QuoteNumber;
                         QuoteNumber.IsEnabled = false;
                         QuoteRevNumber.Text = engineeringProject.QuoteRevNumber;
@@ -1280,6 +1289,15 @@ namespace NatoliOrderInterface
                             RevisionDate.Text = date.ToString("M/d/yy h:mm tt");
                         }
                         RevisionDate.IsEnabled = false;
+
+                        TabletStartedBy.Text = engineeringProject.TabletStartedBy;
+                        TabletStartedBy.IsEnabled = false;
+                        TabletDrawnBy.Text = engineeringProject.TabletDrawnBy;
+                        TabletDrawnBy.IsEnabled = false;
+                        ToolStartedBy.Text = engineeringProject.ToolStartedBy;
+                        ToolStartedBy.IsEnabled = false;
+                        ToolDrawnBy.Text = engineeringProject.ToolDrawnBy;
+                        ToolDrawnBy.IsEnabled = false;
 
                         QuoteNumber.Text = engineeringProject.QuoteNumber;
                         QuoteNumber.IsEnabled = false;
