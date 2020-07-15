@@ -1956,7 +1956,6 @@ namespace NatoliOrderInterface
             LegendWindow legendWindow = new LegendWindow(User);
             legendWindow.Show();
         }
-
         private void Calendar_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1970,7 +1969,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("Calendar_Click", ex.Message, User);
             }
         }
-
         private void Update2019_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1984,7 +1982,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("Main Window => Update2019_Click", ex.Message, User);
             }
         }
-
         private void NatoliTabletUpdate_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1998,7 +1995,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("Main Window => NatoliTabletUpdate_Click", ex.Message, User);
             }
         }
-
         private void NatoliTabletGeneration_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2012,7 +2008,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("Main Window => NatoliTabletGeneration_Click", ex.Message, User);
             }
         }
-
         private void BendingStress_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2026,7 +2021,6 @@ namespace NatoliOrderInterface
                 IMethods.WriteToErrorLog("Main Window => BendingStress_Click", ex.Message, User);
             }
         }
-
         private void EuropeanStyleTolerances_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2041,7 +2035,6 @@ namespace NatoliOrderInterface
             }
 
         }
-
         private void CustomerNote_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -2263,14 +2256,14 @@ namespace NatoliOrderInterface
             Grid MainGrid = new Grid();
             TextBlock textBlock = new TextBlock()
             {
-                Margin = new Thickness(50, 50, 50, 0)
+                Margin = new Thickness(50, 10, 50, 10)
             };
             string ordersMissingVars = "";
 
             using var nat02context = new NAT02Context();
             List<EoiMissingAutomationVariablesView> list = nat02context.EoiMissingAutomationVariablesView.ToList();
             int count = list.Count;
-            missing.Height = count * 20;
+            missing.Height = count * 20 + 10;
 
             foreach (EoiMissingAutomationVariablesView row in list)
             {
