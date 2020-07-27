@@ -703,6 +703,21 @@ namespace NatoliOrderInterface
                 else if (projectType == "TOOLS")
                 {
                     EngineeringProjects engineeringProject = _projectsContext.EngineeringProjects.First(p => p.ProjectNumber == projectNumber && p.RevNumber == projectRevNumber);
+
+                    // Check if shortcuts exist first
+                    string fp = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\";
+                    string u = "U" + engineeringProject.UpperHobNumber.ToString();
+                    string l = "L" + engineeringProject.LowerHobNumber.ToString();
+                    string d = "D" + engineeringProject.DieNumber.ToString().PadLeft(6);
+                    string sr = "R" + engineeringProject.ShortRejectHobNumber.ToString();
+                    string lr = "R" + engineeringProject.LongRejectHobNumber.ToString();
+                    string a = "A" + engineeringProject.DieNumber.ToString().PadLeft(6);
+
+                    if (!System.IO.Directory.GetFiles(fp).Any(f => f.ContainsAny(u, l, d, sr, lr, a, "N-")))
+                    {
+                        throw new Exception("Missing shortcuts to tool folders from project folder. Please try again.");
+                    }
+
                     engineeringProject.ToolDrawn = true;
                     engineeringProject.ToolDrawnDateTime = DateTime.UtcNow;
                     engineeringProject.ToolDrawnBy = user.GetDWPrincipalId();
