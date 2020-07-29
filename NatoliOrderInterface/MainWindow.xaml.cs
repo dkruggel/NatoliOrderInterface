@@ -999,6 +999,9 @@ namespace NatoliOrderInterface
                     // User = new User("aheimberger");
                     // User = new User("cbrokes");
                     // User = new User("sbowman");
+                    HobInformation hi = new HobInformation();
+                    hi.Show();
+                    hi.Topmost = true;
                 }
                 App.user = User;
             }

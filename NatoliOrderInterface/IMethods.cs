@@ -1,5 +1,6 @@
 ﻿using DK.WshRuntime;
 using MailKit;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using NatoliOrderInterface.MimeTypes;
 using NatoliOrderInterface.Models;
@@ -721,6 +722,21 @@ namespace NatoliOrderInterface
                     engineeringProject.ToolDrawn = true;
                     engineeringProject.ToolDrawnDateTime = DateTime.UtcNow;
                     engineeringProject.ToolDrawnBy = user.GetDWPrincipalId();
+
+                    // Insert row into tool projects out of order table
+                    try
+                    {
+                        string projectOutOfOrderQuery = "EXECUTE Projects.dbo.sp_EOI_InsertToolProjectOutOfOrder @ProjectNumber = {0}";
+
+                        EoiToolProjectsOutOfOrder eoiToolProjectsOutOfOrder;
+                        using var _ = new NAT02Context();
+                        eoiToolProjectsOutOfOrder = _.EoiToolProjectsOutOfOrder.FromSqlRaw(projectOutOfOrderQuery, projectNumber).FirstOrDefault();
+                        _.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                     _projectsContext.SaveChanges();
 

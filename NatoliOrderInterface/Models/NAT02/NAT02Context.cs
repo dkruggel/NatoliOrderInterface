@@ -59,6 +59,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiAllOrdersView> EoiAllOrdersView { get; set; }
         public virtual DbSet<EoiCustomerNotes> EoiCustomerNotes { get; set; }
         public virtual DbSet<EoiCalendar>  EoiCalendar { get; set; }
+        public virtual DbSet<EoiToolProjectsOutOfOrder> EoiToolProjectsOutOfOrder { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -1046,6 +1047,12 @@ namespace NatoliOrderInterface.Models
                 entity.HasKey(e => new { e.Year, e.Month, e.Day });
 
                 entity.ToTable("Eoi_Calendar");
+            });
+            modelBuilder.Entity<EoiToolProjectsOutOfOrder>(entity =>
+            {
+                entity.HasKey(e => new { e.ProjectNumber, e.RevNumber });
+
+                entity.ToTable("EOI_ToolProjectsOutOfOrder");
             });
 
             OnModelCreatingPartial(modelBuilder);

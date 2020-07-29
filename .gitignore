@@ -6,3 +6,5 @@
 /NatoliOrderInterface.Package
 /NatoliOrderInterface_Package
 /NatoliOrderInterface/appsettings.json
+/NatoliOrderInterface/HobInformation.xaml.cs
+/NatoliOrderInterface/HobInformation.xaml
