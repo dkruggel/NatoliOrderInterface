@@ -707,14 +707,10 @@ namespace NatoliOrderInterface
 
                     // Check if shortcuts exist first
                     string fp = @"\\engserver\workstations\TOOLING AUTOMATION\Project Specifications\" + projectNumber + "\\";
-                    string u = "U" + engineeringProject.UpperHobNumber.ToString();
-                    string l = "L" + engineeringProject.LowerHobNumber.ToString();
-                    string d = "D" + engineeringProject.DieNumber.ToString().PadLeft(6);
-                    string sr = "R" + engineeringProject.ShortRejectHobNumber.ToString();
-                    string lr = "R" + engineeringProject.LongRejectHobNumber.ToString();
-                    string a = "A" + engineeringProject.DieNumber.ToString().PadLeft(6);
 
-                    if (!System.IO.Directory.GetFiles(fp).Any(f => f.ContainsAny(u, l, d, sr, lr, a, "N-")))
+                    if (!System.IO.Directory.GetFiles(fp, "*.lnk").Any(f => Regex.Matches(f, @"([ULDRA]{1}\s?[0-9]{1,6})").Count > 0 ||
+                                                                            Regex.Matches(f, @"([N]{1}-?[0-9]+)").Count > 0 ||
+                                                                            Regex.Matches(f, @"([0-9]{3,})").Count > 0))
                     {
                         throw new Exception("Missing shortcuts to tool folders from project folder. Please try again.");
                     }
@@ -726,16 +722,26 @@ namespace NatoliOrderInterface
                     // Insert row into tool projects out of order table
                     try
                     {
-                        string projectOutOfOrderQuery = "EXECUTE Projects.dbo.sp_EOI_InsertToolProjectOutOfOrder @ProjectNumber = {0}";
+                        EoiToolProjectsOutOfOrder eoiToolProjectsOutOfOrder = new EoiToolProjectsOutOfOrder()
+                        {
+                            ProjectNumber = engineeringProject.ProjectNumber,
+                            RevNumber = engineeringProject.RevNumber,
+                            DueDate = engineeringProject.DueDate,
+                            Priority = engineeringProject.Priority,
+                            ProjectsWithHigherPriority = (short)_projectsContext.EngineeringProjects.Count(p => !p.ToolDrawn &&
+                                                                                                                _projectsContext.EngineeringToolProjects.Any(p1 => p1.ProjectNumber == p.ProjectNumber) &&
+                                                                                                                ((engineeringProject.Priority && p.DueDate.Date <= DateTime.Now.Date) ||
+                                                                                                                 (!engineeringProject.Priority && p.DueDate.Date < engineeringProject.DueDate.Date)))
+                        };
 
-                        EoiToolProjectsOutOfOrder eoiToolProjectsOutOfOrder;
                         using var _ = new NAT02Context();
-                        eoiToolProjectsOutOfOrder = _.EoiToolProjectsOutOfOrder.FromSqlRaw(projectOutOfOrderQuery, projectNumber).FirstOrDefault();
+                        _.EoiToolProjectsOutOfOrder.Add(eoiToolProjectsOutOfOrder);
+                        _.SaveChanges();
                         _.Dispose();
                     }
                     catch (Exception ex)
                     {
-
+                        WriteToErrorLog("IMethods.cs => DrawProject", ex.Message, user);
                     }
 
                     _projectsContext.SaveChanges();
@@ -2627,6 +2633,25 @@ namespace NatoliOrderInterface
                                 {
                                     errors.Add("Failed checking for errors on '" + quoteLineItem.LineItemType + "'. Please let someone know.");
                                     WriteToErrorLog("QuoteErrors => Die and Die Segment", ex.Message, user);
+                                }
+                            }
+
+                            // Holders
+                            if (quoteLineItem.LineItemType == "UH" || quoteLineItem.LineItemType == "LH" || quoteLineItem.LineItemType == "RH")
+                            {
+                                try
+                                {
+                                    // Upper Holder or Lower Holder or Reject Holder steel type for single station
+                                    MachineList machine = _nat01Context.MachineList.First(m => m.MachineNo == quoteLineItem.MachineNo);
+                                    if (machine.Stations == 1 && quoteLineItem.SteelPriceCode != "S7")
+                                    {
+                                        errors.Add("Double-check if holder steel should be something other than ESR S7 STEEL");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    errors.Add("Failed checking for errors on '" + quoteLineItem.LineItemType + "'. Please let someone know.");
+                                    WriteToErrorLog("QuoteErrors => Holders", ex.Message, user);
                                 }
                             }
 
