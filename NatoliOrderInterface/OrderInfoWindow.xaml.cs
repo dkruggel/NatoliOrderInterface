@@ -1577,9 +1577,12 @@ namespace NatoliOrderInterface
             
             Dispatcher.Invoke(() => { ButtonRefresh("Start"); });
 
-            (Application.Current.MainWindow as MainWindow).MainRefresh("EnteredUnscanned");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("EnteredUnscanned"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("EnteredUnscanned");
+            if (user.VisiblePanels.Contains("InTheOffice"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
         }
         private void SendToOfficeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1624,10 +1627,14 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
                 Cursor = Cursors.Arrow;
             }
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("PrintedInEngineering");
+            if (user.VisiblePanels.Contains("InTheOffice"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("ReadyToPrint"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
+            if (user.VisiblePanels.Contains("PrintedInEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("PrintedInEngineering");
         }
         private void FinishOrderButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1647,7 +1654,8 @@ namespace NatoliOrderInterface
                 workOrder.Finished = true;
                 Dispatcher.Invoke(() => { ButtonRefresh("Finish"); });
             }
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
         }
         private void NotFinishedButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1660,7 +1668,8 @@ namespace NatoliOrderInterface
 
             context.SaveChanges();
             workOrder.Finished = false;
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
             Close();
         }
         private void PrintOrderButton_Click(object sender, RoutedEventArgs e)
@@ -1808,8 +1817,10 @@ namespace NatoliOrderInterface
             }
             nat01Context.Dispose();
             nat02Context.Dispose();
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("ReadyToPrint"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
             Close();
         }
         private void DoNotProcessOrderButton_Click(object sender, RoutedEventArgs e)
@@ -1830,11 +1841,16 @@ namespace NatoliOrderInterface
             context.SaveChanges();
             context.Dispose();
             doNotProc = !doNotProc;
-            (Application.Current.MainWindow as MainWindow).MainRefresh("EnteredUnscanned");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
-            (Application.Current.MainWindow as MainWindow).MainRefresh("PrintedInEngineering");
+            if (user.VisiblePanels.Contains("EnteredUnscanned"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("EnteredUnscanned");
+            if (user.VisiblePanels.Contains("InTheOffice"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InTheOffice");
+            if (user.VisiblePanels.Contains("InEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("InEngineering");
+            if (user.VisiblePanels.Contains("ReadyToPrint"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("ReadyToPrint");
+            if (user.VisiblePanels.Contains("PrintedInEngineering"))
+                (Application.Current.MainWindow as MainWindow).MainRefresh("PrintedInEngineering");
             Close();
         }
         #endregion
