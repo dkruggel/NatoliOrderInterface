@@ -1390,6 +1390,47 @@ namespace NatoliOrderInterface
             }
         }
         /// <summary>
+        /// Takes the Full Name of the Driveworks.SecurityUsers table and returns the PrincipalId.
+        /// </summary>
+        /// <param name="dWfullName"></param>
+        /// <returns></returns>
+        public static string GetDWPrincipalIDFromDisplayName(string dWfullName)
+        {
+            try
+            {
+                using var _driveworksContext = new DriveWorksContext();
+                switch (dWfullName)
+                {
+                    case "Gregory Lyle":
+                        _driveworksContext.Dispose();
+                        return "Greg";
+                    case "Nicholas Tarte":
+                        _driveworksContext.Dispose();
+                        return "Nick";
+                    case "Floyd Smith":
+                        _driveworksContext.Dispose();
+                        return "Joe";
+                    default:
+                        if (_driveworksContext.SecurityUsers.Any(su => su.DisplayName.Trim() == dWfullName.Trim()))
+                        {
+                            string displayName = _driveworksContext.SecurityUsers.First(su => su.DisplayName.Trim() == dWfullName.Trim()).PrincipalId.Trim();
+                            _driveworksContext.Dispose();
+                            return displayName;
+                        }
+                        else
+                        {
+                            _driveworksContext.Dispose();
+                            return "";
+                        }
+                }
+            }
+            catch //(Exception ex)
+            {
+                return "";
+                //MessageBox.Show(ex.Message);
+            }
+        }
+        /// <summary>
         /// Returns a list of possible panels to choose from based on user
         /// </summary>
         /// <param name="user"></param>

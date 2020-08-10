@@ -574,6 +574,7 @@ namespace NatoliOrderInterface
             LongRejectCupType.ItemsSource = IMethods.GetCupTypeItemsSource();
             ProjectFiles = GetProjectFiles(projectNumber);
             EngineeringCommentButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Hidden;
+            HobAndDieInfoButton.Visibility = user.EmployeeCode == "E4408" ? Visibility.Visible : Visibility.Hidden;
         }
 
         private List<Tuple<string, string, string>> GetProjectFiles(string projectNumber)
@@ -5840,6 +5841,12 @@ namespace NatoliOrderInterface
 
             // Dispose of object
             comment.Dispose();
+        }
+        private void OpenHobAndDieInfo_Click(object sender, RoutedEventArgs e)
+        {
+            HobInformation hi = new HobInformation();
+            hi.Topmost = true;
+            hi.Show();
         }
 
         #region TextBox Changes And Timer

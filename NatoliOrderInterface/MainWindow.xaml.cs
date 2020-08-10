@@ -25,6 +25,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
+using Windows.Media;
 using WpfAnimatedGif;
 using Colors = System.Windows.Media.Colors;
 
@@ -659,7 +660,6 @@ namespace NatoliOrderInterface
                     Title = "Natoli Order Interface " + "v" + User.PackageVersion;
                 }
                 _filterProjects = User.FilterActiveProjects;
-                if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
                 RemoveUserFromOrdersBeingCheckedBy(User);
                 this.Show();
                 if (User.Maximized == true)
@@ -999,10 +999,7 @@ namespace NatoliOrderInterface
                     // User = new User("aheimberger");
                     // User = new User("cbrokes");
                     // User = new User("sbowman");
-                    User = new User("nkrull");
-                    HobInformation hi = new HobInformation();
-                    //hi.Show();
-                    hi.Topmost = true;
+                    // User = new User("nkrull");
                 }
                 App.user = User;
             }
@@ -1241,7 +1238,6 @@ namespace NatoliOrderInterface
         }
         private void OQTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (User.EmployeeCode == "E4408" || User.EmployeeCode == "E4754") { GetPercentages(); }
             if (User.Department == "Engineering")
             {
                 QuotesAndOrders();
@@ -1558,6 +1554,17 @@ namespace NatoliOrderInterface
             if (User.Department == "Engineering")
             {
                 fileMenu.Items.Add(update2019);
+            }
+
+            MenuItem tabletCad = new MenuItem
+            {
+                Header = "TabletCAD",
+                ToolTip = "Link to TabletCAD"
+            };
+            tabletCad.Click += LaunchTabletCad_Click;
+            if (User.Department == "Engineering")
+            {
+                fileMenu.Items.Add(tabletCad);
             }
 
             //MenuItem forceRefresh = new MenuItem
@@ -1954,7 +1961,6 @@ namespace NatoliOrderInterface
             };
             #endregion
         }
-
         private void LegendMenu_Click(object sender, RoutedEventArgs e)
         {
             LegendWindow legendWindow = new LegendWindow(User);
@@ -1985,6 +1991,16 @@ namespace NatoliOrderInterface
                 MessageBox.Show(ex.Message);
                 IMethods.WriteToErrorLog("Main Window => Update2019_Click", ex.Message, User);
             }
+        }
+        private void LaunchTabletCad_Click(object sender, RoutedEventArgs e)
+        {
+            string uri = @"http://TabletCAD/integration?User=" + User.GetDWPrincipalId() + @"&Run=TabletCAD";
+            var psi = new ProcessStartInfo()
+            {
+                FileName = uri,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
         }
         private void NatoliTabletUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -6755,7 +6771,6 @@ namespace NatoliOrderInterface
             FindMissingOrders(ListTop100Orders());
             FindExtraQuoteFolders();
         }
-
         static List<int> ListTop100OrderFolders()
         {
             string path = @"\\nsql03\data1\WorkOrders";
@@ -6772,7 +6787,6 @@ namespace NatoliOrderInterface
             folders.ForEach(x => orders.Add(int.Parse(x.Substring(x.LastIndexOf(@"\") + 1))));
             return orders;
         }
-
         static Dictionary<double, double> ListTop100Orders()
         {
             string connectionString = @"Data Source=" + App.Server + ";Initial Catalog=Projects;Persist Security Info=True; User ID=" + App.UserID+";Password="+App.Password+"";
@@ -6807,7 +6821,6 @@ namespace NatoliOrderInterface
             }
             return null;
         }
-
         static void FindMissingOrders(Dictionary<double, double> orders_in)
         {
             List<int> folders = ListTop100OrderFolders();
@@ -6851,7 +6864,6 @@ namespace NatoliOrderInterface
                 Console.WriteLine("Empty");
             }
         }
-
         static void FindExtraQuoteFolders()
         {
             string connectionString = @"Data Source=" + App.Server + ";Initial Catalog=Projects;Persist Security Info=True; User ID=" + App.UserID+";Password="+App.Password+"";
@@ -6907,44 +6919,6 @@ namespace NatoliOrderInterface
                         }
                     }
                 }
-            }
-            catch (Exception eSql)
-            {
-                Console.WriteLine("Exception: " + eSql.Message);
-            }
-        }
-
-        public void GetPercentages()
-        {
-            string connectionString = @"Data Source="+App.Server+";Initial Catalog=NAT01;Persist Security Info=True; User ID="+App.UserID+";Password="+App.Password+"";
-            const string query = "SELECT * FROM (SELECT COUNT(OrderNo) AS NumberOfOrders2018 FROM NAT01.dbo.OrderHeader OH WITH (NOLOCK) WHERE " +
-                                 "OH.OrderDate >= CONCAT('01-01-', DATEPART(year, DATEADD(year, -1, GETDATE()))) AND OH.OrderDate <= " +
-                                 "DATEADD(year, -1, GETDATE())) a JOIN (SELECT COUNT(OrderNo) AS NumberOfOrders2019 FROM NAT01.dbo.OrderHeader OH WITH (NOLOCK) WHERE " +
-                                 "OH.OrderDate >= CONCAT('01-01-', DATEPART(year, GETDATE())) AND OH.OrderDate <= GETDATE()) b ON a.NumberOfOrders2018 <> b.NumberOfOrders2019";
-
-            List<int> devs = new List<int>();
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    conn.Open();
-                    if (conn.State == System.Data.ConnectionState.Open)
-                    {
-                        using (SqlCommand cmd = conn.CreateCommand())
-                        {
-                            cmd.CommandText = query;
-                            using (SqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    devs.Add(reader.GetInt32(0));
-                                    devs.Add(reader.GetInt32(1));
-                                }
-                            }
-                        }
-                    }
-                }
-                Title += " " + string.Format("{0:P2}", (double)devs[1] / devs[0] - 1);
             }
             catch (Exception eSql)
             {

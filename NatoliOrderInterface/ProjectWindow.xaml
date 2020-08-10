@@ -42,14 +42,15 @@
                             <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource linkDrawingImage}" x:Name="LinkQuoteButton" BorderBrush="Transparent" Background="Transparent" MaxHeight="24" VerticalAlignment="Center" Margin="6,0,3,0" Click="LinkQuoteButton_Click" ToolTip="Link Quote"/>
                             <Button Style="{StaticResource ButtonIcon}" Tag="{StaticResource window_alt_plus_DrawingImage}" BorderBrush="Transparent" Background="Transparent" MaxHeight="24" Click="OpenQuoteButton_Click" Name="OpenQuoteButton" Visibility="Visible" VerticalAlignment="Center" ToolTip="Open Quote"/>
                         </DockPanel>
-                    </Border>                    
+                    </Border>
+                    <Button x:Name="HobAndDieInfoButton" Grid.Column="1" Margin="-140,10,235,10" Content="Hob And Die Info" Style="{StaticResource Button}" Click="OpenHobAndDieInfo_Click"/>
                     <DockPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
-                        <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Center" FontWeight="Bold" Style="{StaticResource BoldTextBlock}"/>
-                        <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Center" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}"/>
-                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource BoldTextBlock}"/>
-                        <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Center" Margin="4,0,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1"/>
-                        <TextBlock Text="Created:" Style="{StaticResource BoldTextBlock}" Margin="10,0,0,0"/>
-                        <TextBlock x:Name="EnteredDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0"/>
+                        <TextBlock Text="CSR:" FontSize="12" VerticalAlignment="Center" FontWeight="Bold" Style="{StaticResource BoldTextBlock}" DockPanel.Dock="Left"/>
+                        <TextBlock x:Name="CSR" Text="Alex" VerticalAlignment="Center" FontSize="12" Margin="4,0,0,0" Style="{StaticResource NormalTextBlock}" DockPanel.Dock="Left"/>
+                        <TextBlock Text="Return To:" FontSize="12" VerticalAlignment="Center" Margin="10,0,0,0" Style="{StaticResource BoldTextBlock}" DockPanel.Dock="Left"/>
+                        <ComboBox x:Name="ReturnToCSR" Style="{StaticResource ComboBoxAlignsCenter}" Width="100" IsEditable="False" VerticalAlignment="Center" Margin="4,0,0,0"  BorderThickness="0" Background="Transparent" Padding="6,1,5,1" DockPanel.Dock="Left"/>
+                        <TextBlock Text="Created:" Style="{StaticResource BoldTextBlock}" Margin="10,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="EnteredDate" Text="" MinWidth="40" Style="{StaticResource NormalTextBlock}" Margin="4,0,0,0" DockPanel.Dock="Left" VerticalAlignment="Center"/>
                     </DockPanel>
                     <DockPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
                         <TextBlock Text="Tablet Started By:" Style="{StaticResource BoldTextBlock}" Margin="0,0,0,0"/>

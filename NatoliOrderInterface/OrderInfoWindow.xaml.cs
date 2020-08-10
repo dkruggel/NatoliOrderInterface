@@ -26,6 +26,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Interop;
 using System.IO;
+using NatoliOrderInterface.Models.NAT02;
 
 namespace NatoliOrderInterface
 {
@@ -693,6 +694,13 @@ namespace NatoliOrderInterface
 
 
             Material.Content = orderLineItems[lineItemNumber - 1].Material;
+
+            // Get Steel lot info for this, if it exists
+            var _nat02context = new NAT02Context();
+            SteelLotHeader steelLotHeader = _nat02context.SteelLotHeader.FirstOrDefault(s => s.OrderNo == orderNumber && s.OrderLineNumber == lineItemNumber);
+            Material.ToolTip = steelLotHeader is null ? "" : "Steel Lot Number: " + steelLotHeader.SteelLotNumber.ToString();
+            _nat02context.Dispose();
+
             StockSize.Content = orderLineItems[lineItemNumber - 1].StockSize;
             HobDescription1.Content = orderLineItems[lineItemNumber - 1].HobDescription1;
             HobDescription2.Content = orderLineItems[lineItemNumber - 1].HobDescription2;

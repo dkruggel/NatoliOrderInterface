@@ -1,4 +1,5 @@
 ﻿using System;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -17,6 +18,7 @@ namespace NatoliOrderInterface.Models.NAT01
 
 
         public virtual DbSet<CustomerInstructionTable> CustomerInstructionTable { get; set; }
+        public virtual DbSet<DrawingType> DrawingType { get; set; }
         public virtual DbSet<HobList> HobList { get; set; }
         public virtual DbSet<MachineList> MachineList { get; set; }
         public virtual DbSet<OedetailType> OedetailType { get; set; }
@@ -44,6 +46,7 @@ namespace NatoliOrderInterface.Models.NAT01
         public virtual DbSet<OrdOptionValueRIntegerText> OrdOptionValueRIntegerText { get; set; }
         public virtual DbSet<OrdOptionValueSText> OrdOptionValueSText { get; set; }
         public virtual DbSet<OrdOptionValueTDecText> OrdOptionValueTDecText { get; set; }
+        public virtual DbSet<ProductClass> ProductClass { get; set; }
         public virtual DbSet<QuoteDetailOptions> QuoteDetailOptions { get; set; }
         public virtual DbSet<QuoteDetails> QuoteDetails { get; set; }
         public virtual DbSet<QuoteFreightDesc> QuoteFreightDesc { get; set; }
@@ -152,6 +155,11 @@ namespace NatoliOrderInterface.Models.NAT01
                         .HasMaxLength(15)
                         .IsUnicode(false)
                         .IsFixedLength();
+                });
+
+                modelBuilder.Entity<DrawingType>(entity =>
+                {
+                    entity.HasKey(e => e.DrawingTypeId);
                 });
 
                 modelBuilder.Entity<HobList>(entity =>
@@ -2276,6 +2284,11 @@ namespace NatoliOrderInterface.Models.NAT01
                         .HasMaxLength(1)
                         .IsUnicode(false)
                         .IsFixedLength();
+                });
+
+                modelBuilder.Entity<ProductClass>(entity =>
+                {
+                    entity.HasKey(e => e.ProductId);
                 });
 
                 modelBuilder.Entity<QuoteDetailOptions>(entity =>

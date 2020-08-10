@@ -9,11 +9,15 @@ namespace NatoliOrderInterface
 {
     public class TabletModelInformation
     {
-        private string HobNumber { get; set; }
+        public string HobNumber { get; }
         public string DieNumber { get; set; }
         public double Width { get; set; }
         public double Length { get; set; }
         public double EndRadius { get; set; }
+        public double SideRadius { get; set; }
+        public double CupDepth { get; set; }
+        public double CupRadius { get; set; }
+        public double Land { get; set; }
         private string[] widthDims = new string[]
         {
             "TabletWidth@TabletDiameterSketch",
@@ -32,7 +36,43 @@ namespace NatoliOrderInterface
             "EndRadius@TabletCapsuleSketch",
             "EndRadius@TabletOvalSketch"
         };
+        private string[] sideRadiusDims = new string[]
+        {
+            "SideRadius@TabletOvalSketch"
+        };
+        private string[] cupDepthDims = new string[]
+        {
+            "CupDepth@TopConcaveCupSketch",
+            "CupDepth@MinorConcaveCupSketch (00X10)",
+            "Cup Depth@Sketch4"
+        };
+        private string[] cupRadiusDims = new string[]
+        {
+            "CupRadius@TopConcaveCupSketch",
+            "CupRadius@MinorConcaveCupSketch (00X10)"
+        };
+        private string[] landDims = new string[]
+        {
+            "Land@Thickness&Land Callouts",
+            "Land@MinorLand Callout",
+            "Land@Sketch3"
+        };
         SldWorks sldWorks = new SldWorks();
+        public TabletModelInformation()
+        {
+            string hobNumber = ((ModelDoc2)sldWorks.ActiveDoc).GetType() == (int)swDocumentTypes_e.swDocPART ?
+                ((ModelDoc2)sldWorks.ActiveDoc).GetTitle() :
+                ((ModelDoc2)sldWorks.ActiveDoc).GetTitle().Remove(((ModelDoc2)sldWorks.ActiveDoc).GetTitle().IndexOf(' '));
+            HobNumber = hobNumber;
+            string modelPath = GetTabletPath(hobNumber) + ".SLDPRT";
+            ModelDoc2 tablet = (ModelDoc2)sldWorks.OpenDoc(modelPath, (int)swDocumentTypes_e.swDocPART);
+            if (tablet is null)
+                tablet = (ModelDoc2)sldWorks.ActivateDoc(hobNumber);
+            CustomPropertyManager cpmTablet = (CustomPropertyManager)tablet.Extension.CustomPropertyManager[""];
+            GetDieNumber(tablet, cpmTablet);
+            GetSize(tablet);
+            sldWorks.CloseDoc(HobNumber);
+        }
         public TabletModelInformation(string hobNumber)
         {
             HobNumber = hobNumber;
@@ -89,6 +129,9 @@ namespace NatoliOrderInterface
             Width = GetDimValue(tablet, widthDims);
             Length = GetDimValue(tablet, lengthDims);
             EndRadius = GetDimValue(tablet, endRadiusDims);
+            SideRadius = GetDimValue(tablet, sideRadiusDims);
+            CupDepth = GetDimValue(tablet, cupDepthDims);
+            Land = GetDimValue(tablet, landDims);
         }
         private double GetDimValue(ModelDoc2 tablet, string[] dims)
         {

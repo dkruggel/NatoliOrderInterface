@@ -1,0 +1,674 @@
+﻿<Window x:Class="NatoliOrderInterface.HobInformation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NatoliOrderInterface"
+        mc:Ignorable="d"
+        Title="Hob and Die Information" Height="550" Width="1075">
+    <Window.Resources>
+        <local:BorderBrushConverter x:Key="BorderBrushConverter"/>
+    </Window.Resources>
+    <Grid Margin="15">
+        <DockPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="40">
+                <Button x:Name="AddDieButton" Content="Add Die" Margin="15,5,5,5" Width="120" Style="{StaticResource Button}" Click="AddDie_Click"/>
+                <Button x:Name="AddHobButton" Content="Add Hob" Margin="285,5,5,5" Width="120" Style="{StaticResource Button}" Click="AddHob_Click"/>
+                <Button x:Name="LoadDataButton" Content="Load Data" Margin="250,5,5,5" Width="100" Style="{StaticResource Button}" Click="LoadData_Click"/>
+            </StackPanel>
+            <DockPanel x:Name="DieDockPanel">
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Die Number" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="DieNumber" Grid.Column="1" Margin="4" TextChanged="DieNumber_TextChanged" Style="{StaticResource ValidationTextBox}">
+                        <TextBox.Text>
+                            <Binding Path="DieId" Source="{StaticResource DieList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                <Binding.ValidationRules>
+                                    <local:TextBoxValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Width/Diameter" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="Width" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="WidthMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Length" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="Length" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="LengthMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="End Radius" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="EndRadius" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="EndRadiusMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Side Radius" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="SideRadius" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="SideRadiusMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Corner Radius" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="CornerRadius" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="CornerRadiusMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Blend Radius" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="BlendRadius" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="BlendRadiusMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="O.D." Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="OD" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="ODMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Reference O.D." Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ReferenceOD" Tag="Die" Grid.Column="1" Margin="4"/>
+                    <TextBox x:Name="ReferenceODMetric" Tag="Die" Grid.Column="2" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="ShapeID" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <!--<TextBox x:Name="ShapeID" Tag="Die" Grid.Column="1" Margin="4"/>-->
+                    <ComboBox x:Name="ShapeID" Tag="Die" Grid.Column="1" Grid.ColumnSpan="2" Margin="4,4,24,4" Style="{StaticResource ValidationComboBox}">
+                        <ComboBox.ItemTemplate>
+                            <Binding UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <local:TextBoxValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <!--<TextBlock x:Name="ShapeText" Grid.Column="2" Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Plug Gauge" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="PlugGauge" Tag="Die" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Master Die" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="MasterDie" Tag="Die" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Note 1" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="Note1Die" Tag="Die" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Note 2" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="Note2Die" Tag="Die" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Note 3" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBox x:Name="Note3Die" Tag="Die" Grid.Column="1" Margin="4"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel x:Name="HobDockPanel">
+                <WrapPanel Orientation="Vertical" x:Name="HobWrapPanel">
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Hob Number" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="HobNumber" Grid.Column="1" Margin="4" TextChanged="HobNumber_TextChanged" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="HobNo" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Tip Quantity" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="TipQuantity" Grid.Column="1" Margin="4" TextChanged="HobNumber_TextChanged"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Bore Circle" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="BoreCircle" Tag="Hob" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Hob Status" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="HobStatus" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Size" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Size" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="Size" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Shape" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Shape" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="Shape" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Cup Depth" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="CupDepth" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="CupDepth" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox x:Name="CupDepthMetric" Tag="Hob" Grid.Column="2" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="CupDepthM" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Cup Radius" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="CupRadius" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="CupRadius" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox x:Name="CupRadiusMetric" Tag="Hob" Grid.Column="2" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="CupRadiusM" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                </Grid>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Land" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Land" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="Land" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox x:Name="LandMetric" Tag="Hob" Grid.Column="2" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="LandM" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Land Range" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="LandRange" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="LandRange" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox x:Name="LandRangeMetric" Tag="Hob" Grid.Column="2" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="LandRangeM" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Measurable Cup Depth" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="MeasurableCupDepth" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="MeasurableCup" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox x:Name="MeasurableCupDepthMetric" Tag="Hob" Grid.Column="2" Margin="4" Style="{StaticResource ValidationTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="MeasurableCupM" Source="{StaticResource HobList}"
+                                         UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Cup Code" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="CupCode" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Bisect Code" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="BisectCode" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Note 1" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Note1Hob" Tag="Die" Grid.Column="1" Margin="4"/>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Note 2" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Note2Hob" Tag="Die" Grid.Column="1" Margin="4"/>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Note 3" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Note3Hob" Tag="Die" Grid.Column="1" Margin="4"/>
+                    </Grid>
+                    <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Owner" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="Owner" Tag="Hob" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Date Designed" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="DateDesigned" Tag="Hob" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Hob Class" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="HobClass" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Drawing?" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="DrawingYN" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Drawing Type" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="DrawingType" Tag="Hob" Grid.Column="1" Margin="4" Style="{StaticResource ValidationComboBox}">
+                            <ComboBox.ItemTemplate>
+                                <Binding UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxValidationRule/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Program Number" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="ProgramNumber" Tag="Hob" Grid.Column="1" Margin="4"/>
+                </Grid>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="N- Number" Grid.Column="0" Margin="4,4,10,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBox x:Name="NNumber" Tag="Hob" Grid.Column="1" Margin="4"/>
+                </Grid>
+                </WrapPanel>
+            </DockPanel>
+        </DockPanel>
+    </Grid>
+</Window>

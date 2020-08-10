@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NatoliOrderInterface.Models
+namespace NatoliOrderInterface.Models.NAT01
 {
     public partial class DieList
     {

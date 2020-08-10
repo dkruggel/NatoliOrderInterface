@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using NatoliOrderInterface.Models.NAT02;
 
 namespace NatoliOrderInterface.Models
 {
@@ -59,6 +60,7 @@ namespace NatoliOrderInterface.Models
         public virtual DbSet<EoiAllOrdersView> EoiAllOrdersView { get; set; }
         public virtual DbSet<EoiCustomerNotes> EoiCustomerNotes { get; set; }
         public virtual DbSet<EoiCalendar>  EoiCalendar { get; set; }
+        public virtual DbSet<SteelLotHeader> SteelLotHeader { get; set; }
         public virtual DbSet<EoiToolProjectsOutOfOrder> EoiToolProjectsOutOfOrder { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1042,12 +1044,19 @@ namespace NatoliOrderInterface.Models
 
                 entity.ToTable("EOI_CustomerNotes");
             });
+
             modelBuilder.Entity<EoiCalendar>(entity =>
             {
                 entity.HasKey(e => new { e.Year, e.Month, e.Day });
 
                 entity.ToTable("Eoi_Calendar");
             });
+
+            modelBuilder.Entity<SteelLotHeader>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderNo, e.OrderLineNumber });
+            });
+
             modelBuilder.Entity<EoiToolProjectsOutOfOrder>(entity =>
             {
                 entity.HasKey(e => new { e.ProjectNumber, e.RevNumber });

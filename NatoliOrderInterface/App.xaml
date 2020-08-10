@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:NatoliOrderInterface"
+             xmlns:n="clr-namespace:NatoliOrderInterface.Models.NAT01"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:IsFocusedOrIsNotEmpty x:Key="isFocusedOrIsNotEmptyConverter"/>
@@ -10,6 +11,8 @@
         <local:CheckBoxConverter x:Key="checkBoxConverter"/>
         <local:ToolTipConverter x:Key="toolTipConverter"/>
         <local:MainWindow x:Key="MainWindow"/>
+        <n:HobList x:Key="HobList"/>
+        <n:DieList x:Key="DieList"/>
 
 
         <!--#region Colors -->
@@ -3413,6 +3416,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ValidationTextBox" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <!--#region Search Box -->
         <Style x:Key="SearchBoxStyle" TargetType="{x:Type TextBox}">
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -3930,6 +3941,14 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+        <Style x:Key="ValidationComboBox" TargetType="{x:Type ComboBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="BorderBrush" Value="Red"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
         <!--#endregion-->
         
