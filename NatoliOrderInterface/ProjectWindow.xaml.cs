@@ -4834,7 +4834,7 @@ namespace NatoliOrderInterface
                     else if (user.Department != "Engineering")
                     {
                         StartButton.IsEnabled = true;
-                        FinishButton.IsEnabled = false;
+                        FinishButton.IsEnabled = user.EmployeeCode == "E4477";
                         SubmitButton.IsEnabled = false;
                         CheckButton.IsEnabled = false;
                     }

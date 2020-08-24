@@ -1065,7 +1065,7 @@ namespace NatoliOrderInterface
             projectPreviousStepButton.Click += PreviousStepProject_Click;
 
             // Next Step: Enabled, "Mark As Submitted"
-            projectNextStepButton.Visibility = user.Department == "Engineering" ? Visibility.Visible : Visibility.Collapsed;
+            projectNextStepButton.Visibility = user.Department == "Engineering" || user.EmployeeCode == "E4477" ? Visibility.Visible : Visibility.Collapsed;
             projectNextStepButton.IsEnabled = true;
             projectNextStepButton.ToolTip = "Mark As Submitted";
             //RemoveEventHandlers(projectNextStepButton);
