@@ -1562,7 +1562,7 @@ namespace NatoliOrderInterface
                 ToolTip = "Link to TabletCAD"
             };
             tabletCad.Click += LaunchTabletCad_Click;
-            if (User.Department == "Engineering")
+            if (User.Department == "Engineering" || User.EmployeeCode == "E4383" || User.EmployeeCode == "E4477")
             {
                 fileMenu.Items.Add(tabletCad);
             }
