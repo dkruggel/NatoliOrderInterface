@@ -1157,7 +1157,8 @@ namespace NatoliOrderInterface
                 {
                     StartOrderButton.IsEnabled = false;
                     SendToOfficeButton.IsEnabled = (user.GetUserName().EndsWith("Simonpietri") ||
-                                                    user.GetUserName().EndsWith("Willis"));
+                                                    user.GetUserName().EndsWith("Willis") ||
+                                                    user.GetUserName().EndsWith("Bowman"));
                     FinishOrderButton.IsEnabled = false;
                     NotFinishedButton.IsEnabled = false;
                     PrintOrderButton.IsEnabled = false;
